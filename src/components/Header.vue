@@ -40,11 +40,11 @@
           >{{ username }}</v-btn>
         </template>
         <v-list>
-          <v-list-item link :to="{path: '/change_passwd'}">
-            <v-list-item-title v-text="'Change Password'"></v-list-item-title>
+          <v-list-item link :to="{path: '/profile'}">
+            <v-list-item-title v-text="'個人頁面'"></v-list-item-title>
           </v-list-item>
           <v-list-item link @click="signout">
-            <v-list-item-title v-text="'Sign Out'"></v-list-item-title>
+            <v-list-item-title v-text="'登出'"></v-list-item-title>
           </v-list-item>
         </v-list>
       </v-menu>
@@ -76,11 +76,11 @@
           link
         ><v-list-item-title v-text="link.title"></v-list-item-title></v-list-item>
         <v-divider v-if="isLogin"></v-divider>
-        <v-list-item v-if="isLogin" link :to="{path: '/change_passwd'}">
-          <v-list-item-title v-text="'Change Password'"></v-list-item-title>
+        <v-list-item v-if="isLogin" link :to="{path: '/profile'}">
+          <v-list-item-title v-text="'個人頁面'"></v-list-item-title>
         </v-list-item>
         <v-list-item v-if="isLogin" link @click="signout">
-          <v-list-item-title v-text="'Sign Out'"></v-list-item-title>
+          <v-list-item-title v-text="'登出'"></v-list-item-title>
         </v-list-item>
       </v-list>
     </v-navigation-drawer>
@@ -108,9 +108,9 @@ export default {
         {'title': '使用說明', 'path': '/tutorial'},
       ],
       drawer: false,
-      isLogin: false,
+      isLogin: true,
       payload: null,
-      username: 'username',
+      username: '使用者名稱',
     }
   },
 
@@ -123,30 +123,30 @@ export default {
       this.drawer = false;
       this.$router.go(0);
     },
-    setProfile() {
-      if ( this.$cookies.isKey('jwt') ) {
-        this.payload = this.parseJwt(this.$cookies.get('jwt'));
-        if ( this.payload.active === true ) {
-          this.isLogin = true;
-          this.username = this.payload.username;
-        }
-      }
-    },
-    parseJwt(token) {
-      console.log(atob(token.split('.')[1]));
-      return JSON.parse(atob(token.split('.')[1])).data;
-    },
+    // setProfile() {
+    //   if ( this.$cookies.isKey('jwt') ) {
+    //     this.payload = this.parseJwt(this.$cookies.get('jwt'));
+    //     if ( this.payload.active === true ) {
+    //       this.isLogin = true;
+    //       this.username = this.payload.username;
+    //     }
+    //   }
+    // },
+    // parseJwt(token) {
+    //   console.log(atob(token.split('.')[1]));
+    //   return JSON.parse(atob(token.split('.')[1])).data;
+    // },
     signout() {
-      this.$http.get(`${API_BASE_URL}/auth/session`)
-        .then((res) => {
+      // this.$http.get(`${API_BASE_URL}/auth/session`)
+        // .then((res) => {
           // console.log(res);
           this.isLogin = false;
-          this.$router.push('/');
-          this.update();
-        })
-        .catch((err) => {
+          // this.$router.push('/');
+          // this.update();
+        // })
+        // .catch((err) => {
           // console.log(err);
-        })
+        // })
     }
   }
 }

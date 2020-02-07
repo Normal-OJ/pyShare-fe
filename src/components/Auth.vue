@@ -9,11 +9,11 @@
         text
         :color="$vuetify.breakpoint.smAndDown ? '#4B8BBE' : 'white'"
         v-on="on"
-      >Sign in</v-btn>
+      >登入</v-btn>
     </template>
     <v-card>
       <v-toolbar color="#4B8BBE" dark dense>
-        <div class="subtitle-1">Sign in</div>
+        <div class="subtitle-1">登入</div>
         <v-spacer></v-spacer>
         <v-btn tile icon @click="dialog = false">
           <v-icon>mdi-close</v-icon>

@@ -16,12 +16,10 @@ const routes = [
   {
     path: '/problems',
     component: problems,
-    children: [
-      {
-        path: '/problem/:id',
-        component: problem,
-      },
-    ],
+  },
+  {
+    path: '/problem/:id',
+    component: problem,
   },
   {
     path: '/tutorial',

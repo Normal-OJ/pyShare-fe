@@ -12,11 +12,15 @@
         @click.stop="drawer = !drawer"
       ></v-app-bar-nav-icon>
 
+      <!-- Nav Bar Title -->
+      <v-toolbar-title style="color: white; padding-right: 10px;">
+        <v-icon color="white" large>mdi-language-python</v-icon>創作分享平台
+      </v-toolbar-title>
+
       <!-- Nav Bar -->
-      <v-toolbar-items>
+      <v-toolbar-items v-if="$vuetify.breakpoint.mdAndUp">
         <v-btn
           v-for="link in links"
-          v-if="$vuetify.breakpoint.mdAndUp"
           :key="link.title"
           :to="link.path"
           color="white"

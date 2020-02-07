@@ -6,6 +6,7 @@
     <v-alert
       v-model="errAlert"
       dense
+      dismissible
       type="error"
     >{{ errMsg }}</v-alert>
 

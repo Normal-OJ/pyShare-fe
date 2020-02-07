@@ -19,7 +19,7 @@
           <v-icon>mdi-close</v-icon>
         </v-btn>
       </v-toolbar>
-      <v-card-text>
+      <v-card-text class="mt-6">
         <SignInForm @signin="signin"></SignInForm>
       </v-card-text>
     </v-card>

@@ -5,7 +5,7 @@
     <v-card height="100%" elevation="12">
       <v-card-title>個人頁面</v-card-title>
       <v-divider class="mt-0"></v-divider>
-      <v-card-text class="text--primary">
+      <v-card-text class="subtitle-1 text--primary">
         <v-row>
           <v-col cols="auto" md="4">
             <v-icon>mdi-account</v-icon>使用者名稱：
@@ -29,7 +29,7 @@
       <v-form v-model="form" ref="form">
         <v-card-title>更改密碼</v-card-title>
         <v-divider class="mt-0"></v-divider>
-        <v-card-text>
+        <v-card-text class="pb-0">
           <v-alert
             v-model="errAlert"
             dense
@@ -38,29 +38,35 @@
             transition="slide-y-transition"
           >{{ errMsg }}</v-alert>
           <v-row>
-            <v-text-field
-              v-model="passwd.new"
-              label="請輸入新密碼"
-              class="mx-1"
-              type="password"
-              :rules="[v => !!v || '請輸入欲設置的新密碼！']"
-              outlined
-            ></v-text-field>
-            <v-text-field
-              label="請再次輸入新密碼"
-              class="mx-1"
-              type="password"
-              :rules="[v => !!v && v===passwd.new || '確認密碼與新密碼不相符。']"
-              outlined
-            ></v-text-field>
-            <v-text-field
-              v-model="passwd.old"
-              label="請輸入原密碼"
-              type="password"
-              :rules="[v => !!v || '請輸入原密碼！']"
-              class="mx-1"
-              outlined
-            ></v-text-field>
+            <v-col cols="auto" lg="4">
+              <v-text-field
+                v-model="passwd.new"
+                label="請輸入新密碼"
+                class="mx-1"
+                type="password"
+                :rules="[v => !!v || '請輸入欲設置的新密碼！']"
+                outlined
+              ></v-text-field>
+            </v-col>
+            <v-col cols="auto" lg="4">
+              <v-text-field
+                label="請再次輸入新密碼"
+                class="mx-1"
+                type="password"
+                :rules="[v => !!v && v===passwd.new || '確認密碼與新密碼不相符。']"
+                outlined
+              ></v-text-field>
+            </v-col>
+            <v-col cols="auto" lg="4">
+              <v-text-field
+                v-model="passwd.old"
+                label="請輸入原密碼"
+                type="password"
+                :rules="[v => !!v || '請輸入原密碼！']"
+                class="mx-1"
+                outlined
+              ></v-text-field>
+            </v-col>
           </v-row>
         </v-card-text>
         <v-card-actions>
@@ -69,6 +75,7 @@
             dark
             color="#4B8BBE"
             @click="submit"
+            class="subtitle-1"
           ><v-icon>mdi-send</v-icon>送出</v-btn>
         </v-card-actions>
       </v-form>

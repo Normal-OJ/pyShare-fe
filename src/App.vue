@@ -22,3 +22,9 @@ export default {
   }),
 };
 </script>
+
+<style>
+#app {
+  font-family: 'Noto Sans TC';
+}
+</style>

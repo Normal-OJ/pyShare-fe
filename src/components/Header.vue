@@ -25,6 +25,7 @@
           :to="link.path"
           color="white"
           text
+          class="subtitle-1"
         >{{ link.title }}</v-btn>
       </v-toolbar-items>
 
@@ -37,6 +38,7 @@
             text
             color="white"
             v-on="on"
+            class="subtitle-1"
           >{{ username }}</v-btn>
         </template>
         <v-list>

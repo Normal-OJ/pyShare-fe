@@ -37,6 +37,7 @@
           dark
           color="#4B8BBE"
           @click="submit"
+          class="subtitle-1"
         >登入</v-btn>
       </v-col>
     </v-row>

@@ -1,10 +1,8 @@
-<template>
-  <v-app>
-    <Header/>
-    <v-content>
-      <router-view/>
-    </v-content>
-  </v-app>
+<template lang="pug">
+  v-app
+    Header
+    v-content
+      router-view
 </template>
 
 <script>

@@ -35,7 +35,7 @@
       <v-col cols="auto">
         <v-btn
           dark
-          color="#4B8BBE"
+          color="primary"
           @click="submit"
           class="subtitle-1"
         >登入</v-btn>
@@ -46,8 +46,6 @@
 </template>
 
 <script>
-const API_BASE_URL = '/api';
-
 export default {
 
   name: 'SignInForm',
@@ -75,7 +73,7 @@ export default {
   methods: {
     submit() {
       if ( this.$refs.form.validate() ) {
-        // this.$http.post(`${API_BASE_URL}/auth/session`, this.authData)
+        // this.$http.post('/auth/session', this.authData)
           // .then((response) => {
             // successful sign in
             // console.log(response);

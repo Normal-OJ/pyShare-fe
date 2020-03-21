@@ -7,13 +7,13 @@
       <v-btn
         dark
         text
-        :color="$vuetify.breakpoint.smAndDown ? '#4B8BBE' : 'white'"
+        :color="$vuetify.breakpoint.smAndDown ? 'primary' : 'white'"
         v-on="on"
         class="subtitle-1"
       >登入</v-btn>
     </template>
     <v-card>
-      <v-toolbar color="#4B8BBE" dark dense>
+      <v-toolbar color="primary" dark dense>
         <v-toolbar-title>登入</v-toolbar-title>
         <v-spacer></v-spacer>
         <v-btn tile icon @click="dialog = false">

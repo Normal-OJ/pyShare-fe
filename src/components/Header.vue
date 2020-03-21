@@ -2,7 +2,7 @@
   <div class="ma-0 pa-0">
     <v-app-bar
       app
-      color="#4B8BBE"
+      color="primary"
     >
       
       <!-- Small Down Menu -->
@@ -77,7 +77,7 @@
           :to="link.path"
           link
         ><v-list-item-title v-text="link.title"></v-list-item-title></v-list-item>
-        <v-divider v-if="isLogin"></v-divider>
+        <v-divider v-if="isLogin" class="my-2"></v-divider>
         <v-list-item v-if="isLogin" link :to="{path: '/profile'}">
           <v-list-item-title v-text="'個人頁面'"></v-list-item-title>
         </v-list-item>
@@ -93,8 +93,6 @@
 <script>
 import Auth from './Auth';
 
-const API_BASE_URL = '/api';
-
 export default {
 
   name: 'Header',
@@ -108,16 +106,13 @@ export default {
       links: [
         {'title': '題目列表', 'path': '/'},
         {'title': '使用說明', 'path': '/tutorial'},
+        {'title': '管理頁面', 'path': '/admin'},
       ],
       drawer: false,
       isLogin: true,
       payload: null,
       username: '使用者名稱',
     }
-  },
-
-  beforeMount () {
-    // this.setProfile();
   },
 
   methods: {
@@ -139,7 +134,7 @@ export default {
     //   return JSON.parse(atob(token.split('.')[1])).data;
     // },
     signout() {
-      // this.$http.get(`${API_BASE_URL}/auth/session`)
+      // this.$http.get('/auth/session')
         // .then((res) => {
           // console.log(res);
           this.isLogin = false;

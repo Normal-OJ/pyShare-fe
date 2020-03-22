@@ -3,7 +3,9 @@ import VueRouter from 'vue-router'
 import problems from '@/views/problems'
 import problem from '@/views/problem'
 import tutorial from '@/views/tutorial'
-import admin from '@/views/admin'
+import adminMain from '@/views/admin/main'
+import adminProblem from '@/views/admin/problem'
+import adminCourse from '@/views/admin/course'
 import profile from '@/views/profile'
 
 Vue.use(VueRouter)
@@ -26,8 +28,16 @@ const routes = [
     component: tutorial,
   },
   {
-    path: '/admin',
-    component: admin,
+    path: '/admin/main',
+    component: adminMain,
+  },
+  {
+    path: '/admin/problem',
+    component: adminProblem,
+  },
+  {
+    path: '/admin/course',
+    component: adminCourse,
   },
   {
     path: '/profile',

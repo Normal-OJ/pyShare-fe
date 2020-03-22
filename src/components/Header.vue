@@ -106,7 +106,7 @@ export default {
       links: [
         {'title': '題目列表', 'path': '/'},
         {'title': '使用說明', 'path': '/tutorial'},
-        {'title': '管理頁面', 'path': '/admin'},
+        {'title': '管理頁面', 'path': '/admin/main'},
       ],
       drawer: false,
       isLogin: true,
@@ -134,16 +134,7 @@ export default {
     //   return JSON.parse(atob(token.split('.')[1])).data;
     // },
     signout() {
-      // this.$http.get('/auth/session')
-        // .then((res) => {
-          // console.log(res);
-          this.isLogin = false;
-          // this.$router.push('/');
-          // this.update();
-        // })
-        // .catch((err) => {
-          // console.log(err);
-        // })
+        this.isLogin = false;
     }
   }
 }

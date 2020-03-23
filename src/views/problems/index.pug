@@ -4,7 +4,7 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
     v-container( fluid )
       v-row
         v-col( cols="12" md="3" )
-          v-select.mx-1( label="選擇課程" outlined hide-details :items="['課程一', '課程二']" value="課程一" )
+          v-select.mx-1( label="選擇課程" outlined hide-details :items="courses" value="課程一" )
         v-col( cols="12" md="3" )
           v-select.mx-1( label="選擇分類" outlined hide-details :items="['分類一', '分類二', '分類三']" )
         v-col( cols="12" md="3" )

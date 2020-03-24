@@ -15,12 +15,14 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
     v-simple-table.px-4
       thead
         tr
+          th.font-weight-bold.subtitle-1.text--primary 題號
           th.font-weight-bold.subtitle-1.text--primary 標題
           th.font-weight-bold.subtitle-1.text--primary.hidden-sm-and-down 分類
           th.font-weight-bold.subtitle-1.text--primary.hidden-sm-and-down 日期
           th.font-weight-bold.subtitle-1.text--primary.hidden-sm-and-down 作者
       tbody
         tr( v-for="item in items" :key="item.title" )
+          td.subtitle-1 {{ item.id }}
           td.subtitle-1
             a( :href="`/problem/${item.id}`" ) {{ item.title }}
           td.subtitle-1.hidden-sm-and-down 

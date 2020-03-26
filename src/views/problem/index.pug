@@ -1,0 +1,50 @@
+v-container.editor( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', height: '100%' }" )
+  v-card.my-3( elevation="12" )
+    v-card-subtitle
+      v-icon( small ) mdi-clock
+      | [time]
+      v-icon.ml-3( small ) mdi-account
+      | [author]
+      v-icon.ml-3( small ) mdi-comment
+      | [comment]
+    v-card-title.display-1 「題目名稱」
+    v-card-subtitle.mt-3
+      | 分類：
+      v-chip( label small ) Label1
+      v-chip.ml-3( label small ) Label2
+      v-chip.ml-3( label small ) Label3
+    v-divider
+    v-card-text.text--primary
+      | 內文
+      br
+      | 內文
+      br
+      | 內文
+      br
+    v-divider
+
+  v-card.my-12( width="$vuetify.breakpoint.mdAndUp ? '70vw' : '95vw'" elevation="12" )
+    v-card-title 這個是留言的標題
+      v-row( no-gutters )
+      v-spacer
+      div.subtitle-2 2020-03-27 12:35
+    v-card-subtitle.text--primary
+      | {{ '一樓 | 莊博傑' }}
+    v-card-text.pl-0.pb-0
+      v-tabs( vertical )
+        v-tab( v-for="item in lists" :key="item.title" )
+          v-icon( left ) {{ item.icon }}
+          | {{ item.title }}
+        v-tab-item( v-for="example in examples" :key="example" )
+          v-card( flat style="background: #e7e7e7" )
+            v-card-text
+              v-expand-transition
+                div.text--primary( style="white-space: pre-line" ) {{ example }}
+    v-card-actions
+      v-row( no-gutters )
+        v-btn.text-none( color="primary" text ) → Reply
+        //- v-spacer
+        v-btn.ml-3( icon )
+          v-icon mdi-heart
+        div.mt-1 300
+      

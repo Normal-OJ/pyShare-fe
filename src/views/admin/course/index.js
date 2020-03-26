@@ -28,7 +28,8 @@ export default Vue.extend({
           role: 'Teacher',
           star: 5000,
         },
-      ]
+      ],
+      roles: ['Student', 'Teacher'],
     }
   },
 

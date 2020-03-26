@@ -22,6 +22,21 @@ v-container.editor( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95v
       | 內文
       br
     v-divider
+    v-card-text.text--primary
+      v-row.mb-3( no-gutters )
+        h3.mr-6 資料
+        v-menu( offset-y )
+          template( v-slot:activator="{ on }" ) 
+            v-btn.text-none( outlined v-on="on" small )
+              | {{ browsing }}
+              v-icon mdi-chevron-down
+          v-list
+            v-list-item( v-for="atta in attachments" :key="atta" @click="browsing = atta" )
+              v-list-item-title {{ atta }}
+        v-btn.ml-6( v-if="browsing!='請選擇'" color="info" small )
+          v-icon mdi-file-download
+          | 下載
+      code show data......
 
   v-card.my-12( width="$vuetify.breakpoint.mdAndUp ? '70vw' : '95vw'" elevation="12" )
     v-card-title 這個是留言的標題

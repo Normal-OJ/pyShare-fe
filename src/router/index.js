@@ -6,6 +6,7 @@ import tutorial from '@/views/tutorial'
 import adminMain from '@/views/admin/main'
 import adminProblem from '@/views/admin/problem'
 import adminCourse from '@/views/admin/course'
+import adminEdit from '@/views/admin/problem/edit'
 import profile from '@/views/profile'
 
 Vue.use(VueRouter)
@@ -32,11 +33,15 @@ const routes = [
     component: adminMain,
   },
   {
-    path: '/admin/problem',
+    path: '/admin/problems',
     component: adminProblem,
   },
   {
-    path: '/admin/course',
+    path: '/admin/problem/:id',
+    component: adminEdit,
+  },
+  {
+    path: '/admin/courses',
     component: adminCourse,
   },
   {

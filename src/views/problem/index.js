@@ -12,6 +12,8 @@ export default Vue.extend({
         { title: '程式', icon: 'mdi-code-tags' },
         { title: '結果', icon: 'mdi-chart-bar' },
       ],
+      browsing: '請選擇',
+      attachments: ['bicycle.csv', 'readme.txt', 'bike.txt'],
       examples: [`切資料真的是很 重要的技術，要搞清楚T^T
         切資料真的是很重要的技術，要搞清楚T^T
         切資料真的是很重要的技術，要搞清楚T^T

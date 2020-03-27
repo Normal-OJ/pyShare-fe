@@ -7,7 +7,7 @@ v-container.editor( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95v
       | [author]
       v-icon.ml-3( small ) mdi-comment
       | [comment]
-    v-card-title.display-1 「題目名稱」
+    v-card-title.display-1 {{ $route.params.id }}
     v-card-subtitle.mt-3
       | 分類：
       v-chip( label small ) Label1

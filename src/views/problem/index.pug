@@ -2,25 +2,18 @@ v-container.editor( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95v
   v-card.my-3( elevation="12" )
     v-card-subtitle
       v-icon( small ) mdi-clock
-      | [time]
+      | {{ problem.timestamp }}
       v-icon.ml-3( small ) mdi-account
-      | [author]
+      | {{ problem.author.displayedName }}
       v-icon.ml-3( small ) mdi-comment
       | [comment]
-    v-card-title.display-1 {{ $route.params.id }}
+    v-card-title.display-1 {{ problem.pid }}
     v-card-subtitle.mt-3
       | 分類：
-      v-chip( label small ) Label1
-      v-chip.ml-3( label small ) Label2
-      v-chip.ml-3( label small ) Label3
+    v-card-subtitle.mt-3( v-for="tag in problem.tags" )
+      v-chip( label small ) {{ tag }}
     v-divider
-    v-card-text.text--primary
-      | 內文
-      br
-      | 內文
-      br
-      | 內文
-      br
+    v-card-text.text--primary {{ problem.description }}
     v-divider
     v-card-text.text--primary
       v-row.mb-3( no-gutters )

@@ -18,16 +18,21 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
           th.font-weight-bold.subtitle-1.text--primary 題號
           th.font-weight-bold.subtitle-1.text--primary 標題
           th.font-weight-bold.subtitle-1.text--primary.hidden-sm-and-down 分類
-          th.font-weight-bold.subtitle-1.text--primary.hidden-sm-and-down 日期
           th.font-weight-bold.subtitle-1.text--primary.hidden-sm-and-down 作者
           th.font-weight-bold.subtitle-1.text--primary 管理
       tbody
-        tr( v-for="item in items" :key="item.title" )
+        tr( v-for="(item, idx) in items" :key="item.title" )
           td.subtitle-1 {{ item.id }}
           td.subtitle-1 {{ item.title }}
           td.subtitle-1.hidden-sm-and-down 
-            v-chip.mr-1( v-for="tag in item.tags" :key="tag" label small ) {{ tag }}
-          td.subtitle-1.hidden-sm-and-down {{ item.timestamp }}
+            v-menu( offset-y )
+              template( v-slot:activator="{ on }" ) 
+                v-btn( outlined v-on="on" small )
+                  | {{ item.status }}
+                  v-icon mdi-chevron-down
+              v-list
+                v-list-item( v-for="st in status" :key="st" @click="items[idx].status = st" )
+                  v-list-item-title {{ st }}
           td.subtitle-1.hidden-sm-and-down {{ item.author.displayName }}
           td.subtitle-1
             v-tooltip( bottom color="#000000E6" )

@@ -4,7 +4,7 @@ v-container.editor( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95v
     v-col( cols="12" md="6" )
       v-text-field( label="題目名稱" outlined hide-details value="自行車竊案" )
     v-col( cols="12" md="6" )
-      v-select( label="顯示狀態" outlined hide-details :items="['顯示', '隱藏（僅老師可見）']" )
+      v-select( label="顯示狀態" outlined hide-details :items="['顯示', '隱藏（僅老師和創題者可見）']" )
   v-row
     v-col( cols="12" md="6" )
       v-select( label="屬於課程" outlined hide-details :items="['課程一', '課程二']" )
@@ -47,7 +47,7 @@ v-container.editor( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95v
   h2.my-1 留言預設程式碼
   h2.my-1 上傳附件
   v-row.mt-12
-    v-btn.mr-3( color="primary" ) 儲存
-    v-btn.mr-3( color="error" ) 取消
+    v-btn.mr-3( color="primary" :href="`/admin/problems`" ) 儲存
+    v-btn.mr-3( color="error" :href="`/admin/problems`" ) 取消
   //- editor-content.editor__content( :editor="comment" )
 

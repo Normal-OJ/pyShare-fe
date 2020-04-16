@@ -11,6 +11,7 @@ export default Vue.extend({
           title: 'DSCP修課背景分析',
           id: '1',
           tags: ['分類一'],
+          status: '顯示',
           timestamp: '',
           author: {
             username: 'tcc',
@@ -21,6 +22,7 @@ export default Vue.extend({
           title: '108-1 自行車竊案統計-3 (圖表繪製)',
           id: '2',
           tags: ['分類一', '分類二'],
+          status: '顯示',
           timestamp: '',
           author: {
             username: 'tcc',
@@ -31,13 +33,15 @@ export default Vue.extend({
           title: '108-1 自行車竊案統計-2 (圖表繪製)',
           id: '3',
           tags: ['分類一', '分類二'],
+          status: '顯示',
           timestamp: '',
           author: {
             username: 'tcc',
             displayName: '蔣宗哲',
           },
         },
-      ]
+      ],
+      status: ['顯示', '隱藏（老師和作者可見）'],
     }
   },
 

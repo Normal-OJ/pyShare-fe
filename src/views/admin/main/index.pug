@@ -9,3 +9,8 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
     v-card-subtitle 在此瀏覽課程、新增學生
     v-card-actions
       v-btn.ma-3( color="primary" href="/admin/courses" ) 進入
+  v-card.my-3( elevation="12" )
+    v-card-title 管理分類
+    v-card-subtitle 在此管理各課程分類使用，增減分類
+    v-card-actions
+      v-btn.ma-3( color="primary" href="/admin/tags" ) 進入

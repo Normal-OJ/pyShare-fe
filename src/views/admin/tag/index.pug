@@ -1,0 +1,51 @@
+v-container( :style="{ height: '100%' }" )
+  v-row
+    v-col( cols="12" md="5" )
+      h2 所有分類
+      v-row.mt-11( no-gutters )
+        v-btn( color="primary" )
+          v-icon mdi-plus
+        v-spacer
+        v-btn( color="error" )
+          v-icon mdi-trash-can
+      v-card.my-6
+        v-list( subheader flat )
+          v-subheader 選擇分類，授權或刪除
+
+          v-list-item( @click="myToggle" )
+            v-list-item-action
+              v-icon( :color="settings.length > 0 ? 'indigo darken-4' : ''" ) {{ icon() }}
+            v-list-item-title 全選
+          v-divider
+          v-list-item-group( v-model="settings" multiple )
+            v-list-item( v-for="item in items" :key="item" )
+              template( v-slot:default="{ active, toggle }" )
+                v-list-item-action
+                  v-checkbox( v-model="active" color="primary" @click="toggle" )
+                v-list-item-content
+                  v-list-item-title {{ item }}
+
+    v-col( cols="12" md="2" )
+      v-row.hidden-sm-and-down( :style="{ height: '40vh' }" )
+      v-row( justify="center" )
+        v-tooltip( bottom color="#000000E6" )
+          template( v-slot:activator="{ on }" )
+            v-btn( color="primary" v-on="on" large )
+              v-icon mdi-transfer-right
+          span 將選擇的分類授權給該課程使用 
+
+    v-col( cols="12" md="5" )
+      h2 該課程可用的分類
+      v-row.my-6( no-gutters )
+        v-select.mx-1( label="選擇課程" outlined hide-details :items="['課程一', '課程二']" value="課程一" )
+      v-card.my-6
+        v-list( subheader flat )
+          v-subheader 可用的分類，橘色按鈕移除
+          v-list-item
+            v-list-item-content
+              v-list-item-title 分類二
+            v-tooltip( bottom color="#000000E6" )
+              template( v-slot:activator="{ on }" )
+                v-btn( color="danger" v-on="on" small )
+                  v-icon mdi-keyboard-return
+              span 移除

@@ -3,11 +3,17 @@ v-container( :style="{ height: '100%' }" )
     v-col( cols="12" md="5" )
       h2 所有分類
       v-row.mt-11( no-gutters )
-        v-btn( color="primary" )
-          v-icon mdi-plus
+        v-tooltip( bottom color="#000000E6" )
+          template( v-slot:activator="{ on }" )
+            v-btn( color="primary" v-on="on" )
+              v-icon mdi-plus
+          span 新增分類
         v-spacer
-        v-btn( color="error" )
-          v-icon mdi-trash-can
+        v-tooltip( bottom color="#000000E6" )
+          template( v-slot:activator="{ on }" )
+            v-btn( color="error" v-on="on" )
+              v-icon mdi-trash-can
+          span 移除分類
       v-card.my-6
         v-list( subheader flat )
           v-subheader 選擇分類，授權或刪除
@@ -44,6 +50,22 @@ v-container( :style="{ height: '100%' }" )
           v-list-item
             v-list-item-content
               v-list-item-title 分類二
+            v-tooltip( bottom color="#000000E6" )
+              template( v-slot:activator="{ on }" )
+                v-btn( color="danger" v-on="on" small )
+                  v-icon mdi-keyboard-return
+              span 移除
+          v-list-item
+            v-list-item-content
+              v-list-item-title 分類四
+            v-tooltip( bottom color="#000000E6" )
+              template( v-slot:activator="{ on }" )
+                v-btn( color="danger" v-on="on" small )
+                  v-icon mdi-keyboard-return
+              span 移除
+          v-list-item
+            v-list-item-content
+              v-list-item-title 分類五
             v-tooltip( bottom color="#000000E6" )
               template( v-slot:activator="{ on }" )
                 v-btn( color="danger" v-on="on" small )

@@ -1,0 +1,147 @@
+v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', height: '100%' }" )
+  v-card.my-3( height="100%" elevation="12" )
+    v-card-title {{ $route.params.name }}
+
+    v-divider
+
+    v-card-title.font-weight-bold 發文: 2
+    v-simple-table.pl-12.pr-3
+      thead
+        tr
+          th.subtitle-1.text--primary( style="width: 20%" ) 課程
+          th.subtitle-1.text--primary( style="width: 40%" ) 連結
+          th.subtitle-1.text--primary 日期
+      tbody
+        tr
+          td.subtitle-1 課程一
+          td.subtitle-1
+            a( :href="`/problem/3`" ) 3 - 108-1 自行車竊案統計-2 (圖表繪製)
+          td.subtitle-1 2020-04-17 13:35
+        tr
+          td.subtitle-1 課程一
+          td.subtitle-1
+            a( :href="`/problem/2`" ) 2 - 108-1 自行車竊案統計-3 (圖表繪製)
+          td.subtitle-1 2020-04-01 19:00
+
+    v-card-title.font-weight-bold 留言: 2
+    v-simple-table.pl-12.pr-3
+      thead
+        tr
+          th.subtitle-1.text--primary( style="width: 20%" ) 課程
+          th.subtitle-1.text--primary( style="width: 40%" ) 連結
+          th.subtitle-1.text--primary 日期
+          th.subtitle-1.text--primary 老師是否按過愛心
+      tbody
+        tr
+          td.subtitle-1 課程一
+          td.subtitle-1
+            a( :href="`/problem/3`" ) 3 - 108-1 自行車竊案統計-2 (圖表繪製) - B1
+          td.subtitle-1 2020-02-29 12:34
+          td.subtitle-1 
+            v-icon( color="success" ) mdi-check-bold
+        tr
+          td.subtitle-1 課程一
+          td.subtitle-1
+            a( :href="`/problem/2`" ) 2 - 108-1 自行車竊案統計-3 (圖表繪製) - B7
+          td.subtitle-1 2020-03-03 23:59
+          td.subtitle-1
+            v-icon( color="error" ) mdi-close-thick
+
+    v-card-title.font-weight-bold 回覆: 2
+    v-simple-table.pl-12.pr-3
+      thead
+        tr
+          th.subtitle-1.text--primary( style="width: 20%" ) 課程
+          th.subtitle-1.text--primary( style="width: 40%" ) 連結
+          th.subtitle-1.text--primary 日期
+      tbody
+        tr
+          td.subtitle-1 課程一
+          td.subtitle-1
+            a( :href="`/problem/3`" ) 3 - 108-1 自行車竊案統計-2 (圖表繪製) - B1
+          td.subtitle-1 2020-03-22 11:22
+        tr
+          td.subtitle-1 課程一
+          td.subtitle-1
+            a( :href="`/problem/2`" ) 2 - 108-1 自行車竊案統計-3 (圖表繪製) - B7
+          td.subtitle-1 2020-03-24 03:02
+
+    v-card-title.font-weight-bold 給予愛心: 2
+    v-simple-table.pl-12.pr-3
+      thead
+        tr
+          th.subtitle-1.text--primary( style="width: 20%" ) 課程
+          th.subtitle-1.text--primary( style="width: 40%" ) 連結
+          th.subtitle-1.text--primary 對象
+      tbody
+        tr
+          td.subtitle-1 課程一
+          td.subtitle-1
+            a( :href="`/problem/3`" ) 3 - 108-1 自行車竊案統計-2 (圖表繪製) - B1
+          td.subtitle-1 studentB
+        tr
+          td.subtitle-1 課程一
+          td.subtitle-1
+            a( :href="`/problem/2`" ) 2 - 108-1 自行車竊案統計-3 (圖表繪製) - B7
+          td.subtitle-1 studentB
+
+    v-card-title.font-weight-bold 獲得愛心: 2
+    v-simple-table.pl-12.pr-3
+      thead
+        tr
+          th.subtitle-1.text--primary( style="width: 20%" ) 課程
+          th.subtitle-1.text--primary( style="width: 40%" ) 連結
+          th.subtitle-1.text--primary 給予愛心的人
+      tbody
+        tr
+          td.subtitle-1 課程一
+          td.subtitle-1
+            a( :href="`/problem/3`" ) 3 - 108-1 自行車竊案統計-2 (圖表繪製) - B1
+          td.subtitle-1
+            v-btn( color="info" icon )
+              v-icon mdi-account-details
+        tr
+          td.subtitle-1 課程一
+          td.subtitle-1
+            a( :href="`/problem/2`" ) 2 - 108-1 自行車竊案統計-3 (圖表繪製) - B7
+          td.subtitle-1 
+            v-btn( color="info" icon )
+              v-icon mdi-account-details
+
+    v-card-title.font-weight-bold 執行成功: 5
+    v-simple-table.pl-12.pr-3
+      thead
+        tr
+          th.subtitle-1.text--primary( style="width: 20%" ) 課程
+          th.subtitle-1.text--primary( style="width: 40%" ) 連結
+          th.subtitle-1.text--primary 次數
+      tbody
+        tr
+          td.subtitle-1 課程一
+          td.subtitle-1
+            a( :href="`/problem/3`" ) 3 - 108-1 自行車竊案統計-2 (圖表繪製) - B1
+          td.subtitle-1 2
+        tr
+          td.subtitle-1 課程一
+          td.subtitle-1
+            a( :href="`/problem/2`" ) 2 - 108-1 自行車竊案統計-3 (圖表繪製) - B7
+          td.subtitle-1 3
+
+    v-card-title.font-weight-bold 執行失敗:５
+    v-simple-table.pl-12.pr-3
+      thead
+        tr
+          th.subtitle-1.text--primary( style="width: 20%" ) 課程
+          th.subtitle-1.text--primary( style="width: 40%" ) 連結
+          th.subtitle-1.text--primary 次數
+      tbody
+        tr
+          td.subtitle-1 課程一
+          td.subtitle-1
+            a( :href="`/problem/3`" ) 3 - 108-1 自行車竊案統計-2 (圖表繪製) - B1
+          td.subtitle-1 2
+        tr
+          td.subtitle-1 課程一
+          td.subtitle-1
+            a( :href="`/problem/2`" ) 2 - 108-1 自行車竊案統計-3 (圖表繪製) - B7
+          td.subtitle-1 3

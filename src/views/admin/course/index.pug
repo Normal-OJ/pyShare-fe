@@ -36,8 +36,8 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
           th.font-weight-bold.subtitle-1.text--primary 管理
       tbody
         tr( v-for="(item, idx) in items" :key="item.username" )
-          td.subtitle-1
-            a( :href="`/proflie/${item.username}`" ) {{ item.username }}
+          td.subtitle-1 {{ item.username }}
+            //- a( :href="`/proflie/${item.username}`" ) {{ item.username }}
           td.subtitle-1.hidden-sm-and-down {{ item.displayName }}
           td.subtitle-1.hidden-sm-and-down {{ item.post }}
           td.subtitle-1.hidden-sm-and-down {{ item.comment }}
@@ -49,7 +49,7 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
           td.subtitle-1
             v-tooltip( right color="#000000E6" )
               template( v-slot:activator="{ on }" )
-                v-btn( color="info" v-on="on" small )
+                v-btn( color="info" v-on="on" small :href="`/stat/${item.username}`" rel="noopener noreferrer" target="_blank" )
                   v-icon mdi-table-large
               span 顯示詳細資訊
             v-tooltip( right color="#000000E6" )
@@ -72,7 +72,7 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
     v-card
       v-card-title.headline 上傳表單新增學生
       v-card-text
-        v-file-input( label="upload csv, xml file" )
+        v-file-input( label="upload csv, xls file" )
       v-card-actions
         v-spacer
         v-btn.mr-3( color="danger" @click="newStudentDialog = false" dark ) 取消

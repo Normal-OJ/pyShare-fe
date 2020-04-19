@@ -6,8 +6,10 @@ import tutorial from '@/views/tutorial'
 import adminMain from '@/views/admin/main'
 import adminProblem from '@/views/admin/problem'
 import adminCourse from '@/views/admin/course'
+import adminTag from '@/views/admin/tag'
 import adminEdit from '@/views/admin/problem/edit'
 import profile from '@/views/profile'
+import statistic from '@/views/statistic'
 
 Vue.use(VueRouter)
 
@@ -45,8 +47,16 @@ const routes = [
     component: adminCourse,
   },
   {
+    path: '/admin/tags',
+    component: adminTag,
+  },
+  {
     path: '/profile',
     component: profile,
+  },
+  {
+    path: '/stat/:name',
+    component: statistic,
   },
 ]
 

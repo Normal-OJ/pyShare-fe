@@ -6,38 +6,45 @@ export default Vue.extend({
   
   data () {
     return {
+      newCourseDialog: false,
+      newStudentDialog: false,
+      dialog: 0,
       items: [
         { 
-          title: 'DSCP修課背景分析',
-          id: '1',
-          tags: ['分類一'],
-          timestamp: '',
-          author: {
-            username: 'tcc',
-            displayName: '蔣宗哲',
-          },
+          username: 'studentA',
+          displayName: 'stA',
+          post: 2,
+          comment: 2,
+          reply: 2,
+          starGive: 2,
+          star: 2,
+          success: 5,
+          fail: 5,
         },
         { 
-          title: '108-1 自行車竊案統計-3 (圖表繪製)',
-          id: '2',
-          tags: ['分類一', '分類二'],
-          timestamp: '',
-          author: {
-            username: 'tcc',
-            displayName: '蔣宗哲',
-          },
+          username: 'studentB',
+          displayName: 'stB',
+          post: 1,
+          comment: 1,
+          reply: 0,
+          starGive: 10,
+          star: 500,
+          success: 17,
+          fail: 30,
         },
         { 
-          title: '108-1 自行車竊案統計-2 (圖表繪製)',
-          id: '3',
-          tags: ['分類一', '分類二'],
-          timestamp: '',
-          author: {
-            username: 'tcc',
-            displayName: '蔣宗哲',
-          },
+          username: 'studentC',
+          displayName: 'stC',
+          post: 0,
+          comment: 5,
+          reply: 15,
+          starGive: 1,
+          star: 5000,
+          success: 1,
+          fail: 2,
         },
-      ]
+      ],
+      roles: ['Student', 'Teacher'],
     }
   },
 

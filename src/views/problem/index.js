@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import html from './index.pug';
-import './index.css';
+import './index.scss';
 // import Vuex file ...
 
 export default Vue.extend({

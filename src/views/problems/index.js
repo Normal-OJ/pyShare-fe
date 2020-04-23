@@ -1,15 +1,12 @@
 import Vue from 'vue';
 import html from './index.pug';
+const UNLIMIT = '不限課程'
 
 export default Vue.extend({
     template: html,
 
     data() {
         return {
-            query: {
-                tag: '',
-                keyword: '',
-            },
             /*
             4 variables need api
 
@@ -25,43 +22,12 @@ export default Vue.extend({
             course: String 代表現在選擇課程的 value
 
             */
-            items: [{
-                    title: 'DSCP修課背景分析',
-                    id: '1',
-                    tags: ['分類一'],
-                    timestamp: '',
-                    author: {
-                        username: 'tcc',
-                        displayName: '蔣宗哲',
-                    },
-                },
-                {
-                    title: '108-1 自行車竊案統計-3 (圖表繪製)',
-                    id: '2',
-                    tags: ['分類一', '分類二'],
-                    timestamp: '',
-                    author: {
-                        username: 'tcc',
-                        displayName: '蔣宗哲',
-                    },
-                },
-                {
-                    title: '108-1 自行車竊案統計-2 (圖表繪製)',
-                    id: '3',
-                    tags: ['分類一', '分類二'],
-                    timestamp: '',
-                    author: {
-                        username: 'tcc',
-                        displayName: '蔣宗哲',
-                    },
-                },
-            ]
-        }
-    },
-
-    data() {
-        return {
-            items: []
+            problems: [],
+            courses: [],
+            tags: [],
+            course: UNLIMIT,
+            selectedTags: [],
+            title: ''
         }
     },
 
@@ -69,13 +35,29 @@ export default Vue.extend({
 
     beforeMount() {
         this.getProblems()
+        this.getCourses()
+        this.getTags()
+    },
+
+    watch: {
+        course() {
+            this.getTags()
+        }
     },
 
     methods: {
         async getProblems() {
             let result;
             try {
-                result = await this.$http.get('/api/problem');
+                let filter = {
+                    offset: 0,
+                    count: -1,
+                    tags: this.selectedTags.join()
+                }
+                if (this.course != UNLIMIT) filter['course'] = this.course
+                if (this.title != '') filter['title'] = this.title
+
+                result = await this.$http.get('/api/problem', { params: filter });
             } catch (e) {
                 console.log(e);
                 result = {
@@ -91,19 +73,43 @@ export default Vue.extend({
                     }]
                 }
             }
-            this.items = result.data.map((problem) => {
+            this.problems = result.data.map(problem => {
                 problem.tags = []
                 return problem
             });
+        },
+
+        async getCourses() {
+            let result;
+            try {
+                result = await this.$http.get('/api/course');
+            } catch (e) {
+                console.log(e);
+                result = {
+                    'data': [{
+                        name: 'God',
+                        teacher: {
+                            username: 'tcc',
+                            displayedName: '蔣宗哲',
+                        }
+                    }]
+                }
+            }
+            this.courses = result.data.map(course => course.name).concat(UNLIMIT);
+        },
+
+        async getTags() {
+            let result;
+            try {
+                result = await this.$http.get('/api/tag' + (this.course == UNLIMIT ? '' : '?course=' + this.course));
+            } catch (e) {
+                console.log(e);
+                result = {
+                    'data': ['tag1', 'tag2']
+                }
+            }
+            this.selectedTags = [];
+            this.tags = result.data;
         }
-        /*
-  
-    problem filter 的 api 
-
-    query(course, tag, keyword) {
-      
-    }
-
-    */
     },
 });

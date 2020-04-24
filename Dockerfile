@@ -7,6 +7,7 @@ WORKDIR /app
 COPY package*.json ./
 
 # install project dependencies
-RUN npm install
+RUN apk add python make g++ && \
+    npm install
 
 CMD [ "npm", "run", "serve" ]

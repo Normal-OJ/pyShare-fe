@@ -69,14 +69,12 @@ export default Vue.extend({
                             username: 'tcc',
                             displayedName: '蔣宗哲',
                         },
+                        tags: ['台灣獨立'],
                         status: 0
                     }]
                 }
             }
-            this.problems = result.data.map(problem => {
-                problem.tags = []
-                return problem
-            });
+            this.problems = result.data;
         },
 
         async getCourses() {

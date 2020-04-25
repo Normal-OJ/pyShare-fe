@@ -1,5 +1,5 @@
 v-container.editor( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', height: '100%' }" )
-  v-card.my-3( elevation="12" )
+  v-card.mt-3( elevation="12" )
     v-card-subtitle
       v-icon( small ) mdi-clock
       | {{ problem.timestamp }}
@@ -31,13 +31,18 @@ v-container.editor( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95v
           | 下載
       code show data......
 
-  v-card.my-12( width="$vuetify.breakpoint.mdAndUp ? '70vw' : '95vw'" elevation="12" )
+  div#1F( style="padding: 30px 0;" )
+  v-card.anchor( width="$vuetify.breakpoint.mdAndUp ? '70vw' : '95vw'" elevation="12" )
+    span.anchor
+      a.anchor-link( href="#1F" style="text-decoration: none;" )
+        v-icon( style="transform: rotate(0.125turn);" ) mdi-link-variant
     v-card-title 這個是留言的標題
       v-row( no-gutters )
       v-spacer
       div.subtitle-2 2020-03-27 12:35
-    v-card-subtitle.text--primary
-      | {{ '一樓 | 莊博傑' }}
+    v-card-subtitle.text--primary 一樓
+      v-icon mdi-account
+      | {{ '莊博傑' }}
     v-card-text.pl-0.pb-0
       v-tabs( vertical )
         v-tab( v-for="item in lists" :key="item.title" )
@@ -51,8 +56,49 @@ v-container.editor( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95v
     v-card-actions
       v-row( no-gutters )
         v-btn.text-none( color="primary" text ) → Reply
-        //- v-spacer
+        v-spacer
         v-btn.ml-3( icon )
           v-icon mdi-heart
-        div.mt-1 300
-      
+        div.mt-1.mr-3 300
+
+  div#2F( style="padding: 30px 0;" )
+  v-card.anchor( width="$vuetify.breakpoint.mdAndUp ? '70vw' : '95vw'" elevation="12" )
+    span.anchor
+      a.anchor-link( href="#2F" style="text-decoration: none;" )
+        v-icon( style="transform: rotate(0.125turn);" ) mdi-link-variant
+    v-card-title 這個是留言的標題
+      v-row( no-gutters )
+      v-spacer
+      div.subtitle-2 2020-03-27 12:35
+    v-card-subtitle.text--primary 二樓
+      v-icon mdi-account
+      | {{ '莊博傑' }}
+    v-card-text.pl-0.pb-0
+      v-tabs( vertical )
+        v-tab( v-for="item in lists" :key="item.title" )
+          v-icon( left ) {{ item.icon }}
+          | {{ item.title }}
+        v-tab-item( v-for="example in examples" :key="example" )
+          v-card( flat style="background: #e7e7e7" )
+            v-card-text
+              v-expand-transition
+                div.text--primary( style="white-space: pre-line" ) {{ example }}
+    v-card-actions
+      v-row( no-gutters )
+        v-btn.text-none( color="primary" text ) → Reply
+        v-spacer
+        v-btn.ml-3( icon )
+          v-icon mdi-heart
+        div.mt-1.mr-3 300
+
+  v-card.my-3.ml-12( width="$vuetify.breakpoint.mdAndUp ? '70vw' : '95vw'" elevation="2" )
+    v-card-title.subtitle-1 
+      v-icon mdi-account
+      | {{ '盧昭華' }}
+      v-row( no-gutters )
+      v-spacer
+      div.subtitle-2 2020-03-27 12:35
+    v-card-text
+      v-card( flat style="background: #e7e7e7" )
+        v-card-text
+          div.text--primary( style="white-space: pre-line" ) {{ examples[0] }}

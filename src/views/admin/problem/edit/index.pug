@@ -9,7 +9,7 @@ v-container.editor( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95v
     v-col( cols="12" md="6" )
       v-select( label="屬於課程" outlined hide-details :items="['課程一', '課程二']" )
     v-col( cols="12" md="6" )
-      v-combobox( label="題目分類（可輸入新分類）" outlined hide-details :items="['Tag1', 'Tag2', 'Tag3']" chips multiple)
+      v-combobox( label="題目分類" outlined hide-details :items="['Tag1', 'Tag2', 'Tag3']" chips multiple)
   h2.my-1 題目敘述
   editor-menu-bar( :editor="editor" v-slot="{ isActive, commands }" )
     div.menubar

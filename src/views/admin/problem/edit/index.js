@@ -1,9 +1,8 @@
 import Vue from 'vue';
 import html from './index.pug';
 import './index.scss';
-// import hljs from 'highlight.js';
-// import pycss from 'highlight.js/lib/languages/css';
-// import pyjs from 'highlight.js/lib/languages/python';
+import python from 'highlight.js/lib/languages/python';
+import css from 'highlight.js/lib/languages/css';
 import { Editor, EditorContent, EditorMenuBar } from 'tiptap';
 import {
   Blockquote,
@@ -17,7 +16,7 @@ import {
   TodoList,
   Bold,
   Code,
-  // CodeBlockHighlight,
+  CodeBlockHighlight,
   Italic,
   Link,
   Strike,
@@ -54,6 +53,12 @@ export default Vue.extend({
           new Strike(),
           new Underline(),
           new History(),
+          new CodeBlockHighlight({
+            languages: {
+              python,
+              css,
+            },
+          })
         ],
         content: ``,
         onUpdate: ({ getJSON }) => {
@@ -61,7 +66,7 @@ export default Vue.extend({
         },
       }),
       // comment: new Editor({
-      //   extensions: [
+      //   extensions: [  
       //     new Code(),
       //     new CodeBlockHighlight({
       //       languages: {

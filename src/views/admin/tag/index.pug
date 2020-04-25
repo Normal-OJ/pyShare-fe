@@ -1,73 +1,78 @@
 v-container( :style="{ height: '100%' }" )
   v-row
+
+    //- Left List
     v-col( cols="12" md="5" )
       h2 所有分類
+      //- buttons
       v-row.mt-11( no-gutters )
+        //- top plus button: for adding new tag
         v-tooltip( bottom color="#000000E6" )
           template( v-slot:activator="{ on }" )
-            v-btn( color="primary" v-on="on" )
+            v-btn( color="primary" v-on="on" @click="newTagDialog = true" )
               v-icon mdi-plus
           span 新增分類
         v-spacer
+        //- top bin button: for deleting selected tags
         v-tooltip( bottom color="#000000E6" )
           template( v-slot:activator="{ on }" )
-            v-btn( color="error" v-on="on" )
+            v-btn( color="error" v-on="on" @click="deleteTags(selectedTags)" )
               v-icon mdi-trash-can
-          span 移除分類
+          span 移除選取的分類
+
+      //- card that list all candidates
       v-card.my-6
         v-list( subheader flat )
           v-subheader 選擇分類，授權或刪除
-
           v-list-item( @click="myToggle" )
             v-list-item-action
-              v-icon( :color="settings.length > 0 ? 'indigo darken-4' : ''" ) {{ icon() }}
+              v-icon( :color="iconColor()" ) {{ icon() }}
             v-list-item-title 全選
           v-divider
-          v-list-item-group( v-model="settings" multiple )
-            v-list-item( v-for="item in items" :key="item" )
+          v-list-item-group( v-model="selectedTags" multiple )
+            v-list-item( v-for="item in candidateTags" :key="item" )
               template( v-slot:default="{ active, toggle }" )
                 v-list-item-action
                   v-checkbox( v-model="active" color="primary" @click="toggle" )
                 v-list-item-content
                   v-list-item-title {{ item }}
 
+    //- Middle button
     v-col( cols="12" md="2" )
       v-row.hidden-sm-and-down( :style="{ height: '40vh' }" )
       v-row( justify="center" )
         v-tooltip( bottom color="#000000E6" )
           template( v-slot:activator="{ on }" )
-            v-btn( color="primary" v-on="on" large )
+            v-btn( color="primary" v-on="on" large @click="pushTags(selectedCourse, selectedTags)" )
               v-icon mdi-transfer-right
           span 將選擇的分類授權給該課程使用 
 
+    //- Right List
     v-col( cols="12" md="5" )
       h2 該課程可用的分類
+      //- Select Course
       v-row.my-6( no-gutters )
-        v-select.mx-1( label="選擇課程" outlined hide-details :items="['課程一', '課程二']" value="課程一" )
+        v-select.mx-1( label="選擇課程" outlined hide-details :items="['課程一', '課程二']" v-model="selectedCourse" )
+      //- Card that list all available tags
       v-card.my-6
         v-list( subheader flat )
-          v-subheader 可用的分類，橘色按鈕移除
-          v-list-item
+          v-subheader 以下顯示可用的分類，橘色按鈕可移除
+          v-list-item( v-for="item in availableTags" :key="item" )
             v-list-item-content
-              v-list-item-title 分類二
+              v-list-item-title {{ item }}
             v-tooltip( bottom color="#000000E6" )
               template( v-slot:activator="{ on }" )
-                v-btn( color="danger" v-on="on" small )
+                v-btn( color="danger" v-on="on" small @click="popTag(selectedCourse, item)" )
                   v-icon mdi-keyboard-return
               span 移除
-          v-list-item
-            v-list-item-content
-              v-list-item-title 分類四
-            v-tooltip( bottom color="#000000E6" )
-              template( v-slot:activator="{ on }" )
-                v-btn( color="danger" v-on="on" small )
-                  v-icon mdi-keyboard-return
-              span 移除
-          v-list-item
-            v-list-item-content
-              v-list-item-title 分類五
-            v-tooltip( bottom color="#000000E6" )
-              template( v-slot:activator="{ on }" )
-                v-btn( color="danger" v-on="on" small )
-                  v-icon mdi-keyboard-return
-              span 移除
+
+  //- dialog that enter tag name that user wanna add
+  v-dialog( v-model="newTagDialog" :width="$vuetify.breakpoint.mdAndUp ? '70vw' : '95vw'" )
+    v-card
+      v-card-title.headline 新增分類
+      v-card-text
+        v-combobox( v-model="newTagNames" label="輸入分類名稱（可輸入多個，按下 Enter 來分隔多個分類）" multiple chips )
+      v-card-actions
+        v-spacer
+        v-btn.mr-3( color="danger" @click="newTagDialog = false" dark ) 取消
+        v-btn( color="primary" @click="addNewTag(newTagNames); newTagDialog = false" ) 確認

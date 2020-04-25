@@ -6,7 +6,7 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
         v-col( cols="12" md="3" )
           v-select.mx-1( label="選擇課程" outlined hide-details :items="courses" v-model="course" )
         v-col( cols="12" md="3" )
-          v-select.mx-1( label="選擇分類" outlined hide-details :items="tags" v-model="selectedTags" )
+          v-select.mx-1( label="選擇分類" outlined hide-details :items="tags" v-model="selectedTags" multiple )
         v-col( cols="12" md="3" )
           v-text-field.mx-1( label="搜尋關鍵字" outlined hide-details v-model="title")
         v-col( cols="12" md="3" )
@@ -22,7 +22,7 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
           th.font-weight-bold.subtitle-1.text--primary 管理
       tbody
         tr( v-for="(problem, idx) in problems" :key="problem.title" )
-          td.subtitle-1 {{ problem.id }}
+          td.subtitle-1 {{ problem.pid }}
           td.subtitle-1 {{ problem.title }}
           td.subtitle-1.hidden-sm-and-down 
             v-menu( offset-y )
@@ -33,7 +33,7 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
               v-list
                 v-list-item( v-for="st in [0,1]" :key="st" @click="problems[idx].status = st" )
                   v-list-item-title {{ status[st] }}
-          td.subtitle-1.hidden-sm-and-down {{ problem.author.displayName }}
+          td.subtitle-1.hidden-sm-and-down {{ problem.author.displayedName }}
           td.subtitle-1
             v-tooltip( bottom color="#000000E6" )
               template( v-slot:activator="{ on }" )

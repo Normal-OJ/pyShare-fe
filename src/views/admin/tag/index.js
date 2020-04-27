@@ -41,7 +41,6 @@ export default Vue.extend({
 
     watch: {
         selectedCourse() {
-            this.selectedTags = []
             this.updateTags()
         }
     },
@@ -60,7 +59,7 @@ export default Vue.extend({
         async addNewTag(tags) {
             let result;
             try {
-                result = await this.$http.post('/tag', { tags: this.newTagNames }, { emulateJSON: true });
+                result = await this.$http.post('/tag', { tags: tags }, { emulateJSON: true });
             } catch (e) {
                 console.log(e);
                 result = {
@@ -76,7 +75,7 @@ export default Vue.extend({
         async deleteTags(tags) {
             let result;
             try {
-                result = await this.$http.delete('/tag', { body: { tags: this.selectedTags } });
+                result = await this.$http.delete('/tag', { body: { tags: tags } });
             } catch (e) {
                 console.log(e);
                 result = {

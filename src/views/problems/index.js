@@ -58,7 +58,7 @@ export default Vue.extend({
                 if (this.course != UNLIMIT) filter['course'] = this.course
                 if (this.title != '') filter['title'] = this.title
 
-                result = await this.$http.get('/api/problem', { params: filter });
+                result = await this.$http.get('/problem', { params: filter });
             } catch (e) {
                 console.log(e);
                 result = {

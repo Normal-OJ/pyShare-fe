@@ -52,7 +52,7 @@ v-container( :style="{ height: '100%' }" )
       h2 該課程可用的分類
       //- Select Course
       v-row.my-6( no-gutters )
-        v-select.mx-1( label="選擇課程" outlined hide-details :items="['課程一', '課程二']" v-model="selectedCourse" )
+        v-select.mx-1( label="選擇課程" outlined hide-details :items="courses" v-model="selectedCourse" )
       //- Card that list all available tags
       v-card.my-6
         v-list( subheader flat )

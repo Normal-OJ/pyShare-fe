@@ -1,12 +1,13 @@
 import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
-import vuetify from './plugins/vuetify';
-import VueCookies from 'vue-cookies';
+import vuetify from './plugins/vuetify'
+import VueCookies from 'vue-cookies'
 import axios from 'axios'
 import VueAxios from 'vue-axios'
  
 Vue.use(VueAxios, axios)
+axios.defaults.baseURL = '/api'
 
 Vue.use(VueCookies)
 Vue.config.productionTip = false

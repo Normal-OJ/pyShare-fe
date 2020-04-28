@@ -9,7 +9,6 @@ const opts = {
     themes: {
       light: {
         primary: '#4B8BBE',
-        success: '#5ACE33',
         info: '#8098F7',
         warning: '#FFD43B',
         danger: '#FF7D4F',

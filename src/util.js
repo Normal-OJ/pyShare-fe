@@ -36,3 +36,23 @@ export async function getTags(course = UNLIMIT) {
     }
     return result.data;
 }
+
+export function getProfile() {
+    if ( vue.$cookies.isKey('jwt') ) {
+        let payload = parseJwt(vue.$cookies.get('jwt'));
+        if ( payload.active === true ) {
+            return { 
+                username: payload.username,
+                displayName: payload.displayName
+            };
+        }
+    }
+    return {
+        username: '',
+        displayName: '',
+    };
+}
+
+function parseJwt(token) {
+    return JSON.parse(atob(token.split('.')[1])).data;
+}

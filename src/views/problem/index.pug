@@ -1,30 +1,21 @@
-v-container.editor( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', height: '100%' }" )
+v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', height: '100%' }" )
   v-card.mt-3( elevation="12" )
-    v-card-subtitle
-      v-icon( small ) mdi-clock
-      | [time]
-      v-icon.ml-3( small ) mdi-account
-      | [author]
-      v-icon.ml-3( small ) mdi-comment
-      | [comment]
-    v-card-title.display-1 「題目名稱」
-    v-card-subtitle.mt-3
-      | 分類：
-      v-chip( label small ) Label1
-      v-chip.ml-3( label small ) Label2
-      v-chip.ml-3( label small ) Label3
+    v-card-subtitle( v-if="problem" )
+      v-icon.mr-1( small ) mdi-clock
+      | {{ problem.timestamp }}
+      v-icon.mr-1.ml-3( small ) mdi-account
+      | {{ problem.author.displayName }}
+      v-icon.mr-1.ml-3( small ) mdi-comment
+      | {{ problem.comments.length }}
+    v-card-title.headline {{ problem.pid + ' - ' + problem.title }}
+    v-card-subtitle.mt-3( v-for="tag in problem.tags" :key="tag" ) 分類：
+        v-chip( label small ) {{ tag }}
     v-divider
-    v-card-text.text--primary
-      | 內文
-      br
-      | 內文
-      br
-      | 內文
-      br
+    v-card-text.text--primary {{ problem.description }}
     v-divider
     v-card-text.text--primary
       v-row.mb-3( no-gutters )
-        h3.mr-6 資料
+        h3.mr-6 附件資料
         v-menu( offset-y )
           template( v-slot:activator="{ on }" ) 
             v-btn.text-none( outlined v-on="on" small )
@@ -38,74 +29,48 @@ v-container.editor( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95v
           | 下載
       code show data......
 
-  div#1F( style="padding: 30px 0;" )
-  v-card.anchor( width="$vuetify.breakpoint.mdAndUp ? '70vw' : '95vw'" elevation="12" )
-    span.anchor
-      a.anchor-link( href="#1F" style="text-decoration: none;" )
-        v-icon( style="transform: rotate(0.125turn);" ) mdi-link-variant
-    v-card-title 這個是留言的標題
-      v-row( no-gutters )
-      v-spacer
-      div.subtitle-2 2020-03-27 12:35
-    v-card-subtitle.text--primary 一樓
-      v-icon mdi-account
-      | {{ '莊博傑' }}
-    v-card-text.pl-0.pb-0
-      v-tabs( vertical )
-        v-tab( v-for="item in lists" :key="item.title" )
-          v-icon( left ) {{ item.icon }}
-          | {{ item.title }}
-        v-tab-item( v-for="example in examples" :key="example" )
-          v-card( flat style="background: #e7e7e7" )
-            v-card-text
-              v-expand-transition
-                div.text--primary( style="white-space: pre-line" ) {{ example }}
-    v-card-actions
-      v-row( no-gutters )
-        v-btn.text-none( color="primary" text ) → Reply
+  div( v-for="(comment, idx) in problem.comments" :key="idx" )
+    div#1F( style="padding: 30px 0;" )
+    v-card.anchor( elevation="12" )
+      span.anchor
+        a.anchor-link( href="#1F" style="text-decoration: none;" )
+          v-icon( style="transform: rotate(0.125turn);" ) mdi-link-variant
+      v-card-title {{ comment.title }}
+        v-row( no-gutters )
         v-spacer
-        v-btn.ml-3( icon )
-          v-icon mdi-heart
-        div.mt-1.mr-3 300
+        div.subtitle-2 2020-03-27 12:35
+      v-card-subtitle.text--primary {{ (idx+1) + ' 樓' }}
+        v-icon mdi-account
+        | {{ comment.author.displayName }}
+      v-card-text.pl-0.pb-0
+        v-tabs( vertical )
+          v-tab( v-for="item in lists" :key="item.title" )
+            v-icon( left ) {{ item.icon }}
+            | {{ item.title }}
+          v-tab-item( v-for="item in lists" :key="item.key" )
+            v-card( flat style="background: #e7e7e7" )
+              v-card-text
+                v-expand-transition
+                  div.text--primary( style="white-space: pre-line" ) {{ comment[item.key] }}
+      v-card-actions
+        v-row( no-gutters )
+          v-btn.text-none( color="primary" text ) → Reply
+          v-spacer
+          v-btn.ml-3( icon @click="likeComment(comment.id)" )
+            v-icon mdi-heart
+          div.mt-1.mr-3 {{ comment.star }}
 
-  div#2F( style="padding: 30px 0;" )
-  v-card.anchor( width="$vuetify.breakpoint.mdAndUp ? '70vw' : '95vw'" elevation="12" )
-    span.anchor
-      a.anchor-link( href="#2F" style="text-decoration: none;" )
-        v-icon( style="transform: rotate(0.125turn);" ) mdi-link-variant
-    v-card-title 這個是留言的標題
-      v-row( no-gutters )
-      v-spacer
-      div.subtitle-2 2020-03-27 12:35
-    v-card-subtitle.text--primary 二樓
-      v-icon mdi-account
-      | {{ '莊博傑' }}
-    v-card-text.pl-0.pb-0
-      v-tabs( vertical )
-        v-tab( v-for="item in lists" :key="item.title" )
-          v-icon( left ) {{ item.icon }}
-          | {{ item.title }}
-        v-tab-item( v-for="example in examples" :key="example" )
-          v-card( flat style="background: #e7e7e7" )
-            v-card-text
-              v-expand-transition
-                div.text--primary( style="white-space: pre-line" ) {{ example }}
-    v-card-actions
-      v-row( no-gutters )
-        v-btn.text-none( color="primary" text ) → Reply
-        v-spacer
-        v-btn.ml-3( icon )
-          v-icon mdi-heart
-        div.mt-1.mr-3 300
-
-  v-card.my-3.ml-12( width="$vuetify.breakpoint.mdAndUp ? '70vw' : '95vw'" elevation="2" )
-    v-card-title.subtitle-1 
-      v-icon mdi-account
-      | {{ '盧昭華' }}
-      v-row( no-gutters )
-      v-spacer
-      div.subtitle-2 2020-03-27 12:35
-    v-card-text
-      v-card( flat style="background: #e7e7e7" )
+    div( v-for="(reply, replyIdx) in comment.reply" :key="replyIdx" )
+      v-card.my-3( style="margin-left: 10%;" elevation="2" )
+        v-card-title.subtitle-1 
+          v-icon mdi-account
+          | {{ reply.author.displayName }}
+          v-row( no-gutters )
+          v-spacer
+          div.subtitle-2 {{ reply.timestamp }}
         v-card-text
-          div.text--primary( style="white-space: pre-line" ) {{ examples[0] }}
+          v-card( flat style="background: #e7e7e7" )
+            v-card-text
+              div.text--primary( style="white-space: pre-line" ) {{ reply.content }}
+  
+  

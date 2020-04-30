@@ -2,30 +2,32 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
   v-card.my-3( height="100%" elevation="12" )
     v-card-title 題目列表
     v-container( fluid )
-      v-row
+      v-row( no-gutters align="center" )
         v-col( cols="12" md="3" )
-          v-select.mx-1( label="選擇課程" outlined hide-details :items="['課程一', '課程二']" value="課程一" )
+          v-select.mx-1( label="選擇課程" outlined hide-details :items="courses" v-model="course" )
         v-col( cols="12" md="3" )
-          v-select.mx-1( label="選擇分類" outlined hide-details :items="['分類一', '分類二', '分類三']" )
+          v-select.mx-1( label="選擇分類" outlined hide-details :items="tags" v-model="selectedTags" multiple )
         v-col( cols="12" md="3" )
-          v-text-field.mx-1( label="搜尋關鍵字" outlined hide-details )
+          v-text-field.mx-1( label="搜尋關鍵字" outlined hide-details v-model="title" )
         v-col( cols="12" md="3" )
-          v-btn( color="primary" ) 送出
+          v-btn( color="primary" @click="getProblems" small ) 送出
     v-divider.mt-0
     v-simple-table.px-4
       thead
         tr
+          th.font-weight-bold.subtitle-1.text--primary 題號
           th.font-weight-bold.subtitle-1.text--primary 標題
           th.font-weight-bold.subtitle-1.text--primary.hidden-sm-and-down 分類
           th.font-weight-bold.subtitle-1.text--primary.hidden-sm-and-down 日期
           th.font-weight-bold.subtitle-1.text--primary.hidden-sm-and-down 作者
       tbody
-        tr( v-for="item in items" :key="item.title" )
+        tr( v-for="problem in problems" :key="problem.title" )
+          td.subtitle-1 {{ problem.pid }}
           td.subtitle-1
-            a( :href="`/problem/${item.id}`" ) {{ item.title }}
+            a( :href="`/problem/${problem.pid}`" ) {{ problem.title }}
           td.subtitle-1.hidden-sm-and-down 
-            v-chip.mr-1( v-for="tag in item.tags" :key="tag" label small ) {{ tag }}
-          td.subtitle-1.hidden-sm-and-down {{ item.timestamp }}
-          td.subtitle-1.hidden-sm-and-down {{ item.author.displayName }}
-        tr( v-if="items.length===0" )
+            v-chip.mr-1( v-for="tag in problem.tags" :key="tag" label small ) {{ tag }}
+          td.subtitle-1.hidden-sm-and-down {{ problem.timestamp }}
+          td.subtitle-1.hidden-sm-and-down {{ problem.author.displayedName }}
+        tr( v-if="problems.length===0" )
           td( colspan="3" ) No data available.

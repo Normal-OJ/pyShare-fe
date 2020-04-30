@@ -1,0 +1,53 @@
+v-container.editor( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', height: '100%' }" )
+  h2.my-1 題目資訊
+  v-row
+    v-col( cols="12" md="6" )
+      v-text-field( label="題目名稱" outlined hide-details value="自行車竊案" )
+    v-col( cols="12" md="6" )
+      v-select( label="顯示狀態" outlined hide-details :items="['顯示', '隱藏（僅老師和創題者可見）']" )
+  v-row
+    v-col( cols="12" md="6" )
+      v-select( label="屬於課程" outlined hide-details :items="['課程一', '課程二']" )
+    v-col( cols="12" md="6" )
+      v-combobox( label="題目分類" outlined hide-details :items="['Tag1', 'Tag2', 'Tag3']" chips multiple)
+  h2.my-1 題目敘述
+  editor-menu-bar( :editor="editor" v-slot="{ isActive, commands }" )
+    div.menubar
+      button.menubar__button( :class="{ 'is-active': isActive.bold() }" @click="commands.bold" )
+        v-icon mdi-format-bold
+      button.menubar__button( :class="{ 'is-active': isActive.italic() }" @click="commands.italic" )
+        v-icon mdi-format-italic
+      button.menubar__button( :class="{ 'is-active': isActive.strike() }" @click="commands.strike" )
+        v-icon mdi-format-strikethrough
+      button.menubar__button( :class="{ 'is-active': isActive.underline() }" @click="commands.underline" )
+        v-icon mdi-format-underline
+      button.menubar__button( :class="{ 'is-active': isActive.code() }" @click="commands.code" )
+        v-icon mdi-code-string
+      button.menubar__button( :class="{ 'is-active': isActive.paragraph() }" @click="commands.paragraph" )
+        v-icon mdi-format-pilcrow
+      button.menubar__button( :class="{ 'is-active': isActive.heading({ level: 1 }) }" @click="commands.heading({ level: 1 })" )
+        v-icon mdi-format-header-1
+      button.menubar__button( :class="{ 'is-active': isActive.heading({ level: 2 }) }" @click="commands.heading({ level: 2 })" )
+        v-icon mdi-format-header-2
+      button.menubar__button( :class="{ 'is-active': isActive.heading({ level: 3 }) }" @click="commands.heading({ level: 3 })" )
+        v-icon mdi-format-header-3
+      button.menubar__button( :class="{ 'is-active': isActive.bullet_list() }" @click="commands.bullet_list" )
+        v-icon mdi-format-list-bulleted
+      button.menubar__button( :class="{ 'is-active': isActive.ordered_list() }" @click="commands.ordered_list" )
+        v-icon mdi-format-list-numbered
+      button.menubar__button( :class="{ 'is-active': isActive.blockquote() }" @click="commands.blockquote" )
+        v-icon mdi-format-quote-close
+      button.menubar__button( :class="{ 'is-active': isActive.code_block() }" @click="commands.code_block" )
+        v-icon mdi-code-tags
+      button.menubar__button( @click="commands.undo" )
+        v-icon mdi-undo
+      button.menubar__button( @click="commands.redo" )
+        v-icon mdi-redo  
+  editor-content.editor__content( :editor="editor" )
+  h2.my-1 留言預設程式碼
+  h2.my-1 上傳附件
+  v-row.mt-12
+    v-btn.mr-3( color="primary" :href="`/admin/problems`" ) 儲存
+    v-btn.mr-3( color="error" :href="`/admin/problems`" ) 取消
+  //- editor-content.editor__content( :editor="comment" )
+

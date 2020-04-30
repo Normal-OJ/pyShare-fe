@@ -87,11 +87,18 @@
       </v-list>
     </v-navigation-drawer>
 
+    <v-snackbar v-model="alert.active" class="subtitle-1" :color="alert.color">
+      {{ alert.msg }}
+      <v-btn icon @click="alert.active = false">
+        <v-icon>mdi-close-circle</v-icon>
+      </v-btn>
+    </v-snackbar>
   </div>
 </template>
 
 <script>
 import Auth from './Auth';
+import { getProfile } from '@/util.js'
 
 export default {
 
@@ -109,10 +116,20 @@ export default {
         {'title': '管理頁面', 'path': '/admin/main'},
       ],
       drawer: false,
-      isLogin: true,
+      isLogin: false,
       payload: null,
-      username: '使用者名稱',
+      username: '',
+      alert: {
+        active: false,
+        color: 'error',
+        msg: '',
+      }
     }
+  },
+
+  beforeMount() {
+    this.username = getProfile().username;
+    if ( this.username !== '' ) this.isLogin = true;
   },
 
   methods: {
@@ -120,22 +137,23 @@ export default {
       this.drawer = false;
       this.$router.go(0);
     },
-    // setProfile() {
-    //   if ( this.$cookies.isKey('jwt') ) {
-    //     this.payload = this.parseJwt(this.$cookies.get('jwt'));
-    //     if ( this.payload.active === true ) {
-    //       this.isLogin = true;
-    //       this.username = this.payload.username;
-    //     }
-    //   }
-    // },
-    // parseJwt(token) {
-    //   console.log(atob(token.split('.')[1]));
-    //   return JSON.parse(atob(token.split('.')[1])).data;
-    // },
     signout() {
-        this.isLogin = false;
+      this.$http.get('/auth/session')
+        .then((res) => {
+          this.isLogin = false;
+          this.$router.go(0);
+        })
+        .catch((err) => {
+          this.alert.msg = '登出失敗，請檢查網路連接';
+          this.alert.active = true;
+        });
     }
   }
 }
 </script>
+
+<style>
+* {
+  text-transform: none !important;
+}
+</style>

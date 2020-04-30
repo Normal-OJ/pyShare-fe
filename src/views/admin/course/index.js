@@ -6,10 +6,15 @@ export default Vue.extend({
   
   data () {
     return {
+      courses: [],
+      course: '',
       newCourseDialog: false,
+      newCourseName: '',
       newStudentDialog: false,
-      dialog: 0,
-      items: [
+      newStudentFile: null,
+      deleteStudentDialog: false,
+      deleteStudentName: '',
+      studentData: [
         { 
           username: 'studentA',
           displayName: 'stA',
@@ -20,6 +25,7 @@ export default Vue.extend({
           star: 2,
           success: 5,
           fail: 5,
+          review: 0,
         },
         { 
           username: 'studentB',
@@ -31,6 +37,7 @@ export default Vue.extend({
           star: 500,
           success: 17,
           fail: 30,
+          review: 1,
         },
         { 
           username: 'studentC',
@@ -42,15 +49,21 @@ export default Vue.extend({
           star: 5000,
           success: 1,
           fail: 2,
+          review: 1,
         },
       ],
-      roles: ['Student', 'Teacher'],
     }
   },
 
-  ready () {
-  },
-
   methods: {
+    createCourse(name) {
+
+    },
+    createStudent(file) {
+
+    },
+    deleteStudent(username) {
+
+    },
   },
 });

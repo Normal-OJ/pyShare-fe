@@ -1,7 +1,7 @@
 v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', height: '100%' }" )
   v-card.my-3( height="100%" elevation="12" )
     v-card-title 課程學生列表
-    v-select.ma-3( label="選擇課程" outlined hide-details :items="['課程一', '課程二']" value="課程一" )
+    v-select.ma-3( label="選擇課程" outlined hide-details :items="courses" v-model="course" )
     v-container( fluid )
       v-row( no-gutters )
         v-btn( color="info" @click="newCourseDialog = true" )
@@ -11,15 +11,9 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
         v-btn.ml-3( color="primary" @click="newStudentDialog = true" )
           v-icon mdi-file-excel-outline
           | 表單新增學生
-        v-btn.ml-3( color="primary" @click="" )
+        v-btn.ml-3( color="primary" )
           v-icon mdi-download
           | 下載統計
-        //- v-btn( color="info" @click="newStudentDialog = true; dialog = 1" ) 
-        //-   v-icon mdi-plus
-        //-   | 個別加入
-        //- v-btn.ml-3( color="danger" @click="newStudentDialog = true; dialog = 2" dark )
-        //-   v-icon mdi-trash-can
-        //-   | 個別刪除
     v-divider.mt-0
     v-simple-table.px-4
       thead
@@ -33,57 +27,57 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
           th.font-weight-bold.subtitle-1.text--primary.hidden-sm-and-down 獲得愛心
           th.font-weight-bold.subtitle-1.text--primary.hidden-sm-and-down 執行成功
           th.font-weight-bold.subtitle-1.text--primary.hidden-sm-and-down 執行失敗
+          th.font-weight-bold.subtitle-1.text--primary.hidden-sm-and-down 已批改
           th.font-weight-bold.subtitle-1.text--primary 管理
       tbody
-        tr( v-for="(item, idx) in items" :key="item.username" )
-          td.subtitle-1 {{ item.username }}
-            //- a( :href="`/proflie/${item.username}`" ) {{ item.username }}
-          td.subtitle-1.hidden-sm-and-down {{ item.displayName }}
-          td.subtitle-1.hidden-sm-and-down {{ item.post }}
-          td.subtitle-1.hidden-sm-and-down {{ item.comment }}
-          td.subtitle-1.hidden-sm-and-down {{ item.reply }}
-          td.subtitle-1.hidden-sm-and-down {{ item.starGive }}
-          td.subtitle-1.hidden-sm-and-down {{ item.star }}
-          td.subtitle-1.hidden-sm-and-down {{ item.success }}
-          td.subtitle-1.hidden-sm-and-down {{ item.fail }}
+        tr( v-for="(data, idx) in studentData" :key="data.username" )
+          td.subtitle-1 {{ data.username }}
+          td.subtitle-1.hidden-sm-and-down {{ data.displayName }}
+          td.subtitle-1.hidden-sm-and-down {{ data.post }}
+          td.subtitle-1.hidden-sm-and-down {{ data.comment }}
+          td.subtitle-1.hidden-sm-and-down {{ data.reply }}
+          td.subtitle-1.hidden-sm-and-down {{ data.starGive }}
+          td.subtitle-1.hidden-sm-and-down {{ data.star }}
+          td.subtitle-1.hidden-sm-and-down {{ data.success }}
+          td.subtitle-1.hidden-sm-and-down {{ data.fail }}
+          td.subtitle-1.hidden-sm-and-down 
+            v-icon( :color="data.review ? 'success' : 'error'" ) {{ (data.review ? 'mdi-check-bold' : 'mdi-close-thick' ) }}
           td.subtitle-1
             v-tooltip( right color="#000000E6" )
               template( v-slot:activator="{ on }" )
-                v-btn( color="info" v-on="on" small :href="`/stat/${item.username}`" rel="noopener noreferrer" target="_blank" )
+                v-btn( color="info" v-on="on" small :href="`/stat/${data.username}`" rel="noopener noreferrer" target="_blank" )
                   v-icon mdi-table-large
               span 顯示詳細資訊
             v-tooltip( right color="#000000E6" )
               template( v-slot:activator="{ on }" )
-                v-btn.ml-3( color="error" v-on="on" small )
+                v-btn.ml-3( color="error" v-on="on" small @click="deleteStudentDialog = true; deleteStudentName = data.username" )
                   v-icon mdi-trash-can
               span 將學生從課程移出
-        tr( v-if="items.length===0" )
-          td( colspan="3" ) No data available.
+        tr( v-if="studentData.length===0" )
+          td( colspan="10" ) No data available.
   v-dialog( v-model="newCourseDialog" :width="$vuetify.breakpoint.mdAndUp ? '70vw' : '95vw'" )
     v-card
       v-card-title.headline 新增課程
       v-card-text
-        v-text-field( label="輸入課程名稱" )
+        v-text-field( v-model="newCourseName" label="輸入課程名稱" )
       v-card-actions
         v-spacer
         v-btn.mr-3( color="danger" @click="newCourseDialog = false" dark ) 取消
-        v-btn( color="primary" @click="newCourseDialog = false" ) 確認
+        v-btn( color="primary" @click="newCourseDialog = false; createCourse(newCourseName)" ) 確認
   v-dialog( v-model="newStudentDialog" :width="$vuetify.breakpoint.mdAndUp ? '70vw' : '95vw'" )
     v-card
       v-card-title.headline 上傳表單新增學生
       v-card-text
-        v-file-input( label="upload csv, xls file" )
+        v-file-input( v-model="newStudentFile" label="upload csv, xls file" )
       v-card-actions
         v-spacer
         v-btn.mr-3( color="danger" @click="newStudentDialog = false" dark ) 取消
-        v-btn( color="primary" @click="newStudentDialog = false" ) 確認
-  //- v-dialog( v-model="newStudentDialog" :width="$vuetify.breakpoint.mdAndUp ? '70vw' : '95vw'" )
-  //-   v-card
-  //-     v-card-title.headline {{ '快速' + (dialog==1 ? '新增' : '刪除') + '學生' }}
-  //-     v-card-text
-  //-       p.text--primary 多個使用者名稱請以逗號分隔
-  //-       v-textarea( label="輸入學生使用者名稱" outlined )
-  //-     v-card-actions
-  //-       v-spacer
-  //-       v-btn.mr-3( color="danger" @click="newStudentDialog = false" dark ) 取消
-  //-       v-btn( color="primary" @click="newStudentDialog = false" ) 確認
+        v-btn( color="primary" @click="newStudentDialog = false; createStudent(newStudentFile)" ) 確認
+  v-dialog( v-model="deleteStudentDialog" :width="$vuetify.breakpoint.mdAndUp ? '30vw' : '55vw'" )
+    v-card
+      v-card-title.headline 真的要刪除嗎？
+      v-card-title 此操作將無法復原。
+      v-card-actions
+        v-spacer
+        v-btn.mr-3( color="primary" @click="deleteStudentDialog = false" dark ) 取消
+        v-btn( color="error" @click="deleteStudentDialog = false; deleteStudent(deleteStudentName)" ) 確認

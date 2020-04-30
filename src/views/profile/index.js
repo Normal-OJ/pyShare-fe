@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import html from './index.pug';
+import { getProfile } from '@/util.js'
 // import Vuex file ...
 
 export default Vue.extend({
@@ -8,40 +9,40 @@ export default Vue.extend({
   data () {
     return {
       user: {
-        username: 'Username',
-        displayName: 'Diaplay Name',
-        likes: 'LIKES',
+        username: '',
+        displayName: '',
       },
       form: true,
-      errType: undefined,
-      errAlert: false,
-      errMsg: '',
+      err: {
+        type: 'info',
+        active: false,
+        msg: '',
+      },
       passwd: {
-        new: '',
-        old: '',
+        newPassword: '',
+        oldPassword: '',
       },
     }
   },
 
-  ready () {
+  beforeMount() {
+    this.user = getProfile();
   },
 
   methods: {
   	submit() {
       if ( this.$refs.form.validate() ) {
-        // this.$http.post(`${API_BASE_URL}/auth/change-password`, this.passwd)
-          // .then((res) => {
-            // this.errMsg = '密碼更改成功';
-            // this.errType = 'success';
-            // this.errAlert = true;
-            // console.log(res);
-          // })
-          // .catch((err) => {
-            this.errMsg = '密碼更改失敗，原密碼錯誤。';
-            this.errType = 'error';
-            this.errAlert = true;
-            // console.log(err);
-          // })
+        this.$http.post('/auth/change-password', this.passwd)
+          .then((res) => {
+            this.err.msg = '密碼更改成功';
+            this.err.type = 'success';
+            this.err.active = true;
+          })
+          .catch((err) => {
+            this.err.msg = '密碼更改失敗，原密碼錯誤。';
+            this.err.type = 'error';
+            this.err.active = true;
+          })
       }
     }
   },

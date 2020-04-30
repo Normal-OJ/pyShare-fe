@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import html from './index.pug';
-const UNLIMIT = '不限課程'
+import { UNLIMIT, getCourses, getTags } from '../../../util.js'
 
 export default Vue.extend({
     template: html,
@@ -36,13 +36,14 @@ export default Vue.extend({
 
     beforeMount() {
         this.getProblems()
-        this.getCourses()
-        this.getTags()
+        getCourses().then(courses => this.courses = courses)
+        getTags().then(tags => this.tags = tags)
     },
 
     watch: {
         course() {
-            this.getTags()
+            this.selectedTags = []
+            getTags(this.course).then(tags => this.tags = tags)
         }
     },
 
@@ -58,7 +59,7 @@ export default Vue.extend({
                 if (this.course != UNLIMIT) filter['course'] = this.course
                 if (this.title != '') filter['title'] = this.title
 
-                result = await this.$http.get('/api/problem', { params: filter });
+                result = await this.$http.get('/problem', { params: filter });
             } catch (e) {
                 console.log(e);
                 result = {
@@ -77,38 +78,5 @@ export default Vue.extend({
             }
             this.problems = result.data;
         },
-
-        async getCourses() {
-            let result;
-            try {
-                result = await this.$http.get('/api/course');
-            } catch (e) {
-                console.log(e);
-                result = {
-                    'data': [{
-                        name: 'God',
-                        teacher: {
-                            username: 'tcc',
-                            displayedName: '蔣宗哲',
-                        }
-                    }]
-                }
-            }
-            this.courses = result.data.map(course => course.name).concat(UNLIMIT);
-        },
-
-        async getTags() {
-            let result;
-            try {
-                result = await this.$http.get('/api/tag' + (this.course == UNLIMIT ? '' : '?course=' + this.course));
-            } catch (e) {
-                console.log(e);
-                result = {
-                    'data': ['tag1', 'tag2']
-                }
-            }
-            this.selectedTags = [];
-            this.tags = result.data;
-        }
     },
 });

@@ -76,7 +76,22 @@ export default Vue.extend({
             }
         },
         createStudent(file) {
+            let r = new FileReader();
+            let vue = this;
 
+            r.onload = async function(e) {
+                let contents = e.target.result;
+                let usernames = contents.split('\n').map(line => line.split(',')[0])
+
+                try {
+                    result = await vue.$http.patch(`/course/${this.course}/student/insert`, {
+                        users: usernames
+                    });
+                } catch (e) {
+                    console.log(e);
+                }
+            }
+            r.readAsText(file);
         },
         async deleteStudent(username) {
             let result;

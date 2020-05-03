@@ -4,13 +4,13 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
     v-container( fluid )
       v-row
         v-col( cols="12" md="3" )
-          v-select.mx-1( label="選擇課程" outlined hide-details :items="['課程一', '課程二']" value="課程一" )
+          v-select.mx-1( label="選擇課程" outlined hide-details :items="courses" v-model="course" )
         v-col( cols="12" md="3" )
-          v-select.mx-1( label="選擇分類" outlined hide-details :items="['分類一', '分類二', '分類三']" )
+          v-select.mx-1( label="選擇分類" outlined hide-details :items="tags" v-model="selectedTags" multiple )
         v-col( cols="12" md="3" )
-          v-text-field.mx-1( label="搜尋關鍵字" outlined hide-details )
+          v-text-field.mx-1( label="搜尋關鍵字" outlined hide-details v-model="title")
         v-col( cols="12" md="3" )
-          v-btn( color="primary" ) 送出
+          v-btn( color="primary" @click="getProblems") 送出
     v-divider.mt-0
     v-simple-table.px-4
       thead
@@ -21,23 +21,23 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
           th.font-weight-bold.subtitle-1.text--primary.hidden-sm-and-down 作者
           th.font-weight-bold.subtitle-1.text--primary 管理
       tbody
-        tr( v-for="(item, idx) in items" :key="item.title" )
-          td.subtitle-1 {{ item.id }}
-          td.subtitle-1 {{ item.title }}
+        tr( v-for="(problem, idx) in problems" :key="problem.title" )
+          td.subtitle-1 {{ problem.pid }}
+          td.subtitle-1 {{ problem.title }}
           td.subtitle-1.hidden-sm-and-down 
             v-menu( offset-y )
               template( v-slot:activator="{ on }" ) 
                 v-btn( outlined v-on="on" small )
-                  | {{ item.status }}
+                  | {{ status[problem.status] }}
                   v-icon mdi-chevron-down
               v-list
-                v-list-item( v-for="st in status" :key="st" @click="items[idx].status = st" )
-                  v-list-item-title {{ st }}
-          td.subtitle-1.hidden-sm-and-down {{ item.author.displayName }}
+                v-list-item( v-for="st in [0,1]" :key="st" @click="problems[idx].status = st" )
+                  v-list-item-title {{ status[st] }}
+          td.subtitle-1.hidden-sm-and-down {{ problem.author.displayedName }}
           td.subtitle-1
             v-tooltip( bottom color="#000000E6" )
               template( v-slot:activator="{ on }" )
-                v-btn.mr-1( color="info" v-on="on" :href="`/admin/problem/${item.id}`" )
+                v-btn.mr-1( color="info" v-on="on" :href="`/admin/problem/${problem.id}`" )
                   v-icon mdi-pencil
               span 修改題目
             v-tooltip( bottom color="#000000E6" )
@@ -50,5 +50,5 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
                 v-btn( color="error" v-on="on" )
                   v-icon mdi-trash-can
               span 刪除題目
-        tr( v-if="items.length===0" )
+        tr( v-if="problems.length===0" )
           td( colspan="3" ) No data available.

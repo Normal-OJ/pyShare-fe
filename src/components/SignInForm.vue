@@ -13,7 +13,7 @@
 
     <v-text-field
       v-model="authData.username"
-      label="使用者名稱或電子郵件地址"
+      label="使用者名稱"
       prepend-icon="mdi-account"
       :rules="usernameRule"
       @keyup.enter="submit"
@@ -57,7 +57,7 @@ export default {
         'username': '',
         'password': ''
       },
-      usernameRule: [val => !!val || '請輸入您的使用者名稱或電子郵件地址！'],
+      usernameRule: [val => !!val || '請輸入您的使用者名稱！'],
       passwordRule: [val => !!val || '請輸入您的密碼！'],
       showPassword: false,
       errAlert: false,
@@ -73,16 +73,14 @@ export default {
   methods: {
     submit() {
       if ( this.$refs.form.validate() ) {
-        // this.$http.post('/auth/session', this.authData)
-          // .then((response) => {
-            // successful sign in
-            // console.log(response);
-            // this.$emit('signin');
-          // })
-          // .catch((error) => {
+        this.$http.post('/auth/session', this.authData)
+          .then((response) => {
+            this.$emit('signin');
+          })
+          .catch((error) => {
             this.errMsg = '登入失敗，請檢查資訊是否有誤。';
             this.errAlert = true;
-          // });
+          });
       }
     },
   }

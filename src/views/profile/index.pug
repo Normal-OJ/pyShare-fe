@@ -8,30 +8,30 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
           v-icon.mr-3 mdi-account 
           | 使用者名稱：
         v-col( cols="auto" md="8" ) {{ user.username }}
-        v-row
+      v-row
         v-col( cols="auto" md="4" )
           v-icon.mr-3 mdi-account-box
           | 暱稱（網頁顯示名稱）：
         v-col( cols="auto" md="8" ) {{ user.displayName }}
-        v-row
-        v-col( cols="auto" md="4" )
-          v-icon.mr-3 mdi-heart
-          | 獲得愛心總數：
-        v-col( cols="auto" md="8" ) {{ user.likes }}
+      //- v-row
+      //-   v-col( cols="auto" md="4" )
+      //-     v-icon.mr-3 mdi-heart
+      //-     | 獲得愛心總數：
+      //-   v-col( cols="auto" md="8" ) {{ user.likes }}
     v-form( v-model="form" ref="form" )
       v-card-title 更改密碼
       v-divider.mt-0
       v-card-text.pb-0
-        v-alert( v-model="errAlert" dense dismissible :type="errType" transition="slide-y-transition" ) {{ errMsg }}
+        v-alert( v-model="err.active" dense dismissible :type="err.type" transition="slide-y-transition" ) {{ err.msg }}
         v-row
           v-col( cols="auto" lg="4" )
-            v-text-field.mx-1( label="請輸入新密碼" type="password" outlined v-model="passwd.new",
+            v-text-field.mx-1( label="請輸入新密碼" type="password" outlined v-model="passwd.newPassword",
              :rules="[v => !!v || '請輸入欲設置的新密碼！']")
           v-col( cols="auto" lg="4" )
             v-text-field.mx-1( label="請再次輸入新密碼" type="password",
-             :rules="[v => !!v && v===passwd.new || '確認密碼與新密碼不相符。']" outlined )
+             :rules="[v => !!v && v===passwd.newPassword || '確認密碼與新密碼不相符。']" outlined )
           v-col( cols="auto" lg="4" )
-            v-text-field.mx-1( label="請輸入原密碼" type="password" outlined v-model="passwd.old",
+            v-text-field.mx-1( label="請輸入原密碼" type="password" outlined v-model="passwd.oldPassword",
              :rules="[v => !!v || '請輸入原密碼！']")
       v-card-actions
         v-btn.subtitle-1( block dark color="#4B8BBE" @click="submit" )

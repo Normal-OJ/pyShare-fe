@@ -8,14 +8,35 @@ export default Vue.extend({
 
     data() {
         return {
-            problem: null,
             browsing: '請選擇',
-            attachments: ['bicycle.csv', 'readme.txt', 'bike.txt'],
             lists: [
-                { title: '說明', key: 'content', icon: 'mdi-text' },
-                { title: '程式', key: 'code', icon: 'mdi-code-tags' },
+                { title: '說明', key: 'content', icon: 'mdi-text', label: '新增說明...' },
+                { title: '程式', key: 'code', icon: 'mdi-code-tags', label: '貼上程式碼...' },
                 { title: '結果', key: 'result', icon: 'mdi-chart-bar' },
             ],
+            replyLabels: {
+                false: {
+                    icon: 'mdi-chevron-down',
+                    text: '查看'
+                },
+                true: {
+                    icon: 'mdi-chevron-up',
+                    text: '隱藏'
+                }
+            },
+            isReplyShowed: [],  // Boolean
+            replyInputs: [],    // {show: Boolean, text: String}
+            
+            username: 'username',
+            problem: null,
+            attachments: ['bicycle.csv', 'readme.txt', 'bike.txt'],
+            newComment: {
+                target: 'problem',
+                id: this.$route.params.id,
+                title: '',
+                content: '',
+                code: '',
+            },
         }
     },
 
@@ -24,10 +45,13 @@ export default Vue.extend({
     },
 
     methods: {
+        /*
+            檢查一下這個還有沒有問題
+        */
         async getProblem() {
             let result;
             try {
-                result = await this.$http.get('/api/problem/' + $route.params.id);
+                result = await this.$http.get('/api/problem/' + this.$route.params.id);
             } catch (e) {
                 console.log(e);
                 result = {
@@ -75,10 +99,31 @@ export default Vue.extend({
                     }
                 }
             }
+            this.isReplyShowed = new Array(result.data.comments.length)
+            this.replyInputs = new Array(result.data.comments.length)
+            this.isReplyShowed.fill(false)
+            this.replyInputs.fill({show: false, text: ''})
             this.problem = result.data
         },
-        likeComment(id) {
-            this.$http.get(`/comment/${id}/like`);
+        switchShowReply(idx) {
+            this.$set(this.isReplyShowed, idx, !this.isReplyShowed[idx])   
         },
+        setShowInput(idx, val) {
+            this.$set(this.replyInputs, idx, {show: val, text: (val ? this.replyInputs[idx].text : '')})
+            if ( this.replyInputs[idx].show ) {
+                this.$nextTick(() => {
+                    this.$refs['replyTextarea'][idx].focus()
+                })
+            }
+        },
+
+        
+        likeComment(id) {
+            this.$http.get(`/comment/${id}/like`)
+        },
+        
+        addNewComment(data=this.newComment) {
+
+        }
     },
 });

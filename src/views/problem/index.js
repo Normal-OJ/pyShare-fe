@@ -26,7 +26,12 @@ export default Vue.extend({
             },
             isReplyShowed: [],  // Boolean
             replyInputs: [],    // {show: Boolean, text: String}
-            
+            /*
+                username: 使用者的 username
+                problem: 目前這題，提醒用 this.$route.params.id 可以拿到 pid (是根據造訪的 url)
+                attachments: 該題目所有的附件
+                newComment: 新留言，請看 methods: addNewComment()
+            */
             username: 'username',
             problem: null,
             attachments: ['bicycle.csv', 'readme.txt', 'bike.txt'],
@@ -117,11 +122,25 @@ export default Vue.extend({
             }
         },
 
-        
+        /*
+
+            留言是 對一個題目
+            回覆是 對一個留言
+
+            留言有分樓層 回覆沒有
+
+            其他資訊看看 api ref 
+
+        */ 
+        /*
+            這個檢查一下對不對 API 2.3.4
+        */
         likeComment(id) {
             this.$http.get(`/comment/${id}/like`)
         },
-        
+        /*
+            新增一個留言 API 2.3.1
+        */
         addNewComment(data=this.newComment) {
 
         }

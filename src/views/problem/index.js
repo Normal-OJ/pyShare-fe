@@ -226,6 +226,13 @@ export default Vue.extend({
             }
             this.getProblem()
         },
+        async download() {
+            try {
+                result = await this.$http.get(`/problem/${this.problem.pid}/attachment/${this.browsing}`);
+            } catch (e) {
+                console.log(e);
+            }
+        },
         perm(user) {
             /*
                 傳入一 username (string)

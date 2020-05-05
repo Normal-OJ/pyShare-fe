@@ -24,7 +24,7 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
           v-list
             v-list-item( v-for="atta in problem.attachments" :key="atta" @click="browsing = atta" )
               v-list-item-title {{ atta }}
-        v-btn.ml-6( v-if="browsing!='請選擇'" color="info" small )
+        v-btn.ml-6( v-if="browsing!='請選擇'" color="info" small @click="download" )
           v-icon mdi-file-download
           | 下載
       code {{ problem.defaultCode }}

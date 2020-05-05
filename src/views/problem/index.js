@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import html from './index.pug';
 import './index.scss';
+import { getProfile } from '@/util.js'
 // import Vuex file ...
 
 export default Vue.extend({
@@ -226,12 +227,14 @@ export default Vue.extend({
         perm(user) {
             /*
                 傳入一 username (string)
-                perm < 0 不是老師也不是作者（留言或回覆的作者）
+                perm = 2 不是老師也不是作者（留言或回覆的作者）
                 perm = 0 是作者
                 perm = 1 是老師
                 （作者有修刪的權限、老師只有刪）
             */
-            return 1
+            if (user == getProfile().username) return 0;
+            if (getProfile().role <= 1) return 1;
+            return 2
         },
     },
 });

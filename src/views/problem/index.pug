@@ -30,14 +30,21 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
       code show data......
 
   div( v-for="(comment, idx) in problem.comments" :key="idx" )
-    div#1F( style="padding: 30px 0;" )
-    v-card.anchor( elevation="12" )
+    //- comment
+    div( :id="`${idx+1}F`" style="padding: 30px 0;" )
+    v-card.anchor( v-if="!isCommentEditing[idx]" elevation="12" )
       span.anchor
-        a.anchor-link( href="#1F" style="text-decoration: none;" )
+        a.float-icon( :href="`#${idx+1}F`" style="text-decoration: none;" )
           v-icon( style="transform: rotate(0.125turn);" ) mdi-link-variant
       v-card-title {{ comment.title }}
-        v-row( no-gutters )
         v-spacer
+        v-menu( offset-x )
+          template( v-slot:activator="{ on }" )
+            v-btn.mr-3( icon v-on="on" v-if="perm(comment.author.username) >= 0" )
+              v-icon mdi-dots-horizontal
+          v-list
+            v-list-item( v-for="(item, i) in menu.slice(perm(comment.author.username))" :key="item" @click="menuTouch(item, 'comment', idx, comment.id)" )
+              v-list-item-title {{ item }}
         div.subtitle-2 2020-03-27 12:35
       v-card-subtitle.text--primary {{ (idx+1) + ' 樓' }}
         v-icon mdi-account
@@ -59,10 +66,33 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
           v-btn.ml-3( icon @click="likeComment(comment.id)" )
             v-icon mdi-heart
           div.mt-1.mr-3 {{ comment.star }}
+    //- editing comment
+    v-card( v-else elevation="12" ) 
+      v-card-title {{ comment.title }}
+        v-row( no-gutters )
+          v-spacer
+          div.subtitle-2 2020-03-27 12:35
+      v-card-subtitle.text--primary {{ (idx+1) + ' 樓' }}
+        v-icon mdi-account
+        | {{ comment.author.displayName }}
+      v-card-text.pl-0.pb-0
+        v-tabs( vertical )
+          v-tab( v-for="item in lists.slice(0,2)" :key="item.title" )
+            v-icon( left ) {{ item.icon }}
+            | {{ item.title }}
+          v-tab-item( v-for="item in lists" :key="item.key" )
+            v-expand-transition
+              v-textarea.pl-4( :placeholder="item.label" outlined auto-grow v-model="editComment[`${item.key}`]" )
+      v-card-actions
+        v-row( no-gutters )
+          v-spacer
+          v-btn( text @click="cancelEditing('comment', idx)" ) 取消
+          v-btn.mx-3( color="primary" tile depressed :disabled="editComment.content === ''" @click="update(comment.id, editComment.content)" ) 更新
+
 
     //- 
       New Reply input
-    v-card.my-3( v-if="replyInputs[idx].show" elevation="2" )
+    v-card.my-3( v-if="replyInputs[idx].show" style="margin-left: 10%;" elevation="2" )
       v-card-subtitle.pb-0.text--primary
         v-row( no-gutters )
           v-icon mdi-account
@@ -74,7 +104,7 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
         v-row( no-gutters )
           v-spacer
           v-btn( text @click="setShowInput(idx, false)" ) 取消
-          v-btn.mx-3( color="primary" tile depressed :disabled="replyInputs[idx].text === ''" ) 回覆
+          v-btn.mx-3( color="primary" tile depressed :disabled="replyInputs[idx].text === ''" @click="addNewReply(comment.id, replyInputs[idx].text)" ) 回覆
 
     //- 
       Toggle button for show/hide replies
@@ -86,17 +116,38 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
     //- 
       show all replies
     div( v-show="isReplyShowed[idx]" )
-      v-card.my-3( v-for="(reply, replyIdx) in comment.reply" :key="replyIdx" style="margin-left: 10%;" elevation="2" )
-        v-card-subtitle.text--primary
-          v-row( no-gutters )
-            v-icon mdi-account
-            | {{ reply.author.displayName }}
-            v-spacer
-            div {{ reply.timestamp }}
-        v-card-text
-          v-card( flat style="background: #e7e7e7" )
-            v-card-text
-              div.text--primary( style="white-space: pre-line" ) {{ reply.content }}
+      div( v-for="(reply, replyIdx) in comment.reply" :key="replyIdx" )
+        v-card.my-3( style="margin-left: 10%;" elevation="2" )
+          v-card-subtitle.text--primary
+            v-row( no-gutters )
+              v-icon mdi-account
+              | {{ reply.author.displayName }}
+              v-spacer
+              //- v-menu( offset-x )
+              //-   template( v-slot:activator="{ on }" )
+              //-     v-btn.mr-3.pb-3( icon v-on="on" v-if="perm(reply.author.username) >= 0" )
+              //-       v-icon mdi-dots-horizontal
+              //-   v-list
+              //-     v-list-item( v-for="(item, i) in menu.slice(perm(reply.author.username))" :key="item" @click="menuTouch(item, 'reply', idx, reply.id)" )
+              //-       v-list-item-title {{ item }}
+              div {{ reply.timestamp }}
+          v-card-text
+            v-card( flat style="background: #e7e7e7" )
+              v-card-text
+                div.text--primary( style="white-space: pre-line" ) {{ reply.content }}
+        //- v-card.my-3( v-else style="margin-left: 10%;" elevation="2" )
+        //-   v-card-subtitle.pb-0.text--primary
+        //-     v-row( no-gutters )
+        //-       v-icon mdi-account
+        //-       | {{ username }}
+        //-       v-spacer
+        //-   v-card-text.py-0
+        //-     v-textarea.pt-0( v-model="replyInputs[idx].text" ref="replyTextarea" single-line rows="1" auto-grow label="新增一個回覆..." hide-details )
+        //-   v-card-actions
+        //-     v-row( no-gutters )
+        //-       v-spacer
+        //-       v-btn( text @click="setShowInput(idx, false)" ) 取消
+        //-       v-btn.mx-3( color="primary" tile depressed :disabled="replyInputs[idx].text === ''" ) 回覆
 
   v-divider( style="margin-top: 10%; margin-bottom: 5%" )
   v-card( elevation="12" )
@@ -115,5 +166,5 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
     v-card-actions
       v-row( no-gutters )
         v-spacer
-        v-btn.ml-3( color="primary" tile depressed :disabled="newComment.title === '' || newComment.content === ''" @click="addNewComment" ) 留言
+        v-btn.mx-3( color="primary" tile depressed :disabled="newComment.title === '' || newComment.content === ''" @click="addNewComment" ) 留言
           

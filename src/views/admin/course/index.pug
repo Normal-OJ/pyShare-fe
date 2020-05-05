@@ -1,7 +1,7 @@
 v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', height: '100%' }" )
   v-card.my-3( height="100%" elevation="12" )
     v-card-title 課程學生列表
-    v-select.ma-3( label="選擇課程" outlined hide-details :items="courses" v-model="course" )
+    v-select.ma-3( label="選擇課程" outlined hide-details :items="courses" item-text="name" item-value="name" v-model="course" )
     v-container( fluid )
       v-row( no-gutters )
         v-btn( color="info" @click="newCourseDialog = true" )

@@ -62,7 +62,7 @@ export default Vue.extend({
         async getProblem() {
             let result;
             try {
-                result = await this.$http.get('/api/problem/' + this.$route.params.id);
+                result = await this.$http.get('/problem/' + this.$route.params.id);
             } catch (e) {
                 console.log(e);
                 result = {

@@ -81,10 +81,10 @@ export default Vue.extend({
 
             r.onload = async function(e) {
                 let contents = e.target.result;
-                let usernames = contents.split('\n').map(line => line.split(',')[0])
+                let usernames = contents.split('\n').slice(1).map(line => line.split(',')[0])
 
                 try {
-                    result = await vue.$http.patch(`/course/${this.course}/student/insert`, {
+                    result = await vue.$http.patch(`/course/${vue.course}/student/insert`, {
                         users: usernames
                     });
                 } catch (e) {

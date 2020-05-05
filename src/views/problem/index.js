@@ -155,7 +155,7 @@ export default Vue.extend({
             }
         },
         menuTouch(opt, cls, idx, id) {
-            if (opt == 'edit') {
+            if (opt == '編輯') {
                 if (cls == 'comment') {
                     this.editComment = { content: this.problem.comments[idx].content, code: this.problem.comments[idx].code }
                     this.$set(this.isCommentEditing, idx, true)

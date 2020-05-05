@@ -87,7 +87,7 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
         v-row( no-gutters )
           v-spacer
           v-btn( text @click="cancelEditing('comment', idx)" ) 取消
-          v-btn.mx-3( color="primary" tile depressed :disabled="editComment.content === ''" @click="update(comment.id, editComment.content)" ) 更新
+          v-btn.mx-3( color="primary" tile depressed :disabled="editComment.content === ''" @click="update(comment.id, editComment)" ) 更新
 
 
     //- 

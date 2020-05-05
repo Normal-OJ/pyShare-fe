@@ -22,12 +22,12 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
               | {{ browsing }}
               v-icon mdi-chevron-down
           v-list
-            v-list-item( v-for="atta in attachments" :key="atta" @click="browsing = atta" )
+            v-list-item( v-for="atta in problem.attachments" :key="atta" @click="browsing = atta" )
               v-list-item-title {{ atta }}
         v-btn.ml-6( v-if="browsing!='請選擇'" color="info" small )
           v-icon mdi-file-download
           | 下載
-      code show data......
+      code {{ problem.defaultCode }}
 
   div( v-for="(comment, idx) in problem.comments" :key="idx" )
     //- comment
@@ -166,5 +166,5 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
     v-card-actions
       v-row( no-gutters )
         v-spacer
-        v-btn.mx-3( color="primary" tile depressed :disabled="newComment.title === '' || newComment.content === ''" @click="addNewComment" ) 留言
+        v-btn.mx-3( color="primary" tile depressed :disabled="newComment.title === '' || newComment.content === ''" @click="addNewComment(newComment)" ) 留言
           

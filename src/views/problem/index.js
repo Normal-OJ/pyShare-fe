@@ -56,9 +56,6 @@ export default Vue.extend({
     },
 
     methods: {
-        /*
-            檢查一下這個還有沒有問題
-        */
         async getProblem() {
             let result;
             try {
@@ -190,6 +187,7 @@ export default Vue.extend({
             } catch (e) {
                 console.log(e);
             }
+            this.getProblem()
         },
         async addNewComment(data) {
             console.log(data)
@@ -198,6 +196,7 @@ export default Vue.extend({
             } catch (e) {
                 console.log(e);
             }
+            this.getProblem()
         },
         async addNewReply(_id, _content) {
             try {
@@ -209,6 +208,7 @@ export default Vue.extend({
             } catch (e) {
                 console.log(e);
             }
+            this.getProblem()
         },
         async update(id, data) {
             try {
@@ -216,6 +216,7 @@ export default Vue.extend({
             } catch (e) {
                 console.log(e);
             }
+            this.getProblem()
         },
         async delete(id) {
             try {
@@ -223,6 +224,7 @@ export default Vue.extend({
             } catch (e) {
                 console.log(e);
             }
+            this.getProblem()
         },
         perm(user) {
             /*

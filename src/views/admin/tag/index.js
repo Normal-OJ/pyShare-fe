@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import html from './index.pug';
-import { UNLIMIT, getCourses, getTags } from '../../../util.js'
+import { UNLIMIT, getCourses, getTags } from '@/util.js'
 
 export default Vue.extend({
     template: html,
@@ -29,6 +29,7 @@ export default Vue.extend({
             selectedTags: [],
             newTagDialog: false,
             newTagNames: '',
+            courses: []
         }
     },
 
@@ -59,7 +60,7 @@ export default Vue.extend({
         async addNewTag(tags) {
             let result;
             try {
-                result = await this.$http.post('/tag', { tags: tags }, { emulateJSON: true });
+                result = await this.$http.post('/tag', { tags: tags });
             } catch (e) {
                 console.log(e);
                 result = {
@@ -75,7 +76,7 @@ export default Vue.extend({
         async deleteTags(tags) {
             let result;
             try {
-                result = await this.$http.delete('/tag', { body: { tags: tags } });
+                result = await this.$http.delete('/tag', { data: { tags: tags } });
             } catch (e) {
                 console.log(e);
                 result = {
@@ -92,10 +93,8 @@ export default Vue.extend({
             let result;
             try {
                 result = await this.$http.patch(`/course/${course}/tag`, {
-                    body: {
-                        push: tags,
-                        pop: []
-                    }
+                    push: tags,
+                    pop: []
                 });
             } catch (e) {
                 console.log(e);
@@ -113,10 +112,8 @@ export default Vue.extend({
             let result;
             try {
                 result = await this.$http.patch(`/course/${course}/tag`, {
-                    body: {
-                        push: [],
-                        pop: [tag]
-                    }
+                    push: [],
+                    pop: [tag]
                 });
             } catch (e) {
                 console.log(e);

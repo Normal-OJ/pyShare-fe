@@ -27,7 +27,6 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
         v-btn.ml-6( v-if="browsing!='請選擇'" color="info" small @click="download" )
           v-icon mdi-file-download
           | 下載
-      code {{ problem.defaultCode }}
 
   div( v-for="(comment, idx) in problem.comments" :key="idx" )
     //- comment
@@ -58,7 +57,10 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
             v-card( flat style="background: #e7e7e7" )
               v-card-text
                 v-expand-transition
-                  div.text--primary( style="white-space: pre-line" ) {{ comment[item.key] }}
+                  div( v-if="item.key == result" )
+                    Result( :stderr="comment.submission.stderr" :stdout="comment.submission.stdout" :files="comment.submission.files" )
+                  div.text--primary( v-else-if="item.key == code" style="white-space: pre-line" ) {{ comment[item.key] }}
+                  div.text--primary( v-else style="white-space: pre-line" ) {{ comment[item.key] }}
       v-card-actions
         v-row( no-gutters )
           v-btn.text-none( color="primary" text @click="setShowInput(idx, true)" ) → Reply

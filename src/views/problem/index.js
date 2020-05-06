@@ -2,10 +2,15 @@ import Vue from 'vue';
 import html from './index.pug';
 import './index.scss';
 import { getProfile } from '@/util.js'
+import Result from '@/components/Result'
 // import Vuex file ...
 
 export default Vue.extend({
     template: html,
+
+    components: {
+        Result,
+    },
 
     data() {
         return {
@@ -228,8 +233,25 @@ export default Vue.extend({
             this.getProblem()
         },
         async download() {
+            let result
             try {
                 result = await this.$http.get(`/problem/${this.problem.pid}/attachment/${this.browsing}`);
+                var file = new Blob([result], { type: 'text/plain;charset=utf-8' });
+                if (window.navigator.msSaveOrOpenBlob) { // IE10+
+                  window.navigator.msSaveOrOpenBlob(file, 'report.xls');
+                }
+                else { // Others
+                  var a = document.createElement("a");
+                  var url = URL.createObjectURL(file);
+                  a.href = url;
+                  a.download = 'report.xls';
+                  document.body.appendChild(a);
+                  a.click();
+                  setTimeout(function () {
+                    document.body.removeChild(a);
+                    window.URL.revokeObjectURL(url);
+                  }, 0);
+                }
             } catch (e) {
                 console.log(e);
             }

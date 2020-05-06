@@ -75,18 +75,34 @@ export default Vue.extend({
                 console.log(e);
             }
         },
-        createStudent(file) {
+        async createStudent(file) {
+            // try {
+            //     result = await this.$http.post('/auth/batch-signup', {
+            //         course: this.course,
+            //         csvString: file,
+            //     });
+            //     console.log(result)
+            // } catch (e) {
+            //     console.log(e)
+            // }
+            let result;
             let r = new FileReader();
             let vue = this;
 
             r.onload = async function(e) {
                 let contents = e.target.result;
-                let usernames = contents.split('\n').slice(1).map(line => line.split(',')[0])
+                // let usernames = contents.split('\n').slice(1).map(line => line.split(',')[0])
 
                 try {
-                    result = await vue.$http.patch(`/course/${vue.course}/student/insert`, {
-                        users: usernames
+                    // result = await vue.$http.patch(`/course/${vue.course}/student/insert`, {
+                    //     users: usernames
+                    // });
+                    console.log(contents)
+                    result = await vue.$http.post('/auth/batch-signup', {
+                        course: vue.course,
+                        csvString: contents,
                     });
+                    console.log(result)
                 } catch (e) {
                     console.log(e);
                 }

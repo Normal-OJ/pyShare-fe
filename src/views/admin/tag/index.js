@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import html from './index.pug';
-import { UNLIMIT, getCourses, getTags } from '../../../util.js'
+import { UNLIMIT, getCourses, getTags } from '@/util.js'
 
 export default Vue.extend({
     template: html,
@@ -23,12 +23,14 @@ export default Vue.extend({
               這部份我想也需要有一個元素為"不限課程"
               不限課程的時候，availableTags 應為 empty, candidateTags 應為 server 上的所有 tag
             */
+            unlimit: UNLIMIT,
             candidateTags: ['分類一', '分類三'],
             selectedCourse: UNLIMIT,
             availableTags: ['分類二', '分類四', '分類五'],
             selectedTags: [],
             newTagDialog: false,
             newTagNames: '',
+            courses: []
         }
     },
 
@@ -49,7 +51,8 @@ export default Vue.extend({
         async updateTags() {
             this.selectedTags = [];
             this.candidateTags = await getTags();
-            this.availableTags = await getTags(this.selectedCourse);
+            if ( this.selectedCourse == UNLIMIT )   this.availableTags = [];
+            else    this.availableTags = await getTags(this.selectedCourse);
             this.candidateTags = this.candidateTags.filter(tag => !this.availableTags.includes(tag))
         },
 
@@ -59,7 +62,7 @@ export default Vue.extend({
         async addNewTag(tags) {
             let result;
             try {
-                result = await this.$http.post('/tag', { tags: tags }, { emulateJSON: true });
+                result = await this.$http.post('/tag', { tags: tags });
             } catch (e) {
                 console.log(e);
                 result = {
@@ -75,7 +78,7 @@ export default Vue.extend({
         async deleteTags(tags) {
             let result;
             try {
-                result = await this.$http.delete('/tag', { body: { tags: tags } });
+                result = await this.$http.delete('/tag', { data: { tags: tags } });
             } catch (e) {
                 console.log(e);
                 result = {
@@ -89,13 +92,12 @@ export default Vue.extend({
         },
         // api: 2.4.6 Manage tags
         async pushTags(course, tags) {
+            console.log(tags)
             let result;
             try {
                 result = await this.$http.patch(`/course/${course}/tag`, {
-                    body: {
-                        push: tags,
-                        pop: []
-                    }
+                    push: tags,
+                    pop: []
                 });
             } catch (e) {
                 console.log(e);
@@ -109,14 +111,11 @@ export default Vue.extend({
             this.updateTags()
         },
         async popTag(course, tag) {
-            console.log(course, tag)
             let result;
             try {
                 result = await this.$http.patch(`/course/${course}/tag`, {
-                    body: {
-                        push: [],
-                        pop: [tag]
-                    }
+                    push: [],
+                    pop: [tag]
                 });
             } catch (e) {
                 console.log(e);

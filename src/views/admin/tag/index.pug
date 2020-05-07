@@ -16,7 +16,7 @@ v-container( :style="{ height: '100%' }" )
         //- top bin button: for deleting selected tags
         v-tooltip( bottom color="#000000E6" )
           template( v-slot:activator="{ on }" )
-            v-btn( color="error" v-on="on" @click="deleteTags(selectedTags)" )
+            v-btn( color="error" v-on="on" :disabled="selectedTags && selectedTags.length == 0" @click="deleteTags(selectedTags)" )
               v-icon mdi-trash-can
           span 移除選取的分類
 
@@ -30,10 +30,10 @@ v-container( :style="{ height: '100%' }" )
             v-list-item-title 全選
           v-divider
           v-list-item-group( v-model="selectedTags" multiple )
-            v-list-item( v-for="item in candidateTags" :key="item" )
+            v-list-item( v-for="item in candidateTags" :key="item" :value="item" )
               template( v-slot:default="{ active, toggle }" )
                 v-list-item-action
-                  v-checkbox( v-model="active" color="primary" @click="toggle" )
+                  v-checkbox( :input-value="active" :true-value="item" color="primary" @click="toggle" )
                 v-list-item-content
                   v-list-item-title {{ item }}
 
@@ -43,7 +43,7 @@ v-container( :style="{ height: '100%' }" )
       v-row( justify="center" )
         v-tooltip( bottom color="#000000E6" )
           template( v-slot:activator="{ on }" )
-            v-btn( color="primary" v-on="on" large @click="pushTags(selectedCourse, selectedTags)" :disabled="selectedCourse == unlimit" )
+            v-btn( color="primary" v-on="on" large @click="pushTags(selectedCourse, selectedTags)" :disabled="selectedCourse == unlimit || (selectedTags && selectedTags.length == 0)" )
               v-icon mdi-transfer-right
           span 選擇課程後，將選取的分類授權給該課程使用 
 
@@ -56,7 +56,7 @@ v-container( :style="{ height: '100%' }" )
       //- Card that list all available tags
       v-card.my-6
         v-list( subheader flat )
-          v-subheader 請先選擇課程，以下為該課程可用的分類，橘色按鈕可移除
+          v-subheader 以下為該課程可用的分類，橘色按鈕可移除
           v-list-item( v-for="item in availableTags" :key="item" )
             v-list-item-content
               v-list-item-title {{ item }}
@@ -65,6 +65,7 @@ v-container( :style="{ height: '100%' }" )
                 v-btn( color="danger" v-on="on" small @click="popTag(selectedCourse, item)" )
                   v-icon mdi-keyboard-return
               span 移除
+      h3( v-show="selectedCourse == unlimit" ) 請先選擇課程
 
   //- dialog that enter tag name that user wanna add
   v-dialog( v-model="newTagDialog" :width="$vuetify.breakpoint.mdAndUp ? '70vw' : '95vw'" )
@@ -75,4 +76,4 @@ v-container( :style="{ height: '100%' }" )
       v-card-actions
         v-spacer
         v-btn.mr-3( color="danger" @click="newTagDialog = false" dark ) 取消
-        v-btn( color="primary" @click="addNewTag(newTagNames); newTagDialog = false" ) 確認
+        v-btn( color="primary" :disabled="newTagNames == []" @click="addNewTag(newTagNames); newTagDialog = false" ) 確認

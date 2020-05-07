@@ -92,6 +92,7 @@ export default Vue.extend({
         },
         // api: 2.4.6 Manage tags
         async pushTags(course, tags) {
+            console.log(tags)
             let result;
             try {
                 result = await this.$http.patch(`/course/${course}/tag`, {
@@ -110,7 +111,6 @@ export default Vue.extend({
             this.updateTags()
         },
         async popTag(course, tag) {
-            console.log(course, tag)
             let result;
             try {
                 result = await this.$http.patch(`/course/${course}/tag`, {

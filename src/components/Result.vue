@@ -1,10 +1,9 @@
 <template lang="pug">
-  div
-    v-tabs( background-color="white" color="primary" right )
+  div( style="background-color: e7e7e7;" )
+    v-tabs.pa-0.ma-0( background-color="#e7e7e7" color="primary" right )
       v-tab 標準輸出
       v-tab 輸出檔案
       v-tab 錯誤訊息
-
       v-tab-item
         code {{ stdout }}
       v-tab-item

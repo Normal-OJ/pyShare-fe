@@ -58,6 +58,7 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
               v-card-text
                 v-expand-transition
                   div( v-if="item.key == 'result'" )
+                    Result( stderr="fake err" stdout="fake out" :files="[]")
                     //- Result( :stderr="comment.submission.stderr" :stdout="comment.submission.stdout" :files="comment.submission.files" )
                   div.text--primary( v-else-if="item.key == 'code'" style="white-space: pre-line" ) {{ comment.submission.code }}
                   div.text--primary( v-else style="white-space: pre-line" ) {{ comment[item.key] }}

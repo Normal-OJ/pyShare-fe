@@ -82,13 +82,18 @@ export default Vue.extend({
       //     this.prob.defaultCode = getJSON()
       //   },
       // }),
-      prob: {
-        title: null,
-        description: null, 
+      problem: {
+        title: '',
+        description: '',
+        course: null,
         status: null,
-        tags: null,
-        defaultCode: null,
+        tags: [],
+        defaultCode: '',
+        files: [],
       },
+      availableTags: [],
+      courses: [],
+      status: ['顯示', '隱藏（僅老師和創題者可見）']
     }
   },
 
@@ -96,12 +101,9 @@ export default Vue.extend({
     this.editor.destroy()
   },
 
-  ready () {
-  },
+  methods: {
+    createProblem() {
 
-  // methods: {
-  //   hor() {
-  //     console.log('hor!!!')
-  //   }
-  // },
+    }
+  },
 });

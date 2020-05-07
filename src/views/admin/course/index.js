@@ -28,50 +28,24 @@ export default Vue.extend({
             let result;
             try {
                 result = await this.$http.get(`/course/${this.course}/statistic`);
+                result = result.data;
             } catch (e) {
                 console.log(e);
-                result = {
-                    data: [{
-                            username: 'studentA',
-                            displayName: 'stA',
-                            post: 2,
-                            comment: 2,
-                            reply: 2,
-                            starGive: 2,
-                            star: 2,
-                            success: 5,
-                            fail: 5,
-                            review: 0,
-                        },
-                        {
-                            username: 'studentB',
-                            displayName: 'stB',
-                            post: 1,
-                            comment: 1,
-                            reply: 0,
-                            starGive: 10,
-                            star: 500,
-                            success: 17,
-                            fail: 30,
-                            review: 1,
-                        },
-                        {
-                            username: 'studentC',
-                            displayName: 'stC',
-                            post: 0,
-                            comment: 5,
-                            reply: 15,
-                            starGive: 1,
-                            star: 5000,
-                            success: 1,
-                            fail: 2,
-                            review: 1,
-                        },
-                    ],
-                }
             }
-
+            result.data.forEach(d => {
+                d.passed = 0
+                d.success = 0
+                d.fail = 0
+                d.execInfo.forEach(info => {
+                    d.success += info.success
+                    d.fail += info.fail
+                })
+                d.comments.forEach(c => {
+                    d.passed += (c.passed ? 1 : 0)
+                })
+            })
             this.studentData = result.data
+            console.log(this.studentData)
         }
     },
 

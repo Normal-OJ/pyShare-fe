@@ -31,17 +31,16 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
           th.font-weight-bold.subtitle-1.text--primary 管理
       tbody
         tr( v-for="(data, idx) in studentData" :key="data.username" )
-          td.subtitle-1 {{ data.username }}
-          td.subtitle-1.hidden-sm-and-down {{ data.displayName }}
-          td.subtitle-1.hidden-sm-and-down {{ data.post }}
-          td.subtitle-1.hidden-sm-and-down {{ data.comment }}
-          td.subtitle-1.hidden-sm-and-down {{ data.reply }}
-          td.subtitle-1.hidden-sm-and-down {{ data.starGive }}
-          td.subtitle-1.hidden-sm-and-down {{ data.star }}
+          td.subtitle-1 {{ data.info.username }}
+          td.subtitle-1.hidden-sm-and-down {{ data.info.displayName }}
+          td.subtitle-1.hidden-sm-and-down {{ data.problems.length }}
+          td.subtitle-1.hidden-sm-and-down {{ data.comments.length }}
+          td.subtitle-1.hidden-sm-and-down {{ data.replies.length }}
+          td.subtitle-1.hidden-sm-and-down {{ data.likes.length }}
+          td.subtitle-1.hidden-sm-and-down {{ data.liked.length }}
           td.subtitle-1.hidden-sm-and-down {{ data.success }}
           td.subtitle-1.hidden-sm-and-down {{ data.fail }}
-          td.subtitle-1.hidden-sm-and-down 
-            v-icon( :color="data.review ? 'success' : 'error'" ) {{ (data.review ? 'mdi-check-bold' : 'mdi-close-thick' ) }}
+          td.subtitle-1.hidden-sm-and-down {{ data.passed }}
           td.subtitle-1
             v-tooltip( right color="#000000E6" )
               template( v-slot:activator="{ on }" )
@@ -53,17 +52,20 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
                 v-btn.ml-3( color="error" v-on="on" small @click="deleteStudentDialog = true; deleteStudentName = data.username" )
                   v-icon mdi-trash-can
               span 將學生從課程移出
-        tr( v-if="studentData.length===0" )
-          td( colspan="10" ) No data available.
+        tr( v-if="course === ''" )
+          td( colspan="11" ) 請先選擇課程      
+        tr( v-else-if="studentData.length === 0" )
+          td( colspan="11" ) No data available.
   v-dialog( v-model="newCourseDialog" :width="$vuetify.breakpoint.mdAndUp ? '70vw' : '95vw'" )
     v-card
       v-card-title.headline 新增課程
       v-card-text
         v-text-field( v-model="newCourseName" label="輸入課程名稱" )
+        p.text--primary 注意！課程名稱只能使用：A-Z、a-z、0-9、空白、底線、減號、點
       v-card-actions
         v-spacer
-        v-btn.mr-3( color="danger" @click="newCourseDialog = false" dark ) 取消
-        v-btn( color="primary" @click="newCourseDialog = false; createCourse(newCourseName)" ) 確認
+        v-btn.mr-3( color="danger" @click="newCourseDialog = false" dark text ) 取消
+        v-btn( color="primary" @click="newCourseDialog = false; createCourse(newCourseName)" :disabled="newCourseName == ''" ) 確認
   v-dialog( v-model="newStudentDialog" :width="$vuetify.breakpoint.mdAndUp ? '70vw' : '95vw'" )
     v-card
       v-card-title.headline 上傳表單新增學生

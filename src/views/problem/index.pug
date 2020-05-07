@@ -1,4 +1,4 @@
-v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', height: '150%' }" v-if="problem" )
+v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', height: '150%' }" v-if="false" )
   v-card.mt-3( elevation="12" )
     v-card-subtitle
       v-icon.mr-1( small ) mdi-clock
@@ -37,17 +37,17 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
           v-icon( style="transform: rotate(0.125turn);" ) mdi-link-variant
       v-card-title {{ comment.title }}
         v-spacer
-        v-menu( offset-x )
-          template( v-slot:activator="{ on }" )
-            v-btn.mr-3( icon v-on="on" v-if="perm(comment.author.username) < 2" )
-              v-icon mdi-dots-horizontal
-          v-list
-            v-list-item( v-for="(item, i) in menu.slice(perm(comment.author.username))" :key="item" @click="menuTouch(item, 'comment', idx, comment.id)" )
-              v-list-item-title {{ item }}
+        //- v-menu( offset-x )
+        //-   template( v-slot:activator="{ on }" )
+        //-     v-btn.mr-3( icon v-on="on" v-if="perm(comment.author.username) < 2" )
+        //-       v-icon mdi-dots-horizontal
+        //-   v-list
+        //-     v-list-item( v-for="(item, i) in menu.slice(perm(comment.author.username))" :key="item" @click="menuTouch(item, 'comment', idx, comment.id)" )
+        //-       v-list-item-title {{ item }}
         div.subtitle-2 2020-03-27 12:35
       v-card-subtitle.text--primary {{ (idx+1) + ' 樓' }}
         v-icon mdi-account
-        | {{ comment.author.displayName }}
+        //- | {{ comment.author.displayName }}
       v-card-text.pl-0.pb-0
         v-tabs( vertical )
           v-tab( v-for="item in lists" :key="item.title" )
@@ -76,7 +76,7 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
           div.subtitle-2 2020-03-27 12:35
       v-card-subtitle.text--primary {{ (idx+1) + ' 樓' }}
         v-icon mdi-account
-        | {{ comment.author.displayName }}
+        //- | {{ comment.author.displayName }}
       v-card-text.pl-0.pb-0
         v-tabs( vertical )
           v-tab( v-for="item in lists.slice(0,2)" :key="item.title" )
@@ -123,7 +123,7 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
           v-card-subtitle.text--primary
             v-row( no-gutters )
               v-icon mdi-account
-              | {{ reply.author.displayName }}
+              //- | {{ reply.author.displayName }}
               v-spacer
               //- v-menu( offset-x )
               //-   template( v-slot:activator="{ on }" )

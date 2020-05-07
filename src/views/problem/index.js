@@ -65,14 +65,16 @@ export default Vue.extend({
             let result;
             try {
                 result = await this.$http.get('/problem/' + this.$route.params.id);
-                result = result.data
-                this.isReplyShowed = new Array(result.data.comments.length)
-                this.isCommentEditing = new Array(result.data.comments.length)
-                this.replyInputs = new Array(result.data.comments.length)
+                console.log(result)
+                result = result.data.data
+                this.isReplyShowed = new Array(result.comments.length)
+                this.isCommentEditing = new Array(result.comments.length)
+                this.replyInputs = new Array(result.comments.length)
                 this.isReplyShowed.fill(false)
                 this.isCommentEditing.fill(false)
                 this.replyInputs.fill({ show: false, text: '' })
-                this.problem = result.data
+                this.$http.get(`/comment/${result.comments[0]}`).then(res => console.log(res))
+                this.problem = result
             } catch (e) {
                 console.log(e);
                 result = {

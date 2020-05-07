@@ -59,23 +59,10 @@ export default Vue.extend({
                 if (this.title != '') filter['title'] = this.title
 
                 result = await this.$http.get('/problem', { params: filter });
+                this.problems = result.data.data;
             } catch (e) {
                 console.log(e);
-                result = {
-                    'data': [{
-                        pid: '1',
-                        title: 'DSCP修課背景分析',
-                        timestamp: '',
-                        author: {
-                            username: 'tcc',
-                            displayedName: '蔣宗哲',
-                        },
-                        tags: ['台灣獨立'],
-                        status: 0
-                    }]
-                }
             }
-            this.problems = result.data;
         },
     },
 });

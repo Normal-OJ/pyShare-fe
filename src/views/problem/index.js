@@ -40,7 +40,7 @@ export default Vue.extend({
                 attachments: 該題目所有的附件
                 newComment: 新留言，請看 methods: addNewComment()
             */
-            username: 'username',
+            displayName: 'displayName',
             problem: null,
             newComment: {
                 target: 'problem',
@@ -73,80 +73,9 @@ export default Vue.extend({
                 this.isReplyShowed.fill(false)
                 this.isCommentEditing.fill(false)
                 this.replyInputs.fill({ show: false, text: '' })
-                this.$http.get(`/comment/${result.comments[0]}`).then(res => console.log(res))
                 this.problem = result
             } catch (e) {
                 console.log(e);
-                result = {
-                    'data': {
-                        pid: '1',
-                        title: 'DSCP修課背景分析',
-                        description: '測試說明',
-                        timestamp: '2020/4/30',
-                        author: {
-                            username: 'tcc',
-                            displayName: '蔣宗哲',
-                        },
-                        course: 'math',
-                        status: 0,
-                        tags: ['台灣獨立'],
-                        attachments: ['bicycle.csv', 'readme.txt', 'bike.txt'],
-                        comments: [{
-                                id: '123',
-                                author: {
-                                    username: 'bogay',
-                                    displayName: '莊博傑',
-                                },
-                                title: '留言標題',
-                                content: `切資料真的是很 重要的技術，要搞清楚T^T
-                                    切資料真的是很重要的技術，要搞清楚T^T
-                                    切資料真的是很重要的技術，要搞清楚T^T
-                                    `,
-                                code: `def a():`,
-                                result: `test`,
-                                timestamp: '2020/4/20',
-                                star: 7777,
-                                status: 1,
-                                reply: [{
-                                    author: {
-                                        username: 'skps',
-                                        displayName: '盧昭華',
-                                    },
-                                    content: 'replying...',
-                                    status: 1,
-                                    timestamp: '2020/4/21',
-                                }],
-                            },
-                            {
-                                id: '123',
-                                author: {
-                                    username: 'bogay',
-                                    displayName: '莊博傑',
-                                },
-                                title: '留言標題',
-                                content: `切資料真的是很 重要的技術，要搞清楚T^T
-                                    切資料真的是很重要的技術，要搞清楚T^T
-                                    切資料真的是很重要的技術，要搞清楚T^T
-                                    `,
-                                code: `def a():`,
-                                result: `test`,
-                                timestamp: '2020/4/20',
-                                star: 7777,
-                                status: 1,
-                                reply: [{
-                                    author: {
-                                        username: 'skps',
-                                        displayName: '盧昭華',
-                                    },
-                                    content: 'replying...',
-                                    status: 1,
-                                    timestamp: '2020/4/21',
-                                }],
-                            },
-                        ],
-                        defaultCode: 'push -f'
-                    }
-                }
             }
         },
         switchShowReply(idx) {
@@ -179,16 +108,6 @@ export default Vue.extend({
                 console.log('stop edit reply')
             }
         },
-        /*
-
-            留言是 對一個題目
-            回覆是 對一個留言
-
-            留言有分樓層 回覆沒有
-
-            其他資訊看看 api ref 
-
-        */
         async likeComment(id) {
             try {
                 result = await this.$http.get(`/comment/${id}/like`)
@@ -198,7 +117,7 @@ export default Vue.extend({
             this.getProblem()
         },
         async addNewComment(data) {
-            console.log(data)
+            let result
             try {
                 result = await this.$http.post('/comment', data, { emulateJSON: true });
             } catch (e) {
@@ -207,6 +126,7 @@ export default Vue.extend({
             this.getProblem()
         },
         async addNewReply(_id, _content) {
+            let result
             try {
                 result = await this.$http.post('/comment', {
                     target: 'comment',
@@ -219,6 +139,7 @@ export default Vue.extend({
             this.getProblem()
         },
         async update(id, data) {
+            let result
             try {
                 result = await this.$http.put(`/comment/${id}`, data);
             } catch (e) {
@@ -227,6 +148,7 @@ export default Vue.extend({
             this.getProblem()
         },
         async delete(id) {
+            let result
             try {
                 result = await this.$http.delete(`/comment/${id}`);
             } catch (e) {
@@ -266,7 +188,7 @@ export default Vue.extend({
                 perm = 1 是老師
                 （作者有修刪的權限、老師只有刪）
             */
-            if (user == getProfile().username) return 0;
+            if (user == getProfile().displayName) return 0;
             if (getProfile().role <= 1) return 1;
             return 2
         },

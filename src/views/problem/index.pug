@@ -1,10 +1,10 @@
-v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', height: '150%' }" v-if="false" )
+v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', height: '150%' }" v-if="problem" )
   v-card.mt-3( elevation="12" )
     v-card-subtitle
       v-icon.mr-1( small ) mdi-clock
       | {{ problem.timestamp }}
       v-icon.mr-1.ml-3( small ) mdi-account
-      | {{ problem.author.displayName }}
+      | {{ problem.author.displayedName }}
       v-icon.mr-1.ml-3( small ) mdi-comment
       | {{ problem.comments.length }}
     v-card-title.headline {{ problem.pid + ' - ' + problem.title }}
@@ -47,20 +47,21 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
         div.subtitle-2 2020-03-27 12:35
       v-card-subtitle.text--primary {{ (idx+1) + ' 樓' }}
         v-icon mdi-account
-        //- | {{ comment.author.displayName }}
-      v-card-text.pl-0.pb-0
-        v-tabs( vertical )
-          v-tab( v-for="item in lists" :key="item.title" )
-            v-icon( left ) {{ item.icon }}
-            | {{ item.title }}
-          v-tab-item( v-for="item in lists" :key="item.key" )
-            v-card( flat style="background: #e7e7e7" )
-              v-card-text
-                v-expand-transition
-                  div( v-if="item.key == result" )
-                    Result( :stderr="comment.submission.stderr" :stdout="comment.submission.stdout" :files="comment.submission.files" )
-                  div.text--primary( v-else-if="item.key == code" style="white-space: pre-line" ) {{ comment[item.key] }}
-                  div.text--primary( v-else style="white-space: pre-line" ) {{ comment[item.key] }}
+        | {{comment}}
+        //- | {{ comment.author.displayedName }}
+      //- v-card-text.pl-0.pb-0
+      //-   v-tabs( vertical )
+      //-     v-tab( v-for="item in lists" :key="item.title" )
+      //-       v-icon( left ) {{ item.icon }}
+      //-       | {{ item.title }}
+      //-     v-tab-item( v-for="item in lists" :key="item.key" )
+      //-       v-card( flat style="background: #e7e7e7" )
+      //-         v-card-text
+      //-           v-expand-transition
+      //-             div( v-if="item.key == result" )
+      //-               Result( :stderr="comment.submission.stderr" :stdout="comment.submission.stdout" :files="comment.submission.files" )
+      //-             div.text--primary( v-else-if="item.key == code" style="white-space: pre-line" ) {{ comment.submission.code }}
+      //-             div.text--primary( v-else style="white-space: pre-line" ) {{ comment[item.key] }}
       v-card-actions
         v-row( no-gutters )
           v-btn.text-none( color="primary" text @click="setShowInput(idx, true)" ) → Reply
@@ -98,7 +99,7 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
       v-card-subtitle.pb-0.text--primary
         v-row( no-gutters )
           v-icon mdi-account
-          | {{ username }}
+          | {{ displayName }}
           v-spacer
       v-card-text.py-0
         v-textarea.pt-0( v-model="replyInputs[idx].text" ref="replyTextarea" single-line rows="1" auto-grow label="新增一個回覆..." hide-details )
@@ -110,7 +111,7 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
 
     //- 
       Toggle button for show/hide replies
-    v-card.my-3( style="margin-left: 10%;" elevation="0" color="transparent" )
+    v-card.my-3( style="margin-left: 10%;" elevation="0" color="transparent" v-if="comment.reply" )
       v-btn.subtitle-1( text color="primary" @click="switchShowReply(idx)" )
         v-icon {{ replyLabels[isReplyShowed[idx]].icon }}
         | {{ replyLabels[isReplyShowed[idx]].text + (comment.reply.length > 0 ? ` ${comment.reply.length} ` : '') + '則回覆' }}

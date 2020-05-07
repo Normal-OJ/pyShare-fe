@@ -7,6 +7,7 @@ export async function getCourses(needUnlimit = true) {
     let result;
     try {
         result = await vue.$http.get('/course');
+        result = result.data
     } catch (e) {
         console.log(e);
         result = {
@@ -28,6 +29,7 @@ export async function getTags(course = UNLIMIT) {
     let result;
     try {
         result = await vue.$http.get('/tag' + (course == UNLIMIT ? '' : '?course=' + course));
+        result = result.data
     } catch (e) {
         console.log(e);
         result = {

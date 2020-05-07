@@ -43,9 +43,9 @@ v-container( :style="{ height: '100%' }" )
       v-row( justify="center" )
         v-tooltip( bottom color="#000000E6" )
           template( v-slot:activator="{ on }" )
-            v-btn( color="primary" v-on="on" large @click="pushTags(selectedCourse, selectedTags)" )
+            v-btn( color="primary" v-on="on" large @click="pushTags(selectedCourse, selectedTags)" :disabled="selectedCourse == unlimit" )
               v-icon mdi-transfer-right
-          span 將選擇的分類授權給該課程使用 
+          span 選擇課程後，將選取的分類授權給該課程使用 
 
     //- Right List
     v-col( cols="12" md="5" )
@@ -56,7 +56,7 @@ v-container( :style="{ height: '100%' }" )
       //- Card that list all available tags
       v-card.my-6
         v-list( subheader flat )
-          v-subheader 以下顯示可用的分類，橘色按鈕可移除
+          v-subheader 請先選擇課程，以下為該課程可用的分類，橘色按鈕可移除
           v-list-item( v-for="item in availableTags" :key="item" )
             v-list-item-content
               v-list-item-title {{ item }}

@@ -6,7 +6,7 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
         v-col.pa-1( cols="12" md="9" )
           v-select.mx-1( label="選擇課程" outlined hide-details :items="courses" v-model="course" )
         v-col.pa-1( cols="12" md="3" )
-          v-btn( color="primary" @click="createProblem" ) 
+          v-btn( color="primary" :href="`/admin/problem/new`" ) 
             v-icon mdi-plus
             | 新增題目
     v-divider.mt-0

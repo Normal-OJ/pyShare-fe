@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import html from './index.pug';
-import { UNLIMIT, getCourses, getTags } from '../../../util.js'
+import { UNLIMIT, getCourses, getTags } from '@/util.js'
 
 export default Vue.extend({
     template: html,
@@ -72,9 +72,6 @@ export default Vue.extend({
                 }
             }
             this.problems = result.data;
-        },
-        async createProblem() {
-
         },
         async cloneProblem(pid, course) {
             if (course == UNLIMIT) return;

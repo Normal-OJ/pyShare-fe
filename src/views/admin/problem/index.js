@@ -73,8 +73,11 @@ export default Vue.extend({
             }
             this.problems = result.data;
         },
+        async createProblem() {
+
+        },
         async cloneProblem(pid, course) {
-            if (this.course == UNLIMIT) return;
+            if (course == UNLIMIT) return;
 
             let result;
             try {
@@ -84,8 +87,14 @@ export default Vue.extend({
             }
             this.getProblems()
         },
-        deleteProblem(pid) {
-
+        async deleteProblem(pid) {
+            let result;
+            try {
+                result = await this.$http.delete(`/problem/${pid}`);
+            } catch (e) {
+                console.log(e);
+            }
+            this.getProblems()
         }
     },
 });

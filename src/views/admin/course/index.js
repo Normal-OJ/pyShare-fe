@@ -77,7 +77,7 @@ export default Vue.extend({
                         course: vue.course,
                         csvString: contents,
                     });
-                    this.updateCourse();
+                    vue.updateCourse();
                 } catch (e) {
                     console.log(e);
                 }

@@ -23,6 +23,7 @@ export default Vue.extend({
               這部份我想也需要有一個元素為"不限課程"
               不限課程的時候，availableTags 應為 empty, candidateTags 應為 server 上的所有 tag
             */
+            unlimit: UNLIMIT,
             candidateTags: ['分類一', '分類三'],
             selectedCourse: UNLIMIT,
             availableTags: ['分類二', '分類四', '分類五'],
@@ -50,7 +51,8 @@ export default Vue.extend({
         async updateTags() {
             this.selectedTags = [];
             this.candidateTags = await getTags();
-            this.availableTags = await getTags(this.selectedCourse);
+            if ( this.selectedCourse == UNLIMIT )   this.availableTags = [];
+            else    this.availableTags = await getTags(this.selectedCourse);
             this.candidateTags = this.candidateTags.filter(tag => !this.availableTags.includes(tag))
         },
 
@@ -90,6 +92,7 @@ export default Vue.extend({
         },
         // api: 2.4.6 Manage tags
         async pushTags(course, tags) {
+            console.log(tags)
             let result;
             try {
                 result = await this.$http.patch(`/course/${course}/tag`, {
@@ -108,7 +111,6 @@ export default Vue.extend({
             this.updateTags()
         },
         async popTag(course, tag) {
-            console.log(course, tag)
             let result;
             try {
                 result = await this.$http.patch(`/course/${course}/tag`, {

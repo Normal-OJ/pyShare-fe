@@ -4,6 +4,7 @@ import './index.scss';
 import python from 'highlight.js/lib/languages/python';
 import css from 'highlight.js/lib/languages/css';
 import { Editor, EditorContent, EditorMenuBar } from 'tiptap';
+import { getCourses, getTags } from '@/util.js'
 import {
     Blockquote,
     CodeBlock,
@@ -89,8 +90,8 @@ export default Vue.extend({
                 status: null,
                 tags: [],
                 defaultCode: '',
-                files: [],
             },
+            files: [],
             availableTags: [],
             courses: [],
             status: ['顯示', '隱藏（僅老師和創題者可見）']
@@ -101,13 +102,19 @@ export default Vue.extend({
         this.editor.destroy()
     },
 
+    beforeMount() {
+        getCourses(false).then(courses => this.courses = courses)
+        getTags().then(tags => this.availableTags = tags)
+    },
+
     methods: {
         async createProblem() {
-            if (this.$route.params.id == 'new');
-
             let result;
             try {
-                result = await this.$http.post('/problem', this.problem);
+                if (this.$route.params.id == 'new')
+                    result = await this.$http.post('/problem', this.problem);
+                else
+                    result = await this.$http.put(`/problem/${this.$route.params.id}`, this.problem);
             } catch (e) {
                 console.log(e);
             }

@@ -11,6 +11,7 @@ export default Vue.extend({
             course: '',
             newCourseDialog: false,
             newCourseName: '',
+            courseNameRule: /[\w\ _\-\.]+$/,
             newStudentDialog: false,
             newStudentFile: null,
             deleteStudentDialog: false,
@@ -25,6 +26,12 @@ export default Vue.extend({
 
     watch: {
         async course() {
+            this.updateCourse();
+        }
+    },
+
+    methods: {
+        async updateCourse() {
             let result;
             try {
                 result = await this.$http.get(`/course/${this.course}/statistic`);
@@ -45,11 +52,7 @@ export default Vue.extend({
                 })
             })
             this.studentData = result.data
-            console.log(this.studentData)
-        }
-    },
-
-    methods: {
+        },
         async createCourse(name) {
             let result;
             try {
@@ -57,53 +60,39 @@ export default Vue.extend({
                     name: name,
                     teacher: getProfile().username
                 });
+                getCourses(false).then(courses => this.courses = courses)
             } catch (e) {
                 console.log(e);
             }
         },
         async createStudent(file) {
-            // try {
-            //     result = await this.$http.post('/auth/batch-signup', {
-            //         course: this.course,
-            //         csvString: file,
-            //     });
-            //     console.log(result)
-            // } catch (e) {
-            //     console.log(e)
-            // }
             let result;
             let r = new FileReader();
             let vue = this;
 
             r.onload = async function(e) {
                 let contents = e.target.result;
-                // let usernames = contents.split('\n').slice(1).map(line => line.split(',')[0])
-
                 try {
-                    // result = await vue.$http.patch(`/course/${vue.course}/student/insert`, {
-                    //     users: usernames
-                    // });
-                    console.log(contents)
                     result = await vue.$http.post('/auth/batch-signup', {
                         course: vue.course,
                         csvString: contents,
                     });
-                    console.log(result)
+                    this.updateCourse();
                 } catch (e) {
                     console.log(e);
                 }
             }
             r.readAsText(file);
         },
-        async deleteStudent(username) {
-            let result;
-            try {
-                result = await this.$http.patch(`/course/${this.course}/student/remove`, {
-                    users: [username]
-                });
-            } catch (e) {
-                console.log(e);
-            }
-        },
+        // async deleteStudent(username) {
+        //     let result;
+        //     try {
+        //         result = await this.$http.patch(`/course/${this.course}/student/remove`, {
+        //             users: [username]
+        //         });
+        //     } catch (e) {
+        //         console.log(e);
+        //     }
+        // },
     },
 });

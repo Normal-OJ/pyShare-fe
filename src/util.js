@@ -57,3 +57,9 @@ export function getProfile() {
 function parseJwt(token) {
     return JSON.parse(atob(token.split('.')[1])).data;
 }
+
+function toDateString(timestamp) {
+    let d = new Date(timestamp * 1000);
+
+    return `${d.getUTCFullYear()}-${('0'+(d.getMonth()+1)).slice(-2)}-${('0'+d.getDate()).slice(-2)} ${('0'+d.getHours()).slice(-2)}:${('0'+d.getMinutes()).slice(-2)}:${('0'+d.getSeconds()).slice(-2)}`
+}

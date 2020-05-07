@@ -2,16 +2,16 @@ v-container.editor( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95v
   h2.my-1 題目資訊
   v-row
     v-col( cols="12" md="6" )
-      v-text-field( label="題目名稱" outlined hide-details value="自行車竊案" )
+      v-text-field( label="題目名稱" outlined hide-details v-model="problem.title" )
     v-col( cols="12" md="6" )
-      v-select( label="顯示狀態" outlined hide-details :items="['顯示', '隱藏（僅老師和創題者可見）']" )
+      v-select( label="顯示狀態" outlined hide-details :items="status" v-model="problem.status" )
   v-row
     v-col( cols="12" md="6" )
-      v-select( label="屬於課程" outlined hide-details :items="['課程一', '課程二']" )
+      v-select( label="屬於課程" outlined hide-details :items="courses" v-model="problem.course" )
     v-col( cols="12" md="6" )
-      v-combobox( label="題目分類" outlined hide-details :items="['Tag1', 'Tag2', 'Tag3']" chips multiple)
+      v-combobox( label="題目分類" outlined hide-details :items="availableTags" chips multiple v-model="problem.tags" )
   h2.my-1 題目敘述
-  editor-menu-bar( :editor="editor" v-slot="{ isActive, commands }" )
+  editor-menu-bar( :editor="editor" v-slot="{ isActive, commands }" v-model="problem.description" )
     div.menubar
       button.menubar__button( :class="{ 'is-active': isActive.bold() }" @click="commands.bold" )
         v-icon mdi-format-bold
@@ -45,9 +45,14 @@ v-container.editor( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95v
         v-icon mdi-redo  
   editor-content.editor__content( :editor="editor" )
   h2.my-1 留言預設程式碼
+    v-textarea( outlined rows="3" v-model="problem.defaultCode" )
   h2.my-1 上傳附件
+    v-file-input( v-model="files" color="primary" counter multiple placeholder="上傳附件檔案（可選多個）" prepend-icon="mdi-paperclip" outlined )
+      template( v-slot:selection="{ index, text }" )
+        v-chip( v-if="index < 2" color="primary" dark label small ) {{ text }}
   v-row.mt-12
-    v-btn.mr-3( color="primary" :href="`/admin/problems`" ) 儲存
+    v-btn.ml-3( color="primary" @click="createProblem" ) 儲存
+    v-spacer
     v-btn.mr-3( color="error" :href="`/admin/problems`" ) 取消
   //- editor-content.editor__content( :editor="comment" )
 

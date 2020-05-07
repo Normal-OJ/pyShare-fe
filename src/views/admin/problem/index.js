@@ -28,22 +28,19 @@ export default Vue.extend({
             course: UNLIMIT,
             selectedTags: [],
             title: '',
-            status: ['顯示', '隱藏（老師和作者可見）']
+            status: ['顯示', '隱藏（老師和作者可見）'],
+            deleteProblemDialog: false,
         }
     },
-
-    ready() {},
 
     beforeMount() {
         this.getProblems()
         getCourses().then(courses => this.courses = courses)
-        getTags().then(tags => this.tags = tags)
     },
 
     watch: {
         course() {
-            this.selectedTags = []
-            getTags(this.course).then(tags => this.tags = tags)
+            this.getProblems();
         }
     },
 
@@ -54,12 +51,10 @@ export default Vue.extend({
                 let filter = {
                     offset: 0,
                     count: -1,
-                    tags: this.selectedTags.join()
                 }
                 if (this.course != UNLIMIT) filter['course'] = this.course
-                if (this.title != '') filter['title'] = this.title
-
                 result = await this.$http.get('/problem', { params: filter });
+                result = result.data
             } catch (e) {
                 console.log(e);
                 result = {
@@ -78,17 +73,19 @@ export default Vue.extend({
             }
             this.problems = result.data;
         },
-
-        async copyProblem(id) {
+        async cloneProblem(pid, course) {
             if (this.course == UNLIMIT) return;
 
             let result;
             try {
-                result = await this.$http.get(`/problem/${id}/clone/${this.course}`);
+                result = await this.$http.get(`/problem/${pid}/clone/${course}`);
             } catch (e) {
                 console.log(e);
             }
             this.getProblems()
         },
+        deleteProblem(pid) {
+
+        }
     },
 });

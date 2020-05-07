@@ -78,5 +78,17 @@ export default Vue.extend({
             }
             this.problems = result.data;
         },
+
+        async copyProblem(id) {
+            if (this.course == UNLIMIT) return;
+
+            let result;
+            try {
+                result = await this.$http.get(`/problem/${id}/clone/${this.course}`);
+            } catch (e) {
+                console.log(e);
+            }
+            this.getProblems()
+        },
     },
 });

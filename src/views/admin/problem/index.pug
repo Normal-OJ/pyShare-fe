@@ -34,9 +34,9 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
                 v-btn.mr-1( color="info" v-on="on" :href="`/admin/problem/${problem.id}`" )
                   v-icon mdi-pencil
               span 修改題目
-            v-tooltip( bottom color="#000000E6" )
+            v-tooltip( bottom color="#000000E6")
               template( v-slot:activator="{ on }" )
-                v-btn.mr-1( color="primary" v-on="on" )
+                v-btn.mr-1( color="primary" v-on="on" @click="copyProblem(problem.pid)")
                   v-icon mdi-content-copy
               span 複製出一個新題目
             v-tooltip( bottom color="#000000E6" )

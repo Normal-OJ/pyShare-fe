@@ -28,7 +28,8 @@ export default Vue.extend({
             course: UNLIMIT,
             selectedTags: [],
             title: '',
-            status: ['顯示', '隱藏（老師和作者可見）']
+            status: ['顯示', '隱藏（老師和作者可見）'],
+            deleteProblemDialog: false,
         }
     },
 
@@ -72,5 +73,11 @@ export default Vue.extend({
             }
             this.problems = result.data;
         },
+        cloneProblem(pid, course) {
+            // api 2.2.7
+        },
+        deleteProblem(pid) {
+            
+        }
     },
 });

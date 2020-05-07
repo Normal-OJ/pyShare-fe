@@ -3,8 +3,12 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
     v-card-title 管理您的題目
     v-container( fluid )
       v-row( no-gutters align="center" )
-        v-col.pa-1( cols="12" )
+        v-col.pa-1( cols="12" md="9" )
           v-select.mx-1( label="選擇課程" outlined hide-details :items="courses" v-model="course" )
+        v-col.pa-1( cols="12" md="3" )
+          v-btn( color="primary" @click="createProblem" ) 
+            v-icon mdi-plus
+            | 新增題目
     v-divider.mt-0
     v-simple-table.px-4
       thead
@@ -36,13 +40,21 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
               span 修改題目
             v-tooltip( bottom color="#000000E6" )
               template( v-slot:activator="{ on }" )
-                v-btn.mr-1( color="primary" v-on="on" )
+                v-btn.mr-1( color="primary" v-on="on" @click="cloneProblem(problem._id, course)" )
                   v-icon mdi-content-copy
               span 複製出一個新題目
             v-tooltip( bottom color="#000000E6" )
               template( v-slot:activator="{ on }" )
-                v-btn( color="error" v-on="on" )
+                v-btn( color="error" v-on="on" @click="deleteProblemDialog = true" )
                   v-icon mdi-trash-can
               span 刪除題目
         tr( v-if="problems.length===0" )
           td( colspan="5" ) No data available.
+  v-dialog( v-model="deleteProblemDialog" :width="$vuetify.breakpoint.mdAndUp ? '30vw' : '55vw'" )
+    v-card
+      v-card-title.headline 真的要刪除嗎？
+      v-card-title 此操作將無法復原。
+      v-card-actions
+        v-spacer
+        v-btn.mr-3( color="primary" @click="deleteProblemDialog = false" dark ) 取消
+        v-btn( color="error" @click="deleteProblemDialog = false; deleteProblem(problem._id)" ) 確認

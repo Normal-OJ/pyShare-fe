@@ -40,7 +40,7 @@ export default Vue.extend({
                 attachments: 該題目所有的附件
                 newComment: 新留言，請看 methods: addNewComment()
             */
-            displayName: 'displayName',
+            displayName: getProfile().displayName,
             problem: null,
             newComment: {
                 target: 'problem',
@@ -50,6 +50,7 @@ export default Vue.extend({
                 code: '',
             },
             editComment: {
+                title: '',
                 content: '',
                 code: '',
             },
@@ -81,12 +82,14 @@ export default Vue.extend({
             let comments = this.problem.comments
             for (let i = 0; i < comments.length; i++) {
                 try {
-                    result = await this.$http.get('/comment/' + comments[id]);
-                    comments[i] = result.data
+                    result = await this.$http.get('/comment/' + comments[i]);
+                    result.data.data.id = comments[i]
+                    this.$set(this.problem.comments, i, result.data.data)
                 } catch (e) {
                     console.log(e);
                 }
             }
+
         },
         switchShowReply(idx) {
             this.$set(this.isReplyShowed, idx, !this.isReplyShowed[idx])
@@ -102,7 +105,7 @@ export default Vue.extend({
         menuTouch(opt, cls, idx, id) {
             if (opt == '編輯') {
                 if (cls == 'comment') {
-                    this.editComment = { content: this.problem.comments[idx].content, code: this.problem.comments[idx].code }
+                    this.editComment = { content: this.problem.comments[idx].content, code: this.problem.comments[idx].submission.code }
                     this.$set(this.isCommentEditing, idx, true)
                 } else {
                     console.log('edit reply!');
@@ -148,8 +151,10 @@ export default Vue.extend({
             }
             this.getProblem()
         },
-        async update(id, data) {
+        async update(id, data, idx) {
             let result
+            data.title = this.problem.comments[idx].title;
+            console.log(data)
             try {
                 result = await this.$http.put(`/comment/${id}`, data);
             } catch (e) {
@@ -197,7 +202,7 @@ export default Vue.extend({
                 perm = 1 是老師
                 （作者有修刪的權限、老師只有刪）
             */
-            if (user == getProfile().displayName) return 0;
+            if (user == getProfile().username) return 0;
             if (getProfile().role <= 1) return 1;
             return 2
         },

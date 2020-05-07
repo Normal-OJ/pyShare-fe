@@ -41,13 +41,11 @@ export async function getTags(course = UNLIMIT) {
 export function getProfile() {
     if (vue.$cookies.isKey('jwt')) {
         let payload = parseJwt(vue.$cookies.get('jwt'));
-        if (payload.active === true) {
-            return {
-                username: payload.username,
-                displayName: payload.displayName,
-                role: payload.role
-            };
-        }
+        return {
+            username: payload.username,
+            displayName: payload.displayName,
+            role: payload.role
+        };
     }
     return {
         username: '',

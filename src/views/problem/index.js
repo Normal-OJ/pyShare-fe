@@ -77,6 +77,16 @@ export default Vue.extend({
             } catch (e) {
                 console.log(e);
             }
+
+            let comments = this.problem.comments
+            for (let i = 0; i < comments.length; i++) {
+                try {
+                    result = await this.$http.get('/comment/' + comments[id]);
+                    comments[i] = result.data
+                } catch (e) {
+                    console.log(e);
+                }
+            }
         },
         switchShowReply(idx) {
             this.$set(this.isReplyShowed, idx, !this.isReplyShowed[idx])
@@ -162,19 +172,18 @@ export default Vue.extend({
                 result = await this.$http.get(`/problem/${this.problem.pid}/attachment/${this.browsing}`);
                 var file = new Blob([result], { type: 'text/plain;charset=utf-8' });
                 if (window.navigator.msSaveOrOpenBlob) { // IE10+
-                  window.navigator.msSaveOrOpenBlob(file, 'report.xls');
-                }
-                else { // Others
-                  var a = document.createElement("a");
-                  var url = URL.createObjectURL(file);
-                  a.href = url;
-                  a.download = 'report.xls';
-                  document.body.appendChild(a);
-                  a.click();
-                  setTimeout(function () {
-                    document.body.removeChild(a);
-                    window.URL.revokeObjectURL(url);
-                  }, 0);
+                    window.navigator.msSaveOrOpenBlob(file, 'report.xls');
+                } else { // Others
+                    var a = document.createElement("a");
+                    var url = URL.createObjectURL(file);
+                    a.href = url;
+                    a.download = 'report.xls';
+                    document.body.appendChild(a);
+                    a.click();
+                    setTimeout(function() {
+                        document.body.removeChild(a);
+                        window.URL.revokeObjectURL(url);
+                    }, 0);
                 }
             } catch (e) {
                 console.log(e);

@@ -31,12 +31,13 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
   div( v-for="(comment, idx) in problem.comments" :key="idx" )
     //- comment
     div( :id="`${idx+1}F`" style="padding: 30px 0;" )
-    v-card.anchor( v-if="!isCommentEditing[idx] && comment.author" elevation="12" )
+    v-card.anchor( v-if="!isCommentEditing[idx] && comment != '' && comment.author" elevation="12" )
       span.anchor
         a.float-icon( :href="`#${idx+1}F`" style="text-decoration: none;" )
           v-icon( style="transform: rotate(0.125turn);" ) mdi-link-variant
       v-card-title {{ comment.title }}
         v-spacer
+        div.subtitle-2( v-if="comment.created != comment.updated" style="color: grey;" ) (已編輯)
         v-menu( offset-x )
           template( v-slot:activator="{ on }" )
             v-btn.mr-3( icon v-on="on" v-if="perm(comment.author.username) < 2" )
@@ -70,7 +71,7 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
             v-icon( :color="likeColor(comment.liked, username)" ) mdi-heart
           div.mt-1.mr-3 {{ comment.liked.length }}
     //- editing comment
-    v-card( v-else elevation="12" ) 
+    v-card( v-else-if="comment != ''" elevation="12" ) 
       v-card-title {{ comment.title }}
         v-row( no-gutters )
           v-spacer
@@ -91,7 +92,8 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
           v-spacer
           v-btn( text @click="cancelEditing('comment', idx)" ) 取消
           v-btn.mx-3( color="primary" tile depressed :disabled="editComment.content === ''" @click="update(comment.id, editComment, idx)" ) 更新
-
+    v-card( v-else elevation="12")
+      v-card-subtitle {{ (idx+1) + '樓 此留言已刪除' }}
 
     //- 
       New Reply input
@@ -111,10 +113,11 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
 
     //- 
       Toggle button for show/hide replies
-    v-card.my-3( style="margin-left: 10%;" elevation="0" color="transparent" v-if="comment.reply" )
+    v-card.my-3( style="margin-left: 10%;" elevation="0" color="transparent" v-if="comment.replies" )
       v-btn.subtitle-1( text color="primary" @click="switchShowReply(idx)" )
-        v-icon {{ replyLabels[isReplyShowed[idx]].icon }}
-        | {{ replyLabels[isReplyShowed[idx]].text + (comment.reply.length > 0 ? ` ${comment.reply.length} ` : '') + '則回覆' }}
+        div( v-if="comment.replies.length > 0" ) 
+          v-icon.mr-1 {{ replyLabels[isReplyShowed[idx]].icon }}
+          | {{ replyLabels[isReplyShowed[idx]].text + ` ${comment.replies.length} ` + '則回覆' }}
 
     //- 
       show all replies

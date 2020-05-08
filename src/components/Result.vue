@@ -1,5 +1,5 @@
 <template lang="pug">
-  div( style="background-color: e7e7e7;" )
+  div( :style="{ width: $vuetify.breakpoint.mdAndUp ? '100%' : '100%' }" )
     v-tabs.pa-0.ma-0( background-color="#e7e7e7" color="primary" right )
       v-tab 標準輸出
       v-tab 輸出檔案

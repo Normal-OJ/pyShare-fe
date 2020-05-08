@@ -22,6 +22,7 @@ export default Vue.extend({
             course: String 代表現在選擇課程的 value
 
             */
+            unlimit: UNLIMIT,
             problems: [],
             courses: [],
             tags: [],
@@ -30,6 +31,7 @@ export default Vue.extend({
             title: '',
             status: ['顯示', '隱藏（老師和作者可見）'],
             deleteProblemDialog: false,
+            deleting: -1,
         }
     },
 
@@ -79,15 +81,19 @@ export default Vue.extend({
             let result;
             try {
                 result = await this.$http.get(`/problem/${pid}/clone/${course}`);
+                console.log(result)
             } catch (e) {
                 console.log(e);
             }
             this.getProblems()
         },
         async deleteProblem(pid) {
+            console.log(pid)
             let result;
             try {
+                console.log(pid)
                 result = await this.$http.delete(`/problem/${pid}`);
+                console.log(pid)
             } catch (e) {
                 console.log(e);
             }

@@ -40,12 +40,12 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
               span 修改題目
             v-tooltip( bottom color="#000000E6")
               template( v-slot:activator="{ on }" )
-                v-btn.mr-1( color="primary" v-on="on" @click="cloneProblem(problem._id, course)" )
+                v-btn.mr-1( color="primary" v-on="on" @click="cloneProblem(problem._id, course)" :disabled="course == unlimit" )
                   v-icon mdi-content-copy
               span 複製出一個新題目
             v-tooltip( bottom color="#000000E6" )
               template( v-slot:activator="{ on }" )
-                v-btn( color="error" v-on="on" @click="deleteProblemDialog = true" )
+                v-btn( color="error" v-on="on" @click="deleting = idx; deleteProblemDialog = true" )
                   v-icon mdi-trash-can
               span 刪除題目
         tr( v-if="problems.length===0" )
@@ -57,4 +57,4 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
       v-card-actions
         v-spacer
         v-btn.mr-3( color="primary" @click="deleteProblemDialog = false" dark ) 取消
-        v-btn( color="error" @click="deleteProblemDialog = false; deleteProblem(problem._id)" ) 確認
+        v-btn( color="error" @click="deleteProblem(problems[deleting]._id); deleteProblemDialog = false" ) 確認

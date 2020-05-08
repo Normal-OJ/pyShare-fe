@@ -135,6 +135,7 @@ export default Vue.extend({
                     this.$set(this.problem.comments, i, result.data.data)
                 } catch (e) {
                     console.log(e);
+                    this.$set(this.problem.comments, i, '')
                 }
             }
 
@@ -261,6 +262,12 @@ export default Vue.extend({
                 if ( users[i] == name )
                     return '#e07fa0'
             return '#777'
+        },
+        reGet(comment_id) {
+
+        },
+        reJudge(comment_id) {
+            
         }
     },
 });

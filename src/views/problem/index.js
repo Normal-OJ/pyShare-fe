@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import html from './index.pug';
 import './index.scss';
-import { getProfile } from '@/util.js'
+import { getProfile, toDateString } from '@/util.js'
 import Result from '@/components/Result'
 import { Editor, EditorContent } from 'tiptap';
 import {
@@ -96,6 +96,7 @@ export default Vue.extend({
                     new CodeBlockHighlight()
                 ],
             }),
+            username: getProfile().uesrname,
         }
     },
 
@@ -104,6 +105,9 @@ export default Vue.extend({
     },
 
     methods: {
+        timeFormat(timestamp) {
+            return toDateString(timestamp)
+        },
         async getProblem() {
             let result;
             try {
@@ -189,6 +193,8 @@ export default Vue.extend({
                     target: 'comment',
                     id: _id,
                     content: _content,
+                    title: '',
+                    code: '',
                 }, { emulateJSON: true });
             } catch (e) {
                 console.log(e);
@@ -250,5 +256,11 @@ export default Vue.extend({
             if (getProfile().role <= 1) return 1;
             return 2
         },
+        likeColor(users, name) {
+            for ( let i=0; i<users.length; ++i )
+                if ( users[i] == name )
+                    return '#e07fa0'
+            return '#777'
+        }
     },
 });

@@ -2,7 +2,7 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
   v-card.mt-3( elevation="12" )
     v-card-subtitle
       v-icon.mr-1( small ) mdi-clock
-      | {{ problem.timestamp }}
+      | {{ timeFormat(problem.timestamp) }}
       v-icon.mr-1.ml-3( small ) mdi-account
       | {{ problem.author.displayedName }}
       v-icon.mr-1.ml-3( small ) mdi-comment
@@ -11,8 +11,7 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
     v-card-subtitle.mt-3( v-for="tag in problem.tags" :key="tag" ) 分類：
         v-chip( label small ) {{ tag }}
     v-divider
-    editor-content.editor__content( :editor="editor" )
-    //- v-card-text.text--primary {{ problem.description }}
+    editor-content.editor__content( :editor="editor" style="border: 0" )
     v-divider
     v-card-text.text--primary
       v-row.mb-3( no-gutters )
@@ -32,7 +31,7 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
   div( v-for="(comment, idx) in problem.comments" :key="idx" )
     //- comment
     div( :id="`${idx+1}F`" style="padding: 30px 0;" )
-    v-card.anchor( v-if="!isCommentEditing[idx]" elevation="12" )
+    v-card.anchor( v-if="!isCommentEditing[idx] && comment.author" elevation="12" )
       span.anchor
         a.float-icon( :href="`#${idx+1}F`" style="text-decoration: none;" )
           v-icon( style="transform: rotate(0.125turn);" ) mdi-link-variant
@@ -40,15 +39,15 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
         v-spacer
         v-menu( offset-x )
           template( v-slot:activator="{ on }" )
-            v-btn.mr-3( icon v-on="on" v-if="comment.author && perm(comment.author.username) < 2" )
+            v-btn.mr-3( icon v-on="on" v-if="perm(comment.author.username) < 2" )
               v-icon mdi-dots-horizontal
           v-list
-            v-list-item( v-if="comment.author" v-for="(item, i) in menu.slice(perm(comment.author.username))" :key="item" @click="menuTouch(item, 'comment', idx, comment.id)" )
+            v-list-item( v-for="(item, i) in menu.slice(perm(comment.author.username))" :key="item" @click="menuTouch(item, 'comment', idx, comment.id)" )
               v-list-item-title {{ item }}
-        div.subtitle-2 2020-03-27 12:35
+        div.subtitle-2 {{ timeFormat(comment.created) }}
       v-card-subtitle.text--primary {{ (idx+1) + ' 樓' }}
         v-icon mdi-account
-        //- | {{ comment.author.displayedName }}
+        | {{ comment.author.displayedName }}
       v-card-text.pl-0.pb-0
         v-tabs( vertical )
           v-tab( v-for="item in lists" :key="item.title" )
@@ -68,8 +67,8 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
           v-btn.text-none( color="primary" text @click="setShowInput(idx, true)" ) → Reply
           v-spacer
           v-btn.ml-3( icon @click="likeComment(comment.id)" )
-            v-icon mdi-heart
-          div.mt-1.mr-3 {{ comment.star }}
+            v-icon( :color="likeColor(comment.liked, username)" ) mdi-heart
+          div.mt-1.mr-3 {{ comment.liked.length }}
     //- editing comment
     v-card( v-else elevation="12" ) 
       v-card-title {{ comment.title }}
@@ -134,7 +133,7 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
               //-   v-list
               //-     v-list-item( v-for="(item, i) in menu.slice(perm(reply.author.username))" :key="item" @click="menuTouch(item, 'reply', idx, reply.id)" )
               //-       v-list-item-title {{ item }}
-              div {{ reply.timestamp }}
+              div {{ timeFormat(reply.created) }}
           v-card-text
             v-card( flat style="background: #e7e7e7" )
               v-card-text

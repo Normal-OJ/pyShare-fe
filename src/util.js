@@ -40,21 +40,27 @@ export async function getTags(course = UNLIMIT) {
 }
 
 export function getProfile() {
-    if ( vue.$cookies.isKey('jwt') ) {
+    if (vue.$cookies.isKey('jwt')) {
         let payload = parseJwt(vue.$cookies.get('jwt'));
-        if ( payload.active === true ) {
-            return { 
-                username: payload.username,
-                displayName: payload.displayName
-            };
-        }
+        return {
+            username: payload.username,
+            displayName: payload.displayName,
+            role: payload.role
+        };
     }
     return {
         username: '',
         displayName: '',
+        role: 2
     };
 }
 
 function parseJwt(token) {
     return JSON.parse(atob(token.split('.')[1])).data;
+}
+
+export function toDateString(timestamp) {
+    let d = new Date(timestamp * 1000);
+
+    return `${d.getUTCFullYear()}-${('0'+(d.getMonth()+1)).slice(-2)}-${('0'+d.getDate()).slice(-2)} ${('0'+d.getHours()).slice(-2)}:${('0'+d.getMinutes()).slice(-2)}:${('0'+d.getSeconds()).slice(-2)}`
 }

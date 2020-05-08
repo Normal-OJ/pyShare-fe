@@ -2,15 +2,13 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
   v-card.my-3( height="100%" elevation="12" )
     v-card-title 管理您的題目
     v-container( fluid )
-      v-row
-        v-col( cols="12" md="3" )
+      v-row( no-gutters align="center" )
+        v-col.pa-1( cols="12" md="9" )
           v-select.mx-1( label="選擇課程" outlined hide-details :items="courses" v-model="course" )
-        v-col( cols="12" md="3" )
-          v-select.mx-1( label="選擇分類" outlined hide-details :items="tags" v-model="selectedTags" multiple )
-        v-col( cols="12" md="3" )
-          v-text-field.mx-1( label="搜尋關鍵字" outlined hide-details v-model="title")
-        v-col( cols="12" md="3" )
-          v-btn( color="primary" @click="getProblems") 送出
+        v-col.pa-1( cols="12" md="3" )
+          v-btn( color="primary" :href="`/admin/problem/new`" ) 
+            v-icon mdi-plus
+            | 新增題目
     v-divider.mt-0
     v-simple-table.px-4
       thead
@@ -22,7 +20,7 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
           th.font-weight-bold.subtitle-1.text--primary 管理
       tbody
         tr( v-for="(problem, idx) in problems" :key="problem.title" )
-          td.subtitle-1 {{ problem.pid }}
+          td.subtitle-1 {{ problem._id }}
           td.subtitle-1 {{ problem.title }}
           td.subtitle-1.hidden-sm-and-down 
             v-menu( offset-y )
@@ -37,18 +35,26 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
           td.subtitle-1
             v-tooltip( bottom color="#000000E6" )
               template( v-slot:activator="{ on }" )
-                v-btn.mr-1( color="info" v-on="on" :href="`/admin/problem/${problem.id}`" )
+                v-btn.mr-1( color="info" v-on="on" :href="`/admin/problem/${problem._id}`" )
                   v-icon mdi-pencil
               span 修改題目
-            v-tooltip( bottom color="#000000E6" )
+            v-tooltip( bottom color="#000000E6")
               template( v-slot:activator="{ on }" )
-                v-btn.mr-1( color="primary" v-on="on" )
+                v-btn.mr-1( color="primary" v-on="on" @click="cloneProblem(problem._id, course)" )
                   v-icon mdi-content-copy
               span 複製出一個新題目
             v-tooltip( bottom color="#000000E6" )
               template( v-slot:activator="{ on }" )
-                v-btn( color="error" v-on="on" )
+                v-btn( color="error" v-on="on" @click="deleteProblemDialog = true" )
                   v-icon mdi-trash-can
               span 刪除題目
         tr( v-if="problems.length===0" )
-          td( colspan="3" ) No data available.
+          td( colspan="5" ) No data available.
+  v-dialog( v-model="deleteProblemDialog" :width="$vuetify.breakpoint.mdAndUp ? '30vw' : '55vw'" )
+    v-card
+      v-card-title.headline 真的要刪除嗎？
+      v-card-title 此操作將無法復原。
+      v-card-actions
+        v-spacer
+        v-btn.mr-3( color="primary" @click="deleteProblemDialog = false" dark ) 取消
+        v-btn( color="error" @click="deleteProblemDialog = false; deleteProblem(problem._id)" ) 確認

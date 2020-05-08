@@ -1,10 +1,36 @@
 import Vue from 'vue';
 import html from './index.pug';
 import './index.scss';
+import { getProfile, toDateString } from '@/util.js'
+import Result from '@/components/Result'
+import { Editor, EditorContent } from 'tiptap';
+import {
+    Blockquote,
+    CodeBlock,
+    HardBreak,
+    Heading,
+    OrderedList,
+    BulletList,
+    ListItem,
+    TodoItem,
+    TodoList,
+    Bold,
+    Code,
+    CodeBlockHighlight,
+    Italic,
+    Link,
+    Strike,
+    Underline,
+    History,
+} from 'tiptap-extensions';
 // import Vuex file ...
 
 export default Vue.extend({
     template: html,
+
+    components: {
+        Result, EditorContent
+    },
 
     data() {
         return {
@@ -24,12 +50,18 @@ export default Vue.extend({
                     text: '隱藏'
                 }
             },
-            isReplyShowed: [],  // Boolean
-            replyInputs: [],    // {show: Boolean, text: String}
-            
-            username: 'username',
+            menu: ['編輯', '刪除'],
+            isCommentEditing: [], // Boolean
+            isReplyShowed: [], // Boolean
+            replyInputs: [], // {show: Boolean, text: String}
+            /*
+                username: 使用者的 username
+                problem: 目前這題，提醒用 this.$route.params.id 可以拿到 pid (是根據造訪的 url)
+                attachments: 該題目所有的附件
+                newComment: 新留言，請看 methods: addNewComment()
+            */
+            displayName: getProfile().displayName,
             problem: null,
-            attachments: ['bicycle.csv', 'readme.txt', 'bike.txt'],
             newComment: {
                 target: 'problem',
                 id: this.$route.params.id,
@@ -37,6 +69,34 @@ export default Vue.extend({
                 content: '',
                 code: '',
             },
+            editComment: {
+                title: '',
+                content: '',
+                code: '',
+            },
+            editor: new Editor({
+                editable: false,
+                extensions: [
+                    new Blockquote(),
+                    new CodeBlock(),
+                    new HardBreak(),
+                    new Heading({ levels: [1, 2, 3] }),
+                    new BulletList(),
+                    new OrderedList(),
+                    new ListItem(),
+                    new TodoItem(),
+                    new TodoList(),
+                    new Bold(),
+                    new Code(),
+                    new Italic(),
+                    new Link(),
+                    new Strike(),
+                    new Underline(),
+                    new History(),
+                    new CodeBlockHighlight()
+                ],
+            }),
+            username: getProfile().uesrname,
         }
     },
 
@@ -45,85 +105,162 @@ export default Vue.extend({
     },
 
     methods: {
-        /*
-            檢查一下這個還有沒有問題
-        */
+        timeFormat(timestamp) {
+            return toDateString(timestamp)
+        },
         async getProblem() {
             let result;
             try {
-                result = await this.$http.get('/api/problem/' + this.$route.params.id);
+                result = await this.$http.get('/problem/' + this.$route.params.id);
+                console.log(result)
+                result = result.data.data
+                this.isReplyShowed = new Array(result.comments.length)
+                this.isCommentEditing = new Array(result.comments.length)
+                this.replyInputs = new Array(result.comments.length)
+                this.isReplyShowed.fill(false)
+                this.isCommentEditing.fill(false)
+                this.replyInputs.fill({ show: false, text: '' })
+                this.problem = result
+                console.log(JSON.parse(this.problem.description))
+                this.editor.setContent(JSON.parse(this.problem.description), false)
             } catch (e) {
                 console.log(e);
-                result = {
-                    'data': {
-                        pid: '1',
-                        title: 'DSCP修課背景分析',
-                        description: '測試說明',
-                        timestamp: '2020/4/30',
-                        author: {
-                            username: 'tcc',
-                            displayName: '蔣宗哲',
-                        },
-                        course: 'math',
-                        status: 0,
-                        tags: ['台灣獨立'],
-                        comments: [
-                          {
-                            id: '123',
-                            author: {
-                                username: 'bogay',
-                                displayName: '莊博傑',
-                            },
-                            title: '留言標題',
-                            content: `切資料真的是很 重要的技術，要搞清楚T^T
-                                    切資料真的是很重要的技術，要搞清楚T^T
-                                    切資料真的是很重要的技術，要搞清楚T^T
-                                    `,
-                            code: `def a():`,
-                            result: `test`,
-                            timestamp: '2020/4/20',
-                            star: 7777,
-                            status: 1,
-                            reply: [{
-                                author: {
-                                    username: 'skps',
-                                    displayName: '盧昭華',
-                                },
-                                content: 'replying...',
-                                status: 1,
-                                timestamp: '2020/4/21',
-                            }],
-                          },
-                        ],
-                        defaultCode: 'push -f'
-                    }
+            }
+
+            let comments = this.problem.comments
+            for (let i = 0; i < comments.length; i++) {
+                try {
+                    result = await this.$http.get('/comment/' + comments[i]);
+                    result.data.data.id = comments[i]
+                    this.$set(this.problem.comments, i, result.data.data)
+                } catch (e) {
+                    console.log(e);
                 }
             }
-            this.isReplyShowed = new Array(result.data.comments.length)
-            this.replyInputs = new Array(result.data.comments.length)
-            this.isReplyShowed.fill(false)
-            this.replyInputs.fill({show: false, text: ''})
-            this.problem = result.data
+
         },
         switchShowReply(idx) {
-            this.$set(this.isReplyShowed, idx, !this.isReplyShowed[idx])   
+            this.$set(this.isReplyShowed, idx, !this.isReplyShowed[idx])
         },
         setShowInput(idx, val) {
-            this.$set(this.replyInputs, idx, {show: val, text: (val ? this.replyInputs[idx].text : '')})
-            if ( this.replyInputs[idx].show ) {
+            this.$set(this.replyInputs, idx, { show: val, text: (val ? this.replyInputs[idx].text : '') })
+            if (this.replyInputs[idx].show) {
                 this.$nextTick(() => {
                     this.$refs['replyTextarea'][idx].focus()
                 })
             }
         },
-
-        
-        likeComment(id) {
-            this.$http.get(`/comment/${id}/like`)
+        menuTouch(opt, cls, idx, id) {
+            if (opt == '編輯') {
+                if (cls == 'comment') {
+                    this.editComment = { content: this.problem.comments[idx].content, code: this.problem.comments[idx].submission.code }
+                    this.$set(this.isCommentEditing, idx, true)
+                } else {
+                    console.log('edit reply!');
+                }
+            } else {
+                this.delete(id);
+            }
         },
-        
-        addNewComment(data=this.newComment) {
-
+        cancelEditing(cls, idx) {
+            if (cls == 'comment') {
+                this.$set(this.isCommentEditing, idx, false);
+            } else {
+                console.log('stop edit reply')
+            }
+        },
+        async likeComment(id) {
+            try {
+                result = await this.$http.get(`/comment/${id}/like`)
+            } catch (e) {
+                console.log(e);
+            }
+            this.getProblem()
+        },
+        async addNewComment(data) {
+            let result
+            try {
+                result = await this.$http.post('/comment', data, { emulateJSON: true });
+            } catch (e) {
+                console.log(e);
+            }
+            this.getProblem()
+        },
+        async addNewReply(_id, _content) {
+            let result
+            try {
+                result = await this.$http.post('/comment', {
+                    target: 'comment',
+                    id: _id,
+                    content: _content,
+                    title: '',
+                    code: '',
+                }, { emulateJSON: true });
+            } catch (e) {
+                console.log(e);
+            }
+            this.getProblem()
+        },
+        async update(id, data, idx) {
+            let result
+            data.title = this.problem.comments[idx].title;
+            console.log(data)
+            try {
+                result = await this.$http.put(`/comment/${id}`, data);
+            } catch (e) {
+                console.log(e);
+            }
+            this.getProblem()
+        },
+        async delete(id) {
+            let result
+            try {
+                result = await this.$http.delete(`/comment/${id}`);
+            } catch (e) {
+                console.log(e);
+            }
+            this.getProblem()
+        },
+        async download() {
+            let result
+            try {
+                result = await this.$http.get(`/problem/${this.problem.pid}/attachment/${this.browsing}`);
+                var file = new Blob([result], { type: 'text/plain;charset=utf-8' });
+                if (window.navigator.msSaveOrOpenBlob) { // IE10+
+                    window.navigator.msSaveOrOpenBlob(file, 'report.xls');
+                } else { // Others
+                    var a = document.createElement("a");
+                    var url = URL.createObjectURL(file);
+                    a.href = url;
+                    a.download = 'report.xls';
+                    document.body.appendChild(a);
+                    a.click();
+                    setTimeout(function() {
+                        document.body.removeChild(a);
+                        window.URL.revokeObjectURL(url);
+                    }, 0);
+                }
+            } catch (e) {
+                console.log(e);
+            }
+        },
+        perm(user) {
+            /*
+                傳入一 username (string)
+                perm = 2 不是老師也不是作者（留言或回覆的作者）
+                perm = 0 是作者
+                perm = 1 是老師
+                （作者有修刪的權限、老師只有刪）
+            */
+            if (user == getProfile().username) return 0;
+            if (getProfile().role <= 1) return 1;
+            return 2
+        },
+        likeColor(users, name) {
+            for ( let i=0; i<users.length; ++i )
+                if ( users[i] == name )
+                    return '#e07fa0'
+            return '#777'
         }
     },
 });

@@ -4,10 +4,16 @@ span.anchor {
 	left: -40px; 
 }
 
-a.anchor-link {
+// span.menu {
+// 	position: absolute; 
+// 	top: 20px; 
+// 	left: -60px; 
+// }
+
+.float-icon {
 	visibility: hidden;
 }
 
-.anchor:hover a.anchor-link {
+.anchor:hover .float-icon {
 	visibility: visible;
 }

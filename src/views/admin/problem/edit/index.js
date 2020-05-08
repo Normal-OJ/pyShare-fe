@@ -76,7 +76,7 @@ export default Vue.extend({
             files: [],
             availableTags: [],
             courses: [],
-            status: [{text: '顯示', value: 1}, {text: '隱藏（僅老師和創題者可見）', value: 0}],
+            status: [{ text: '顯示', value: 1 }, { text: '隱藏（僅老師和創題者可見）', value: 0 }],
             unlimit: UNLIMIT,
             content: '',
         }
@@ -93,17 +93,17 @@ export default Vue.extend({
     },
 
     computed: {
-      course() {
-        return this.problem.course
-      }
+        course() {
+            return this.problem.course
+        }
     },
     watch: {
-      course() {
-        this.availableTags = []
-        if ( this.problem.course != UNLIMIT ) {
-          getTags(this.course).then(tags => this.availableTags = tags)
+        course() {
+            this.availableTags = []
+            if (this.problem.course != UNLIMIT) {
+                getTags(this.course).then(tags => this.availableTags = tags)
+            }
         }
-      }
     },
 
     methods: {
@@ -130,24 +130,30 @@ export default Vue.extend({
         async createProblem() {
             this.problem.description = JSON.stringify(this.content)
             let result;
+            let pid = this.$route.params.id
             try {
-                if (this.$route.params.id == 'new')
+                if (pid == 'new') {
                     result = await this.$http.post('/problem', this.problem);
-                else
+                    pid = result.data.pid
+                } else
                     result = await this.$http.put(`/problem/${this.$route.params.id}`, this.problem);
             } catch (e) {
                 console.log(e);
             }
-            this.uploadAttachment()
+            this.uploadAttachment(pid)
         },
-        async uploadAttachment() {
-            /*
-              uploadAttachment
-                @problem_api.route('/<int:pid>/attachment', methods=['POST', 'DELETE'])
-                @Request.files('attachment')
-                @Request.form('attachment_name')
-            */
-            console.log(this.files);
+        async uploadAttachment(pid) {
+            let result;
+            for (let i = 0; i < this.files.length; i++) {
+                try {
+                    let formData = new FormData();
+
+                    formData.append('attachment', this.files[i]);
+                    result = await this.$http.post(`/${pid}/attachment`, formData);
+                } catch (e) {
+                    console.log(e);
+                }
+            }
         }
     },
 });

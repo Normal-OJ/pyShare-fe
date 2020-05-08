@@ -11,7 +11,8 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
     v-card-subtitle.mt-3( v-for="tag in problem.tags" :key="tag" ) 分類：
         v-chip( label small ) {{ tag }}
     v-divider
-    v-card-text.text--primary {{ problem.description }}
+    editor-content.editor__content( :editor="editor" )
+    //- v-card-text.text--primary {{ problem.description }}
     v-divider
     v-card-text.text--primary
       v-row.mb-3( no-gutters )

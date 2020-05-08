@@ -3,13 +3,33 @@ import html from './index.pug';
 import './index.scss';
 import { getProfile } from '@/util.js'
 import Result from '@/components/Result'
+import { Editor, EditorContent } from 'tiptap';
+import {
+    Blockquote,
+    CodeBlock,
+    HardBreak,
+    Heading,
+    OrderedList,
+    BulletList,
+    ListItem,
+    TodoItem,
+    TodoList,
+    Bold,
+    Code,
+    CodeBlockHighlight,
+    Italic,
+    Link,
+    Strike,
+    Underline,
+    History,
+} from 'tiptap-extensions';
 // import Vuex file ...
 
 export default Vue.extend({
     template: html,
 
     components: {
-        Result,
+        Result, EditorContent
     },
 
     data() {
@@ -54,6 +74,28 @@ export default Vue.extend({
                 content: '',
                 code: '',
             },
+            editor: new Editor({
+                editable: false,
+                extensions: [
+                    new Blockquote(),
+                    new CodeBlock(),
+                    new HardBreak(),
+                    new Heading({ levels: [1, 2, 3] }),
+                    new BulletList(),
+                    new OrderedList(),
+                    new ListItem(),
+                    new TodoItem(),
+                    new TodoList(),
+                    new Bold(),
+                    new Code(),
+                    new Italic(),
+                    new Link(),
+                    new Strike(),
+                    new Underline(),
+                    new History(),
+                    new CodeBlockHighlight()
+                ],
+            }),
         }
     },
 
@@ -75,6 +117,8 @@ export default Vue.extend({
                 this.isCommentEditing.fill(false)
                 this.replyInputs.fill({ show: false, text: '' })
                 this.problem = result
+                console.log(JSON.parse(this.problem.description))
+                this.editor.setContent(JSON.parse(this.problem.description), false)
             } catch (e) {
                 console.log(e);
             }

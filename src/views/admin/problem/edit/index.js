@@ -4,7 +4,7 @@ import './index.scss';
 import python from 'highlight.js/lib/languages/python';
 import css from 'highlight.js/lib/languages/css';
 import { Editor, EditorContent, EditorMenuBar } from 'tiptap';
-import { getCourses, getTags } from '@/util.js'
+import { UNLIMIT, getCourses, getTags } from '@/util.js'
 import {
     Blockquote,
     CodeBlock,
@@ -61,32 +61,14 @@ export default Vue.extend({
                         },
                     })
                 ],
-                content: ``,
                 onUpdate: ({ getJSON }) => {
-                    this.prob.description = getJSON()
+                    this.content = getJSON()
                 },
             }),
-            // comment: new Editor({
-            //   extensions: [  
-            //     new Code(),
-            //     new CodeBlockHighlight({
-            //       languages: {
-            //         javascript,
-            //         css,
-            //         // pycss,
-            //         // pyjs,
-            //       },
-            //     })
-            //   ],
-            //   content: `<pre><code># paste your code here</code></pre>`,
-            //   onUpdate: ({ getJSON }) => {
-            //     this.prob.defaultCode = getJSON()
-            //   },
-            // }),
             problem: {
                 title: '',
                 description: '',
-                course: null,
+                course: UNLIMIT,
                 status: null,
                 tags: [],
                 defaultCode: '',
@@ -94,7 +76,9 @@ export default Vue.extend({
             files: [],
             availableTags: [],
             courses: [],
-            status: ['顯示', '隱藏（僅老師和創題者可見）']
+            status: [{text: '顯示', value: 1}, {text: '隱藏（僅老師和創題者可見）', value: 0}],
+            unlimit: UNLIMIT,
+            content: '',
         }
     },
 
@@ -103,12 +87,48 @@ export default Vue.extend({
     },
 
     beforeMount() {
+        this.getProblem()
         getCourses(false).then(courses => this.courses = courses)
         getTags().then(tags => this.availableTags = tags)
     },
 
+    computed: {
+      course() {
+        return this.problem.course
+      }
+    },
+    watch: {
+      course() {
+        this.availableTags = []
+        if ( this.problem.course != UNLIMIT ) {
+          getTags(this.course).then(tags => this.availableTags = tags)
+        }
+      }
+    },
+
     methods: {
+        async getProblem() {
+            let result;
+            try {
+                if (this.$route.params.id != 'new') {
+                    result = await this.$http.get(`/problem/${this.$route.params.id}`);
+                    result = result.data.data
+                    this.problem.title = result.title
+                    this.problem.status = result.status
+                    this.files = result.attachments
+                    this.problem.tags = result.tags
+                    this.problem.course = result.course
+                    this.content = JSON.parse(result.description)
+                    this.editor.setContent(this.content)
+                    this.problem.defaultCode = result.defaultCode
+                    console.log(result)
+                }
+            } catch (e) {
+                console.log(e);
+            }
+        },
         async createProblem() {
+            this.problem.description = JSON.stringify(this.content)
             let result;
             try {
                 if (this.$route.params.id == 'new')
@@ -118,6 +138,16 @@ export default Vue.extend({
             } catch (e) {
                 console.log(e);
             }
+            this.uploadAttachment()
+        },
+        async uploadAttachment() {
+            /*
+              uploadAttachment
+                @problem_api.route('/<int:pid>/attachment', methods=['POST', 'DELETE'])
+                @Request.files('attachment')
+                @Request.form('attachment_name')
+            */
+            console.log(this.files);
         }
     },
 });

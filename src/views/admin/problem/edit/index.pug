@@ -11,8 +11,6 @@ v-container.editor( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95v
     v-col( cols="12" md="6" )
       v-select( label="題目分類" outlined :items="availableTags" chips multiple v-model="problem.tags" :disabled="problem.course == unlimit" hint="必須先選擇課程後才可以選擇分類" persistent-hint )
   h2.my-1 題目敘述
-  | {{ 'content: ' + content }}
-  | {{ problem }}
   editor-menu-bar( :editor="editor" v-slot="{ isActive, commands }" )
     div.menubar
       button.menubar__button( :class="{ 'is-active': isActive.bold() }" @click="commands.bold" )
@@ -56,5 +54,4 @@ v-container.editor( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95v
     v-btn.ml-3( color="primary" @click="createProblem" :disabled="problem.course==unlimit || problem.title=='' || problem.status==null || content==''" ) 儲存
     v-spacer
     v-btn.mr-3( color="error" :href="`/admin/problems`" ) 取消
-  //- editor-content.editor__content( :editor="comment" )
 

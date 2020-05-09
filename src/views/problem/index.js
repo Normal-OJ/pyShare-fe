@@ -275,7 +275,7 @@ export default Vue.extend({
                     return '#e07fa0'
             return '#777'
         },
-        reGet(comment_id) {
+        async reGet(comment_id) {
             let result
             try {
                 result = await this.$http.get('/comment/' + comment_id);
@@ -283,7 +283,7 @@ export default Vue.extend({
                 console.log(e);
             }
         },
-        reJudge(comment_id) {
+        async reJudge(comment_id) {
             let result
             try {
                 result = await this.$http.get(`/comment/${comment_id}/rejudge`);

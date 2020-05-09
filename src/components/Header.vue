@@ -112,7 +112,7 @@ export default {
     return {
       links: [
         {'title': '題目列表', 'path': '/'},
-        {'title': '使用說明', 'path': '/tutorial'},
+        // {'title': '使用說明', 'path': '/tutorial'},
         {'title': '管理頁面', 'path': '/admin/main'},
       ],
       drawer: false,

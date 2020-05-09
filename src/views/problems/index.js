@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import html from './index.pug';
-import { UNLIMIT, getCourses, getTags } from '@/util.js'
+import { UNLIMIT, getCourses, getTags, toDateString } from '@/util.js'
 
 export default Vue.extend({
     template: html,
@@ -64,5 +64,8 @@ export default Vue.extend({
                 console.log(e);
             }
         },
+        timeFormat(ts) {
+            return toDateString(ts);
+        }
     },
 });

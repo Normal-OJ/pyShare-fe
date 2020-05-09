@@ -2,7 +2,7 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
   v-card.mt-3( elevation="12" )
     v-card-subtitle
       v-icon.mr-1( small ) mdi-clock
-      | {{ timeFormat(problem.timestamp) }}
+      | {{ timeFormat(problem.timestamp).substring(0,10) }}
       v-icon.mr-1.ml-3( small ) mdi-account
       | {{ problem.author.displayedName }}
       v-icon.mr-1.ml-3( small ) mdi-comment

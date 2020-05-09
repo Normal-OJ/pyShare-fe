@@ -29,7 +29,7 @@ export default Vue.extend({
             course: UNLIMIT,
             selectedTags: [],
             title: '',
-            status: ['顯示', '隱藏（老師和作者可見）'],
+            status: ['隱藏（老師和作者可見）', '顯示'],
             deleteProblemDialog: false,
             deleting: -1,
         }

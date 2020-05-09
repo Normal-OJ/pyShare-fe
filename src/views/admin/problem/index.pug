@@ -15,15 +15,13 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
         tr
           th.font-weight-bold.subtitle-1.text--primary 題號
           th.font-weight-bold.subtitle-1.text--primary 標題
-          th.font-weight-bold.subtitle-1.text--primary.hidden-sm-and-down 狀態
           th.font-weight-bold.subtitle-1.text--primary.hidden-sm-and-down 作者
           th.font-weight-bold.subtitle-1.text--primary 管理
       tbody
-        tr( v-for="(problem, idx) in problems" :key="problem.title" )
+        tr( v-for="(problem, idx) in problems" :key="idx" )
           td.subtitle-1 {{ problem.pid }}
-          td.subtitle-1 {{ problem.title }}
-          td.subtitle-1.hidden-sm-and-down {{ status[problem.status] }}
-          td.subtitle-1.hidden-sm-and-down {{ problem.author.displayedName }}
+          td.subtitle-1.hidden-sm-and-down {{ problem.title }}
+          td.subtitle-1 {{ problem.author.displayedName }}
           td.subtitle-1
             v-tooltip( bottom color="#000000E6" )
               template( v-slot:activator="{ on }" )

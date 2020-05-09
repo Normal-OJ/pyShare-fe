@@ -18,17 +18,17 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
           th.font-weight-bold.subtitle-1.text--primary.hidden-sm-and-down 作者
           th.font-weight-bold.subtitle-1.text--primary 管理
       tbody
-        tr( v-for="(problem, idx) in problems" :key="idx" )
+        tr( v-for="(problem, idx) in problems" :key="idx" v-if="profile.role != 2 || problem.author.username == profile.username" )
           td.subtitle-1 {{ problem.pid }}
           td.subtitle-1.hidden-sm-and-down {{ problem.title }}
           td.subtitle-1 {{ problem.author.displayedName }}
           td.subtitle-1
             v-tooltip( bottom color="#000000E6" )
-              template( v-slot:activator="{ on }" )
+              template( v-if="problem.author.username == profile.username || profile.role == 0" v-slot:activator="{ on }" )
                 v-btn.mr-1( color="info" v-on="on" :href="`/admin/problem/${problem.pid}`" )
                   v-icon mdi-pencil
               span 修改題目
-            v-tooltip( bottom color="#000000E6")
+            v-tooltip( v-if="profile.role != 2" bottom color="#000000E6")
               template( v-slot:activator="{ on }" )
                 v-btn.mr-1( color="primary" v-on="on" @click="cloneProblem(problem.pid, course)" :disabled="course == unlimit" )
                   v-icon mdi-content-copy

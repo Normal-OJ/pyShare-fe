@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import html from './index.pug';
-import { UNLIMIT, getCourses, getTags } from '@/util.js'
+import { UNLIMIT, getCourses, getTags, getProfile } from '@/util.js'
 
 export default Vue.extend({
     template: html,
@@ -32,10 +32,16 @@ export default Vue.extend({
             status: ['隱藏（老師和作者可見）', '顯示'],
             deleteProblemDialog: false,
             deleting: -1,
+            profile: {
+                username: '',
+                displayName: '',
+                role: 2,
+            },
         }
     },
 
     beforeMount() {
+        this.profile = getProfile()
         this.getProblems()
         getCourses().then(courses => this.courses = courses)
     },

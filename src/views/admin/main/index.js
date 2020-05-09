@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import html from './index.pug';
+import { getProfile } from '@/util.js'
 // import Vuex file ...
 
 export default Vue.extend({
@@ -7,6 +8,7 @@ export default Vue.extend({
   
   data () {
     return {
+      profile: getProfile(),
     }
   },
 

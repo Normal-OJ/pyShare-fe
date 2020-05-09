@@ -21,7 +21,7 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
           th.font-weight-bold.subtitle-1.text--primary.hidden-sm-and-down 日期
           th.font-weight-bold.subtitle-1.text--primary.hidden-sm-and-down 作者
       tbody
-        tr( v-for="problem in problems" :key="problem.title" )
+        tr( v-for="problem in problems" :key="problem.pid" )
           td.subtitle-1 {{ problem.pid }}
           td.subtitle-1
             a( :href="`/problem/${problem.pid}`" ) {{ problem.title }}

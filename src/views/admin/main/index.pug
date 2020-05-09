@@ -4,12 +4,12 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
     v-card-subtitle.subtitle-1 在此新增題目、編輯題目
     v-card-actions
       v-btn.ma-3( color="primary" href="/admin/problems" ) 進入
-  v-card.my-3( elevation="12" )
+  v-card.my-3( v-if="profile.role < 2" elevation="12" )
     v-card-title 管理課程
     v-card-subtitle.subtitle-1 在此瀏覽課程、新增學生、查看統計資料
     v-card-actions
       v-btn.ma-3( color="primary" href="/admin/courses" ) 進入
-  v-card.my-3( elevation="12" )
+  v-card.my-3( v-if="profile.role < 2" elevation="12" )
     v-card-title 管理分類
     v-card-subtitle.subtitle-1 在此管理各課程可使用的分類，新增分類
     v-card-actions

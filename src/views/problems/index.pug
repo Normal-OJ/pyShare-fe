@@ -22,12 +22,12 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
           th.font-weight-bold.subtitle-1.text--primary.hidden-sm-and-down 作者
       tbody
         tr( v-for="problem in problems" :key="problem.title" )
-          td.subtitle-1 {{ problem._id }}
+          td.subtitle-1 {{ problem.pid }}
           td.subtitle-1
-            a( :href="`/problem/${problem._id}`" ) {{ problem.title }}
+            a( :href="`/problem/${problem.pid}`" ) {{ problem.title }}
           td.subtitle-1.hidden-sm-and-down 
             v-chip.mr-1( v-for="tag in problem.tags" :key="tag" label small ) {{ tag }}
-          td.subtitle-1.hidden-sm-and-down {{ problem.timestamp }}
+          td.subtitle-1.hidden-sm-and-down {{ timeFormat(problem.timestamp).substring(0,10) }}
           td.subtitle-1.hidden-sm-and-down {{ problem.author.displayedName }}
         tr( v-if="problems.length===0" )
           td( colspan="3" ) No data available.

@@ -182,15 +182,15 @@ export default Vue.extend({
             this.alert.att.msg = `附件上傳：成功 ${cnt[0]}、失敗 ${cnt[1]}`
         },
         async deleteAttachment(filename, pid) {
-            /*
-                put these two lines of codes at the end of try {}
+            let result;
+            try {
+                result = await this.$http.delete(`/${pid}/attachment`, { data: { attachment_name: filename } });
                 this.alert.rmAtt.msg = '附件移除成功'
-                this.alert.rmAtt.value = true
-
-                put these two lines of codes at the end of catch(e) {}
+            } catch (e) {
+                console.log(e);
                 this.alert.rmAtt.msg = '附件移除失敗'
-                this.alert.rmAtt.value = true
-            */
+            }
+            this.alert.rmAtt.value = true
         }
     },
 });

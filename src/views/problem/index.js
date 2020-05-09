@@ -276,10 +276,20 @@ export default Vue.extend({
             return '#777'
         },
         reGet(comment_id) {
-
+            let result
+            try {
+                result = await this.$http.get('/comment/' + comment_id);
+            } catch (e) {
+                console.log(e);
+            }
         },
         reJudge(comment_id) {
-
+            let result
+            try {
+                result = await this.$http.get(`/comment/${comment_id}/rejudge`);
+            } catch (e) {
+                console.log(e);
+            }
         }
     },
 });

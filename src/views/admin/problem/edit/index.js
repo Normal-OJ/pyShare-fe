@@ -72,6 +72,7 @@ export default Vue.extend({
                 status: null,
                 tags: [],
                 defaultCode: '',
+                attachments: [],
             },
             files: [],
             availableTags: [],
@@ -79,6 +80,20 @@ export default Vue.extend({
             status: [{ text: '顯示', value: 1 }, { text: '隱藏（僅老師和創題者可見）', value: 0 }],
             unlimit: UNLIMIT,
             content: '',
+            alert: {
+                rmAtt: {
+                    value: false,
+                    msg: '',
+                },
+                problem: {
+                    value: false,
+                    msg: '',
+                },
+                att: {
+                    value: false,
+                    msg: '',
+                }
+            }
         }
     },
 
@@ -121,7 +136,8 @@ export default Vue.extend({
                     this.content = JSON.parse(result.description)
                     this.editor.setContent(this.content)
                     this.problem.defaultCode = result.defaultCode
-                    console.log(result)
+                    this.problem.attachments = result.attachments
+                    this.problem.attachments = ["test.csv"]
                 }
             } catch (e) {
                 console.log(e);
@@ -129,31 +145,52 @@ export default Vue.extend({
         },
         async createProblem() {
             this.problem.description = JSON.stringify(this.content)
+            this.alert.problem.msg = '題目內容上傳中...'
+            this.alert.problem.value = true
             let result;
             let pid = this.$route.params.id
             try {
                 if (pid == 'new') {
                     result = await this.$http.post('/problem', this.problem);
                     pid = result.data.pid
-                } else
+                } else {
                     result = await this.$http.put(`/problem/${this.$route.params.id}`, this.problem);
+                }
+                this.alert.problem.msg = '題目內容上傳成功！'
             } catch (e) {
                 console.log(e);
+                this.alert.problem.msg = '題目內容上傳失敗！'
             }
             this.uploadAttachment(pid)
         },
         async uploadAttachment(pid) {
+            this.alert.att.msg = '附件上傳中...'
+            this.alert.att.value = true
             let result;
+            let cnt = [0, 0]
             for (let i = 0; i < this.files.length; i++) {
                 try {
                     let formData = new FormData();
-
                     formData.append('attachment', this.files[i]);
                     result = await this.$http.post(`/${pid}/attachment`, formData);
+                    cnt[0]++;
                 } catch (e) {
                     console.log(e);
+                    cnt[1]++;
                 }
             }
+            this.alert.att.msg = `附件上傳：成功 ${cnt[0]}、失敗 ${cnt[1]}`
+        },
+        async deleteAttachment(filename, pid) {
+            /*
+                put these two lines of codes at the end of try {}
+                this.alert.rmAtt.msg = '附件移除成功'
+                this.alert.rmAtt.value = true
+
+                put these two lines of codes at the end of catch(e) {}
+                this.alert.rmAtt.msg = '附件移除失敗'
+                this.alert.rmAtt.value = true
+            */
         }
     },
 });

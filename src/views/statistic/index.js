@@ -25,7 +25,7 @@ export default Vue.extend({
             } catch (e) {
                 console.log(e);
             }
-            this.statistic = result.data
+            this.statistic = result.data.data
         },
     },
 });

@@ -1,147 +1,107 @@
 v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', height: '100%' }" )
-  v-card.my-3( height="100%" elevation="12" )
+  v-card.my-3( height="100%" elevation="12" v-if="statistic.problems" )
     v-card-title {{ $route.params.name }}
 
     v-divider
 
-    v-card-title.font-weight-bold 發文: 2
+    v-card-title.font-weight-bold 發文: {{ statistic.problems.length }}
     v-simple-table.pl-12.pr-3
       thead
         tr
           th.subtitle-1.text--primary( style="width: 20%" ) 課程
-          th.subtitle-1.text--primary( style="width: 40%" ) 連結
-          th.subtitle-1.text--primary 日期
+          th.subtitle-1.text--primary( style="width: 80%" ) 連結
       tbody
-        tr
-          td.subtitle-1 課程一
+        tr( v-if="statistic.problems && statistic.problems.length == 0" )
+          td( colspan="2" ) No data available.
+        tr( v-for="(problem, idx) in statistic.problems" :key="idx" )
+          td.subtitle-1 {{ problem.course }}
           td.subtitle-1
-            a( :href="`/problem/3`" ) 3 - 108-1 自行車竊案統計-2 (圖表繪製)
-          td.subtitle-1 2020-04-17 13:35
-        tr
-          td.subtitle-1 課程一
-          td.subtitle-1
-            a( :href="`/problem/2`" ) 2 - 108-1 自行車竊案統計-3 (圖表繪製)
-          td.subtitle-1 2020-04-01 19:00
+            a( :href="`/problem/${problem.pid}`" ) {{ '題目' + problem.pid }}
 
-    v-card-title.font-weight-bold 留言: 2
+    v-card-title.font-weight-bold 留言: {{ statistic.comments.length }}
     v-simple-table.pl-12.pr-3
       thead
         tr
           th.subtitle-1.text--primary( style="width: 20%" ) 課程
-          th.subtitle-1.text--primary( style="width: 40%" ) 連結
-          th.subtitle-1.text--primary 日期
-          th.subtitle-1.text--primary 老師是否按過愛心
+          th.subtitle-1.text--primary( style="width: 30%" ) 連結
+          th.subtitle-1.text--primary( style="width: 50%" ) 老師是否按過愛心
       tbody
-        tr
-          td.subtitle-1 課程一
+        tr( v-if="statistic.comments && statistic.comments.length == 0" )
+          td( colspan="3" ) No data available.
+        tr( v-for="(comment, idx) in statistic.comments" :key="idx" )
+          td.subtitle-1 {{ comment.course }}
           td.subtitle-1
-            a( :href="`/problem/3`" ) 3 - 108-1 自行車竊案統計-2 (圖表繪製) - B1
-          td.subtitle-1 2020-02-29 12:34
+            a( :href="`/problem/${comment.pid}#${comment.floor}F`" ) {{ '題目' + comment.pid + ' - ' + comment.floor + '樓' }}
           td.subtitle-1 
-            v-icon( color="success" ) mdi-check-bold
-        tr
-          td.subtitle-1 課程一
-          td.subtitle-1
-            a( :href="`/problem/2`" ) 2 - 108-1 自行車竊案統計-3 (圖表繪製) - B7
-          td.subtitle-1 2020-03-03 23:59
-          td.subtitle-1
-            v-icon( color="error" ) mdi-close-thick
+            v-icon( v-if="comment.passed" color="success" ) mdi-check-bold
+            v-icon( v-else color="error" ) mdi-close-thick
 
-    v-card-title.font-weight-bold 回覆: 2
+    v-card-title.font-weight-bold 回覆: {{ statistic.replies.length }}
     v-simple-table.pl-12.pr-3
       thead
         tr
           th.subtitle-1.text--primary( style="width: 20%" ) 課程
-          th.subtitle-1.text--primary( style="width: 40%" ) 連結
-          th.subtitle-1.text--primary 日期
+          th.subtitle-1.text--primary( style="width: 80%" ) 連結
       tbody
-        tr
-          td.subtitle-1 課程一
+        tr( v-if="statistic.replies && statistic.replies.length == 0" )
+          td( colspan="2" ) No data available.
+        tr( v-for="(reply, idx) in statistic.replies" :key="idx" )
+          td.subtitle-1 {{ relpy.course }}
           td.subtitle-1
-            a( :href="`/problem/3`" ) 3 - 108-1 自行車竊案統計-2 (圖表繪製) - B1
-          td.subtitle-1 2020-03-22 11:22
-        tr
-          td.subtitle-1 課程一
-          td.subtitle-1
-            a( :href="`/problem/2`" ) 2 - 108-1 自行車竊案統計-3 (圖表繪製) - B7
-          td.subtitle-1 2020-03-24 03:02
+            a( :href="`/problem/${reply.pid}#${reply.floor}F`" ) {{ '題目' + reply.pid + ' - ' + reply.floor + '樓底下' }}
 
-    v-card-title.font-weight-bold 給予愛心: 2
+    v-card-title.font-weight-bold 獲得愛心: {{ statistic.liked.length }}
     v-simple-table.pl-12.pr-3
       thead
         tr
           th.subtitle-1.text--primary( style="width: 20%" ) 課程
-          th.subtitle-1.text--primary( style="width: 40%" ) 連結
-          th.subtitle-1.text--primary 對象
+          th.subtitle-1.text--primary( style="width: 30%" ) 連結
+          th.subtitle-1.text--primary( style="width: 50%" ) 給予愛心的人
       tbody
-        tr
-          td.subtitle-1 課程一
+        tr( v-if="statistic.liked && statistic.liked.length == 0" )
+          td( colspan="3" ) No data available.
+        tr( v-for="(liked, idx) in statistic.liked" :key="idx" )
+          td.subtitle-1 {{ liked.course }}
           td.subtitle-1
-            a( :href="`/problem/3`" ) 3 - 108-1 自行車竊案統計-2 (圖表繪製) - B1
-          td.subtitle-1 studentB
-        tr
-          td.subtitle-1 課程一
+            a( :href="`/problem/${liked.pid}#${liked.floor}F`" ) {{ '題目' + liked.pid + ' - ' + liked.floor + '樓' }}
           td.subtitle-1
-            a( :href="`/problem/2`" ) 2 - 108-1 自行車竊案統計-3 (圖表繪製) - B7
-          td.subtitle-1 studentB
+            v-expansion-panels( flat )
+              v-expansion-panel
+                v-expansion-panel-header {{ liked.starers.length }}
+                v-expansion-panel-content
+                  p( v-for="(starer, i) in liked.starers" :key="i" ) {{ starer }}
 
-    v-card-title.font-weight-bold 獲得愛心: 2
+
+    v-card-title.font-weight-bold 給予愛心: {{ statistic.likes.length }}
     v-simple-table.pl-12.pr-3
       thead
         tr
           th.subtitle-1.text--primary( style="width: 20%" ) 課程
-          th.subtitle-1.text--primary( style="width: 40%" ) 連結
-          th.subtitle-1.text--primary 給予愛心的人
+          th.subtitle-1.text--primary( style="width: 30%" ) 連結
+          th.subtitle-1.text--primary( style="width: 50%" ) 對象
       tbody
-        tr
-          td.subtitle-1 課程一
+        tr( v-if="statistic.likes && statistic.likes.length == 0" )
+          td( colspan="3" ) No data available.
+        tr( v-for="(likes, idx) in statistic.likes" :key="idx" )
+          td.subtitle-1 {{ likes.course }}
           td.subtitle-1
-            a( :href="`/problem/3`" ) 3 - 108-1 自行車竊案統計-2 (圖表繪製) - B1
-          td.subtitle-1
-            v-btn( color="info" icon )
-              v-icon mdi-account-details
-        tr
-          td.subtitle-1 課程一
-          td.subtitle-1
-            a( :href="`/problem/2`" ) 2 - 108-1 自行車竊案統計-3 (圖表繪製) - B7
-          td.subtitle-1 
-            v-btn( color="info" icon )
-              v-icon mdi-account-details
+            a( :href="`/problem/${likes.pid}#${likes.floor}F`" ) {{ '題目' + likes.pid + ' - ' + likes.floor + '樓' }}
+          td.subtitle-1 {{ likes.staree }}
 
-    v-card-title.font-weight-bold 執行成功: 5
+    v-card-title.font-weight-bold 執行結果: {{ statistic.execInfo.length }}
     v-simple-table.pl-12.pr-3
       thead
         tr
           th.subtitle-1.text--primary( style="width: 20%" ) 課程
-          th.subtitle-1.text--primary( style="width: 40%" ) 連結
-          th.subtitle-1.text--primary 次數
+          th.subtitle-1.text--primary( style="width: 30%" ) 連結
+          th.subtitle-1.text--primary( style="width: 25%" ) 成功次數
+          th.subtitle-1.text--primary( style="width: 25%" ) 失敗次數
       tbody
-        tr
-          td.subtitle-1 課程一
+        tr( v-if="statistic.execInfo && statistic.execInfo.length == 0" )
+          td( colspan="4" ) No data available.
+        tr( v-for="(info, idx) in statistic.execInfo" :key="idx")
+          td.subtitle-1 {{ info.course }}
           td.subtitle-1
-            a( :href="`/problem/3`" ) 3 - 108-1 自行車竊案統計-2 (圖表繪製) - B1
-          td.subtitle-1 2
-        tr
-          td.subtitle-1 課程一
-          td.subtitle-1
-            a( :href="`/problem/2`" ) 2 - 108-1 自行車竊案統計-3 (圖表繪製) - B7
-          td.subtitle-1 3
-
-    v-card-title.font-weight-bold 執行失敗:５
-    v-simple-table.pl-12.pr-3
-      thead
-        tr
-          th.subtitle-1.text--primary( style="width: 20%" ) 課程
-          th.subtitle-1.text--primary( style="width: 40%" ) 連結
-          th.subtitle-1.text--primary 次數
-      tbody
-        tr
-          td.subtitle-1 課程一
-          td.subtitle-1
-            a( :href="`/problem/3`" ) 3 - 108-1 自行車竊案統計-2 (圖表繪製) - B1
-          td.subtitle-1 2
-        tr
-          td.subtitle-1 課程一
-          td.subtitle-1
-            a( :href="`/problem/2`" ) 2 - 108-1 自行車竊案統計-3 (圖表繪製) - B7
-          td.subtitle-1 3
+            a( :href="`/problem/${info.pid}#${info.floor}F`" ) {{ '題目' + info.pid + ' - ' + info.floor + '樓' }}
+          td.subtitle-1 {{ info.success }}
+          td.subtitle-1 {{ info.fail }}

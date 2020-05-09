@@ -44,7 +44,7 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
           td.subtitle-1
             v-tooltip( right color="#000000E6" )
               template( v-slot:activator="{ on }" )
-                v-btn( color="info" v-on="on" small :href="`/stat/${data.username}`" rel="noopener noreferrer" target="_blank" )
+                v-btn( color="info" v-on="on" small :href="`/stat/${data.info.username}`" rel="noopener noreferrer" target="_blank" )
                   v-icon mdi-table-large
               span 顯示詳細資訊
             //- v-tooltip( right color="#000000E6" )
@@ -70,7 +70,11 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
     v-card
       v-card-title.headline 上傳表單新增學生
       v-card-text
-        v-file-input( v-model="newStudentFile" label="upload csv, xls file" )
+        v-file-input( v-model="newStudentFile" label="upload csv file" )
+        p .csv 應包含四個欄位，皆為必填：
+        code "username", "displayName", "password", "email"
+        p 若欲加入的學生已註冊過，"username" 以外可填可不填
+        v-img( src="https://imgur.com/a/EQ7Tc2g" )
       v-card-actions
         v-spacer
         v-btn.mr-3( color="danger" @click="newStudentDialog = false" dark ) 取消

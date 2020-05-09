@@ -29,7 +29,8 @@ export default Vue.extend({
     template: html,
 
     components: {
-        Result, EditorContent
+        Result,
+        EditorContent
     },
 
     data() {
@@ -136,6 +137,17 @@ export default Vue.extend({
                 } catch (e) {
                     console.log(e);
                     this.$set(this.problem.comments, i, '')
+                }
+
+                for (let j = 0; j < comments[i].replies.length; j++) {
+                    try {
+                        result = await this.$http.get('/comment/' + comments[i].replies[j]);
+                        result.data.data.id = comments[i].replies[j]
+                        this.$set(this.problem.comments[i].replies, j, result.data.data)
+                    } catch (e) {
+                        console.log(e);
+                        this.$set(this.problem.comments[i].replies, j, '')
+                    }
                 }
             }
 
@@ -258,8 +270,8 @@ export default Vue.extend({
             return 2
         },
         likeColor(users, name) {
-            for ( let i=0; i<users.length; ++i )
-                if ( users[i] == name )
+            for (let i = 0; i < users.length; ++i)
+                if (users[i] == name)
                     return '#e07fa0'
             return '#777'
         },
@@ -267,7 +279,7 @@ export default Vue.extend({
 
         },
         reJudge(comment_id) {
-            
+
         }
     },
 });

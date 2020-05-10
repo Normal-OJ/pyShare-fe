@@ -52,16 +52,8 @@ export default Vue.extend({
                 }
             },
             menu: ['編輯', '刪除'],
-            isCommentEditing: [], // Boolean
             isReplyShowed: [], // Boolean
-            replyInputs: [], // {show: Boolean, text: String}
-            /*
-                username: 使用者的 username
-                problem: 目前這題，提醒用 this.$route.params.id 可以拿到 pid (是根據造訪的 url)
-                attachments: 該題目所有的附件
-                newComment: 新留言，請看 methods: addNewComment()
-            */
-            displayName: getProfile().displayName,
+            displayName: '',
             problem: null,
             newComment: {
                 target: 'problem',
@@ -72,7 +64,7 @@ export default Vue.extend({
             },
             newingReply: null,
             newReply: {
-                targey: 'comment',
+                target: 'comment',
                 id: '',
                 title: '',
                 content: '',
@@ -118,6 +110,7 @@ export default Vue.extend({
 
     beforeMount() {
         this.getProblem()
+        this.displayName = getProfile().displayName
     },
 
     methods: {
@@ -128,38 +121,40 @@ export default Vue.extend({
             let result;
             try {
                 result = await this.$http.get('/problem/' + this.$route.params.id);
-                result = result.data.data
-                this.isReplyShowed = new Array(result.comments.length)
-                this.isReplyShowed.fill(false)
-                this.problem = result
-                this.editor.setContent(JSON.parse(this.problem.description), false)
+                result = result.data.data;
+                this.isReplyShowed = new Array(result.comments.length);
+                this.isReplyShowed.fill(false);
             } catch (e) {
                 console.log(e);
                 return
             }
 
-            let comments = this.problem.comments
-            for (let i = 0; i < comments.length; i++) {
+            let comments = result.comments;
+            for (let i = 0; i < result.comments.length; i++) {
                 try {
-                    result = await this.$http.get('/comment/' + comments[i]);
-                    result.data.data.id = comments[i]
-                    this.$set(this.problem.comments, i, result.data.data)
+                    let id = comments[i];
+                    let c = await this.$http.get('/comment/' + comments[i]);
+                    result.comments[i] = c.data.data;
+                    result.comments[i].id = id;
                 } catch (e) {
                     console.log(e);
-                    this.$set(this.problem.comments, i, '')
+                    result.comments[i] = '';
                 }
-
-                for (let j = 0; j < comments[i].replies.length; j++) {
+                for (let j = 0; j < result.comments[i].replies.length; j++) {
                     try {
-                        result = await this.$http.get('/comment/' + comments[i].replies[j]);
-                        result.data.data.id = comments[i].replies[j]
-                        this.$set(this.problem.comments[i].replies, j, result.data.data)
+                        let id = comments[i].replies[j];
+                        let r = await this.$http.get('/comment/' + comments[i].replies[j]);
+                        result.comments[i].replies[j] = r.data.data;
+                        result.comments[i].replies[j].id = id;
                     } catch (e) {
                         console.log(e);
-                        this.$set(this.problem.comments[i].replies, j, '')
+                        result.comments[i].replies[j] = '';
                     }
                 }
             }
+            this.problem = result
+            console.log(this.problem)
+            this.editor.setContent(JSON.parse(this.problem.description), false)
         },
         switchShowReply(idx) {
             this.$set(this.isReplyShowed, idx, !this.isReplyShowed[idx])
@@ -190,13 +185,15 @@ export default Vue.extend({
             }
             this.getProblem()
         },
-        async add(data) {
+        async add(data, idx) {
             try {
                 let result = await this.$http.post('/comment', data, { emulateJSON: true });
             } catch (e) {
                 console.log(e);
             }
-            this.getProblem()
+            await this.getProblem()
+            if ( idx != -1 )
+                this.$set(this.isReplyShowed, idx, true);
         },
         async update(id, data, idx) {
             try {
@@ -204,7 +201,9 @@ export default Vue.extend({
             } catch (e) {
                 console.log(e);
             }
-            this.getProblem()
+            await this.getProblem()
+            if ( idx != -1 )
+                this.$set(this.isReplyShowed, idx, true);
         },
         async delete(id) {
             try {

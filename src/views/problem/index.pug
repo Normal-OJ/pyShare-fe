@@ -31,14 +31,14 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
   div( v-for="(comment, idx) in problem.comments" :key="idx" )
     //- comment
     div( :id="`${idx+1}F`" style="padding: 30px 0;" )
-    v-card.anchor( v-if="comment && comment.id != editingComment" elevation="12" )
+    v-card.anchor( v-if="typeof(comment) != 'string' && comment.id != editingComment" elevation="12" )
       span.anchor
         a.float-icon( :href="`#${idx+1}F`" style="text-decoration: none;" )
           v-icon( style="transform: rotate(0.125turn);" ) mdi-link-variant
-      v-card-title {{ comment.title }}
+      v-card-title {{ (comment.status==0 ? '(已刪除)' : '') + comment.title }}
         v-spacer
         div.subtitle-2( v-if="comment.created != comment.updated" style="color: grey;" ) (已編輯)
-        v-menu( offset-x )
+        v-menu( offset-x v-if="comment.status != 0" )
           template( v-slot:activator="{ on }" )
             v-btn.mr-3( icon v-on="on" v-if="perm(comment.author.username) < 2" )
               v-icon mdi-dots-horizontal
@@ -71,7 +71,7 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
             v-icon( :color="likeColor(comment.liked, username)" ) mdi-heart
           div.mt-1.mr-3 {{ comment.liked.length }}
     //- editing comment
-    v-card( v-else-if="comment != ''" elevation="12" ) 
+    v-card( v-else-if="comment != '' && typeof(comment) != 'string'" elevation="12" ) 
       v-card-title
         v-text-field( placeholder="留言標題..." outlined dense hide-details v-model="editComment.title" )
         v-row( no-gutters )
@@ -79,7 +79,7 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
           div.subtitle-2 2020-03-27 12:35
       v-card-subtitle.text--primary {{ (idx+1) + ' 樓' }}
         v-icon mdi-account
-        | {{ comment.author.displayName }}
+        | {{ comment.author.displayedName }}
       v-card-text.pl-0.pb-0
         v-tabs( vertical )
           v-tab( v-for="item in lists.slice(0,2)" :key="item.title" )
@@ -91,15 +91,14 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
       v-card-actions
         v-row( no-gutters )
           v-spacer
-          v-btn( text @click="editingComment = null; comment.id = '12';" ) 取消
-          v-btn.mx-3( color="primary" tile depressed :disabled="editComment.title === '' || editComment.content === ''" @click="update(comment.id, editComment, idx)" ) 更新
+          v-btn( text @click="editingComment = null;" ) 取消
+          v-btn.mx-3( color="primary" tile depressed :disabled="editComment.title === '' || editComment.content === ''" @click="update(comment.id, editComment, -1)" ) 更新
     //- deleted comment
     v-card( v-else elevation="12")
       v-card-subtitle {{ (idx+1) + '樓 此留言已刪除' }}
 
-    //- 
-      New Reply input
-    v-card.my-3( v-if="comment.id = newingReply" style="margin-left: 10%;" elevation="2" )
+    //- New Reply input
+    v-card.my-3( v-if="comment.id == newingReply" style="margin-left: 10%;" elevation="2" )
       v-card-subtitle.pb-0.text--primary
         v-row( no-gutters )
           v-icon mdi-account
@@ -110,29 +109,29 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
       v-card-actions
         v-row( no-gutters )
           v-spacer
-          v-btn( text @click="setShowInput(idx, false)" ) 取消
-          v-btn.mx-3( color="primary" tile depressed :disabled="newReply.content === ''" @click="add(newReply)" ) 回覆
+          v-btn( text @click="newingReply = null;" ) 取消
+          v-btn.mx-3( color="primary" tile depressed :disabled="newReply.content === ''" @click="newingReply = null; add(newReply, idx)" ) 回覆
 
-    //- 
-      Toggle button for show/hide replies
+    //- Toggle button for show/hide replies
     v-card.my-3( style="margin-left: 10%;" elevation="0" color="transparent" v-if="comment.replies" )
       v-btn.subtitle-1( text color="primary" @click="switchShowReply(idx)" )
         div( v-if="comment.replies.length > 0" ) 
           v-icon.mr-1 {{ replyLabels[isReplyShowed[idx]].icon }}
           | {{ replyLabels[isReplyShowed[idx]].text + ` ${comment.replies.length} ` + '則回覆' }}
 
-    //- 
-      show all replies
+    //- show all replies
     div( v-show="isReplyShowed[idx]" )
       div( v-for="(reply, replyIdx) in comment.replies" :key="replyIdx" )
         v-card.my-3( style="margin-left: 10%;" elevation="2" v-if="reply.id != editingReply" )
           v-card-subtitle.text--primary
             v-row( no-gutters align="center" )
               v-icon mdi-account
-              | {{ reply.author.displayName }}
+              | {{ reply.author.displayedName }}
+              v-spacer
+              div.subtitle-2( v-if="reply.status == 0" style="color: grey;" ) (已刪除)
               v-spacer
               div.subtitle-2( v-if="reply.created != reply.updated" style="color: grey;" ) (已編輯)
-              v-menu( offset-x )
+              v-menu( offset-x v-if="reply.status != 0" )
                 template( v-slot:activator="{ on }" )
                   v-btn.mr-3( icon v-on="on" v-if="perm(reply.author.username) >= 0" )
                     v-icon mdi-dots-horizontal
@@ -144,11 +143,11 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
             v-card( flat style="background: #e7e7e7" )
               v-card-text
                 div.text--primary( style="white-space: pre-line" ) {{ reply.content }}
-        v-card.my-3( v-else style="margin-left: 10%;" elevation="2" )
+        v-card.my-3( v-else-if="reply != ''" style="margin-left: 10%;" elevation="2" )
           v-card-subtitle.pb-0.text--primary
             v-row( no-gutters )
               v-icon mdi-account
-              | {{ username }}
+              | {{ displayName }}
               v-spacer
           v-card-text.py-0
             v-textarea.pt-0( v-model="editReply.content" ref="replyTextarea" single-line rows="1" auto-grow hide-details )
@@ -156,8 +155,12 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
             v-row( no-gutters )
               v-spacer
               v-btn( text @click="editingReply = null" ) 取消
-              v-btn.mx-3( color="primary" tile depressed :disabled="editReply.content === ''" @click="update(reply.id, editReply, -1)" ) 更新回覆
+              v-btn.mx-3( color="primary" tile depressed :disabled="editReply.content === ''" @click="editingReply = null; update(reply.id, editReply, idx)" ) 更新回覆
+        //- deleted reply
+        v-card( v-else style="margin-left: 10%;" elevation="2")
+          v-card-subtitle {{ '此回覆已刪除' }}
 
+  //- New Comment Input
   v-divider( style="margin-top: 10%; margin-bottom: 5%" )
   v-card( elevation="12" )
     v-card-title.subtitle-1
@@ -175,5 +178,5 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
     v-card-actions
       v-row( no-gutters )
         v-spacer
-        v-btn.mx-3( color="primary" tile depressed :disabled="newComment.title === '' || newComment.content === ''" @click="add(newComment)" ) 留言
+        v-btn.mx-3( color="primary" tile depressed :disabled="newComment.title === '' || newComment.content === ''" @click="add(newComment, -1)" ) 留言
           

@@ -70,7 +70,22 @@ export default Vue.extend({
                 content: '',
                 code: '',
             },
+            newingReply: null,
+            newReply: {
+                targey: 'comment',
+                id: '',
+                title: '',
+                content: '',
+                code: '',
+            },
+            editingComment: null,
             editComment: {
+                title: '',
+                content: '',
+                code: '',
+            },
+            editingReply: null,
+            editReply: {
                 title: '',
                 content: '',
                 code: '',
@@ -113,19 +128,14 @@ export default Vue.extend({
             let result;
             try {
                 result = await this.$http.get('/problem/' + this.$route.params.id);
-                console.log(result)
                 result = result.data.data
                 this.isReplyShowed = new Array(result.comments.length)
-                this.isCommentEditing = new Array(result.comments.length)
-                this.replyInputs = new Array(result.comments.length)
                 this.isReplyShowed.fill(false)
-                this.isCommentEditing.fill(false)
-                this.replyInputs.fill({ show: false, text: '' })
                 this.problem = result
-                console.log(JSON.parse(this.problem.description))
                 this.editor.setContent(JSON.parse(this.problem.description), false)
             } catch (e) {
                 console.log(e);
+                return
             }
 
             let comments = this.problem.comments
@@ -150,94 +160,63 @@ export default Vue.extend({
                     }
                 }
             }
-
         },
         switchShowReply(idx) {
             this.$set(this.isReplyShowed, idx, !this.isReplyShowed[idx])
         },
-        setShowInput(idx, val) {
-            this.$set(this.replyInputs, idx, { show: val, text: (val ? this.replyInputs[idx].text : '') })
-            if (this.replyInputs[idx].show) {
-                this.$nextTick(() => {
-                    this.$refs['replyTextarea'][idx].focus()
-                })
-            }
+        addReply(comment_id) {
+            this.newReply.id = comment_id;
+            this.newReply.content = '';
+            this.newingReply = comment_id;
         },
-        menuTouch(opt, cls, idx, id) {
+        menuTouch(opt, cls, id, data) {
             if (opt == '編輯') {
                 if (cls == 'comment') {
-                    this.editComment = { content: this.problem.comments[idx].content, code: this.problem.comments[idx].submission.code }
-                    this.$set(this.isCommentEditing, idx, true)
+                    this.editComment = { title: data.title, content: data.content, code: data.submission.code }
+                    this.editingComment = id;
                 } else {
-                    console.log('edit reply!');
+                    this.editReply.content = data.content;
+                    this.editingReply = id;
                 }
             } else {
                 this.delete(id);
             }
         },
-        cancelEditing(cls, idx) {
-            if (cls == 'comment') {
-                this.$set(this.isCommentEditing, idx, false);
-            } else {
-                console.log('stop edit reply')
-            }
-        },
         async likeComment(id) {
             try {
-                result = await this.$http.get(`/comment/${id}/like`)
+                let result = await this.$http.get(`/comment/${id}/like`)
             } catch (e) {
                 console.log(e);
             }
             this.getProblem()
         },
-        async addNewComment(data) {
-            let result
+        async add(data) {
             try {
-                result = await this.$http.post('/comment', data, { emulateJSON: true });
-            } catch (e) {
-                console.log(e);
-            }
-            this.getProblem()
-        },
-        async addNewReply(_id, _content) {
-            let result
-            try {
-                result = await this.$http.post('/comment', {
-                    target: 'comment',
-                    id: _id,
-                    content: _content,
-                    title: '',
-                    code: '',
-                }, { emulateJSON: true });
+                let result = await this.$http.post('/comment', data, { emulateJSON: true });
             } catch (e) {
                 console.log(e);
             }
             this.getProblem()
         },
         async update(id, data, idx) {
-            let result
-            data.title = this.problem.comments[idx].title;
-            console.log(data)
             try {
-                result = await this.$http.put(`/comment/${id}`, data);
+                let result = await this.$http.put(`/comment/${id}`, data);
             } catch (e) {
                 console.log(e);
             }
             this.getProblem()
         },
         async delete(id) {
-            let result
             try {
-                result = await this.$http.delete(`/comment/${id}`);
+                let result = await this.$http.delete(`/comment/${id}`);
             } catch (e) {
                 console.log(e);
             }
             this.getProblem()
         },
         async download() {
-            let result
             try {
-                result = await this.$http.get(`/problem/${this.problem.pid}/attachment/${this.browsing}`);
+                let result = await this.$http.get(`/problem/${this.problem.pid}/attachment/${this.browsing}`);
                 var file = new Blob([result], { type: 'text/plain;charset=utf-8' });
                 if (window.navigator.msSaveOrOpenBlob) { // IE10+
                     window.navigator.msSaveOrOpenBlob(file, 'report.xls');
@@ -276,17 +255,15 @@ export default Vue.extend({
             return '#777'
         },
         async reGet(comment_id) {
-            let result
             try {
-                result = await this.$http.get('/comment/' + comment_id);
+                let result = await this.$http.get('/comment/' + comment_id);
             } catch (e) {
                 console.log(e);
             }
         },
         async reJudge(comment_id) {
-            let result
             try {
-                result = await this.$http.get(`/comment/${comment_id}/rejudge`);
+                let result = await this.$http.get(`/comment/${comment_id}/rejudge`);
             } catch (e) {
                 console.log(e);
             }

@@ -30,4 +30,4 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
           td.subtitle-1.hidden-sm-and-down {{ timeFormat(problem.timestamp).substring(0,10) }}
           td.subtitle-1.hidden-sm-and-down {{ problem.author.displayedName }}
         tr( v-if="problems.length===0" )
-          td( colspan="3" ) No data available.
+          td( colspan="5" ) No data available.

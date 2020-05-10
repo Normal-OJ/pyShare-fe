@@ -29,7 +29,8 @@ export default Vue.extend({
     template: html,
 
     components: {
-        Result, EditorContent
+        Result,
+        EditorContent
     },
 
     data() {
@@ -51,16 +52,8 @@ export default Vue.extend({
                 }
             },
             menu: ['編輯', '刪除'],
-            isCommentEditing: [], // Boolean
             isReplyShowed: [], // Boolean
-            replyInputs: [], // {show: Boolean, text: String}
-            /*
-                username: 使用者的 username
-                problem: 目前這題，提醒用 this.$route.params.id 可以拿到 pid (是根據造訪的 url)
-                attachments: 該題目所有的附件
-                newComment: 新留言，請看 methods: addNewComment()
-            */
-            displayName: getProfile().displayName,
+            displayName: '',
             problem: null,
             newComment: {
                 target: 'problem',
@@ -69,7 +62,22 @@ export default Vue.extend({
                 content: '',
                 code: '',
             },
+            newingReply: null,
+            newReply: {
+                target: 'comment',
+                id: '',
+                title: '',
+                content: '',
+                code: '',
+            },
+            editingComment: null,
             editComment: {
+                title: '',
+                content: '',
+                code: '',
+            },
+            editingReply: null,
+            editReply: {
                 title: '',
                 content: '',
                 code: '',
@@ -102,6 +110,7 @@ export default Vue.extend({
 
     beforeMount() {
         this.getProblem()
+        this.displayName = getProfile().displayName
     },
 
     methods: {
@@ -112,120 +121,101 @@ export default Vue.extend({
             let result;
             try {
                 result = await this.$http.get('/problem/' + this.$route.params.id);
-                console.log(result)
-                result = result.data.data
-                this.isReplyShowed = new Array(result.comments.length)
-                this.isCommentEditing = new Array(result.comments.length)
-                this.replyInputs = new Array(result.comments.length)
-                this.isReplyShowed.fill(false)
-                this.isCommentEditing.fill(false)
-                this.replyInputs.fill({ show: false, text: '' })
-                this.problem = result
-                console.log(JSON.parse(this.problem.description))
-                this.editor.setContent(JSON.parse(this.problem.description), false)
+                result = result.data.data;
+                this.isReplyShowed = new Array(result.comments.length);
+                this.isReplyShowed.fill(false);
             } catch (e) {
                 console.log(e);
+                return
             }
 
-            let comments = this.problem.comments
-            for (let i = 0; i < comments.length; i++) {
+            let comments = result.comments;
+            for (let i = 0; i < result.comments.length; i++) {
                 try {
-                    result = await this.$http.get('/comment/' + comments[i]);
-                    result.data.data.id = comments[i]
-                    this.$set(this.problem.comments, i, result.data.data)
+                    let id = comments[i];
+                    let c = await this.$http.get('/comment/' + comments[i]);
+                    result.comments[i] = c.data.data;
+                    result.comments[i].id = id;
                 } catch (e) {
                     console.log(e);
-                    this.$set(this.problem.comments, i, '')
+                    result.comments[i] = '';
+                }
+                for (let j = 0; j < result.comments[i].replies.length; j++) {
+                    try {
+                        let id = comments[i].replies[j];
+                        let r = await this.$http.get('/comment/' + comments[i].replies[j]);
+                        result.comments[i].replies[j] = r.data.data;
+                        result.comments[i].replies[j].id = id;
+                    } catch (e) {
+                        console.log(e);
+                        result.comments[i].replies[j] = '';
+                    }
                 }
             }
-
+            this.problem = result
+            console.log(this.problem)
+            this.editor.setContent(JSON.parse(this.problem.description), false)
         },
         switchShowReply(idx) {
             this.$set(this.isReplyShowed, idx, !this.isReplyShowed[idx])
         },
-        setShowInput(idx, val) {
-            this.$set(this.replyInputs, idx, { show: val, text: (val ? this.replyInputs[idx].text : '') })
-            if (this.replyInputs[idx].show) {
-                this.$nextTick(() => {
-                    this.$refs['replyTextarea'][idx].focus()
-                })
-            }
+        addReply(comment_id) {
+            this.newReply.id = comment_id;
+            this.newReply.content = '';
+            this.newingReply = comment_id;
         },
-        menuTouch(opt, cls, idx, id) {
+        menuTouch(opt, cls, id, data) {
             if (opt == '編輯') {
                 if (cls == 'comment') {
-                    this.editComment = { content: this.problem.comments[idx].content, code: this.problem.comments[idx].submission.code }
-                    this.$set(this.isCommentEditing, idx, true)
+                    this.editComment = { title: data.title, content: data.content, code: data.submission.code }
+                    this.editingComment = id;
                 } else {
-                    console.log('edit reply!');
+                    this.editReply.content = data.content;
+                    this.editingReply = id;
                 }
             } else {
                 this.delete(id);
             }
         },
-        cancelEditing(cls, idx) {
-            if (cls == 'comment') {
-                this.$set(this.isCommentEditing, idx, false);
-            } else {
-                console.log('stop edit reply')
-            }
-        },
         async likeComment(id) {
             try {
-                result = await this.$http.get(`/comment/${id}/like`)
+                let result = await this.$http.get(`/comment/${id}/like`)
             } catch (e) {
                 console.log(e);
             }
             this.getProblem()
         },
-        async addNewComment(data) {
-            let result
+        async add(data, idx) {
             try {
-                result = await this.$http.post('/comment', data, { emulateJSON: true });
+                let result = await this.$http.post('/comment', data, { emulateJSON: true });
             } catch (e) {
                 console.log(e);
             }
-            this.getProblem()
-        },
-        async addNewReply(_id, _content) {
-            let result
-            try {
-                result = await this.$http.post('/comment', {
-                    target: 'comment',
-                    id: _id,
-                    content: _content,
-                    title: '',
-                    code: '',
-                }, { emulateJSON: true });
-            } catch (e) {
-                console.log(e);
-            }
-            this.getProblem()
+            await this.getProblem()
+            if ( idx != -1 )
+                this.$set(this.isReplyShowed, idx, true);
         },
         async update(id, data, idx) {
-            let result
-            data.title = this.problem.comments[idx].title;
-            console.log(data)
             try {
-                result = await this.$http.put(`/comment/${id}`, data);
+                let result = await this.$http.put(`/comment/${id}`, data);
             } catch (e) {
                 console.log(e);
             }
-            this.getProblem()
+            await this.getProblem()
+            if ( idx != -1 )
+                this.$set(this.isReplyShowed, idx, true);
         },
         async delete(id) {
-            let result
             try {
-                result = await this.$http.delete(`/comment/${id}`);
+                let result = await this.$http.delete(`/comment/${id}`);
             } catch (e) {
                 console.log(e);
             }
             this.getProblem()
         },
         async download() {
-            let result
             try {
-                result = await this.$http.get(`/problem/${this.problem.pid}/attachment/${this.browsing}`);
+                let result = await this.$http.get(`/problem/${this.problem.pid}/attachment/${this.browsing}`);
                 var file = new Blob([result], { type: 'text/plain;charset=utf-8' });
                 if (window.navigator.msSaveOrOpenBlob) { // IE10+
                     window.navigator.msSaveOrOpenBlob(file, 'report.xls');
@@ -258,16 +248,24 @@ export default Vue.extend({
             return 2
         },
         likeColor(users, name) {
-            for ( let i=0; i<users.length; ++i )
-                if ( users[i] == name )
+            for (let i = 0; i < users.length; ++i)
+                if (users[i] == name)
                     return '#e07fa0'
             return '#777'
         },
-        reGet(comment_id) {
-
+        async reGet(comment_id) {
+            try {
+                let result = await this.$http.get('/comment/' + comment_id);
+            } catch (e) {
+                console.log(e);
+            }
         },
-        reJudge(comment_id) {
-            
+        async reJudge(comment_id) {
+            try {
+                let result = await this.$http.get(`/comment/${comment_id}/rejudge`);
+            } catch (e) {
+                console.log(e);
+            }
         }
     },
 });

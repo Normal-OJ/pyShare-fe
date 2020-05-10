@@ -10,15 +10,6 @@ export async function getCourses(needUnlimit = true) {
         result = result.data
     } catch (e) {
         console.log(e);
-        result = {
-            'data': [{
-                name: 'God',
-                teacher: {
-                    username: 'tcc',
-                    displayedName: '蔣宗哲',
-                }
-            }]
-        }
     }
     let courses = result.data.map(course => course.name);
     if (needUnlimit) courses.push(UNLIMIT);
@@ -32,9 +23,6 @@ export async function getTags(course = UNLIMIT) {
         result = result.data
     } catch (e) {
         console.log(e);
-        result = {
-            'data': ['tag1', 'tag2']
-        }
     }
     return result.data;
 }

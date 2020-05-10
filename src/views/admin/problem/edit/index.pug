@@ -53,11 +53,11 @@ v-container.editor( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95v
   h2.my-1 目前附件
   v-row( no-gutters )
     v-alert( dark color="info" dense v-model="alert.rmAtt.value" dismissible ) {{ alert.rmAtt.msg }}
-    v-row( no-gutters v-for="(att, idx) in problem.attachments" :key="idx" )
-      v-col {{ att }}
-      v-col
-        v-btn( color="error" icon dark @click="deleteAttachment(att)" )
-          v-icon mdi-trashcan
+
+  v-row( no-gutters v-for="(att, idx) in problem.attachments" :key="idx" justify="center" )
+    v-chip( color="primary" dark label ) {{ att }}
+    v-btn( color="error" icon dark @click="deleteAttachment(att, $route.params.id)" )
+      v-icon mdi-trash-can
 
   h2.my-1 上傳附件
   v-row( no-gutters )

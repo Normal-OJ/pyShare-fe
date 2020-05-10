@@ -66,6 +66,7 @@ export default Vue.extend({
                 },
             }),
             problem: {
+                pid: '',
                 title: '',
                 description: '',
                 course: UNLIMIT,
@@ -128,6 +129,7 @@ export default Vue.extend({
                 if (this.$route.params.id != 'new') {
                     result = await this.$http.get(`/problem/${this.$route.params.id}`);
                     result = result.data.data
+                    this.problem.pid = result.pid
                     this.problem.title = result.title
                     this.problem.status = result.status
                     this.files = result.attachments
@@ -141,6 +143,7 @@ export default Vue.extend({
                 }
             } catch (e) {
                 console.log(e);
+                this.problem.attachments = ["test.csv"]
             }
         },
         async createProblem() {
@@ -148,7 +151,7 @@ export default Vue.extend({
             this.alert.problem.msg = '題目內容上傳中...'
             this.alert.problem.value = true
             let result;
-            let pid = this.$route.params.id
+            this.problem.pid = this.$route.params.id
             try {
                 if (pid == 'new') {
                     result = await this.$http.post('/problem', this.problem);
@@ -164,11 +167,11 @@ export default Vue.extend({
             this.uploadAttachment(pid)
         },
         async uploadAttachment(pid) {
-            this.alert.att.msg = '附件上傳中...'
-            this.alert.att.value = true
             let result;
             let cnt = [0, 0]
             for (let i = 0; i < this.files.length; i++) {
+                this.alert.att.msg = '附件上傳中...'
+                this.alert.att.value = true
                 try {
                     let formData = new FormData();
                     formData.append('attachment', this.files[i]);
@@ -178,8 +181,11 @@ export default Vue.extend({
                     console.log(e);
                     cnt[1]++;
                 }
+                this.alert.att.msg = `附件上傳：成功 ${cnt[0]}、失敗 ${cnt[1]}`
             }
-            this.alert.att.msg = `附件上傳：成功 ${cnt[0]}、失敗 ${cnt[1]}`
+            if ( this.$route.params.id == 'new' ) {
+                this.$router.push(`/admin/problem/${this.pid}`);
+            }
         },
         async deleteAttachment(filename, pid) {
             let result;

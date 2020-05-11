@@ -5,12 +5,15 @@ import vuetify from './plugins/vuetify'
 import VueCookies from 'vue-cookies'
 import axios from 'axios'
 import VueAxios from 'vue-axios'
+import VueHighlightJS from 'vue-highlightjs'
  
 Vue.use(VueAxios, axios)
 axios.defaults.baseURL = '/api'
 
 Vue.use(VueCookies)
 Vue.config.productionTip = false
+
+Vue.use(VueHighlightJS)
 
 new Vue({
   router,

@@ -1,4 +1,4 @@
-v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', height: '150%' }" v-if="problem" )
+v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', height: '110%' }" v-if="problem" )
   v-card.mt-3( elevation="12" )
     v-card-subtitle
       v-icon.mr-1( small ) mdi-clock
@@ -56,19 +56,27 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
             | {{ item.title }}
           v-tab-item( v-for="item in lists" :key="item.key" )
             v-card( flat style="background: #e7e7e7" )
-              v-card-text
-                v-expand-transition
-                  div( v-if="item.key == 'result'" )
-                    Result( :stderr="comment.submission.stderr" :stdout="comment.submission.stdout" :files="comment.submission.files" @reget="reGet(comment.id)" @rejudge="reJudge(comment.id)" )
-                  div.text--primary( v-else-if="item.key == 'code'" style="white-space: pre-line" ) {{ comment.submission.code }}
-                  div.text--primary( v-else style="white-space: pre-line" ) {{ comment[item.key] }}
+              div( v-if="item.key == 'content'" )
+                v-card-text
+                  v-expand-transition
+                    div.text--primary( style="white-space: pre-line" ) {{ comment[item.key] }}
+              div( v-else )
+                v-card-text.codeblock
+                  v-expand-transition
+                    div( v-if="item.key == 'result'" )
+                      Result( :stderr="comment.submission.stderr" :stdout="comment.submission.stdout" :files="comment.submission.files" @reget="reGet(comment.id, idx)" @rejudge="reJudge(comment.id)" :cid="comment.id" )
+                    div( v-else-if="item.key == 'code'" style="white-space: pre-line" )
+                      v-btn.copy-code( :id="`btn-copy-${idx}`" :data-clipboard-target="`#copy-${idx}`" color="grey" icon small )
+                        v-icon mdi-content-copy
+                      pre( v-highlightjs="comment.submission.code" )
+                        code.python( ref="copy-${idx}" :id="`copy-${idx}`" )
       v-card-actions
         v-row( no-gutters )
           v-btn.text-none( color="primary" text @click="addReply(comment.id)" ) → Reply
           v-spacer
           v-btn.ml-3( icon @click="likeComment(comment.id)" )
             v-icon( :color="likeColor(comment.liked, username)" ) mdi-heart
-          div.mt-1.mr-3 {{ comment.liked.length }}
+          div.mt-1.mr-3 {{ '(' + comment.liked.length + ')' }}
     //- editing comment
     v-card( v-else-if="comment != '' && typeof(comment) != 'string'" elevation="12" ) 
       v-card-title
@@ -112,11 +120,10 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
           v-btn.mx-3( color="primary" tile depressed :disabled="newReply.content === ''" @click="newingReply = null; add(newReply, idx)" ) 回覆
 
     //- Toggle button for show/hide replies
-    v-card.my-3( style="margin-left: 10%;" elevation="0" color="transparent" v-if="comment.replies" )
+    v-card.my-3( style="margin-left: 10%;" elevation="0" color="transparent" v-if="comment.replies && comment.replies.length > 0" )
       v-btn.subtitle-1( text color="primary" @click="switchShowReply(idx)" )
-        div( v-if="comment.replies.length > 0" ) 
-          v-icon.mr-1 {{ replyLabels[isReplyShowed[idx]].icon }}
-          | {{ replyLabels[isReplyShowed[idx]].text + ` ${comment.replies.length} ` + '則回覆' }}
+        v-icon.mr-1 {{ replyLabels[isReplyShowed[idx]].icon }}
+        | {{ replyLabels[isReplyShowed[idx]].text + ` ${comment.replies.length} ` + '則回覆' }}
 
     //- show all replies
     div( v-show="isReplyShowed[idx]" )
@@ -178,4 +185,7 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
       v-row( no-gutters )
         v-spacer
         v-btn.mx-3( color="primary" tile depressed :disabled="newComment.title === '' || newComment.content === ''" @click="add(newComment, -1)" ) 留言
-          
+  v-snackbar.subtitle-1( v-model="snackbar" :color="alert.color" )
+    | {{ alert.msg }}
+    v-btn( icon @click="snackbar = false" )
+      v-icon mdi-close-circle

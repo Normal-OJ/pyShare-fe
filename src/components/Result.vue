@@ -38,7 +38,7 @@
             v-icon mdi-alert
         span 若程式執行不正確，可以點此重新執行
     
-    v-dialog( :value="overlay" width="60vw" )
+    v-dialog( v-model="overlay" width="60vw" )
       v-row( justify="center" )
         v-btn( icon @click="overlay = false" )
           v-icon mdi-close

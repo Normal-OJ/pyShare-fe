@@ -99,7 +99,7 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
         v-row( no-gutters )
           v-spacer
           v-btn( text @click="editingComment = null;" ) 取消
-          v-btn.mx-3( color="primary" tile depressed :disabled="editComment.title === '' || editComment.content === ''" @click="update(comment.id, editComment, -1)" ) 更新
+          v-btn.mx-3( color="primary" tile depressed :disabled="editComment.title === '' || editComment.content === ''" @click="editingComment = null; update(comment.id, editComment, -1)" ) 更新
     //- deleted comment
     v-card( v-else elevation="12")
       v-card-subtitle {{ (idx+1) + '樓 此留言已刪除' }}

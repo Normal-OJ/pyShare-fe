@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import html from './index.pug';
-import { UNLIMIT, getCourses, getTags, toDateString } from '@/util.js'
+import { UNLIMIT, getCourses, getTags, toDateString, getProfile } from '@/util.js'
 
 export default Vue.extend({
     template: html,
@@ -35,6 +35,7 @@ export default Vue.extend({
 
     beforeMount() {
         this.getProblems()
+        this.course = getProfile().course;
         getCourses().then(courses => this.courses = courses)
         getTags().then(tags => this.tags = tags)
     },

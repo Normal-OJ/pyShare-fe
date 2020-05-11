@@ -42,6 +42,7 @@ export default Vue.extend({
 
     beforeMount() {
         this.profile = getProfile()
+        this.course = this.profile.course;
         this.getProblems()
         getCourses().then(courses => this.courses = courses)
     },

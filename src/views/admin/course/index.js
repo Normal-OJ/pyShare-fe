@@ -21,6 +21,7 @@ export default Vue.extend({
     },
 
     beforeMount() {
+        this.course = getProfile().course;
         getCourses(false).then(courses => this.courses = courses)
     },
 

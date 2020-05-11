@@ -33,13 +33,15 @@ export function getProfile() {
         return {
             username: payload.username,
             displayName: payload.displayName,
-            role: payload.role
+            role: payload.role,
+            course: payload.course
         };
     }
     return {
         username: '',
         displayName: '',
-        role: 2
+        role: 2,
+        course: ''
     };
 }
 

@@ -54,16 +54,21 @@ v-container.editor( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95v
   v-row( no-gutters )
     v-alert( dark color="info" dense v-model="alert.rmAtt.value" dismissible ) {{ alert.rmAtt.msg }}
 
-  v-row( no-gutters v-for="(att, idx) in problem.attachments" :key="idx" justify="center" )
-    v-chip( color="primary" dark label ) {{ att }}
-    v-btn( color="error" icon dark @click="deleteAttachment(att, $route.params.id)" )
-      v-icon mdi-trash-can
+  v-row.py-1.pl-12( no-gutters v-for="(att, idx) in problem.attachments" :key="idx" )
+    v-col( cols="6" )
+      v-chip( color="primary" dark label ) {{ att }}
+    v-col( cols="4" )
+      v-btn.mr-3( color="error" dark @click="deleteAttachment(att, $route.params.id)" small )
+        v-icon mdi-trash-can
+      v-btn( color="info" dark @click="download(att, $route.params.id)" :loading="downloading" small )
+        v-icon mdi-file-download
+    v-spacer
 
   h2.my-1 上傳附件
   v-row( no-gutters )
     v-file-input( v-model="files" color="primary" counter multiple placeholder="上傳附件檔案（可選多個）" prepend-icon="mdi-paperclip" outlined )
-    template( v-slot:selection="{ index, text }" )
-      v-chip( v-if="index < 2" color="primary" dark label small ) {{ text }}
+      template( v-slot:selection="{ index, text }" )
+        v-chip( v-if="index < 2" color="primary" dark label small ) {{ text }}
 
   v-row( no-gutters )
     v-alert( dark color="info" dense v-model="alert.problem.value" dismissible ) {{ alert.problem.msg }}

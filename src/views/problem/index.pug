@@ -24,7 +24,7 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
           v-list
             v-list-item( v-for="atta in problem.attachments" :key="atta" @click="browsing = atta" )
               v-list-item-title {{ atta }}
-        v-btn.ml-6( v-if="browsing!='請選擇'" color="info" small @click="download" )
+        v-btn.ml-6( v-if="browsing!='請選擇'" color="info" small @click="download" :loading="downloading" )
           v-icon mdi-file-download
           | 下載
 
@@ -59,8 +59,7 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
               v-card-text
                 v-expand-transition
                   div( v-if="item.key == 'result'" )
-                    Result( stderr="fake err" stdout="fake out" :files="[]")
-                    //- Result( :stderr="comment.submission.stderr" :stdout="comment.submission.stdout" :files="comment.submission.files" )
+                    Result( :stderr="comment.submission.stderr" :stdout="comment.submission.stdout" :files="comment.submission.files" @reget="reGet(comment.id)" @rejudge="reJudge(comment.id)" )
                   div.text--primary( v-else-if="item.key == 'code'" style="white-space: pre-line" ) {{ comment.submission.code }}
                   div.text--primary( v-else style="white-space: pre-line" ) {{ comment[item.key] }}
       v-card-actions

@@ -105,6 +105,7 @@ export default Vue.extend({
                 ],
             }),
             username: getProfile().uesrname,
+            downloading: false,
         }
     },
 
@@ -215,15 +216,16 @@ export default Vue.extend({
         },
         async download() {
             try {
+                this.downloading = true;
                 let result = await this.$http.get(`/problem/${this.problem.pid}/attachment/${this.browsing}`);
                 var file = new Blob([result], { type: 'text/plain;charset=utf-8' });
                 if (window.navigator.msSaveOrOpenBlob) { // IE10+
-                    window.navigator.msSaveOrOpenBlob(file, 'report.xls');
+                    window.navigator.msSaveOrOpenBlob(file, this.browsing);
                 } else { // Others
                     var a = document.createElement("a");
                     var url = URL.createObjectURL(file);
                     a.href = url;
-                    a.download = 'report.xls';
+                    a.download = this.browsing;
                     document.body.appendChild(a);
                     a.click();
                     setTimeout(function() {
@@ -231,8 +233,10 @@ export default Vue.extend({
                         window.URL.revokeObjectURL(url);
                     }, 0);
                 }
+                this.downloading = false;
             } catch (e) {
                 console.log(e);
+                this.downloading = false;
             }
         },
         perm(user) {
@@ -266,6 +270,7 @@ export default Vue.extend({
             } catch (e) {
                 console.log(e);
             }
+            this.reGet(comment_id)
         }
     },
 });

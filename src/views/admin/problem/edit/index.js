@@ -94,7 +94,8 @@ export default Vue.extend({
                     value: false,
                     msg: '',
                 }
-            }
+            },
+            downloading: false,
         }
     },
 
@@ -132,18 +133,15 @@ export default Vue.extend({
                     this.problem.pid = result.pid
                     this.problem.title = result.title
                     this.problem.status = result.status
-                    this.files = result.attachments
                     this.problem.tags = result.tags
                     this.problem.course = result.course
                     this.content = JSON.parse(result.description)
                     this.editor.setContent(this.content)
                     this.problem.defaultCode = result.defaultCode
                     this.problem.attachments = result.attachments
-                    this.problem.attachments = ["test.csv"]
                 }
             } catch (e) {
                 console.log(e);
-                this.problem.attachments = ["test.csv"]
             }
         },
         async createProblem() {
@@ -151,7 +149,7 @@ export default Vue.extend({
             this.alert.problem.msg = '題目內容上傳中...'
             this.alert.problem.value = true
             let result;
-            this.problem.pid = this.$route.params.id
+            let pid = this.$route.params.id
             try {
                 if (pid == 'new') {
                     result = await this.$http.post('/problem', this.problem);
@@ -169,34 +167,67 @@ export default Vue.extend({
         async uploadAttachment(pid) {
             let result;
             let cnt = [0, 0]
+            this.alert.att.msg = '題目附件上傳中...'
             for (let i = 0; i < this.files.length; i++) {
-                this.alert.att.msg = '附件上傳中...'
                 this.alert.att.value = true
                 try {
                     let formData = new FormData();
                     formData.append('attachment', this.files[i]);
-                    result = await this.$http.post(`/${pid}/attachment`, formData);
+                    result = await this.$http.post(`/problem/${pid}/attachment`, formData);
                     cnt[0]++;
                 } catch (e) {
                     console.log(e);
                     cnt[1]++;
                 }
-                this.alert.att.msg = `附件上傳：成功 ${cnt[0]}、失敗 ${cnt[1]}`
             }
+            this.alert.att.msg = `題目附件上傳：成功 ${cnt[0]}、失敗 ${cnt[1]}`
             if ( this.$route.params.id == 'new' ) {
                 this.$router.push(`/admin/problem/${this.pid}`);
+            } else {
+                this.getProblem();
+                this.files = [];
             }
         },
         async deleteAttachment(filename, pid) {
             let result;
             try {
-                result = await this.$http.delete(`/${pid}/attachment`, { data: { attachment_name: filename } });
-                this.alert.rmAtt.msg = '附件移除成功'
+                let formData = new FormData();
+                formData.append('attachmentName', filename);
+                result = await this.$http.delete(`/problem/${pid}/attachment`, { data: formData });
+                this.alert.rmAtt.msg = '題目附件移除成功'
             } catch (e) {
                 console.log(e);
-                this.alert.rmAtt.msg = '附件移除失敗'
+                this.alert.rmAtt.msg = '題目附件移除失敗'
             }
             this.alert.rmAtt.value = true
-        }
+            for ( let i=0; i<this.problem.attachments.length; ++i )
+                if ( this.problem.attachments[i] === filename )
+                    this.problem.attachments.splice(i,1);
+        },
+        async download(filename, pid) {
+            try {
+                this.downloading = true;
+                let result = await this.$http.get(`/problem/${pid}/attachment/${filename}`);
+                var file = new Blob([result], { type: 'text/plain;charset=utf-8' });
+                if (window.navigator.msSaveOrOpenBlob) { // IE10+
+                    window.navigator.msSaveOrOpenBlob(file, filename);
+                } else { // Others
+                    var a = document.createElement("a");
+                    var url = URL.createObjectURL(file);
+                    a.href = url;
+                    a.download = filename;
+                    document.body.appendChild(a);
+                    a.click();
+                    setTimeout(function() {
+                        document.body.removeChild(a);
+                        window.URL.revokeObjectURL(url);
+                    }, 0);
+                }
+                this.downloading = false;
+            } catch (e) {
+                this.downloading = false;
+                console.log(e);
+            }
+        },
     },
 });

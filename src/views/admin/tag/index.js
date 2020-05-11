@@ -56,57 +56,30 @@ export default Vue.extend({
             this.candidateTags = this.candidateTags.filter(tag => !this.availableTags.includes(tag))
         },
 
-        // 這兩個 api 都收 array! 詳看 api ref
-
-        // api: 2.5.2 Create tags
         async addNewTag(tags) {
-            let result;
             try {
-                result = await this.$http.post('/tag', { tags: tags });
+                let result = await this.$http.post('/tag', { tags: tags });
             } catch (e) {
                 console.log(e);
-                result = {
-                    'data': {
-                        'fail': [],
-                        'success': ['共產主義'],
-                    }
-                }
             }
             this.updateTags()
         },
-        // api: 2.5.3 Delete tags
         async deleteTags(tags) {
-            let result;
             try {
-                result = await this.$http.delete('/tag', { data: { tags: tags } });
+                let result = await this.$http.delete('/tag', { data: { tags: tags } });
             } catch (e) {
                 console.log(e);
-                result = {
-                    'data': {
-                        'fail': [],
-                        'success': ['共產主義'],
-                    }
-                }
             }
             this.updateTags()
         },
-        // api: 2.4.6 Manage tags
         async pushTags(course, tags) {
-            console.log(tags)
-            let result;
             try {
-                result = await this.$http.patch(`/course/${course}/tag`, {
+                let result = await this.$http.patch(`/course/${course}/tag`, {
                     push: tags,
                     pop: []
                 });
             } catch (e) {
                 console.log(e);
-                result = {
-                    'data': {
-                        'fail': [],
-                        'success': ['共產主義'],
-                    }
-                }
             }
             this.updateTags()
         },
@@ -119,20 +92,10 @@ export default Vue.extend({
                 });
             } catch (e) {
                 console.log(e);
-                result = {
-                    'data': {
-                        'fail': [],
-                        'success': ['共產主義'],
-                    }
-                }
             }
             this.updateTags()
         },
 
-        /*
-          這裡應該不會動到
-          util to control SELECT ALL component
-        */
         myToggle() {
             this.$nextTick(() => {
                 if (this.selectAll()) {

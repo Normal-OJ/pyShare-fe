@@ -7,23 +7,22 @@
       v-tab-item
         pre( v-highlightjs="stdout" )
           code
-      v-tab-item( style="background-color: '#e7e7e7'" )
-        v-menu( offset-y )
-          template( v-slot:activator="{ on }" ) 
-            v-btn.text-none( outlined v-on="on" small )
-              | {{ browsing }}
-              v-icon mdi-chevron-down
-          v-list
-            v-list-item( v-for="(file, idx) in files" :key="idx" @click="browsing = file" )
-              v-list-item-title {{ file }}
-        v-btn.ml-6( v-if="browsing!='請選擇'" color="info" small @click="download" :loading="downloading" )
-          v-icon mdi-file-download
-          | 下載
-        //- v-container( fluid )
-        //-   v-img( max-height="200" )
-        //-     template( v-slot:placeholder )
-        //-       v-row.fill-height.ma-0( align="center" justify="center" )
-        //-         v-progress-circular( indeterminate color="grey lighten-5" )
+      v-tab-item.imgblock
+        v-row.my-1( no-gutters v-if="misc && misc.length > 0" )
+          v-menu( offset-y )
+            template( v-slot:activator="{ on }" ) 
+              v-btn.text-none( outlined v-on="on" small )
+                | {{ browsing }}
+                v-icon mdi-chevron-down
+            v-list
+              v-list-item( v-for="(file, idx) in misc" :key="idx" @click="browsing = file" )
+                v-list-item-title {{ file }}
+          v-btn.ml-6( v-if="browsing!='請選擇'" color="info" small @click="download" :loading="downloading" )
+            v-icon mdi-file-download
+            | 下載
+        v-row.my-1( no-gutters )
+          v-col( cols="12" md="3" v-for="(img, idx) in images" :key="idx" )
+            v-img.hover-click( max-height="200" contain :src="img" @click="overlayImg = img; overlay = true;" )
       v-tab-item
         pre( v-highlightjs="stderr" )
           code
@@ -38,6 +37,12 @@
           v-btn.mr-3( v-on="on" color="error" icon small @click="$emit('rejudge')" )
             v-icon mdi-alert
         span 若程式執行不正確，可以點此重新執行
+    
+    v-dialog( :value="overlay" width="60vw" )
+      v-row( justify="center" )
+        v-btn( icon @click="overlay = false" )
+          v-icon mdi-close
+      v-img( max-width="60vw" contain :src="overlayImg" )
 </template>
 
 <script>
@@ -67,29 +72,37 @@ export default {
     return {
       browsing: '請選擇',
       downloading: false,
+      overlay: false,
+      overlayImg: '',
+      images: ['/NOJ.png'],
+      misc: [],
     }
   },
 
   beforeMount() {
-    // this.getFiles();
+    this.getFiles();
   },
 
   methods: {
-    // async getFiles() {
-    //   for (let i = 0; i < this.files.length; i++) {
-    //     console.log(this.files[i])
-    //     try {
-    //       let res = await this.$http.get(`/comment/${this.cid}/file/${this.files[i]}`);
-    //       console.log(res);
-    //     } catch (e) {
-    //       console.log(e);
-    //     }
-    //   }
-    // },
+    isImage(f) {
+      return ( f === 'png' || f === 'jpg' || f === 'gif' || f === 'jpeg' || f === 'webp' || f === 'svg' || f === 'bmp' )
+    },
+    async getFiles() {
+      this.images = [];
+      this.misc = [];
+      for (let i = 0; i < this.files.length; i++) {
+        let ext = this.files[i].split('.');
+        ext = ext[ext.length - 1];
+        if ( this.isImage(ext) )
+          this.images.push(`/api/comment/${this.cid}/file/${this.files[i]}`);
+        else
+          this.misc.push(this.files[i]);
+      }
+    },
     async download() {
       try {
         this.downloading = true;
-        let result = await this.$http.get(`/comment/${this.cid}/attachment/${this.browsing}`);
+        let result = await this.$http.get(`/comment/${this.cid}/file/${this.browsing}`);
         var file = new Blob([result], { type: 'text/plain;charset=utf-8' });
         if (window.navigator.msSaveOrOpenBlob) { // IE10+
           window.navigator.msSaveOrOpenBlob(file, this.browsing);
@@ -117,19 +130,24 @@ export default {
 
 <style lang="scss" scoped>
 $color-black: #000000;
-$color-white: #ffffff;
-$color-grey: #dddddd;
+$color-grey: #e7e7e7;
+
+.hover-click:hover {
+  cursor: pointer;
+}
+
+.imgblock {
+  background: $color-grey !important;
+}
 
 .codeblock {
   pre {
-    // padding: 0.7rem 1rem;
     border-radius: 5px;
-    background: #e7e7e7;
+    background: $color-grey;
     overflow-x: auto;
 
     code {
       display: block;
-      // padding: 0 0.4rem;
       background: rgba($color-black, 0);
       color: rgba($color-black, 0.9);
       -webkit-box-shadow: none;

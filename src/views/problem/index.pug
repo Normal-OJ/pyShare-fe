@@ -76,7 +76,7 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
           v-spacer
           v-btn.ml-3( icon @click="likeComment(comment.id)" )
             v-icon( :color="likeColor(comment.liked, username)" ) mdi-heart
-          div.mt-1.mr-3 {{ comment.liked.length }}
+          div.mt-1.mr-3 {{ '(' + comment.liked.length + ')' }}
     //- editing comment
     v-card( v-else-if="comment != '' && typeof(comment) != 'string'" elevation="12" ) 
       v-card-title

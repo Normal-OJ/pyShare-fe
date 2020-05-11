@@ -30,7 +30,7 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
               span 修改題目
             v-tooltip( v-if="profile.role != 2" bottom color="#000000E6")
               template( v-slot:activator="{ on }" )
-                v-btn.mr-1( color="primary" v-on="on" @click="cloneProblem(problem.pid, course)" :disabled="course == unlimit" )
+                v-btn.mr-1( color="primary" v-on="on" @click="clonePid = problem.pid; cloneProblemDialog = true" :disabled="course == unlimit" )
                   v-icon mdi-content-copy
               span 複製出一個新題目
             v-tooltip( bottom color="#000000E6" )
@@ -48,3 +48,12 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
         v-spacer
         v-btn.mr-3( color="primary" @click="deleteProblemDialog = false" dark ) 取消
         v-btn( color="error" @click="deleteProblem(problems[deleting].pid); deleteProblemDialog = false" ) 確認
+  v-dialog( v-model="cloneProblemDialog" :width="$vuetify.breakpoint.mdAndUp ? '70vw' : '95vw'" )
+    v-card
+      v-card-title.headline 新增課程
+      v-card-text
+        v-select( v-model="cloneToCourse" label="選擇複製到哪一個課程" :items="courses" )
+      v-card-actions
+        v-spacer
+        v-btn.mr-3( color="danger" @click="cloneProblemDialog = false" dark text ) 取消
+        v-btn( color="primary" @click="cloneProblemDialog = false; cloneProblem(clonePid, cloneToCourse)" :disabled="cloneToCourse === ''" ) 確認

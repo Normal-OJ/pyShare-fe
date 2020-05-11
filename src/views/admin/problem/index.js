@@ -37,6 +37,9 @@ export default Vue.extend({
                 displayName: '',
                 role: 2,
             },
+            clonePid: '',
+            cloneToCourse: '',
+            cloneProblemDialog: false,
         }
     },
 

@@ -166,7 +166,7 @@ export default Vue.extend({
         },
         async uploadAttachment(pid) {
             let result;
-            let cnt = [0, 0]
+            let cnt = ['', ''];
             this.alert.att.msg = '題目附件上傳中...'
             for (let i = 0; i < this.files.length; i++) {
                 this.alert.att.value = true
@@ -174,13 +174,13 @@ export default Vue.extend({
                     let formData = new FormData();
                     formData.append('attachment', this.files[i]);
                     result = await this.$http.post(`/problem/${pid}/attachment`, formData);
-                    cnt[0]++;
+                    cnt[0] += `${this.files[i].name} `;
                 } catch (e) {
                     console.log(e);
-                    cnt[1]++;
+                    cnt[1] += `${this.files[i].name} `;
                 }
             }
-            this.alert.att.msg = `題目附件上傳：成功 ${cnt[0]}、失敗 ${cnt[1]}`
+            this.alert.att.msg = `題目附件上傳，成功：${cnt[0]}，失敗：${cnt[1]}`
             if ( this.$route.params.id == 'new' ) {
                 this.$router.push(`/admin/problem/${this.pid}`);
             } else {
@@ -194,10 +194,10 @@ export default Vue.extend({
                 let formData = new FormData();
                 formData.append('attachmentName', filename);
                 result = await this.$http.delete(`/problem/${pid}/attachment`, { data: formData });
-                this.alert.rmAtt.msg = '題目附件移除成功'
+                this.alert.rmAtt.msg = `題目附件：${filename} 移除成功`
             } catch (e) {
                 console.log(e);
-                this.alert.rmAtt.msg = '題目附件移除失敗'
+                this.alert.rmAtt.msg = `題目附件：${filename} 移除失敗`
             }
             this.alert.rmAtt.value = true
             for ( let i=0; i<this.problem.attachments.length; ++i )

@@ -68,7 +68,7 @@ v-container.editor( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95v
   v-row( no-gutters )
     v-file-input( v-model="files" color="primary" counter multiple placeholder="上傳附件檔案（可選多個）" prepend-icon="mdi-paperclip" outlined )
       template( v-slot:selection="{ index, text }" )
-        v-chip( v-if="index < 2" color="primary" dark label small ) {{ text }}
+        v-chip( color="primary" dark label small ) {{ text }}
 
   v-row( no-gutters )
     v-alert( dark color="info" dense v-model="alert.problem.value" dismissible ) {{ alert.problem.msg }}

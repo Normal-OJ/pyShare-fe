@@ -7,12 +7,23 @@
       v-tab-item
         pre( v-highlightjs="stdout" )
           code
-      v-tab-item
-        v-container( fluid )
-          v-img( max-height="200" )
-            template( v-slot:placeholder )
-              v-row.fill-height.ma-0( align="center" justify="center" )
-                v-progress-circular( indeterminate color="grey lighten-5" )
+      v-tab-item( style="background-color: '#e7e7e7'" )
+        v-menu( offset-y )
+          template( v-slot:activator="{ on }" ) 
+            v-btn.text-none( outlined v-on="on" small )
+              | {{ browsing }}
+              v-icon mdi-chevron-down
+          v-list
+            v-list-item( v-for="(file, idx) in files" :key="idx" @click="browsing = file" )
+              v-list-item-title {{ file }}
+        v-btn.ml-6( v-if="browsing!='請選擇'" color="info" small @click="download" :loading="downloading" )
+          v-icon mdi-file-download
+          | 下載
+        //- v-container( fluid )
+        //-   v-img( max-height="200" )
+        //-     template( v-slot:placeholder )
+        //-       v-row.fill-height.ma-0( align="center" justify="center" )
+        //-         v-progress-circular( indeterminate color="grey lighten-5" )
       v-tab-item
         pre( v-highlightjs="stderr" )
           code
@@ -47,20 +58,58 @@ export default {
       default: () => [],
       type: Array,
     },
+    cid: {
+      required: true,
+    }
   },
 
   data () {
     return {
-
+      browsing: '請選擇',
+      downloading: false,
     }
   },
 
   beforeMount() {
-    this.getFiles();
+    // this.getFiles();
   },
 
   methods: {
-    getFiles() {
+    // async getFiles() {
+    //   for (let i = 0; i < this.files.length; i++) {
+    //     console.log(this.files[i])
+    //     try {
+    //       let res = await this.$http.get(`/comment/${this.cid}/file/${this.files[i]}`);
+    //       console.log(res);
+    //     } catch (e) {
+    //       console.log(e);
+    //     }
+    //   }
+    // },
+    async download() {
+      try {
+        this.downloading = true;
+        let result = await this.$http.get(`/comment/${this.cid}/attachment/${this.browsing}`);
+        var file = new Blob([result], { type: 'text/plain;charset=utf-8' });
+        if (window.navigator.msSaveOrOpenBlob) { // IE10+
+          window.navigator.msSaveOrOpenBlob(file, this.browsing);
+        } else { // Others
+          var a = document.createElement("a");
+          var url = URL.createObjectURL(file);
+          a.href = url;
+          a.download = this.browsing;
+          document.body.appendChild(a);
+          a.click();
+          setTimeout(function() {
+              document.body.removeChild(a);
+              window.URL.revokeObjectURL(url);
+          }, 0);
+        }
+        this.downloading = false;
+      } catch (e) {
+        console.log(e);
+        this.downloading = false;
+      }
     },
   }
 }

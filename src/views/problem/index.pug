@@ -65,9 +65,11 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
                   v-expand-transition
                     div( v-if="item.key == 'result'" )
                       Result( :stderr="comment.submission.stderr" :stdout="comment.submission.stdout" :files="comment.submission.files" @reget="reGet(comment.id, idx)" @rejudge="reJudge(comment.id)" )
-                    pre( v-else-if="item.key == 'code'" style="white-space: pre-line" v-highlightjs="comment.submission.code" )
-                      code.python
-                    div.text--primary( v-else style="white-space: pre-line" ) {{ comment[item.key] }}
+                    div( v-else-if="item.key == 'code'" style="white-space: pre-line" )
+                      v-btn.copy-code( :id="`btn-copy-${idx}`" :data-clipboard-target="`#copy-${idx}`" color="grey" icon small )
+                        v-icon mdi-content-copy
+                      pre( v-highlightjs="comment.submission.code" )
+                        code.python( ref="copy-${idx}" :id="`copy-${idx}`" )
       v-card-actions
         v-row( no-gutters )
           v-btn.text-none( color="primary" text @click="addReply(comment.id)" ) → Reply
@@ -183,4 +185,7 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
       v-row( no-gutters )
         v-spacer
         v-btn.mx-3( color="primary" tile depressed :disabled="newComment.title === '' || newComment.content === ''" @click="add(newComment, -1)" ) 留言
-          
+  v-snackbar.subtitle-1( v-model="snackbar" :color="alert.color" )
+    | {{ alert.msg }}
+    v-btn( icon @click="snackbar = false" )
+      v-icon mdi-close-circle

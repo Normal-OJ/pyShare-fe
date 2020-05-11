@@ -5,6 +5,7 @@ import { getProfile, toDateString } from '@/util.js'
 import Result from '@/components/Result'
 import python from 'highlight.js/lib/languages/python';
 import css from 'highlight.js/lib/languages/css';
+import Clipboard from 'clipboard'
 import { Editor, EditorContent } from 'tiptap';
 import {
     Blockquote,
@@ -113,6 +114,11 @@ export default Vue.extend({
             }),
             username: getProfile().uesrname,
             downloading: false,
+            alert: {
+                color: 'primary',
+                msg: '',
+            },
+            snackbar: false,
         }
     },
 
@@ -163,6 +169,7 @@ export default Vue.extend({
             this.problem = result
             this.editor.setContent(JSON.parse(this.problem.description), false)
             this.newComment.code = this.problem.defaultCode;
+            this.setupClipboard();
         },
         switchShowReply(idx) {
             this.$set(this.isReplyShowed, idx, !this.isReplyShowed[idx])
@@ -286,6 +293,32 @@ export default Vue.extend({
                 console.log(e);
             }
             this.reGet(comment_id)
-        }
+        },
+        setupClipboard() {
+            const clipboard = new Clipboard('.copy-code',
+            {
+               target: trigger => {
+                    let id = trigger.id.substr(4);
+                    return document.getElementById(id);
+                }
+            });
+            clipboard.on('success', evt => {
+                this.snackbar = false;
+                this.alert = {
+                    color: 'primary',
+                    msg: 'The code has been copied into the clipboard!',
+                };
+                this.snackbar = true;
+                evt.clearSelection();
+            });
+            clipboard.on('error', err => {
+                this.snackbar = false;
+                this.alert = {
+                    color: 'error',
+                    msg: 'Could not copy code!',
+                }
+                this.snackbar = true;
+            });
+        },
     },
 });

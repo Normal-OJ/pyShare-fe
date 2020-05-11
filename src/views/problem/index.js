@@ -3,6 +3,8 @@ import html from './index.pug';
 import './index.scss';
 import { getProfile, toDateString } from '@/util.js'
 import Result from '@/components/Result'
+import python from 'highlight.js/lib/languages/python';
+import css from 'highlight.js/lib/languages/css';
 import { Editor, EditorContent } from 'tiptap';
 import {
     Blockquote,
@@ -101,7 +103,12 @@ export default Vue.extend({
                     new Strike(),
                     new Underline(),
                     new History(),
-                    new CodeBlockHighlight()
+                    new CodeBlockHighlight({
+                        languages: {
+                            python,
+                            css,
+                        },
+                    })
                 ],
             }),
             username: getProfile().uesrname,
@@ -154,8 +161,8 @@ export default Vue.extend({
                 }
             }
             this.problem = result
-            console.log(this.problem)
             this.editor.setContent(JSON.parse(this.problem.description), false)
+            this.newComment.code = this.problem.defaultCode;
         },
         switchShowReply(idx) {
             this.$set(this.isReplyShowed, idx, !this.isReplyShowed[idx])
@@ -195,6 +202,11 @@ export default Vue.extend({
             await this.getProblem()
             if ( idx != -1 )
                 this.$set(this.isReplyShowed, idx, true);
+            else {
+                this.newComment.title = '';
+                this.newComment.content = '';
+                this.newComment.code = this.problem.defaultCode;
+            }
         },
         async update(id, data, idx) {
             try {
@@ -257,9 +269,12 @@ export default Vue.extend({
                     return '#e07fa0'
             return '#777'
         },
-        async reGet(comment_id) {
+        async reGet(comment_id, idx) {
             try {
                 let result = await this.$http.get('/comment/' + comment_id);
+                result = result.data.data;
+                result.id = comment_id;
+                this.$set(this.problem.comments, idx, result);
             } catch (e) {
                 console.log(e);
             }

@@ -34,8 +34,8 @@ export default Vue.extend({
     ready() {},
 
     beforeMount() {
-        this.getProblems()
         this.course = getProfile().course;
+        this.getProblems()
         getCourses().then(courses => this.courses = courses)
         getTags().then(tags => this.tags = tags)
     },
@@ -44,11 +44,16 @@ export default Vue.extend({
         course() {
             this.selectedTags = []
             getTags(this.course).then(tags => this.tags = tags)
-        }
+            this.getProblems()
+        },
+        selectedTags() {
+            this.getProblems()
+        },
     },
 
     methods: {
         async getProblems() {
+            console.log('enter')
             let result;
             try {
                 let filter = {

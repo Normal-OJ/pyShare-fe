@@ -1,17 +1,17 @@
 v-container.editor( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', height: '100%' }" )
-  h2.my-1 題目資訊
+  h2.my-3 題目資訊
   v-row( no-gutters )
     v-col.px-1( cols="12" md="6" )
       v-text-field( label="題目名稱" outlined v-model="problem.title" )
     v-col.px-1( cols="12" md="6" )
       v-select( label="顯示狀態" outlined :items="status" v-model="problem.status" )
-  v-row
+  v-row( no-gutters )
     v-col.px-1( cols="12" md="6" )
-      v-select( label="屬於課程" outlined hide-details :items="courses" v-model="problem.course" readonly )
+      v-select( label="屬於課程" :items="courses" v-model="problem.course" readonly hint="請透過複製題目來將題目移動至其他課程" persistent-hint append-icon="" )
     v-col.px-1( cols="12" md="6" )
-      v-select( label="題目分類" outlined :items="availableTags" chips multiple v-model="problem.tags" :disabled="problem.course == unlimit" hint="必須先選擇課程後才可以選擇分類" persistent-hint )
+      v-select( label="題目分類" outlined :items="availableTags" chips multiple v-model="problem.tags" :disabled="problem.course == unlimit")
 
-  h2.my-1 題目敘述
+  h2.my-3 題目敘述
   editor-menu-bar( :editor="editor" v-slot="{ isActive, commands }" )
     div.menubar
       button.menubar__button( :class="{ 'is-active': isActive.bold() }" @click="commands.bold" )
@@ -46,11 +46,11 @@ v-container.editor( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95v
         v-icon mdi-redo  
   editor-content.editor__content( :editor="editor" )
 
-  h2.my-1 留言預設程式碼
+  h2.my-3 留言預設程式碼
   v-row( no-gutters )
     v-textarea( outlined rows="3" v-model="problem.defaultCode" )
 
-  h2.my-1 目前附件
+  h2.my-3 目前附件
   v-row( no-gutters )
     v-alert( dark color="info" dense v-model="alert.rmAtt.value" dismissible ) {{ alert.rmAtt.msg }}
 
@@ -64,7 +64,7 @@ v-container.editor( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95v
         v-icon mdi-file-download
     v-spacer
 
-  h2.my-1 上傳附件
+  h2.my-3 上傳附件
   v-row( no-gutters )
     v-file-input( v-model="files" color="primary" counter multiple placeholder="上傳附件檔案（可選多個）" prepend-icon="mdi-paperclip" outlined )
       template( v-slot:selection="{ index, text }" )

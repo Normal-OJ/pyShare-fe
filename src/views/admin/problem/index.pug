@@ -24,7 +24,7 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
           td.subtitle-1 {{ problem.author.displayedName }}
           td.subtitle-1
             v-tooltip( bottom color="#000000E6" )
-              template( v-if="problem.author.username == profile.username || profile.role == 0" v-slot:activator="{ on }" )
+              template( v-if="problem.author.username == profile.username || profile.role < 2" v-slot:activator="{ on }" )
                 v-btn.mr-1( color="info" v-on="on" :href="`/admin/problem/${problem.pid}`" )
                   v-icon mdi-pencil
               span 修改題目

@@ -4,7 +4,7 @@ import './index.scss';
 import python from 'highlight.js/lib/languages/python';
 import css from 'highlight.js/lib/languages/css';
 import { Editor, EditorContent, EditorMenuBar } from 'tiptap';
-import { UNLIMIT, getCourses, getTags } from '@/util.js'
+import { UNLIMIT, getCourses, getTags, getProfile } from '@/util.js'
 import {
     Blockquote,
     CodeBlock,
@@ -105,7 +105,10 @@ export default Vue.extend({
 
     beforeMount() {
         this.getProblem()
-        getCourses(false).then(courses => this.courses = courses)
+        getCourses(false).then(courses => {
+            if ( getProfile().role == 2 )   this.courses = [getProfile().course]
+            else this.courses = courses
+        })
         getTags().then(tags => this.availableTags = tags)
     },
 

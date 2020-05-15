@@ -47,7 +47,10 @@ export default Vue.extend({
         this.profile = getProfile()
         this.course = this.profile.course;
         this.getProblems()
-        getCourses().then(courses => this.courses = courses)
+        getCourses().then(courses => {
+            if ( this.profile.role == 2 ) this.courses = [this.profile.course]
+            else    this.courses = courses
+        })
     },
 
     watch: {
@@ -69,19 +72,6 @@ export default Vue.extend({
                 result = result.data
             } catch (e) {
                 console.log(e);
-                result = {
-                    'data': [{
-                        pid: '1',
-                        title: 'DSCP修課背景分析',
-                        timestamp: '',
-                        author: {
-                            username: 'tcc',
-                            displayedName: '蔣宗哲',
-                        },
-                        tags: ['台灣獨立'],
-                        status: 0
-                    }]
-                }
             }
             this.problems = result.data;
         },

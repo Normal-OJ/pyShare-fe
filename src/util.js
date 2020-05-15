@@ -40,7 +40,7 @@ export function getProfile() {
     return {
         username: '',
         displayName: '',
-        role: 2,
+        role: 2, // 0: admin, 1: teacher, 2: student
         course: ''
     };
 }

@@ -71,10 +71,11 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
       v-card-title.headline 上傳表單新增學生
       v-card-text
         v-file-input( v-model="newStudentFile" label="upload csv file" )
-        p .csv 應包含四個欄位，皆為必填：
+        p.text--primary .csv 需使用 utf8編碼，包含四個必填欄位，且檔案的第一列需包含標題：
         code "username", "displayName", "password", "email"
-        p 若欲加入的學生已註冊過，"username" 以外可填可不填
-        v-img( src="https://imgur.com/a/EQ7Tc2g" )
+        p.text--primary 第二列開始為欲加入的學生的帳號資料
+        p.text--primary 若欲加入的學生已註冊過，"username" 「以外」的資訊可填可不填，以下為範例
+        v-img( :src="img" )
       v-card-actions
         v-spacer
         v-btn.mr-3( color="danger" @click="newStudentDialog = false" dark ) 取消

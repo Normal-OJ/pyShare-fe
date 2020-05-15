@@ -16,7 +16,8 @@ export default Vue.extend({
             newStudentFile: null,
             deleteStudentDialog: false,
             deleteStudentName: '',
-            studentData: []
+            studentData: [],
+            img: require('@/assets/csv_example.png'),
         }
     },
 

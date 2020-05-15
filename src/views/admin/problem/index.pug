@@ -6,7 +6,7 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
         v-col.pa-1( cols="12" md="9" )
           v-select.mx-1( label="選擇課程" outlined hide-details :items="courses" v-model="course" )
         v-col.pa-1( cols="12" md="3" )
-          v-btn( color="primary" :href="`/admin/problem/new`" ) 
+          v-btn( color="primary" :href="`/admin/problem/new?course=${course}`" :disabled="course == unlimit" ) 
             v-icon mdi-plus
             | 新增題目
     v-divider.mt-0
@@ -18,7 +18,7 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
           th.font-weight-bold.subtitle-1.text--primary.hidden-sm-and-down 作者
           th.font-weight-bold.subtitle-1.text--primary 管理
       tbody
-        tr( v-for="(problem, idx) in problems" :key="idx" v-if="profile.role != 2 || problem.author.username == profile.username" )
+        tr( v-for="(problem, idx) in problems" :key="idx" )
           td.subtitle-1 {{ problem.pid }}
           td.subtitle-1.hidden-sm-and-down {{ problem.title }}
           td.subtitle-1 {{ problem.author.displayedName }}
@@ -50,7 +50,7 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
         v-btn( color="error" @click="deleteProblem(problems[deleting].pid); deleteProblemDialog = false" ) 確認
   v-dialog( v-model="cloneProblemDialog" :width="$vuetify.breakpoint.mdAndUp ? '70vw' : '95vw'" )
     v-card
-      v-card-title.headline 新增課程
+      v-card-title.headline 複製題目
       v-card-text
         v-select( v-model="cloneToCourse" label="選擇複製到哪一個課程" :items="courses" )
       v-card-actions

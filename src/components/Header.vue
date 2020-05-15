@@ -14,7 +14,7 @@
 
       <!-- Nav Bar Title -->
       <v-toolbar-title style="color: white; padding-right: 10px;">
-        <v-icon color="white" large>mdi-language-python</v-icon>創作分享平台
+        <v-icon color="white" large>mdi-language-python</v-icon> Python 創作分享平台
       </v-toolbar-title>
 
       <!-- Nav Bar -->

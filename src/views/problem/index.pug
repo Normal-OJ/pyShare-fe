@@ -37,7 +37,7 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
           v-icon( style="transform: rotate(0.125turn);" ) mdi-link-variant
       v-card-title {{ (comment.status==0 ? '(已刪除)' : '') + comment.title }}
         v-spacer
-        div.subtitle-2( v-if="comment.created != comment.updated" style="color: grey;" ) (已編輯)
+        div.subtitle-2( v-if="comment.updated - comment.created >= 1" style="color: grey;" ) (已編輯)
         v-menu( offset-x v-if="comment.status != 0" )
           template( v-slot:activator="{ on }" )
             v-btn.mr-3( icon v-on="on" v-if="perm(comment.author.username) < 2" )
@@ -136,7 +136,7 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
               v-spacer
               div.subtitle-2( v-if="reply.status == 0" style="color: grey;" ) (已刪除)
               v-spacer
-              div.subtitle-2( v-if="reply.created != reply.updated" style="color: grey;" ) (已編輯)
+              div.subtitle-2( v-if="reply.updated - reply.created >= 1" style="color: grey;" ) (已編輯)
               v-menu( offset-x v-if="reply.status != 0" )
                 template( v-slot:activator="{ on }" )
                   v-btn.mr-3( icon v-on="on" v-if="perm(reply.author.username) >= 0" )

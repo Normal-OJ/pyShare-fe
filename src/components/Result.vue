@@ -15,13 +15,13 @@
                 | {{ browsing }}
                 v-icon mdi-chevron-down
             v-list
-              v-list-item( v-for="(file, idx) in misc" :key="idx" @click="browsing = file" )
+              v-list-item( v-for="(file, idx) in misc" :key="file" @click="browsing = file" )
                 v-list-item-title {{ file }}
           v-btn.ml-6( v-if="browsing!='請選擇'" color="info" small @click="download" :loading="downloading" )
             v-icon mdi-file-download
             | 下載
         v-row.my-1( no-gutters )
-          v-col( cols="12" md="3" v-for="(img, idx) in images" :key="idx" )
+          v-col( cols="12" md="3" v-for="(img, idx) in images" :key="img" )
             v-img.hover-click( max-height="200" contain :src="img" @click="overlayImg = img; overlay = true;" )
       v-tab-item
         pre( v-highlightjs="stderr" )
@@ -74,13 +74,19 @@ export default {
       downloading: false,
       overlay: false,
       overlayImg: '',
-      images: ['/NOJ.png'],
+      images: [],
       misc: [],
     }
   },
 
   beforeMount() {
     this.getFiles();
+  },
+
+  watch: {
+    files() {
+      this.getFiles();
+    }
   },
 
   methods: {

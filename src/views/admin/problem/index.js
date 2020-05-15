@@ -46,8 +46,11 @@ export default Vue.extend({
     beforeMount() {
         this.profile = getProfile()
         this.course = this.profile.course;
+        getCourses().then(courses => {
+            if ( this.profile.role == 2 ) this.courses = [this.course]
+            else    this.courses = courses
+        })
         this.getProblems()
-        getCourses().then(courses => this.courses = courses)
     },
 
     watch: {
@@ -58,7 +61,7 @@ export default Vue.extend({
 
     methods: {
         async getProblems() {
-            let result;
+            let result, res = [];
             try {
                 let filter = {
                     offset: 0,
@@ -66,44 +69,31 @@ export default Vue.extend({
                 }
                 if (this.course != UNLIMIT) filter['course'] = this.course
                 result = await this.$http.get('/problem', { params: filter });
-                result = result.data
+                result = result.data.data
+                result.forEach(p => {
+                    if ( this.profile.role != 2 || p.author.username == this.profile.username ) {
+                        res.push(p);
+                    }
+                })
             } catch (e) {
                 console.log(e);
-                result = {
-                    'data': [{
-                        pid: '1',
-                        title: 'DSCP修課背景分析',
-                        timestamp: '',
-                        author: {
-                            username: 'tcc',
-                            displayedName: '蔣宗哲',
-                        },
-                        tags: ['台灣獨立'],
-                        status: 0
-                    }]
-                }
             }
-            this.problems = result.data;
+            this.problems = res;
         },
         async cloneProblem(pid, course) {
-            if (course == UNLIMIT) return;
-
+            if (course == '' || course == UNLIMIT) return;
             let result;
             try {
                 result = await this.$http.get(`/problem/${pid}/clone/${course}`);
-                console.log(result)
             } catch (e) {
                 console.log(e);
             }
             this.getProblems()
         },
         async deleteProblem(pid) {
-            console.log(pid)
             let result;
             try {
-                console.log(pid)
                 result = await this.$http.delete(`/problem/${pid}`);
-                console.log(pid)
             } catch (e) {
                 console.log(e);
             }

@@ -1,14 +1,14 @@
 v-container.editor( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', height: '100%' }" )
   h2.my-1 題目資訊
   v-row( no-gutters )
-    v-col.pr-1( cols="12" md="6" )
-      v-text-field( label="題目名稱" outlined hide-details v-model="problem.title" )
-    v-col.pl-1( cols="12" md="6" )
-      v-select( label="顯示狀態" outlined hide-details :items="status" v-model="problem.status" )
+    v-col.px-1( cols="12" md="6" )
+      v-text-field( label="題目名稱" outlined v-model="problem.title" )
+    v-col.px-1( cols="12" md="6" )
+      v-select( label="顯示狀態" outlined :items="status" v-model="problem.status" )
   v-row
-    v-col.pr-1( cols="12" md="6" )
-      v-select( label="屬於課程" outlined hide-details :items="courses" v-model="problem.course" )
-    v-col.pl-1( cols="12" md="6" )
+    v-col.px-1( cols="12" md="6" )
+      v-select( label="屬於課程" outlined hide-details :items="courses" v-model="problem.course" readonly )
+    v-col.px-1( cols="12" md="6" )
       v-select( label="題目分類" outlined :items="availableTags" chips multiple v-model="problem.tags" :disabled="problem.course == unlimit" hint="必須先選擇課程後才可以選擇分類" persistent-hint )
 
   h2.my-1 題目敘述

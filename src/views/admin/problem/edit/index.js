@@ -4,7 +4,7 @@ import './index.scss';
 import python from 'highlight.js/lib/languages/python';
 import css from 'highlight.js/lib/languages/css';
 import { Editor, EditorContent, EditorMenuBar } from 'tiptap';
-import { UNLIMIT, getCourses, getTags } from '@/util.js'
+import { UNLIMIT, getCourses, getTags, getProfile } from '@/util.js'
 import {
     Blockquote,
     CodeBlock,
@@ -105,8 +105,11 @@ export default Vue.extend({
 
     beforeMount() {
         this.getProblem()
-        getCourses(false).then(courses => this.courses = courses)
-        getTags().then(tags => this.availableTags = tags)
+        getCourses(false).then(courses => {
+            if ( getProfile().role == 2 )   this.courses = [getProfile().course]
+            else this.courses = courses
+        })
+        this.setCourse()
     },
 
     computed: {
@@ -118,12 +121,19 @@ export default Vue.extend({
         course() {
             this.availableTags = []
             if (this.problem.course != UNLIMIT) {
-                getTags(this.course).then(tags => this.availableTags = tags)
+                getTags(this.problem.course).then(tags => this.availableTags = tags)
             }
         }
     },
 
     methods: {
+        setCourse() {
+            if ( this.$route.params.id === 'new' ) {
+                console.log(this.$route.query.course)
+                if ( this.$route.query.course ) this.problem.course = this.$route.query.course;
+                else    this.problem.course = getProfile().course
+            }
+        },
         async getProblem() {
             let result;
             try {
@@ -153,7 +163,8 @@ export default Vue.extend({
             try {
                 if (pid == 'new') {
                     result = await this.$http.post('/problem', this.problem);
-                    pid = result.data.pid
+                    this.problem.pid = result.data.data.pid
+                    console.log(this.problem.pid)
                 } else {
                     result = await this.$http.put(`/problem/${this.$route.params.id}`, this.problem);
                 }
@@ -182,7 +193,8 @@ export default Vue.extend({
             }
             this.alert.att.msg = `題目附件上傳，成功：${cnt[0]}，失敗：${cnt[1]}`
             if ( this.$route.params.id == 'new' ) {
-                this.$router.push(`/admin/problem/${this.pid}`);
+                console.log(this.problem.pid)
+                this.$router.push(`/admin/problem/${this.problem.pid}`);
             } else {
                 this.getProblem();
                 this.files = [];

@@ -164,7 +164,6 @@ export default Vue.extend({
                 if (pid == 'new') {
                     result = await this.$http.post('/problem', this.problem);
                     this.problem.pid = result.data.data.pid
-                    console.log(this.problem.pid)
                 } else {
                     result = await this.$http.put(`/problem/${this.$route.params.id}`, this.problem);
                 }
@@ -173,7 +172,7 @@ export default Vue.extend({
                 console.log(e);
                 this.alert.problem.msg = '題目內容上傳失敗！'
             }
-            this.uploadAttachment(pid)
+            this.uploadAttachment(this.problem.pid)
         },
         async uploadAttachment(pid) {
             let result;

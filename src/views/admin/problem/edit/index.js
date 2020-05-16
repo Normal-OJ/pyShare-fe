@@ -194,10 +194,9 @@ export default Vue.extend({
             if ( this.$route.params.id == 'new' ) {
                 console.log(this.problem.pid)
                 this.$router.push(`/admin/problem/${this.problem.pid}`);
-            } else {
-                this.getProblem();
-                this.files = [];
             }
+            this.getProblem();
+            this.files = [];
         },
         async deleteAttachment(filename, pid) {
             let result;

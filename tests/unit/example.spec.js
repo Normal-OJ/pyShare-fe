@@ -1,12 +1,17 @@
-import { shallowMount } from '@vue/test-utils'
-import HelloWorld from '@/components/HelloWorld.vue'
+import { createLocalVue, shallowMount } from "@vue/test-utils"
+import flushPromises from 'flush-promises'
+import Problems from '@/views/problems'
+import axios from 'axios'
+import VueAxios from 'vue-axios'
 
-describe('HelloWorld.vue', () => {
-  it('renders props.msg when passed', () => {
-    const msg = 'new message'
-    const wrapper = shallowMount(HelloWorld, {
-      propsData: { msg }
+const localVue = createLocalVue();
+localVue.use(VueAxios, axios)
+
+describe('Problem', () => {
+    const wrapper = shallowMount(Problems, { localVue });
+
+    it('renders html', async() => {
+        await flushPromises()
+        expect(wrapper.html()).toContain('<title>創作分享平台</title>')
     })
-    expect(wrapper.text()).toMatch(msg)
-  })
 })

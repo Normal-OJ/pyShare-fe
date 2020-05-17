@@ -1,12 +1,14 @@
 import Vue from 'vue';
+import axios from 'axios'
 var vue = new Vue()
+
 
 export const UNLIMIT = '不限課程'
 
 export async function getCourses(needUnlimit = true) {
     let result;
     try {
-        result = await vue.$http.get('/course');
+        result = await axios.get('/course');
         result = result.data
     } catch (e) {
         console.log(e);
@@ -28,7 +30,7 @@ export async function getCourses(needUnlimit = true) {
 export async function getTags(course = UNLIMIT) {
     let result;
     try {
-        result = await vue.$http.get('/tag' + (course == UNLIMIT ? '' : '?course=' + course));
+        result = await axios.get('/tag' + (course == UNLIMIT ? '' : '?course=' + course));
         result = result.data
     } catch (e) {
         console.log(e);

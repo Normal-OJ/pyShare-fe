@@ -103,7 +103,7 @@ export default Vue.extend({
                     this.selectedTags = [];
                 } else {
                     this.selectedTags = [];
-                    for (let i = 0; i < this.candidateTags.length; i++) this.selectedTags.push(i);
+                    for (let i = 0; i < this.candidateTags.length; i++) this.selectedTags.push(this.candidateTags[i]);
                 }
             })
         },

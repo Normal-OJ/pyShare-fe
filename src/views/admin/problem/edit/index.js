@@ -215,29 +215,9 @@ export default Vue.extend({
                     this.problem.attachments.splice(i,1);
         },
         async download(filename, pid) {
-            try {
-                this.downloading = true;
-                let result = await this.$http.get(`/problem/${pid}/attachment/${filename}`);
-                var file = new Blob([result], { type: 'text/plain;charset=utf-8' });
-                if (window.navigator.msSaveOrOpenBlob) { // IE10+
-                    window.navigator.msSaveOrOpenBlob(file, filename);
-                } else { // Others
-                    var a = document.createElement("a");
-                    var url = URL.createObjectURL(file);
-                    a.href = url;
-                    a.download = filename;
-                    document.body.appendChild(a);
-                    a.click();
-                    setTimeout(function() {
-                        document.body.removeChild(a);
-                        window.URL.revokeObjectURL(url);
-                    }, 0);
-                }
-                this.downloading = false;
-            } catch (e) {
-                this.downloading = false;
-                console.log(e);
-            }
+            let url = `/api/problem/${pid}/attachment/${filename}`;
+            let routeData = this.$router.resolve({path: url});
+            window.open(routeData.href, '_blank');
         },
     },
 });

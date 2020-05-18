@@ -106,29 +106,9 @@ export default {
       }
     },
     async download() {
-      try {
-        this.downloading = true;
-        let result = await this.$http.get(`/comment/${this.cid}/file/${this.browsing}`);
-        var file = new Blob([result], { type: 'text/plain;charset=utf-8' });
-        if (window.navigator.msSaveOrOpenBlob) { // IE10+
-          window.navigator.msSaveOrOpenBlob(file, this.browsing);
-        } else { // Others
-          var a = document.createElement("a");
-          var url = URL.createObjectURL(file);
-          a.href = url;
-          a.download = this.browsing;
-          document.body.appendChild(a);
-          a.click();
-          setTimeout(function() {
-              document.body.removeChild(a);
-              window.URL.revokeObjectURL(url);
-          }, 0);
-        }
-        this.downloading = false;
-      } catch (e) {
-        console.log(e);
-        this.downloading = false;
-      }
+      let url = `/api/comment/${this.cid}/file/${this.browsing}`;
+      let routeData = this.$router.resolve({path: url});
+      window.open(routeData.href, '_blank');
     },
   }
 }

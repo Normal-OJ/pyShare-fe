@@ -154,17 +154,20 @@ export default Vue.extend({
                     console.log(e);
                     result.comments[i] = '';
                 }
+                let numberOfReply = result.comments[i].replies.length;
                 for (let j = 0; j < result.comments[i].replies.length; j++) {
                     try {
                         let id = comments[i].replies[j];
                         let r = await this.$http.get('/comment/' + comments[i].replies[j]);
                         result.comments[i].replies[j] = r.data.data;
                         result.comments[i].replies[j].id = id;
+                        if ( result.comments[i].replies[j].status == 0 )    numberOfReply--;
                     } catch (e) {
                         console.log(e);
                         result.comments[i].replies[j] = '';
                     }
                 }
+                result.comments[i].numberOfReply = numberOfReply;
             }
             this.problem = result
             this.editor.setContent(JSON.parse(this.problem.description), false)

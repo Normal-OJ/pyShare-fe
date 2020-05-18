@@ -1,17 +1,39 @@
 import { createLocalVue, shallowMount } from "@vue/test-utils"
-import flushPromises from 'flush-promises'
 import Problems from '@/views/problems'
 import axios from 'axios'
 import VueAxios from 'vue-axios'
+import moxios from 'moxios'
 
 const localVue = createLocalVue();
 localVue.use(VueAxios, axios)
 
-describe('Problem', () => {
-    const wrapper = shallowMount(Problems, { localVue });
+beforeEach(() => {
+    moxios.install();
+    moxios.stubRequest('/course', {
+        status: 200,
+        response: {
+            data: [{
+                name: 'Golf',
+                teacher: {
+                    username: 'tcc',
+                    displayedName: '蔣宗哲',
+                }
+            }]
+        }
+    });
+});
 
-    it('renders html', async() => {
-        await flushPromises()
-        expect(wrapper.html()).toContain('<title>創作分享平台</title>')
+afterEach(() => {
+    moxios.uninstall();
+});
+
+
+describe('Problems', () => {
+    it('get courses into array', (done) => {
+        const wrapper = shallowMount(Problems, { localVue });
+        moxios.wait(() => {
+            expect(wrapper.vm.$data.courses).toMatchObject(['Golf', '不限課程']);
+            done();
+        });
     })
 })

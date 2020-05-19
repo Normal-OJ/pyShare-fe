@@ -39,6 +39,7 @@ export default Vue.extend({
     data() {
         return {
             browsing: '請選擇',
+            preview: '',
             lists: [
                 { title: '說明', key: 'content', icon: 'mdi-text', label: '新增說明...' },
                 { title: '程式', key: 'code', icon: 'mdi-code-tags', label: '貼上程式碼...' },
@@ -56,6 +57,7 @@ export default Vue.extend({
             },
             menu: ['編輯', '刪除'],
             isReplyShowed: [], // Boolean
+            username: '',
             displayName: '',
             problem: null,
             newComment: {
@@ -65,6 +67,7 @@ export default Vue.extend({
                 content: '',
                 code: '',
             },
+            newCommentLoading: false,
             newingReply: null,
             newReply: {
                 target: 'comment',
@@ -112,7 +115,6 @@ export default Vue.extend({
                     })
                 ],
             }),
-            username: getProfile().uesrname,
             downloading: false,
             alert: {
                 color: 'primary',
@@ -125,6 +127,15 @@ export default Vue.extend({
     beforeMount() {
         this.getProblem()
         this.displayName = getProfile().displayName
+        this.username = getProfile().username
+    },
+
+    watch: {
+        async browsing() {
+            if ( this.browsing === '請選擇' )  return;
+            let result = await this.$http.get(`/problem/${this.problem.pid}/attachment/${this.browsing}`);
+            this.preview = result.data.split('\n').slice(0, 5).join('\n');
+        }
     },
 
     methods: {
@@ -195,15 +206,23 @@ export default Vue.extend({
                 this.delete(id);
             }
         },
-        async likeComment(id) {
+        async likeComment(id, idx) {
             try {
                 let result = await this.$http.get(`/comment/${id}/like`)
             } catch (e) {
                 console.log(e);
             }
-            this.getProblem()
+            this.reGet(id, idx)
+        },
+        likeColor(users, name) {
+            for (let i = 0; i < users.length; ++i) {
+                if (users[i].username === name)
+                    return '#e07fa0'
+            }
+            return '#777777'
         },
         async add(data, idx) {
+            if ( data.target == 'problem' ) this.newCommentLoading = true;
             try {
                 let result = await this.$http.post('/comment', data, { emulateJSON: true });
             } catch (e) {
@@ -217,6 +236,7 @@ export default Vue.extend({
                 this.newComment.content = '';
                 this.newComment.code = this.problem.defaultCode;
             }
+            this.newCommentLoading = false;
         },
         async update(id, data, idx) {
             try {
@@ -253,17 +273,26 @@ export default Vue.extend({
             if (getProfile().role <= 1) return 1;
             return 2
         },
-        likeColor(users, name) {
-            for (let i = 0; i < users.length; ++i)
-                if (users[i] == name)
-                    return '#e07fa0'
-            return '#777'
-        },
         async reGet(comment_id, idx) {
             try {
                 let result = await this.$http.get('/comment/' + comment_id);
                 result = result.data.data;
                 result.id = comment_id;
+                let numberOfReply = result.replies.length;
+                for (let i = 0; i < result.replies.length; i++) {
+                    try {
+                        let id = result.replies[i];
+                        let r = await this.$http.get('/comment/' + result.replies[i]);
+                        result.replies[i] = r.data.data;
+                        result.replies[i].id = id;
+                        if ( result.replies[i].status == 0 )    numberOfReply--;
+                    } catch (e) {
+                        console.log(e);
+                        result.replies[i] = '';
+                    }
+                }
+                result.numberOfReply = numberOfReply;
+
                 this.$set(this.problem.comments, idx, result);
             } catch (e) {
                 console.log(e);

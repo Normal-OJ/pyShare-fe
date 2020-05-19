@@ -14,7 +14,7 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
     editor-content.editor__content( :editor="editor" style="border: 0" )
     v-divider
     v-card-text.text--primary
-      v-row.mb-3( no-gutters )
+      v-row( no-gutters )
         h3.mr-6 附件資料
         v-menu( offset-y )
           template( v-slot:activator="{ on }" ) 
@@ -27,6 +27,8 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
         v-btn.ml-6( v-if="browsing!='請選擇'" color="info" small @click="download" :loading="downloading" )
           v-icon mdi-file-download
           | 下載
+      v-row.mb-3( no-gutters style="white-space: pre-line" )
+        | {{ preview }}
 
   div( v-for="(comment, idx) in problem.comments" :key="idx" v-if="typeof(comment) != 'string' && comment.status != 0" )
     //- comment
@@ -69,12 +71,12 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
                       v-btn.copy-code( :id="`btn-copy-${idx}`" :data-clipboard-target="`#copy-${idx}`" color="grey" icon small )
                         v-icon mdi-content-copy
                       pre( v-highlightjs="comment.submission.code" )
-                        code.python( ref="copy-${idx}" :id="`copy-${idx}`" )
+                        code.python( ref="copy-${idx}" :id="`copy-${idx}`" style="font-size: 14px;" )
       v-card-actions
         v-row( no-gutters )
           v-btn.text-none( color="primary" text @click="addReply(comment.id)" ) → Reply
           v-spacer
-          v-btn.ml-3( icon @click="likeComment(comment.id)" )
+          v-btn.ml-3( icon @click="likeComment(comment.id, idx)" )
             v-icon( :color="likeColor(comment.liked, username)" ) mdi-heart
           div.mt-1.mr-3 {{ '(' + comment.liked.length + ')' }}
     //- editing comment
@@ -127,7 +129,7 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
 
     //- show all replies
     div( v-show="isReplyShowed[idx]" )
-      div( v-for="(reply, replyIdx) in comment.replies" :key="replyIdx" v-if="reply.status != 0" )
+      div( v-for="(reply, replyIdx) in comment.replies" :key="replyIdx" v-if="typeof(reply) != 'string' && reply.status != 0" )
         v-card.my-3( style="margin-left: 10%;" elevation="2" v-if="reply.id != editingReply" )
           v-card-subtitle.text--primary
             v-row( no-gutters align="center" )
@@ -183,8 +185,9 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
     v-card-actions
       v-row( no-gutters )
         v-spacer
-        v-btn.mx-3( color="primary" tile depressed :disabled="newComment.title === '' || newComment.content === ''" @click="add(newComment, -1)" ) 留言
+        v-btn.mx-3( color="primary" tile depressed :disabled="newComment.title === '' || newComment.content === ''" @click="add(newComment, -1)" :loading="newCommentLoading" ) 留言
+
   v-snackbar.subtitle-1( v-model="snackbar" :color="alert.color" )
     | {{ alert.msg }}
-    v-btn( icon @click="snackbar = false" )
+    v-btn( icon @click="snackbar = false" color="white" )
       v-icon mdi-close-circle

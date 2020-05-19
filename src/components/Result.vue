@@ -5,8 +5,8 @@
       v-tab 輸出檔案
       v-tab 錯誤訊息
       v-tab-item
-        pre( v-highlightjs="stdout" )
-          code
+        pre.pa-2( v-highlightjs="stdout" )
+          code( style="font-size: 14px;" )
       v-tab-item.imgblock
         v-row.my-1( no-gutters v-if="misc && misc.length > 0" )
           v-menu( offset-y )
@@ -24,8 +24,8 @@
           v-col( cols="12" md="3" v-for="(img, idx) in images" :key="img" )
             v-img.hover-click( max-height="200" contain :src="img" @click="overlayImg = img; overlay = true;" )
       v-tab-item
-        pre( v-highlightjs="stderr" )
-          code
+        pre.pa-2( v-highlightjs="stderr" )
+          code( style="font-size: 14px;" )
       v-spacer
       v-tooltip( bottom color="#000000E6" )
         template( v-slot:activator="{ on }" )
@@ -128,7 +128,6 @@ $color-grey: #e7e7e7;
 
 .codeblock {
   pre {
-    border-radius: 5px;
     background: $color-grey;
     overflow-x: auto;
 

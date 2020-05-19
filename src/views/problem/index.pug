@@ -27,7 +27,8 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
         v-btn.ml-6( v-if="browsing!='請選擇'" color="info" small @click="download" :loading="downloading" )
           v-icon mdi-file-download
           | 下載
-      v-row.mb-3( no-gutters style="white-space: pre-line" )
+      v-row.mb-3( no-gutters style="white-space: pre-line" v-if="preview != ''" )
+        h3.mr-6 附件預覽
         | {{ preview }}
 
   v-row.mt-6( no-gutters )

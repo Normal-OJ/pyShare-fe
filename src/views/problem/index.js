@@ -56,6 +56,13 @@ export default Vue.extend({
                 }
             },
             menu: ['編輯', '刪除'],
+            sortingValue: 0,
+            sorting: [
+                { title: '依照日期（遠至近）排序', value: 0 },
+                { title: '依照日期（近至遠）排序', value: 1 },
+                { title: '依照愛心（多至少）排序', value: 2 },
+                { title: '依照愛心（少至多）排序', value: 3 },
+            ],
             isReplyShowed: [], // Boolean
             username: '',
             displayName: '',
@@ -135,7 +142,10 @@ export default Vue.extend({
             if ( this.browsing === '請選擇' )  return;
             let result = await this.$http.get(`/problem/${this.problem.pid}/attachment/${this.browsing}`);
             this.preview = result.data.split('\n').slice(0, 5).join('\n');
-        }
+        },
+        sortingValue() {
+            this.sortCommments();
+        },
     },
 
     methods: {
@@ -184,6 +194,7 @@ export default Vue.extend({
             this.editor.setContent(JSON.parse(this.problem.description), false)
             this.newComment.code = this.problem.defaultCode;
             this.setupClipboard();
+            this.sortCommments();
         },
         switchShowReply(idx) {
             this.$set(this.isReplyShowed, idx, !this.isReplyShowed[idx])
@@ -212,7 +223,8 @@ export default Vue.extend({
             } catch (e) {
                 console.log(e);
             }
-            this.reGet(id, idx)
+            await this.reGet(id, idx)
+            this.sortCommments();
         },
         likeColor(users, name) {
             for (let i = 0; i < users.length; ++i) {
@@ -237,6 +249,7 @@ export default Vue.extend({
                 this.newComment.code = this.problem.defaultCode;
             }
             this.newCommentLoading = false;
+            this.sortCommments();
         },
         async update(id, data, idx) {
             try {
@@ -332,5 +345,29 @@ export default Vue.extend({
                 this.snackbar = true;
             });
         },
+        sortCommments() {
+            switch ( this.sortingValue ) {
+                case 0:
+                    this.problem.comments.sort((a, b) => {
+                        return a.created - b.created;
+                    });
+                    break;
+                case 1:
+                    this.problem.comments.sort((a, b) => {
+                        return b.created - a.created;
+                    });
+                    break;
+                case 2:
+                    this.problem.comments.sort((a, b) => {
+                        return b.liked.length - a.liked.length;
+                    });
+                    break;
+                case 3:
+                    this.problem.comments.sort((a, b) => {
+                        return a.liked.length - b.liked.length;
+                    });
+                    break;
+            }
+        }
     },
 });

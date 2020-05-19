@@ -30,12 +30,17 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
       v-row.mb-3( no-gutters style="white-space: pre-line" )
         | {{ preview }}
 
+  v-row.mt-6( no-gutters )
+    v-spacer
+    v-col( cols="12" md="4" sm="6" )
+      v-select( v-model="sortingValue" solo :items="sorting" item-text="title" item-value="value" width="50%" )
+
   div( v-for="(comment, idx) in problem.comments" :key="idx" v-if="typeof(comment) != 'string' && comment.status != 0" )
     //- comment
-    div( :id="`${idx+1}F`" style="padding: 30px 0;" )
+    div( :id="`${comment.floor}F`" style="padding: 30px 0;" )
     v-card.anchor( v-if="comment.id != editingComment" elevation="12" )
       span.anchor
-        a.float-icon( :href="`#${idx+1}F`" style="text-decoration: none;" )
+        a.float-icon( :href="`#${comment.floor}F`" style="text-decoration: none;" )
           v-icon( style="transform: rotate(0.125turn);" ) mdi-link-variant
       v-card-title {{ comment.title }}
         v-spacer
@@ -48,7 +53,7 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
             v-list-item( v-for="(item, i) in menu.slice(perm(comment.author.username))" :key="item" @click="menuTouch(item, 'comment', comment.id, comment)" )
               v-list-item-title {{ item }}
         div.subtitle-2 {{ timeFormat(comment.created) }}
-      v-card-subtitle.text--primary {{ (idx+1) + ' 樓' }}
+      v-card-subtitle.text--primary {{ (comment.floor) + ' 樓' }}
         v-icon mdi-account
         | {{ comment.author.displayedName }}
       v-card-text.pl-0.pb-0

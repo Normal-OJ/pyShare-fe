@@ -46,7 +46,7 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
         tr( v-if="statistic.replies && statistic.replies.length == 0" )
           td( colspan="2" ) No data available.
         tr( v-for="(reply, idx) in statistic.replies" :key="idx" )
-          td.subtitle-1 {{ relpy.course }}
+          td.subtitle-1 {{ reply.course }}
           td.subtitle-1
             a( :href="`/problem/${reply.pid}#${reply.floor}F`" ) {{ '題目' + reply.pid + ' - ' + reply.floor + '樓底下' }}
 

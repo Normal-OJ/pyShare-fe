@@ -175,6 +175,7 @@ export default Vue.extend({
                     console.log(e);
                     result.comments[i] = '';
                 }
+                if ( result.comments[i] === '' )    continue;
                 let numberOfReply = result.comments[i].replies.length;
                 for (let j = 0; j < result.comments[i].replies.length; j++) {
                     try {

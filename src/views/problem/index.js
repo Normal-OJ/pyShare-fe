@@ -165,16 +165,6 @@ export default Vue.extend({
             for (let i = 0; i < result.comments.length; i++) {
                 // get comments and count how many commenst are visible
                 numberOfComment += await this.getComment(result.comments, i);
-
-                // invisible comment will be set as '' (empty string)
-                if ( result.comments[i] === '' )    continue;
-
-                let numberOfReply = 0;
-                for (let j = 0; j < result.comments[i].replies.length; j++) {
-                    // get replies and count how many replies are visible
-                    numberOfReply += await this.getReply(result.comments[i].replies, j);
-                }
-                result.comments[i].numberOfReply = numberOfReply;
             }
             result.numberOfComment = numberOfComment;
             this.problem = result
@@ -183,10 +173,10 @@ export default Vue.extend({
             this.setupClipboard();
             this.sortCommments();
         },
-        async getComment(comments, idx) {
+        async getComment(comments, idx, cid=null) {
             let visibleComment = 1;
             try {
-                let id = comments[idx];
+                let id = (cid ? cid : comments[idx]);
                 let res = await this.$http.get('/comment/' + id);
                 comments[idx] = res.data.data;
                 comments[idx].id = id;
@@ -200,6 +190,14 @@ export default Vue.extend({
                 comments[idx] = '';
                 visibleComment = 0;
             }
+            // invisible comment will be set as '' (empty string)
+            if ( comments[idx] === '' ) return visibleComment;
+            let numberOfReply = 0;
+            for (let i = 0; i < comments[idx].replies.length; i++) {
+                // get replies and count how many replies are visible
+                numberOfReply += await this.getReply(comments[idx].replies, i);
+            }
+            comments[idx].numberOfReply = numberOfReply;
             return visibleComment;
         },
         async getReply(replies, idx) {
@@ -221,7 +219,9 @@ export default Vue.extend({
             return visibleReply;
         },
         switchShowReply(idx) {
-            this.problem.comments[idx].showReplies = !this.problem.comments[idx].showReplies;
+            let comment = this.problem.comments[idx];
+            comment.showReplies = !comment.showReplies;
+            this.$set(this.problem.comments, idx, comment)
         },
         addReply(comment_id) {
             this.newReply.id = comment_id;
@@ -311,28 +311,20 @@ export default Vue.extend({
             return 2
         },
         async reGet(comment_id, idx) {
-            try {
-                let result = await this.$http.get('/comment/' + comment_id);
-                result = result.data.data;
-                result.id = comment_id;
-                let numberOfReply = 0;
-                for (let i = 0; i < result.replies.length; i++) {
-                    // re get replies and count how many visible replies
-                    numberOfReply += this.getReply(result.replies, i);
-                }
-                result.numberOfReply = numberOfReply;
-                this.$set(this.problem.comments, idx, result);
-            } catch (e) {
-                console.log(e);
+            let repliesShowed = this.problem.comments[idx].showReplies;
+            this.problem.numberOfComment -= 1;
+            this.problem.numberOfComment += await this.getComment(this.problem.comments, idx, comment_id);
+            if ( repliesShowed ) {
+                this.switchShowReply(idx);
             }
         },
-        async reJudge(comment_id) {
+        async reJudge(comment_id, idx) {
             try {
                 let result = await this.$http.get(`/comment/${comment_id}/rejudge`);
             } catch (e) {
                 console.log(e);
             }
-            this.reGet(comment_id)
+            this.reGet(comment_id, idx)
         },
         setupClipboard() {
             const clipboard = new Clipboard('.copy-code',

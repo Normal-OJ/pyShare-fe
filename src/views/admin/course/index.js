@@ -14,10 +14,21 @@ export default Vue.extend({
             courseNameRule: /[\w\ _\-\.]+$/,
             newStudentDialog: false,
             newStudentFile: null,
+            newSingleStuDialog: false,
+            newSingleStu: {
+                username: '',
+                displayName: '',
+                password: '',
+                email: '',
+            },
             deleteStudentDialog: false,
             deleteStudentName: '',
             studentData: [],
             img: require('@/assets/csv_example.png'),
+            alert: {
+                value: false,
+                msg: '',
+            },
         }
     },
 
@@ -67,6 +78,24 @@ export default Vue.extend({
                 console.log(e);
             }
         },
+        async createSingleStu(data) {
+            let csv = `username,displayName,password,email\n${data.username},${data.displayName},${data.password},${data.email}`;
+            try {
+                let result = await this.$http.post('/auth/batch-signup', {
+                    course: this.course,
+                    csvString: csv,
+                })
+                this.updateCourse();
+                result = result.data.data
+                    if ( result.fails.length > 0 ) {
+                    this.alert.msg = '以下學生新增失敗，請確認資料是否正確\n'
+                    this.alert.msg += result.fails.join('\n');
+                    this.alert.value = true;
+                }
+            } catch (e) {
+                console.log(e);
+            }
+        },
         async createStudent(file) {
             let result;
             let r = new FileReader();
@@ -74,12 +103,19 @@ export default Vue.extend({
 
             r.onload = async function(e) {
                 let contents = e.target.result;
+                console.log(contents)
                 try {
                     result = await vue.$http.post('/auth/batch-signup', {
                         course: vue.course,
                         csvString: contents,
                     });
                     vue.updateCourse();
+                    result = result.data.data
+                    if ( result.fails.length > 0 ) {
+                        vue.alert.msg = '以下學生新增失敗，請確認資料是否正確\n'
+                        vue.alert.msg += result.fails.join('\n');
+                        vue.alert.value = true;
+                    }
                 } catch (e) {
                     console.log(e);
                 }

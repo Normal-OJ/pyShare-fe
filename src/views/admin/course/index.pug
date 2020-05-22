@@ -11,10 +11,15 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
         v-btn.ml-3( color="primary" @click="newStudentDialog = true" :disabled="course == ''" )
           v-icon mdi-file-excel-outline
           | 表單新增學生
-        v-btn.ml-3( color="primary" :disabled="course == ''" )
-          v-icon mdi-download
-          | 下載統計
+        v-btn.ml-3( color="info" @click="newSingleStuDialog = true" )
+          v-icon mdi-account-plus
+          | 單獨新增學生
     v-divider.mt-0
+
+    v-row.pa-3( no-gutters v-show="alert.value" )
+      v-alert( v-model="alert.value" dark color="primary" width="100%" dismissible style="white-space: pre-line;" )
+        | {{ alert.msg }}
+
     v-simple-table.px-4
       thead
         tr
@@ -53,7 +58,7 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
             //-       v-icon mdi-trash-can
             //-   span 將學生從課程移出
         tr( v-if="course === ''" )
-          td( colspan="11" ) 請先選擇課程      
+          td( colspan="11" ) 請先選擇課程
         tr( v-else-if="studentData.length === 0" )
           td( colspan="11" ) No data available.
   v-dialog( v-model="newCourseDialog" :width="$vuetify.breakpoint.mdAndUp ? '70vw' : '95vw'" )
@@ -72,7 +77,7 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
       v-card-text
         v-file-input( v-model="newStudentFile" label="upload csv file" )
         p.text--primary .csv 需使用 utf8編碼，包含四個必填欄位，且檔案的第一列需包含標題：
-        code "username", "displayName", "password", "email"
+        code.headline "username", "displayName", "password", "email"
         p.text--primary 第二列開始為欲加入的學生的帳號資料
         p.text--primary 若欲加入的學生已註冊過，"username" 「以外」的資訊可填可不填，以下為範例
         v-img( :src="img" )
@@ -80,6 +85,21 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
         v-spacer
         v-btn.mr-3( color="danger" @click="newStudentDialog = false" dark ) 取消
         v-btn( color="primary" @click="newStudentDialog = false; createStudent(newStudentFile)" ) 確認
+
+  v-dialog( v-model="newSingleStuDialog" :width="$vuetify.breakpoint.mdAndUp ? '70vw' : '95vw'" )
+    v-card
+      v-card-title.headline 單獨新增學生
+      v-card-text
+        p.text--primary username 為必填，若學生尚未註冊，所有資料皆為必填
+        v-text-field( v-model="newSingleStu.username" label="username" )
+        v-text-field( v-model="newSingleStu.displayName" label="displayName" )
+        v-text-field( v-model="newSingleStu.password" label="password" )
+        v-text-field( v-model="newSingleStu.email" label="email" )
+      v-card-actions
+        v-spacer
+        v-btn.mr-3( color="danger" @click="newSingleStuDialog = false" dark ) 取消
+        v-btn( color="primary" @click="newSingleStuDialog = false; createSingleStu(newSingleStu)" :disabled="newSingleStu.username == ''" ) 確認
+
   v-dialog( v-model="deleteStudentDialog" :width="$vuetify.breakpoint.mdAndUp ? '30vw' : '55vw'" )
     v-card
       v-card-title.headline 真的要刪除嗎？

@@ -6,7 +6,7 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
       v-icon.mr-1.ml-3( small ) mdi-account
       | {{ problem.author.displayedName }}
       v-icon.mr-1.ml-3( small ) mdi-comment
-      | {{ problem.comments.length }}
+      | {{ problem.numberOfComment }}
     v-card-title.headline {{ problem.pid + ' - ' + problem.title }}
     v-card-subtitle.mt-3( v-for="tag in problem.tags" :key="tag" ) 分類：
         v-chip( label small ) {{ tag }}
@@ -36,7 +36,7 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
     v-col( cols="12" md="4" sm="6" )
       v-select( v-model="sortingValue" solo :items="sorting" item-text="title" item-value="value" width="50%" )
 
-  div( v-for="(comment, idx) in problem.comments" :key="idx" v-if="typeof(comment) != 'string' && comment.status != 0" )
+  div( v-for="(comment, idx) in problem.comments" :key="idx" v-if="typeof(comment) != 'string'" )
     //- comment
     div( :id="`${comment.floor}F`" style="padding: 30px 0;" )
     v-card.anchor( v-if="comment.id != editingComment" elevation="12" )
@@ -72,7 +72,8 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
                 v-card-text.codeblock
                   v-expand-transition
                     div( v-if="item.key == 'result'" )
-                      Result( :stderr="comment.submission.stderr" :stdout="comment.submission.stdout" :files="comment.submission.files" @reget="reGet(comment.id, idx)" @rejudge="reJudge(comment.id)" :cid="comment.id" )
+                      Result( :stderr="comment.submission.stderr" :stdout="comment.submission.stdout" :files="comment.submission.files" 
+                              @reget="reGet(comment.id, idx)" @rejudge="reJudge(comment.id)" :cid="comment.id" :perm="perm(comment.author.username) < 2" )
                     div( v-else-if="item.key == 'code'" style="white-space: pre-line" )
                       v-btn.copy-code( :id="`btn-copy-${idx}`" :data-clipboard-target="`#copy-${idx}`" color="grey" icon small )
                         v-icon mdi-content-copy
@@ -86,13 +87,13 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
             v-icon( :color="likeColor(comment.liked, username)" ) mdi-heart
           div.mt-1.mr-3 {{ '(' + comment.liked.length + ')' }}
     //- editing comment
-    v-card( v-else-if="comment != ''" elevation="12" ) 
+    v-card( v-else elevation="12" ) 
       v-card-title
         v-text-field( placeholder="留言標題..." outlined dense hide-details v-model="editComment.title" )
         v-row( no-gutters )
           v-spacer
           div.subtitle-2 2020-03-27 12:35
-      v-card-subtitle.text--primary {{ (idx+1) + ' 樓' }}
+      v-card-subtitle.text--primary {{ (comment.floor) + ' 樓' }}
         v-icon mdi-account
         | {{ comment.author.displayedName }}
       v-card-text.pl-0.pb-0
@@ -108,9 +109,6 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
           v-spacer
           v-btn( text @click="editingComment = null;" ) 取消
           v-btn.mx-3( color="primary" tile depressed :disabled="editComment.title === '' || editComment.content === ''" @click="editingComment = null; update(comment.id, editComment, -1)" ) 更新
-    //- deleted comment
-    //- v-card( v-else elevation="12")
-    //-   v-card-subtitle {{ (idx+1) + '樓 此留言已刪除' }}
 
     //- New Reply input
     v-card.my-3( v-if="comment.id == newingReply" style="margin-left: 10%;" elevation="2" )
@@ -128,14 +126,14 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
           v-btn.mx-3( color="primary" tile depressed :disabled="newReply.content === ''" @click="newingReply = null; add(newReply, idx)" ) 回覆
 
     //- Toggle button for show/hide replies
-    v-card.my-3( style="margin-left: 10%;" elevation="0" color="transparent" v-if="comment.replies && comment.replies.length > 0" )
+    v-card.my-3( style="margin-left: 10%;" elevation="0" color="transparent" v-if="comment.replies && comment.numberOfReply > 0" )
       v-btn.subtitle-1( text color="primary" @click="switchShowReply(idx)" )
-        v-icon.mr-1 {{ replyLabels[isReplyShowed[idx]].icon }}
-        | {{ replyLabels[isReplyShowed[idx]].text + ` ${comment.numberOfReply} ` + '則回覆' }}
+        v-icon.mr-1 {{ replyLabels[comment.showReplies].icon }}
+        | {{ replyLabels[comment.showReplies].text + ` ${comment.numberOfReply} ` + '則回覆' }}
 
     //- show all replies
-    div( v-show="isReplyShowed[idx]" )
-      div( v-for="(reply, replyIdx) in comment.replies" :key="replyIdx" v-if="typeof(reply) != 'string' && reply.status != 0" )
+    div( v-for="(reply, replyIdx) in comment.replies" :key="replyIdx" v-if="typeof(reply) != 'string'" )
+      div( v-show="comment.showReplies" )
         v-card.my-3( style="margin-left: 10%;" elevation="2" v-if="reply.id != editingReply" )
           v-card-subtitle.text--primary
             v-row( no-gutters align="center" )
@@ -156,7 +154,7 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
               v-card-text
                 div.text--primary( style="white-space: pre-line" ) {{ reply.content }}
         //- editing reply
-        v-card.my-3( v-else-if="reply != ''" style="margin-left: 10%;" elevation="2" )
+        v-card.my-3( v-else style="margin-left: 10%;" elevation="2" )
           v-card-subtitle.pb-0.text--primary
             v-row( no-gutters )
               v-icon mdi-account
@@ -169,9 +167,6 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
               v-spacer
               v-btn( text @click="editingReply = null" ) 取消
               v-btn.mx-3( color="primary" tile depressed :disabled="editReply.content === ''" @click="editingReply = null; update(reply.id, editReply, idx)" ) 更新回覆
-        //- deleted reply
-        //- v-card( v-else style="margin-left: 10%;" elevation="2")
-        //-   v-card-subtitle {{ '此回覆已刪除' }}
 
   //- New Comment Input
   v-divider( style="margin-top: 10%; margin-bottom: 5%" )
@@ -197,3 +192,8 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
     | {{ alert.msg }}
     v-btn( icon @click="snackbar = false" color="white" )
       v-icon mdi-close-circle
+
+  v-btn.mb-12( small fab dark fixed bottom left color="primary" @click="toTop" )
+    v-icon mdi-arrow-up
+  v-btn.mt-12( small fab dark fixed bottom left color="primary" @click="toBottom" )
+    v-icon mdi-arrow-down

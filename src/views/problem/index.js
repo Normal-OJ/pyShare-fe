@@ -58,12 +58,11 @@ export default Vue.extend({
             menu: ['編輯', '刪除'],
             sortingValue: 0,
             sorting: [
-                { title: '依照日期（遠至近）排序', value: 0 },
-                { title: '依照日期（近至遠）排序', value: 1 },
+                { title: '依照日期（早至晚）排序', value: 0 },
+                { title: '依照日期（晚至早）排序', value: 1 },
                 { title: '依照愛心（多至少）排序', value: 2 },
                 { title: '依照愛心（少至多）排序', value: 3 },
             ],
-            isReplyShowed: [], // Boolean
             username: '',
             displayName: '',
             problem: null,
@@ -157,48 +156,72 @@ export default Vue.extend({
             try {
                 result = await this.$http.get('/problem/' + this.$route.params.id);
                 result = result.data.data;
-                this.isReplyShowed = new Array(result.comments.length);
-                this.isReplyShowed.fill(false);
             } catch (e) {
                 console.log(e);
                 return
             }
-
             let comments = result.comments;
+            let numberOfComment = 0;
             for (let i = 0; i < result.comments.length; i++) {
-                try {
-                    let id = comments[i];
-                    let c = await this.$http.get('/comment/' + comments[i]);
-                    result.comments[i] = c.data.data;
-                    result.comments[i].id = id;
-                } catch (e) {
-                    console.log(e);
-                    result.comments[i] = '';
-                }
+                // get comments and count how many commenst are visible
+                numberOfComment += await this.getComment(result.comments, i);
+
+                // invisible comment will be set as '' (empty string)
                 if ( result.comments[i] === '' )    continue;
-                let numberOfReply = result.comments[i].replies.length;
+
+                let numberOfReply = 0;
                 for (let j = 0; j < result.comments[i].replies.length; j++) {
-                    try {
-                        let id = comments[i].replies[j];
-                        let r = await this.$http.get('/comment/' + comments[i].replies[j]);
-                        result.comments[i].replies[j] = r.data.data;
-                        result.comments[i].replies[j].id = id;
-                        if ( result.comments[i].replies[j].status == 0 )    numberOfReply--;
-                    } catch (e) {
-                        console.log(e);
-                        result.comments[i].replies[j] = '';
-                    }
+                    // get replies and count how many replies are visible
+                    numberOfReply += await this.getReply(result.comments[i].replies, j);
                 }
                 result.comments[i].numberOfReply = numberOfReply;
             }
+            result.numberOfComment = numberOfComment;
             this.problem = result
             this.editor.setContent(JSON.parse(this.problem.description), false)
             this.newComment.code = this.problem.defaultCode;
             this.setupClipboard();
             this.sortCommments();
         },
+        async getComment(comments, idx) {
+            let visibleComment = 1;
+            try {
+                let id = comments[idx];
+                let res = await this.$http.get('/comment/' + id);
+                comments[idx] = res.data.data;
+                comments[idx].id = id;
+                comments[idx].showReplies = false;
+                if ( comments[idx].status == 0 ) {
+                    comments[idx] = '';
+                    visibleComment = 0;
+                }
+            } catch (e) {
+                console.log(e);
+                comments[idx] = '';
+                visibleComment = 0;
+            }
+            return visibleComment;
+        },
+        async getReply(replies, idx) {
+            let visibleReply = 1;
+            try {
+                let id = replies[idx];
+                let res = await this.$http.get('/comment/' + id);
+                replies[idx] = res.data.data;
+                replies[idx].id = id;
+                if ( replies[idx].status == 0 ) {
+                    replies[idx] = '';
+                    visibleReply = 0;
+                }
+            } catch (e) {
+                console.log(e);
+                replies[idx] = '';
+                visibleReply = 0;
+            }
+            return visibleReply;
+        },
         switchShowReply(idx) {
-            this.$set(this.isReplyShowed, idx, !this.isReplyShowed[idx])
+            this.problem.comments[idx].showReplies = !this.problem.comments[idx].showReplies;
         },
         addReply(comment_id) {
             this.newReply.id = comment_id;
@@ -243,7 +266,7 @@ export default Vue.extend({
             }
             await this.getProblem()
             if ( idx != -1 )
-                this.$set(this.isReplyShowed, idx, true);
+                this.problem.comments[idx].showReplies = true;
             else {
                 this.newComment.title = '';
                 this.newComment.content = '';
@@ -260,7 +283,7 @@ export default Vue.extend({
             }
             await this.getProblem()
             if ( idx != -1 )
-                this.$set(this.isReplyShowed, idx, true);
+                this.problem.comments[idx].showReplies = true;
         },
         async delete(id) {
             try {
@@ -292,21 +315,12 @@ export default Vue.extend({
                 let result = await this.$http.get('/comment/' + comment_id);
                 result = result.data.data;
                 result.id = comment_id;
-                let numberOfReply = result.replies.length;
+                let numberOfReply = 0;
                 for (let i = 0; i < result.replies.length; i++) {
-                    try {
-                        let id = result.replies[i];
-                        let r = await this.$http.get('/comment/' + result.replies[i]);
-                        result.replies[i] = r.data.data;
-                        result.replies[i].id = id;
-                        if ( result.replies[i].status == 0 )    numberOfReply--;
-                    } catch (e) {
-                        console.log(e);
-                        result.replies[i] = '';
-                    }
+                    // re get replies and count how many visible replies
+                    numberOfReply += this.getReply(result.replies, i);
                 }
                 result.numberOfReply = numberOfReply;
-
                 this.$set(this.problem.comments, idx, result);
             } catch (e) {
                 console.log(e);
@@ -350,25 +364,35 @@ export default Vue.extend({
             switch ( this.sortingValue ) {
                 case 0:
                     this.problem.comments.sort((a, b) => {
+                        if ( a === '' || b === '' ) return 0;
                         return a.created - b.created;
                     });
                     break;
                 case 1:
                     this.problem.comments.sort((a, b) => {
+                        if ( a === '' || b === '' ) return 0;
                         return b.created - a.created;
                     });
                     break;
                 case 2:
                     this.problem.comments.sort((a, b) => {
+                        if ( a === '' || b === '' ) return 0;
                         return b.liked.length - a.liked.length;
                     });
                     break;
                 case 3:
                     this.problem.comments.sort((a, b) => {
+                        if ( a === '' || b === '' ) return 0;
                         return a.liked.length - b.liked.length;
                     });
                     break;
             }
-        }
+        },
+        toTop() {
+            this.$vuetify.goTo(0);
+        },
+        toBottom() {
+            this.$vuetify.goTo(document.body.offsetHeight);
+        },
     },
 });

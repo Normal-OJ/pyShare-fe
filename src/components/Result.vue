@@ -31,12 +31,12 @@
         template( v-slot:activator="{ on }" )
           v-btn.mr-6( v-on="on" color="success" icon small @click="$emit('reget')" )
             v-icon mdi-refresh
-        span 若尚未收到結果，請點此重新整理
-      v-tooltip( bottom color="#000000E6" )
+        span 若尚未看到結果，請點此重新整理
+      v-tooltip( bottom color="#000000E6" v-if="perm" )
         template( v-slot:activator="{ on }" )
           v-btn.mr-3( v-on="on" color="error" icon small @click="$emit('rejudge')" )
             v-icon mdi-alert
-        span 若程式執行不正確，可以點此重新執行
+        span 若系統執行程式異常，可以點此重新執行
     
     v-dialog( v-model="overlay" width="60vw" )
       v-row( justify="center" )
@@ -64,6 +64,9 @@ export default {
       type: Array,
     },
     cid: {
+      required: true,
+    },
+    perm: {
       required: true,
     }
   },

@@ -20,47 +20,29 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
       v-alert( v-model="alert.value" dark color="primary" width="100%" dismissible style="white-space: pre-line;" )
         | {{ alert.msg }}
 
-    v-simple-table.px-4
-      thead
-        tr
-          th.font-weight-bold.subtitle-1.text--primary 使用者名稱
-          th.font-weight-bold.subtitle-1.text--primary.hidden-sm-and-down 暱稱
-          th.font-weight-bold.subtitle-1.text--primary.hidden-sm-and-down 發文
-          th.font-weight-bold.subtitle-1.text--primary.hidden-sm-and-down 留言
-          th.font-weight-bold.subtitle-1.text--primary.hidden-sm-and-down 回覆
-          th.font-weight-bold.subtitle-1.text--primary.hidden-sm-and-down 給予愛心
-          th.font-weight-bold.subtitle-1.text--primary.hidden-sm-and-down 獲得愛心
-          th.font-weight-bold.subtitle-1.text--primary.hidden-sm-and-down 執行成功
-          th.font-weight-bold.subtitle-1.text--primary.hidden-sm-and-down 執行失敗
-          th.font-weight-bold.subtitle-1.text--primary.hidden-sm-and-down 已批改
-          th.font-weight-bold.subtitle-1.text--primary 管理
-      tbody
-        tr( v-for="(data, idx) in studentData" :key="data.username" )
-          td.subtitle-1 {{ data.info.username }}
-          td.subtitle-1.hidden-sm-and-down {{ data.info.displayedName }}
-          td.subtitle-1.hidden-sm-and-down {{ data.problems.length }}
-          td.subtitle-1.hidden-sm-and-down {{ data.comments.length }}
-          td.subtitle-1.hidden-sm-and-down {{ data.replies.length }}
-          td.subtitle-1.hidden-sm-and-down {{ data.likes.length }}
-          td.subtitle-1.hidden-sm-and-down {{ data.liked.length }}
-          td.subtitle-1.hidden-sm-and-down {{ data.success }}
-          td.subtitle-1.hidden-sm-and-down {{ data.fail }}
-          td.subtitle-1.hidden-sm-and-down {{ data.passed }}
-          td.subtitle-1
-            v-tooltip( right color="#000000E6" )
-              template( v-slot:activator="{ on }" )
-                v-btn( color="info" v-on="on" small :href="`/stat/${data.info.username}`" rel="noopener noreferrer" target="_blank" )
-                  v-icon mdi-table-large
-              span 顯示詳細資訊
-            //- v-tooltip( right color="#000000E6" )
-            //-   template( v-slot:activator="{ on }" )
-            //-     v-btn.ml-3( color="error" v-on="on" small @click="deleteStudentDialog = true; deleteStudentName = data.username" )
-            //-       v-icon mdi-trash-can
-            //-   span 將學生從課程移出
-        tr( v-if="course === ''" )
-          td( colspan="11" ) 請先選擇課程
-        tr( v-else-if="studentData.length === 0" )
-          td( colspan="11" ) No data available.
+    v-card-title
+      | 學生資料總覽
+      v-spacer
+      v-text-field(
+        v-model="search"
+        append-icon="mdi-magnify"
+        label="Search"
+        single-line
+        hide-details
+      )
+    v-data-table.mt-6(
+      :headers="headers"
+      :items="studentData"
+      :search="search"
+      hide-default-footer
+    )
+      template( v-slot:item.manage="{ item }" )
+        v-tooltip( right color="#000000E6" )
+          template( v-slot:activator="{ on }" )
+            v-btn( color="info" v-on="on" small :href="`/stat/${item.info.username}`" rel="noopener noreferrer" target="_blank" )
+              v-icon mdi-table-large
+          span 顯示詳細資訊
+
   v-dialog( v-model="newCourseDialog" :width="$vuetify.breakpoint.mdAndUp ? '70vw' : '95vw'" )
     v-card
       v-card-title.headline 新增課程

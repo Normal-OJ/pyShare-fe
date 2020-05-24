@@ -7,6 +7,20 @@ export default Vue.extend({
 
     data() {
         return {
+            headers: [
+                { text: '使用者名稱', value: 'info.username', class: "font-weight-bold subtitle-1 text--primary" },
+                { text: '暱稱', value: 'info.displayedName', class: "font-weight-bold subtitle-1 text--primary hidden-sm-and-down" },
+                { text: '發文', value: 'problems.length', class: "font-weight-bold subtitle-1 text--primary hidden-sm-and-down" },
+                { text: '留言', value: 'comments.length', class: "font-weight-bold subtitle-1 text--primary hidden-sm-and-down" },
+                { text: '回覆', value: 'replies.length', class: "font-weight-bold subtitle-1 text--primary hidden-sm-and-down" },
+                { text: '給予愛心', value: 'likes.length', class: "font-weight-bold subtitle-1 text--primary hidden-sm-and-down" },
+                { text: '獲得愛心', value: 'liked.length', class: "font-weight-bold subtitle-1 text--primary hidden-sm-and-down" },
+                { text: '執行成功', value: 'success', class: "font-weight-bold subtitle-1 text--primary hidden-sm-and-down" },
+                { text: '執行失敗', value: 'fail', class: "font-weight-bold subtitle-1 text--primary hidden-sm-and-down" },
+                { text: '已批改', value: 'passed', class: "font-weight-bold subtitle-1 text--primary hidden-sm-and-down" },
+                { text: '詳細', value: 'manage', sortable: false, class: "font-weight-bold subtitle-1 text--primary" },
+            ],
+            search: '',
             courses: [],
             course: '',
             newCourseDialog: false,
@@ -121,15 +135,5 @@ export default Vue.extend({
             }
             r.readAsText(file);
         },
-        // async deleteStudent(username) {
-        //     let result;
-        //     try {
-        //         result = await this.$http.patch(`/course/${this.course}/student/remove`, {
-        //             users: [username]
-        //         });
-        //     } catch (e) {
-        //         console.log(e);
-        //     }
-        // },
     },
 });

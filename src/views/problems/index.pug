@@ -12,22 +12,19 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
         v-col.pa-1( cols="12" md="3" )
           v-btn( color="primary" @click="getProblems" small ) 送出
     v-divider.mt-0
-    v-simple-table.px-4
-      thead
-        tr
-          th.font-weight-bold.subtitle-1.text--primary 題號
-          th.font-weight-bold.subtitle-1.text--primary 標題
-          th.font-weight-bold.subtitle-1.text--primary.hidden-sm-and-down 分類
-          th.font-weight-bold.subtitle-1.text--primary.hidden-sm-and-down 日期
-          th.font-weight-bold.subtitle-1.text--primary.hidden-sm-and-down 作者
-      tbody
-        tr( v-for="problem in problems" :key="problem.pid" )
-          td.subtitle-1 {{ problem.pid }}
-          td.subtitle-1
-            a( :href="`/problem/${problem.pid}`" ) {{ problem.title }}
-          td.subtitle-1.hidden-sm-and-down 
-            v-chip.mr-1( v-for="tag in problem.tags" :key="tag" label small ) {{ tag }}
-          td.subtitle-1.hidden-sm-and-down {{ timeFormat(problem.timestamp).substring(0,10) }}
-          td.subtitle-1.hidden-sm-and-down {{ problem.author.displayedName }}
-        tr( v-if="problems.length===0" )
-          td( colspan="5" ) No data available.
+
+    v-data-table.mt-6(
+      :headers="headers"
+      :items="problems"
+      hide-default-footer
+    )
+      template( v-slot:item.pid="{ item }" )
+        .subtitle-1 {{ item.pid }}
+      template( v-slot:item.title="{ item }" )
+        a.subtitle-1( :href="`/problem/${item.pid}`" ) {{ item.title }}
+      template( v-slot:item.tags="{ item }" )
+        v-chip.mr-1( v-for="tag in ['tag']" :key="tag" label small ) {{ tag }}
+      template( v-slot:item.timestamp="{ item }" )
+        .subtitle-1 {{ timeFormat(item.timestamp).substring(0,10) }}
+      template( v-slot:item.author.displayedName="{ item }" )
+        .subtitle-1 {{ item.author.displayedName }}

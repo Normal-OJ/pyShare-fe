@@ -1,4 +1,4 @@
-v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', height: '110%' }" v-if="problem" )
+v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', height: '100%' }" v-if="problem" )
   v-card.mt-3( elevation="12" )
     v-card-subtitle
       v-icon.mr-1( small ) mdi-clock
@@ -169,8 +169,8 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
               v-btn.mx-3( color="primary" tile depressed :disabled="editReply.content === ''" @click="editingReply = null; update(reply.id, editReply, idx)" ) 更新回覆
 
   //- New Comment Input
-  v-divider( style="margin-top: 10%; margin-bottom: 5%" )
-  v-card( elevation="12" )
+  v-divider( style="margin-top: 100px; margin-bottom: 50px" )
+  v-card( elevation="12" style="margin-bottom: 300px" )
     v-card-title.subtitle-1
       v-row( no-gutters align="center" )
         | {{ '新增留言：　' }}

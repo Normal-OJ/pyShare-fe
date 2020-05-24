@@ -129,7 +129,6 @@ export default Vue.extend({
     methods: {
         setCourse() {
             if ( this.$route.params.id === 'new' ) {
-                console.log(this.$route.query.course)
                 if ( this.$route.query.course ) this.problem.course = this.$route.query.course;
                 else    this.problem.course = getProfile().course
             }
@@ -176,7 +175,7 @@ export default Vue.extend({
         },
         async uploadAttachment(pid) {
             let result;
-            let cnt = ['', ''];
+            let attStatus = { success: [], fail: [] };
             this.alert.att.msg = '題目附件上傳中...'
             for (let i = 0; i < this.files.length; i++) {
                 this.alert.att.value = true
@@ -184,15 +183,14 @@ export default Vue.extend({
                     let formData = new FormData();
                     formData.append('attachment', this.files[i]);
                     result = await this.$http.post(`/problem/${pid}/attachment`, formData);
-                    cnt[0] += `${this.files[i].name} `;
+                    attStatus.success.push(this.files[i].name);
                 } catch (e) {
                     console.log(e);
-                    cnt[1] += `${this.files[i].name} `;
+                    attStatus.fail.push(this.files[i].name);
                 }
             }
-            this.alert.att.msg = `題目附件上傳，成功：${cnt[0]}，失敗：${cnt[1]}`
+            this.alert.att.msg = `題目附件上傳\n成功：\n${attStatus.success.join('\n')}\n失敗：\n${attStatus.fail.join('\n')}`
             if ( this.$route.params.id == 'new' ) {
-                console.log(this.problem.pid)
                 this.$router.push(`/admin/problem/${this.problem.pid}`);
             }
             this.getProblem();

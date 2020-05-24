@@ -103,7 +103,6 @@ export default Vue.extend({
 
             r.onload = async function(e) {
                 let contents = e.target.result;
-                console.log(contents)
                 try {
                     result = await vue.$http.post('/auth/batch-signup', {
                         course: vue.course,

@@ -70,10 +70,10 @@ v-container.editor( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95v
       template( v-slot:selection="{ index, text }" )
         v-chip( color="primary" dark label small ) {{ text }}
 
-  v-row( no-gutters )
-    v-alert( dark color="info" dense v-model="alert.problem.value" dismissible ) {{ alert.problem.msg }}
-  v-row( no-gutters )
-    v-alert( dark color="info" dense v-model="alert.att.value" dismissible ) {{ alert.att.msg }}
+  v-row( no-gutters v-show="alert.problem.value" )
+    v-alert( dark color="info" v-model="alert.problem.value" dismissible style="white-space: pre-line;" ) {{ alert.problem.msg }}
+  v-row( no-gutters v-show="alert.att.value" )
+    v-alert( dark color="info" v-model="alert.att.value" dismissible style="white-space: pre-line;" ) {{ alert.att.msg }}
 
   v-row.mt-12( no-gutters )
     v-btn.ml-3( color="primary" @click="createProblem" :disabled="problem.course==unlimit || problem.title=='' || problem.status==null || content==''" ) 儲存

@@ -53,7 +53,6 @@ export default Vue.extend({
 
     methods: {
         async getProblems() {
-            console.log('enter')
             let result;
             try {
                 let filter = {

@@ -11,8 +11,6 @@ export default Vue.extend({
         }
     },
 
-    ready() {},
-
     beforeMount() {
         this.getStatistic()
     },

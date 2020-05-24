@@ -2,7 +2,6 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import problems from '@/views/problems'
 import problem from '@/views/problem'
-import tutorial from '@/views/tutorial'
 import adminMain from '@/views/admin/main'
 import adminProblem from '@/views/admin/problem'
 import adminCourse from '@/views/admin/course'
@@ -25,10 +24,6 @@ const routes = [
   {
     path: '/problem/:id',
     component: problem,
-  },
-  {
-    path: '/tutorial',
-    component: tutorial,
   },
   {
     path: '/admin/main',

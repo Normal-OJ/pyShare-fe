@@ -1,6 +1,6 @@
 v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', height: '100%' }" )
-  v-card.my-3( height="100%" elevation="12" v-if="statistic.problems" )
-    v-card-title {{ $route.params.name }}
+  v-card.my-3.pb-6( elevation="12" v-if="statistic.problems" )
+    v-card-title {{ $route.params.name + ' 的統計資料' }}
 
     v-divider
 

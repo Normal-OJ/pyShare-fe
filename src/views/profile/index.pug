@@ -1,6 +1,6 @@
 v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', height: '100%' }" )
-  v-card.my-3( height="100%" elevation="12" )
-    v-card-title 個人頁面</v-card-title>
+  v-card.my-3.pb-6( elevation="12" )
+    v-card-title 帳號資訊
     v-divider.mt-0
     v-card-text.subtitle-1.text--primary
       v-row
@@ -13,11 +13,6 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
           v-icon.mr-3 mdi-account-box
           | 暱稱（網頁顯示名稱）：
         v-col( cols="auto" md="8" ) {{ user.displayName }}
-      //- v-row
-      //-   v-col( cols="auto" md="4" )
-      //-     v-icon.mr-3 mdi-heart
-      //-     | 獲得愛心總數：
-      //-   v-col( cols="auto" md="8" ) {{ user.likes }}
     v-form( v-model="form" ref="form" )
       v-card-title 更改密碼
       v-divider.mt-0

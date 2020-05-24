@@ -39,11 +39,14 @@
             color="white"
             v-on="on"
             class="subtitle-1"
-          >{{ username }}</v-btn>
+          >{{ user.username + ' (' + user.displayName + ')' }}</v-btn>
         </template>
         <v-list>
-          <v-list-item link :to="{path: '/profile'}">
+          <v-list-item link :to="{path: `/stat/${user.username}`}">
             <v-list-item-title v-text="'個人頁面'"></v-list-item-title>
+          </v-list-item>
+          <v-list-item link :to="{path: '/profile'}">
+            <v-list-item-title v-text="'更改密碼'"></v-list-item-title>
           </v-list-item>
           <v-list-item link @click="signout">
             <v-list-item-title v-text="'登出'"></v-list-item-title>
@@ -60,7 +63,7 @@
       disable-resize-watcher
     >
       <v-list-item>
-        <v-list-item-title v-if="isLogin">{{ username }}</v-list-item-title>
+        <v-list-item-title v-if="isLogin">{{ user.username + ' (' + user.displayName + ')' }}</v-list-item-title>
         <v-list-item-title v-else><Auth @signin="update"></Auth></v-list-item-title>
         <v-btn
           icon
@@ -78,8 +81,11 @@
           link
         ><v-list-item-title v-text="link.title"></v-list-item-title></v-list-item>
         <v-divider v-if="isLogin" class="my-2"></v-divider>
-        <v-list-item v-if="isLogin" link :to="{path: '/profile'}">
+        <v-list-item v-if="isLogin" link :to="{path: `/stat/${user.username}`}">
           <v-list-item-title v-text="'個人頁面'"></v-list-item-title>
+        </v-list-item>
+        <v-list-item v-if="isLogin" link :to="{path: '/profile'}">
+          <v-list-item-title v-text="'更改密碼'"></v-list-item-title>
         </v-list-item>
         <v-list-item v-if="isLogin" link @click="signout">
           <v-list-item-title v-text="'登出'"></v-list-item-title>
@@ -118,7 +124,7 @@ export default {
       drawer: false,
       isLogin: false,
       payload: null,
-      username: '',
+      user: '',
       alert: {
         active: false,
         color: 'error',
@@ -128,8 +134,8 @@ export default {
   },
 
   beforeMount() {
-    this.username = getProfile().username;
-    if ( this.username !== '' ) this.isLogin = true;
+    this.user = getProfile();
+    if ( this.user.username !== '' ) this.isLogin = true;
   },
 
   methods: {

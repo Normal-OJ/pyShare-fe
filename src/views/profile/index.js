@@ -22,11 +22,13 @@ export default Vue.extend({
         newPassword: '',
         oldPassword: '',
       },
+      statistic: {}
     }
   },
 
   beforeMount() {
     this.user = getProfile();
+    this.getStatistic()
   },
 
   methods: {
@@ -44,6 +46,15 @@ export default Vue.extend({
             this.err.active = true;
           })
       }
-    }
+    },
+    async getStatistic() {
+      let result;
+      try {
+        result = await this.$http.get(`/user/${this.user.username}/statistic`);
+      } catch (e) {
+        console.log(e);
+      }
+      this.statistic = result.data.data
+    },
   },
 });

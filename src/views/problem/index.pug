@@ -197,3 +197,7 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
     v-icon mdi-arrow-up
   v-btn.mt-12( small fab dark fixed bottom left color="primary" @click="toBottom" )
     v-icon mdi-arrow-down
+
+v-container( v-else )
+  v-row( no-gutters justify="center" )
+    v-progress-circular( indeterminate color="primary" )

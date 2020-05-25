@@ -3,19 +3,38 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
     v-card-title 題目列表
     v-container( fluid )
       v-row( no-gutters align="center" )
-        v-col.pa-1( cols="12" md="3" )
-          v-select.mx-1( label="選擇課程" outlined hide-details :items="courses" v-model="course" )
-        v-col.pa-1( cols="12" md="3" )
-          v-select.mx-1( label="選擇分類" outlined hide-details :items="tags" v-model="selectedTags" multiple )
-        v-col.pa-1( cols="12" md="3" )
-          v-text-field.mx-1( label="搜尋關鍵字" outlined hide-details v-model="title" )
-        v-col.pa-1( cols="12" md="3" )
-          v-btn( color="primary" @click="getProblems" small ) 送出
-    v-divider.mt-0
+        v-col.pa-1( cols="12" md="4" )
+          v-select.mx-1( 
+            v-model="course"
+            label="選擇課程" 
+            outlined 
+            hide-details 
+            :items="courses" 
+          )
+        v-col.pa-1( cols="12" md="4" )
+          v-select.mx-1(
+            v-model="selectedTags" 
+            label="選擇分類" 
+            outlined 
+            hide-details 
+            :items="tags" 
+            multiple 
+          )
+        v-col.pa-1( cols="12" md="4" )
+          v-text-field.mx-1(
+            v-model="search"
+            label="快速搜尋"
+            outlined
+            hide-details
+            append-icon="mdi-magnify"
+            single-line
+          )
 
-    v-data-table.mt-6(
+    v-data-table(
       :headers="headers"
       :items="problems"
+      :search="search"
+      :items-per-page="Number(-1)"
       hide-default-footer
     )
       template( v-slot:item.pid="{ item }" )

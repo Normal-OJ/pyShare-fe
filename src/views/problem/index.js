@@ -56,8 +56,9 @@ export default Vue.extend({
                 }
             },
             menu: ['編輯', '刪除'],
-            sortingValue: 0,
+            sortingValue: -1,
             sorting: [
+                { title: '預設（優先顯示我的留言）', value: -1 },
                 { title: '依照日期（早至晚）排序', value: 0 },
                 { title: '依照日期（晚至早）排序', value: 1 },
                 { title: '依照愛心（多至少）排序', value: 2 },
@@ -354,6 +355,16 @@ export default Vue.extend({
         },
         sortCommments() {
             switch ( this.sortingValue ) {
+                case -1:
+                    this.problem.comments.sort((a, b) => {
+                        if ( a === '' || b === '' ) return 0;
+                        if ( a.author.username === this.username && b.author.username === this.username )
+                            return a.created - b.created;
+                        if ( a.author.username === this.username )  return -1;
+                        if ( b.author.username === this.username )  return 1;
+                        return a.created - b.created;
+                    });
+                    break;
                 case 0:
                     this.problem.comments.sort((a, b) => {
                         if ( a === '' || b === '' ) return 0;
@@ -369,12 +380,16 @@ export default Vue.extend({
                 case 2:
                     this.problem.comments.sort((a, b) => {
                         if ( a === '' || b === '' ) return 0;
+                        if ( a.liked.length == b.liked.length )
+                            return a.created - b.created;
                         return b.liked.length - a.liked.length;
                     });
                     break;
                 case 3:
                     this.problem.comments.sort((a, b) => {
                         if ( a === '' || b === '' ) return 0;
+                        if ( a.liked.length == b.liked.length )
+                            return a.created - b.created;
                         return a.liked.length - b.liked.length;
                     });
                     break;

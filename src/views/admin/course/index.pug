@@ -26,7 +26,7 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
       v-text-field(
         v-model="search"
         append-icon="mdi-magnify"
-        label="Search"
+        label="快速搜尋"
         single-line
         hide-details
       )
@@ -34,7 +34,8 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
       :headers="headers"
       :items="studentData"
       :search="search"
-      hide-default-footer
+      :items-per-page="Number(100)"
+      :footer-props="{ itemsPerPageOptions: [5, 10, 50, 100, -1] }"
     )
       template( v-slot:item.manage="{ item }" )
         v-tooltip( right color="#000000E6" )

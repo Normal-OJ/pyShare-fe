@@ -32,6 +32,7 @@ export default Vue.extend({
             problems: [],
             courses: [],
             tags: [],
+            search: '',
             course: UNLIMIT,
             selectedTags: [],
             title: ''

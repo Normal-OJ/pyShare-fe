@@ -72,12 +72,12 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
                 v-card-text.codeblock
                   v-expand-transition
                     div( v-if="item.key == 'result'" )
-                      Result( :stderr="comment.submission.stderr" :stdout="comment.submission.stdout" :files="comment.submission.files" 
+                      Result( :stderr="comment.submission ? comment.submission.stderr : ''" :stdout="comment.submission ? comment.submission.stdout : ''" :files="comment.submission ? comment.submission.files : ''" 
                               @reget="reGet(comment.id, idx)" @rejudge="reJudge(comment.id, idx)" :cid="comment.id" :perm="perm(comment.author.username) < 2" )
                     div( v-else-if="item.key == 'code'" style="white-space: pre-line" )
                       v-btn.copy-code( :id="`btn-copy-${idx}`" :data-clipboard-target="`#copy-${idx}`" color="grey" icon small )
                         v-icon mdi-content-copy
-                      pre( v-highlightjs="comment.submission.code" )
+                      pre( v-highlightjs="comment.submission ? comment.submission.code : ''" )
                         code.python( ref="copy-${idx}" :id="`copy-${idx}`" style="font-size: 14px;" )
       v-card-actions
         v-row( no-gutters )

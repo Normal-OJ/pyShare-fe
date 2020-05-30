@@ -162,11 +162,10 @@ export default Vue.extend({
                 return
             }
             let comments = result.comments;
-            let numberOfComment = 0;
-            for (let i = 0; i < result.comments.length; i++) {
-                // get comments and count how many commenst are visible
-                numberOfComment += await this.getComment(result.comments, i);
-            }
+
+            // get comments and count how many commenst are visible
+            let numberOfComment = (await Promise.all(result.comments.map((c, i, arr) => this.getComment(arr, i)))).reduce((a,b) => a+b, 0);
+
             result.numberOfComment = numberOfComment;
             this.problem = result
             this.editor.setContent(JSON.parse(this.problem.description), false)
@@ -193,11 +192,10 @@ export default Vue.extend({
             }
             // invisible comment will be set as '' (empty string)
             if ( comments[idx] === '' ) return visibleComment;
-            let numberOfReply = 0;
-            for (let i = 0; i < comments[idx].replies.length; i++) {
-                // get replies and count how many replies are visible
-                numberOfReply += await this.getReply(comments[idx].replies, i);
-            }
+
+            // get replies and count how many replies are visible
+            let numberOfReply = (await Promise.all(comments[idx].replies.map((r, i, arr) => this.getReply(arr, i)))).reduce((a,b) => a+b, 0);
+
             comments[idx].numberOfReply = numberOfReply;
             return visibleComment;
         },

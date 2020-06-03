@@ -36,7 +36,7 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
     v-col( cols="12" md="4" sm="6" )
       v-select( v-model="sortingValue" solo :items="sorting" item-text="title" item-value="value" width="50%" )
 
-  div( v-for="(comment, idx) in problem.comments" :key="idx" v-if="typeof(comment) != 'string'" )
+  div( v-for="(comment, idx) in problem.comments" :key="comment.id" v-if="typeof(comment) != 'string'" )
     //- comment
     div( :id="`${comment.floor}F`" style="padding: 30px 0;" )
     v-card.anchor( v-if="comment.id != editingComment" elevation="12" )
@@ -132,7 +132,7 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
         | {{ replyLabels[comment.showReplies].text + ` ${comment.numberOfReply} ` + '則回覆' }}
 
     //- show all replies
-    div( v-for="(reply, replyIdx) in comment.replies" :key="replyIdx" v-if="typeof(reply) != 'string'" )
+    div( v-for="(reply, replyIdx) in comment.replies" :key="reply.id" v-if="typeof(reply) != 'string'" )
       div( v-show="comment.showReplies" )
         v-card.my-3( style="margin-left: 10%;" elevation="2" v-if="reply.id != editingReply" )
           v-card-subtitle.text--primary

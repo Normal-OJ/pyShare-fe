@@ -398,6 +398,6 @@ export default Vue.extend({
         },
         toBottom() {
             this.$vuetify.goTo(document.body.offsetHeight);
-        },
+        }, 
     },
 });

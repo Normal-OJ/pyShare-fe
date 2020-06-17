@@ -44,6 +44,12 @@ export default {
     }
   },
 
+  beforeMount() {
+    if ( !this.$cookies.isKey('session') ) {
+      this.dialog = true;
+    }
+  },
+
   methods: {
     signin() {
       this.authDialog = false;

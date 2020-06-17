@@ -60,6 +60,7 @@
     <v-navigation-drawer 
       v-model="drawer"
       app
+      v-if="$vuetify.breakpoint.smAndDown"
       disable-resize-watcher
     >
       <v-list-item>

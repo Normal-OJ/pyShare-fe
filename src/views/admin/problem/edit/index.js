@@ -15,6 +15,7 @@ import {
     ListItem,
     TodoItem,
     TodoList,
+    Image,
     Bold,
     Code,
     CodeBlockHighlight,
@@ -47,6 +48,7 @@ export default Vue.extend({
                     new ListItem(),
                     new TodoItem(),
                     new TodoList(),
+                    new Image(),
                     new Bold(),
                     new Code(),
                     new Italic(),
@@ -216,6 +218,12 @@ export default Vue.extend({
             let url = `/api/problem/${pid}/attachment/${filename}`;
             let routeData = this.$router.resolve({path: url});
             window.open(routeData.href, '_blank');
+        },
+        showImagePrompt(command) {
+          const src = prompt('Enter the url of your image here')
+          if (src !== null) {
+            command({ src })
+          }
         },
     },
 });

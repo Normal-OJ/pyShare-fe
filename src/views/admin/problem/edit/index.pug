@@ -32,6 +32,8 @@ v-container.editor( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95v
         v-icon mdi-format-header-2
       button.menubar__button( :class="{ 'is-active': isActive.heading({ level: 3 }) }" @click="commands.heading({ level: 3 })" )
         v-icon mdi-format-header-3
+      button.menubar__button( @click="showImagePrompt(commands.image)" )
+        v-icon mdi-image
       button.menubar__button( :class="{ 'is-active': isActive.bullet_list() }" @click="commands.bullet_list" )
         v-icon mdi-format-list-bulleted
       button.menubar__button( :class="{ 'is-active': isActive.ordered_list() }" @click="commands.ordered_list" )

@@ -43,6 +43,8 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
         a.subtitle-1( :href="`/problem/${item.pid}`" ) {{ item.title }}
       template( v-slot:item.tags="{ item }" )
         v-chip.mr-1( v-for="tag in item.tags" :key="tag" label small ) {{ tag }}
+      template( v-slot:item.comments.length="{ item }" )
+        .subtitle-1 {{ item.comments.length }}
       template( v-slot:item.timestamp="{ item }" )
         .subtitle-1 {{ timeFormat(item.timestamp).substring(0,10) }}
       template( v-slot:item.author.displayedName="{ item }" )

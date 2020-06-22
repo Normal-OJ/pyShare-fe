@@ -26,6 +26,7 @@ export default Vue.extend({
                 { text: '題號', value: 'pid', class: "font-weight-bold subtitle-1 text--primary" },
                 { text: '標題', value: 'title', class: "font-weight-bold subtitle-1 text--primary" },
                 { text: '分類', value: 'tags', class: "font-weight-bold subtitle-1 text--primary", sortable: false },
+                { text: '留言', value: 'comments.length', class: "font-weight-bold subtitle-1 text--primary" },
                 { text: '日期', value: 'timestamp', class: "font-weight-bold subtitle-1 text--primary" },
                 { text: '作者', value: 'author.displayedName', class: "font-weight-bold subtitle-1 text--primary" },
             ],
@@ -73,6 +74,7 @@ export default Vue.extend({
 
                 result = await this.$http.get('/problem', { params: filter });
                 this.problems = result.data.data;
+                console.log(this.problems)
             } catch (e) {
                 console.log(e);
             }

@@ -175,10 +175,10 @@ export default Vue.extend({
             this.setupClipboard();
             this.sortCommments();
             if ( location.hash && document.getElementById(location.hash.slice(1)) ) {
-                this.$nextTick(() => {
+                setTimeout(() => {
                     var elementTop = document.getElementById(location.hash.slice(1)).offsetTop;
                     this.$vuetify.goTo(elementTop);
-                })
+                }, 500)
             }
         },
         async getComment(comments, idx, cid=null) {

@@ -24,7 +24,7 @@ export default Vue.extend({
             */
             headers: [
                 { text: '題號', value: 'pid', class: "font-weight-bold subtitle-1 text--primary" },
-                { text: '標題', value: 'title', class: "font-weight-bold subtitle-1 text--primary" },
+                { text: '標題', value: 'title', class: "font-weight-bold subtitle-1 text--primary", width: "40%" },
                 { text: '分類', value: 'tags', class: "font-weight-bold subtitle-1 text--primary", sortable: false },
                 { text: '留言', value: 'comments.length', class: "font-weight-bold subtitle-1 text--primary" },
                 { text: '日期', value: 'timestamp', class: "font-weight-bold subtitle-1 text--primary" },

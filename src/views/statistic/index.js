@@ -11,6 +11,19 @@ export default Vue.extend({
         }
     },
 
+    computed: {
+        totalLikedAmount() {
+            return this.statistic.liked.reduce((a, b) => {
+                return a + b.starers.length;
+            }, 0)
+        },
+        totalLikesAmount() {
+            return this.statistic.likes.reduce((a, b) => {
+                return a + b.staree.length;
+            }, 0)
+        }
+    },
+
     beforeMount() {
         this.getStatistic()
     },
@@ -24,6 +37,7 @@ export default Vue.extend({
                 console.log(e);
             }
             this.statistic = result.data.data
+            console.log(this.statistic)
         },
     },
 });

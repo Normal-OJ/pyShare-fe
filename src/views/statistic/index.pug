@@ -2,106 +2,119 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
   v-card.my-3.pb-6( elevation="12" v-if="statistic.problems" )
     v-card-title {{ $route.params.name + ' 的統計資料' }}
 
-    v-divider
+    v-divider    
 
-    v-card-title.font-weight-bold 發文: {{ statistic.problems.length }}
-    v-simple-table.pl-12.pr-3
-      thead
-        tr
-          th.subtitle-1.text--primary( style="width: 20%" ) 課程
-          th.subtitle-1.text--primary( style="width: 80%" ) 連結
-      tbody
-        tr( v-if="statistic.problems && statistic.problems.length == 0" )
-          td( colspan="2" ) No data available.
-        tr( v-for="(problem, idx) in statistic.problems" :key="idx" )
-          td.subtitle-1 {{ problem.course }}
-          td.subtitle-1
-            a( :href="`/problem/${problem.pid}`" ) {{ '題目' + problem.pid }}
+    v-expansion-panels( flat multiple )
 
-    v-card-title.font-weight-bold 留言: {{ statistic.comments.length }}
-    v-simple-table.pl-12.pr-3
-      thead
-        tr
-          th.subtitle-1.text--primary( style="width: 20%" ) 課程
-          th.subtitle-1.text--primary( style="width: 30%" ) 連結
-          th.subtitle-1.text--primary( style="width: 50%" ) 老師是否按過愛心
-      tbody
-        tr( v-if="statistic.comments && statistic.comments.length == 0" )
-          td( colspan="3" ) No data available.
-        tr( v-for="(comment, idx) in statistic.comments" :key="idx" )
-          td.subtitle-1 {{ comment.course }}
-          td.subtitle-1
-            a( :href="`/problem/${comment.pid}#${comment.floor}F`" ) {{ '題目' + comment.pid + ' - ' + comment.floor + '樓' }}
-          td.subtitle-1 
-            v-icon( v-if="comment.passed" color="success" ) mdi-check-bold
-            v-icon( v-else color="error" ) mdi-close-thick
+      v-expansion-panel
+        v-expansion-panel-header.title.font-weight-bold 發文: {{ statistic.problems.length }}
+        v-expansion-panel-content
+          v-simple-table.pl-12.pr-3
+            thead
+              tr
+                th.subtitle-1.text--primary( style="width: 20%" ) 課程
+                th.subtitle-1.text--primary( style="width: 80%" ) 連結
+            tbody
+              tr( v-if="statistic.problems && statistic.problems.length == 0" )
+                td( colspan="2" ) No data available.
+              tr( v-for="(problem, idx) in statistic.problems" :key="idx" )
+                td.subtitle-1 {{ problem.course }}
+                td.subtitle-1
+                  a( :href="`/problem/${problem.pid}`" ) {{ '題目' + problem.pid }}
 
-    v-card-title.font-weight-bold 回覆: {{ statistic.replies.length }}
-    v-simple-table.pl-12.pr-3
-      thead
-        tr
-          th.subtitle-1.text--primary( style="width: 20%" ) 課程
-          th.subtitle-1.text--primary( style="width: 80%" ) 連結
-      tbody
-        tr( v-if="statistic.replies && statistic.replies.length == 0" )
-          td( colspan="2" ) No data available.
-        tr( v-for="(reply, idx) in statistic.replies" :key="idx" )
-          td.subtitle-1 {{ reply.course }}
-          td.subtitle-1
-            a( :href="`/problem/${reply.pid}#${reply.floor}F`" ) {{ '題目' + reply.pid + ' - ' + reply.floor + '樓底下' }}
+      v-expansion-panel
+        v-expansion-panel-header.title.font-weight-bold 留言: {{ statistic.comments.length }}
+        v-expansion-panel-content
+          v-simple-table.pl-12.pr-3
+            thead
+              tr
+                th.subtitle-1.text--primary( style="width: 20%" ) 課程
+                th.subtitle-1.text--primary( style="width: 30%" ) 連結
+                th.subtitle-1.text--primary( style="width: 50%" ) 老師是否按過愛心
+            tbody
+              tr( v-if="statistic.comments && statistic.comments.length == 0" )
+                td( colspan="3" ) No data available.
+              tr( v-for="(comment, idx) in statistic.comments" :key="idx" )
+                td.subtitle-1 {{ comment.course }}
+                td.subtitle-1
+                  a( :href="`/problem/${comment.pid}#${comment.floor}F`" ) {{ '題目' + comment.pid + ' - ' + comment.floor + '樓' }}
+                td.subtitle-1 
+                  v-icon( v-if="comment.passed" color="success" ) mdi-check-bold
+                  v-icon( v-else color="error" ) mdi-close-thick
 
-    v-card-title.font-weight-bold 獲得愛心: {{ statistic.liked.length }}
-    v-simple-table.pl-12.pr-3
-      thead
-        tr
-          th.subtitle-1.text--primary( style="width: 20%" ) 課程
-          th.subtitle-1.text--primary( style="width: 30%" ) 連結
-          th.subtitle-1.text--primary( style="width: 50%" ) 給予愛心的人
-      tbody
-        tr( v-if="statistic.liked && statistic.liked.length == 0" )
-          td( colspan="3" ) No data available.
-        tr( v-for="(liked, idx) in statistic.liked" :key="idx" )
-          td.subtitle-1 {{ liked.course }}
-          td.subtitle-1
-            a( :href="`/problem/${liked.pid}#${liked.floor}F`" ) {{ '題目' + liked.pid + ' - ' + liked.floor + '樓' }}
-          td.subtitle-1
-            v-expansion-panels( flat )
-              v-expansion-panel
-                v-expansion-panel-header {{ liked.starers.length }}
-                v-expansion-panel-content
-                  p( v-for="(starer, i) in liked.starers" :key="i" ) {{ starer }}
+      v-expansion-panel
+        v-expansion-panel-header.title.font-weight-bold 回覆: {{ statistic.replies.length }}
+        v-expansion-panel-content
+          v-simple-table.pl-12.pr-3
+            thead
+              tr
+                th.subtitle-1.text--primary( style="width: 20%" ) 課程
+                th.subtitle-1.text--primary( style="width: 80%" ) 連結
+            tbody
+              tr( v-if="statistic.replies && statistic.replies.length == 0" )
+                td( colspan="2" ) No data available.
+              tr( v-for="(reply, idx) in statistic.replies" :key="idx" )
+                td.subtitle-1 {{ reply.course }}
+                td.subtitle-1
+                  a( :href="`/problem/${reply.pid}#${reply.floor}F`" ) {{ '題目' + reply.pid + ' - ' + reply.floor + '樓底下' }}
 
+      v-expansion-panel
+        v-expansion-panel-header.title.font-weight-bold 獲得愛心: {{ totalLikedAmount }}
+        v-expansion-panel-content
+          v-simple-table.pl-12.pr-3
+            thead
+              tr
+                th.subtitle-1.text--primary( style="width: 20%" ) 課程
+                th.subtitle-1.text--primary( style="width: 30%" ) 連結
+                th.subtitle-1.text--primary( style="width: 50%" ) 給予愛心的人
+            tbody
+              tr( v-if="statistic.liked && statistic.liked.length == 0" )
+                td( colspan="3" ) No data available.
+              tr( v-for="(liked, idx) in statistic.liked" :key="idx" )
+                td.subtitle-1 {{ liked.course }}
+                td.subtitle-1
+                  a( :href="`/problem/${liked.pid}#${liked.floor}F`" ) {{ '題目' + liked.pid + ' - ' + liked.floor + '樓' }}
+                td.subtitle-1
+                  v-expansion-panels( flat )
+                    v-expansion-panel
+                      v-expansion-panel-header {{ liked.starers.length }}
+                      v-expansion-panel-content( v-if="liked.starers.length > 0" )
+                        p( v-for="(starer, i) in liked.starers" :key="i" ) {{ starer }}
 
-    v-card-title.font-weight-bold 給予愛心: {{ statistic.likes.length }}
-    v-simple-table.pl-12.pr-3
-      thead
-        tr
-          th.subtitle-1.text--primary( style="width: 20%" ) 課程
-          th.subtitle-1.text--primary( style="width: 30%" ) 連結
-          th.subtitle-1.text--primary( style="width: 50%" ) 對象
-      tbody
-        tr( v-if="statistic.likes && statistic.likes.length == 0" )
-          td( colspan="3" ) No data available.
-        tr( v-for="(likes, idx) in statistic.likes" :key="idx" )
-          td.subtitle-1 {{ likes.course }}
-          td.subtitle-1
-            a( :href="`/problem/${likes.pid}#${likes.floor}F`" ) {{ '題目' + likes.pid + ' - ' + likes.floor + '樓' }}
-          td.subtitle-1 {{ likes.staree }}
+      v-expansion-panel
+        v-expansion-panel-header.title.font-weight-bold 給予愛心: {{ totalLikesAmount }}
+        v-expansion-panel-content
+          v-simple-table.pl-12.pr-3
+            thead
+              tr
+                th.subtitle-1.text--primary( style="width: 20%" ) 課程
+                th.subtitle-1.text--primary( style="width: 30%" ) 連結
+                th.subtitle-1.text--primary( style="width: 50%" ) 對象
+            tbody
+              tr( v-if="statistic.likes && statistic.likes.length == 0" )
+                td( colspan="3" ) No data available.
+              tr( v-for="(likes, idx) in statistic.likes" :key="idx" )
+                td.subtitle-1 {{ likes.course }}
+                td.subtitle-1
+                  a( :href="`/problem/${likes.pid}#${likes.floor}F`" ) {{ '題目' + likes.pid + ' - ' + likes.floor + '樓' }}
+                td.subtitle-1 {{ likes.staree }}
 
-    v-card-title.font-weight-bold 執行結果: {{ statistic.execInfo.length }}
-    v-simple-table.pl-12.pr-3
-      thead
-        tr
-          th.subtitle-1.text--primary( style="width: 20%" ) 課程
-          th.subtitle-1.text--primary( style="width: 30%" ) 連結
-          th.subtitle-1.text--primary( style="width: 25%" ) 成功次數
-          th.subtitle-1.text--primary( style="width: 25%" ) 失敗次數
-      tbody
-        tr( v-if="statistic.execInfo && statistic.execInfo.length == 0" )
-          td( colspan="4" ) No data available.
-        tr( v-for="(info, idx) in statistic.execInfo" :key="idx")
-          td.subtitle-1 {{ info.course }}
-          td.subtitle-1
-            a( :href="`/problem/${info.pid}#${info.floor}F`" ) {{ '題目' + info.pid + ' - ' + info.floor + '樓' }}
-          td.subtitle-1 {{ info.success }}
-          td.subtitle-1 {{ info.fail }}
+      v-expansion-panel
+        v-expansion-panel-header.title.font-weight-bold 執行結果: {{ statistic.execInfo.length }}
+        v-expansion-panel-content
+          v-simple-table.pl-12.pr-3
+            thead
+              tr
+                th.subtitle-1.text--primary( style="width: 20%" ) 課程
+                th.subtitle-1.text--primary( style="width: 30%" ) 連結
+                th.subtitle-1.text--primary( style="width: 25%" ) 成功次數
+                th.subtitle-1.text--primary( style="width: 25%" ) 失敗次數
+            tbody
+              tr( v-if="statistic.execInfo && statistic.execInfo.length == 0" )
+                td( colspan="4" ) No data available.
+              tr( v-for="(info, idx) in statistic.execInfo" :key="idx")
+                td.subtitle-1 {{ info.course }}
+                td.subtitle-1
+                  a( :href="`/problem/${info.pid}#${info.floor}F`" ) {{ '題目' + info.pid + ' - ' + info.floor + '樓' }}
+                td.subtitle-1 {{ info.success }}
+                td.subtitle-1 {{ info.fail }}

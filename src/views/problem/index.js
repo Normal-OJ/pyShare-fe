@@ -174,6 +174,12 @@ export default Vue.extend({
             this.newComment.code = this.problem.defaultCode;
             this.setupClipboard();
             this.sortCommments();
+            if ( location.hash && document.getElementById(location.hash.slice(1)) ) {
+                this.$nextTick(() => {
+                    var elementTop = document.getElementById(location.hash.slice(1)).offsetTop;
+                    this.$vuetify.goTo(elementTop);
+                })
+            }
         },
         async getComment(comments, idx, cid=null) {
             let visibleComment = 1;

@@ -174,11 +174,13 @@ export default Vue.extend({
             this.newComment.code = this.problem.defaultCode;
             this.setupClipboard();
             this.sortCommments();
-            if ( location.hash && document.getElementById(location.hash.slice(1)) ) {
+            if ( location.hash ) {
                 setTimeout(() => {
-                    var elementTop = document.getElementById(location.hash.slice(1)).offsetTop;
-                    this.$vuetify.goTo(elementTop);
-                }, 500)
+                    if ( document.getElementById(location.hash.slice(1)) ) {
+                        var elementTop = document.getElementById(location.hash.slice(1)).offsetTop;
+                        this.$vuetify.goTo(elementTop);
+                    }
+                }, 0)
             }
         },
         async getComment(comments, idx, cid=null) {

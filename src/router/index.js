@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import problems from '@/views/problems'
+import about from '@/views/about'
 import problem from '@/views/problem'
 import adminMain from '@/views/admin/main'
 import adminProblem from '@/views/admin/problem'
@@ -20,6 +21,10 @@ const routes = [
   {
     path: '/problems',
     component: problems,
+  },
+  {
+    path: '/about',
+    component: about,
   },
   {
     path: '/problem/:id',

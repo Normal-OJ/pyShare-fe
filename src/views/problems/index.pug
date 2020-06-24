@@ -36,6 +36,7 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
       :search="search"
       :items-per-page="Number(-1)"
       hide-default-footer
+      :loading="loading"
     )
       template( v-slot:item.pid="{ item }" )
         .subtitle-1 {{ item.pid }}

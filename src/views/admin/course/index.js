@@ -13,8 +13,8 @@ export default Vue.extend({
                 { text: '發文', value: 'problems.length', class: "font-weight-bold subtitle-1 text--primary" },
                 { text: '留言', value: 'comments.length', class: "font-weight-bold subtitle-1 text--primary" },
                 { text: '回覆', value: 'replies.length', class: "font-weight-bold subtitle-1 text--primary" },
+                { text: '獲得愛心', value: 'totalLiked', class: "font-weight-bold subtitle-1 text--primary" },
                 { text: '給予愛心', value: 'likes.length', class: "font-weight-bold subtitle-1 text--primary" },
-                { text: '獲得愛心', value: 'liked.length', class: "font-weight-bold subtitle-1 text--primary" },
                 { text: '執行成功', value: 'success', class: "font-weight-bold subtitle-1 text--primary" },
                 { text: '執行失敗', value: 'fail', class: "font-weight-bold subtitle-1 text--primary" },
                 { text: '已批改', value: 'passed', class: "font-weight-bold subtitle-1 text--primary" },
@@ -43,6 +43,7 @@ export default Vue.extend({
                 value: false,
                 msg: '',
             },
+            loading: false,
         }
     },
 
@@ -59,26 +60,33 @@ export default Vue.extend({
 
     methods: {
         async updateCourse() {
-            let result;
-            try {
-                result = await this.$http.get(`/course/${this.course}/statistic`);
-                result = result.data;
-            } catch (e) {
-                console.log(e);
+            if ( this.$refs.form.validate() ) {
+                this.loading = true;
+                let result;
+                try {
+                    result = await this.$http.get(`/course/${this.course}/statistic`);
+                    result = result.data;
+                } catch (e) {
+                    console.log(e);
+                }
+                result.data.forEach(d => {
+                    d.totalLiked = d.liked.reduce((a, b) => {
+                        return a + b.starers.length;
+                    }, 0);
+                    d.passed = 0
+                    d.success = 0
+                    d.fail = 0
+                    d.execInfo.forEach(info => {
+                        d.success += info.success
+                        d.fail += info.fail
+                    })
+                    d.comments.forEach(c => {
+                        d.passed += (c.passed ? 1 : 0)
+                    })
+                })
+                this.studentData = result.data
+                this.loading = false;
             }
-            result.data.forEach(d => {
-                d.passed = 0
-                d.success = 0
-                d.fail = 0
-                d.execInfo.forEach(info => {
-                    d.success += info.success
-                    d.fail += info.fail
-                })
-                d.comments.forEach(c => {
-                    d.passed += (c.passed ? 1 : 0)
-                })
-            })
-            this.studentData = result.data
         },
         async createCourse(name) {
             let result;

@@ -36,11 +36,10 @@ export default Vue.extend({
             search: '',
             course: UNLIMIT,
             selectedTags: [],
-            title: ''
+            title: '',
+            loading: false,
         }
     },
-
-    ready() {},
 
     beforeMount() {
         this.course = getProfile().course;
@@ -62,6 +61,7 @@ export default Vue.extend({
 
     methods: {
         async getProblems() {
+            this.loading = true;
             let result;
             try {
                 let filter = {
@@ -74,10 +74,10 @@ export default Vue.extend({
 
                 result = await this.$http.get('/problem', { params: filter });
                 this.problems = result.data.data;
-                console.log(this.problems)
             } catch (e) {
                 console.log(e);
             }
+            this.loading = false;
         },
         timeFormat(ts) {
             return toDateString(ts);

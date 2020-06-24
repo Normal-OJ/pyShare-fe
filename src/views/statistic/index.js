@@ -18,9 +18,7 @@ export default Vue.extend({
             }, 0)
         },
         totalLikesAmount() {
-            return this.statistic.likes.reduce((a, b) => {
-                return a + b.staree.length;
-            }, 0)
+            return this.statistic.likes.length;
         }
     },
 
@@ -36,8 +34,7 @@ export default Vue.extend({
             } catch (e) {
                 console.log(e);
             }
-            this.statistic = result.data.data
-            console.log(this.statistic)
+            this.statistic = result.data.data;
         },
     },
 });

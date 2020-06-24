@@ -1,7 +1,16 @@
 v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', height: '100%' }" )
   v-card.my-3( height="100%" elevation="12" )
     v-card-title 課程學生列表
-    v-select.ma-3( label="選擇課程" outlined hide-details :items="courses" item-text="name" item-value="name" v-model="course" )
+    v-form( ref="form" )
+      v-select.ma-3( 
+        label="選擇課程" 
+        outlined 
+        :items="courses"
+        item-text="name"
+        item-value="name"
+        v-model="course"
+        :rules="[v => !!v || '請選擇課程']"
+      )
     v-container( fluid )
       v-row( no-gutters )
         v-btn( color="info" @click="newCourseDialog = true" )
@@ -36,6 +45,7 @@ v-container( :style="{ width: $vuetify.breakpoint.mdAndUp ? '70vw' : '95vw', hei
       :search="search"
       :items-per-page="Number(100)"
       :footer-props="{ itemsPerPageOptions: [5, 10, 50, 100, -1] }"
+      :loading="loading"
     )
       template( v-slot:item.manage="{ item }" )
         v-tooltip( right color="#000000E6" )

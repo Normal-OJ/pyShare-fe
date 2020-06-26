@@ -6,6 +6,7 @@ export default Vue.extend({
 
     data() {
         return {
+        	logo: require('@/assets/pyShare.png'),
         }
     }
 });

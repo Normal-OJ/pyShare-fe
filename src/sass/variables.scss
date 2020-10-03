@@ -1,0 +1,11 @@
+// Import 'jf-openhuninn-1.1' from assets
+@font-face {
+  font-family: 'jf-openhuninn-1.1';
+  src: url('/src/assets/fonts/jf-openhuninn-1.1.ttf') format('truetype');
+}
+
+// Import 'Noto Sans TC' from google fonts
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@100;300;400;500;700;900&display=swap');
+
+$body-font-family: 'Noto Sans TC', sans-serif;
+$heading-font-family: 'jf-openhuninn-1.1', $body-font-family;

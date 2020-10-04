@@ -8,9 +8,41 @@
     <v-toolbar-title style="color: white;">
       Python 創作分享平台
     </v-toolbar-title>
+
+    <v-toolbar-items>
+      <v-btn
+        v-for="{ label, routeName } in headerItems"
+        :key="label"
+        :to="routeName"
+        class="text-body-1 ml-10"
+        color="white"
+        text
+      >
+        {{ label }}
+      </v-btn>
+    </v-toolbar-items>
+
+    <v-spacer />
+
+    <v-toolbar-items>
+      <v-btn class="text-body-1" icon>
+        <v-icon color="white">mdi-bell</v-icon>
+      </v-btn>
+      <v-btn class="text-body-1 ml-7" color="white" text>
+        莊博傑
+      </v-btn>
+    </v-toolbar-items>
   </v-app-bar>
 </template>
 
 <script>
-export default {}
+import { HEADER_ITEMS } from '../constants/header'
+
+export default {
+  name: 'Header',
+
+  data: () => ({
+    headerItems: HEADER_ITEMS,
+  }),
+}
 </script>

@@ -18,6 +18,7 @@ const routes = [
   {
     path: '/courses',
     name: 'courses',
+    component: () => import('../views/Courses/Courses'),
   },
   {
     path: '/manages',

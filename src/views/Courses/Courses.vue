@@ -11,20 +11,20 @@
       </v-btn>
     </v-row>
 
-    <CourseList data="fake_courses_data" />
+    <CourseList :data="fakeCoursesData" />
 
-    <v-row>
+    <v-row class="mt-15">
       <div class="text-h5">其他公開課程</div>
     </v-row>
 
-    <CourseList data="fake_public_courses_data" />
+    <CourseList :data="fakePublicCoursesData" />
   </v-container>
 </template>
 
 <script>
 import CourseList from '../../components/Courses/CourseList'
 
-const fake_courses_data = [
+const fakeCoursesData = [
   {
     name: 'DSCP',
     semester: '108-2',
@@ -32,7 +32,7 @@ const fake_courses_data = [
   },
 ]
 
-const fake_public_courses_data = [
+const fakePublicCoursesData = [
   {
     name: 'DSCP',
     semester: '108-2',
@@ -46,8 +46,8 @@ export default {
   components: { CourseList },
 
   data: () => ({
-    fake_courses_data,
-    fake_public_courses_data,
+    fakeCoursesData,
+    fakePublicCoursesData,
   }),
 }
 </script>

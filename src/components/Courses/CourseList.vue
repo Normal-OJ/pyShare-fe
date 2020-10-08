@@ -3,15 +3,21 @@
     <template v-slot:default>
       <thead>
         <tr>
-          <th v-for="header in headers" :key="header" class="text-left">
-            {{ header }}
+          <th v-for="{ label, key } in headers" :key="key" class="text-left">
+            {{ label }}
           </th>
         </tr>
       </thead>
       <tbody>
         <tr v-for="row in data" :key="row.name">
-          <td v-for="header in headers" :key="header" class="text-left">
-            {{ row[header] }}
+          <td v-for="{ key } in headers" :key="key" class="text-left">
+            <router-link
+              v-if="key === 'name'"
+              :to="{ name: 'course', params: { id: row[key] } }"
+            >
+              {{ row[key] }}
+            </router-link>
+            <span v-else>{{ row[key] }}</span>
           </td>
         </tr>
       </tbody>
@@ -20,6 +26,12 @@
 </template>
 
 <script>
+const headers = [
+  { label: '課程', key: 'name' },
+  { label: '學期', key: 'semester' },
+  { label: '教師', key: 'teacher' },
+]
+
 export default {
   name: 'CourseList',
 
@@ -31,10 +43,7 @@ export default {
   },
 
   data: () => ({
-    headers: ['課程', '學期', '教師'],
+    headers,
   }),
 }
 </script>
-
-<style>
-</style>

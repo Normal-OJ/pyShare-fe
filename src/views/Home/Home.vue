@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import NoAccount from '../../components/Login/NoAccount'
+import NoAccount from '@/components/Login/NoAccount'
 
 export default {
   name: 'Home',

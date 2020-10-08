@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid class="d-flex flex-column pt-12 px-16 course-list">
+  <v-container fluid class="d-flex flex-column pt-12 px-16">
     <v-row>
       <div class="text-h5">我的課程</div>
 
@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import CourseList from '../../components/Courses/CourseList'
+import CourseList from '@/components/Courses/CourseList'
 
 const fakeCoursesData = [
   {
@@ -51,8 +51,3 @@ export default {
   }),
 }
 </script>
-
-<style scoped>
-.course-list {
-}
-</style>

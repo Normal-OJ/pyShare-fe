@@ -9,8 +9,8 @@
 </template>
 
 <script>
-import NoAccount from '../../components/Login/NoAccount'
-import LoginForm from '../../components/Login/LoginForm'
+import NoAccount from '@/components/Login/NoAccount'
+import LoginForm from '@/components/Login/LoginForm'
 
 export default {
   name: 'Login',

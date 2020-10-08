@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Home from '../views/Home/Home'
+import Home from '@/views/Home/Home'
 
 Vue.use(VueRouter)
 
@@ -13,16 +13,38 @@ const routes = [
   {
     path: '/login',
     name: 'login',
-    component: () => import('../views/Login/Login'),
+    component: () => import('@/views/Login/Login'),
   },
   {
     path: '/courses',
     name: 'courses',
-    component: () => import('../views/Courses/Courses'),
+    component: () => import('@/views/Courses/Courses'),
   },
   {
     path: '/course/:id',
-    name: 'course',
+    component: () => import('@/views/Course/Course'),
+    children: [
+      {
+        path: '',
+        name: 'course',
+        redirect: { name: 'courseProblems' },
+      },
+      {
+        path: 'problems',
+        name: 'courseProblems',
+        component: () => import('@/views/Course/Problems'),
+      },
+      {
+        path: 'members',
+        name: 'courseMembers',
+        component: () => import('@/views/Course/Members'),
+      },
+      {
+        path: 'info',
+        name: 'courseInfo',
+        component: () => import('@/views/Course/Info'),
+      },
+    ],
   },
   {
     path: '/manages',

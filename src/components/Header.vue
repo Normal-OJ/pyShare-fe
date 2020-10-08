@@ -1,5 +1,5 @@
 <template>
-  <v-app-bar app color="primary" height="56" elevation="0">
+  <v-app-bar app color="primary" height="56" elevate-on-scroll>
     <v-img
       class="mr-2"
       :src="require('@/assets/images/logo.png')"
@@ -13,7 +13,7 @@
       <v-btn
         v-for="{ label, routeName } in headerItems"
         :key="label"
-        :to="routeName"
+        :to="{ name: routeName }"
         class="text-body-1 font-weight-bold "
         color="white"
         text
@@ -36,7 +36,7 @@
 </template>
 
 <script>
-import { HEADER_ITEMS } from '../constants/header'
+import { HEADER_ITEMS } from '@/constants/header'
 
 export default {
   name: 'Header',

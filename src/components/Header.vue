@@ -5,7 +5,7 @@
       :src="require('@/assets/images/logo.png')"
       max-width="32"
     />
-    <v-toolbar-title style="color: white;" class="font-weight-bold">
+    <v-toolbar-title style="color: white;" class="font-weight-bold mr-4">
       Python 創作分享平台
     </v-toolbar-title>
 
@@ -14,7 +14,7 @@
         v-for="{ label, routeName } in headerItems"
         :key="label"
         :to="routeName"
-        class="text-body-1 font-weight-bold ml-10"
+        class="text-body-1 font-weight-bold "
         color="white"
         text
       >
@@ -28,7 +28,7 @@
       <v-btn class="text-body-1" icon>
         <v-icon color="white">mdi-bell</v-icon>
       </v-btn>
-      <v-btn class="text-body-1 font-weight-bold ml-7" color="white" text>
+      <v-btn class="text-body-1 font-weight-bold" color="white" text>
         莊博傑
       </v-btn>
     </v-toolbar-items>

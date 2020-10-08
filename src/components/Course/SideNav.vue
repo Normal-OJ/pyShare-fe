@@ -35,6 +35,7 @@
     </v-list>
 
     <template v-slot:append>
+      <v-divider />
       <v-list dense nav>
         <v-list-item link @click="isMinify = !isMinify">
           <v-list-item-icon>

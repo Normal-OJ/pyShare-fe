@@ -24,14 +24,12 @@
 
     <v-spacer />
 
-    <v-toolbar-items>
-      <v-btn class="text-body-1" icon>
-        <v-icon color="white">mdi-bell</v-icon>
-      </v-btn>
-      <v-btn class="text-body-1 font-weight-bold" color="white" text>
-        莊博傑
-      </v-btn>
-    </v-toolbar-items>
+    <v-btn class="text-body-1" icon>
+      <v-icon color="white">mdi-bell</v-icon>
+    </v-btn>
+    <v-btn class="text-body-1 font-weight-bold" color="white" text>
+      莊博傑
+    </v-btn>
   </v-app-bar>
 </template>
 

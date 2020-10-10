@@ -3,11 +3,11 @@
     permanent
     bottom
     :mini-variant="isMinify"
-    mini-variant-width="60"
+    mini-variant-width="50"
   >
     <v-list-item>
-      <v-list-item-avatar>
-        <v-avatar color="primary" size="48" />
+      <v-list-item-avatar class="rounded">
+        <v-img src="http://fakeimg.pl/100x100" />
       </v-list-item-avatar>
       <v-list-item-content>
         <v-list-item-title class="title">
@@ -18,7 +18,7 @@
 
     <v-divider />
 
-    <v-list dense nav>
+    <v-list dense :nav="!isMinify">
       <v-list-item
         v-for="{ label, icon, routeName } in items"
         :key="label"
@@ -36,7 +36,7 @@
 
     <template v-slot:append>
       <v-divider />
-      <v-list dense nav>
+      <v-list dense :nav="!isMinify">
         <v-list-item link @click="isMinify = !isMinify">
           <v-list-item-icon>
             <v-icon>

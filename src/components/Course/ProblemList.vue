@@ -8,7 +8,9 @@
     :loading="loading"
   >
     <template v-slot:[`item.title`]="{ item }">
-      <router-link to="#">{{ item.title }}</router-link>
+      <router-link :to="{ name: 'courseProblem', params: { id: item.id } }">
+        {{ item.title }}
+      </router-link>
     </template>
     <template v-slot:[`item.tags`]="{ item }">
       <v-chip

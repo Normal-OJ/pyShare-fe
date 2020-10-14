@@ -21,7 +21,7 @@ const routes = [
     component: () => import('@/views/Courses/Courses'),
   },
   {
-    path: '/course/:id',
+    path: '/course/:name',
     component: () => import('@/views/Course/Course'),
     children: [
       {
@@ -32,17 +32,22 @@ const routes = [
       {
         path: 'problems',
         name: 'courseProblems',
-        component: () => import('@/views/Course/Problems'),
+        component: () => import('@/views/Course/Problems/Problems'),
+      },
+      {
+        path: 'problem/:id',
+        name: 'courseProblem',
+        component: () => import('@/views/Course/Problem/Problem'),
       },
       {
         path: 'members',
         name: 'courseMembers',
-        component: () => import('@/views/Course/Members'),
+        component: () => import('@/views/Course/Members/Members'),
       },
       {
         path: 'info',
         name: 'courseInfo',
-        component: () => import('@/views/Course/Info'),
+        component: () => import('@/views/Course/Info/Info'),
       },
     ],
   },

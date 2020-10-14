@@ -13,7 +13,7 @@
           <td v-for="{ key } in headers" :key="key" class="text-left">
             <router-link
               v-if="key === 'name'"
-              :to="{ name: 'course', params: { id: row[key] } }"
+              :to="{ name: 'course', params: { name: row[key] } }"
             >
               {{ row[key] }}
             </router-link>

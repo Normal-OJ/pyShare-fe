@@ -5,7 +5,7 @@
 
       <v-spacer />
 
-      <v-btn color="primary">
+      <v-btn color="success">
         <v-icon>mdi-plus</v-icon>
         新增課程
       </v-btn>

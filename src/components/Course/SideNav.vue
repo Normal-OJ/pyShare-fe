@@ -10,8 +10,8 @@
         <v-img src="http://fakeimg.pl/100x100" />
       </v-list-item-avatar>
       <v-list-item-content>
-        <v-list-item-title class="title">
-          課程
+        <v-list-item-title>
+          108-2 DSCP
         </v-list-item-title>
       </v-list-item-content>
     </v-list-item>

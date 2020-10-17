@@ -1,10 +1,12 @@
 <template>
-  <v-container fluid />
+  <Info />
 </template>
 
 <script>
+import Info from '@/components/Course/Info/Info'
+
 export default {
-  name: 'Info',
+  components: { Info },
 
   data: () => ({}),
 }

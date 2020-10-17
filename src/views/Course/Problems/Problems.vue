@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import Problems from '@/components/Course/Problems'
+import Problems from '@/components/Course/Problems/Problems'
 
 const fakeProblemsData = [
   {

@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import Members from '@/components/Course/Members'
+import Members from '@/components/Course/Members/Members'
 
 const fakeMembersData = [
   {

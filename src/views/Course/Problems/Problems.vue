@@ -1,13 +1,9 @@
 <template>
-  <v-container fluid class="d-flex flex-column pt-4 px-8">
-    <ProblemFilter :selectedTags="selectedTags" :searchText.sync="searchText" />
-    <ProblemList :data="fakeProblemsData" :searchText="searchText" />
-  </v-container>
+  <Problems :data="fakeProblemsData" />
 </template>
 
 <script>
-import ProblemFilter from '@/components/Course/ProblemFilter'
-import ProblemList from '@/components/Course/ProblemList'
+import Problems from '@/components/Course/Problems'
 
 const fakeProblemsData = [
   {
@@ -33,13 +29,13 @@ const fakeProblemsData = [
 ]
 
 export default {
-  name: 'Problems',
+  // prevent maximum call stack size exceeded
+  // https://github.com/vuejs/vue/issues/9081
+  // name: 'Problems',
 
-  components: { ProblemList, ProblemFilter },
+  components: { Problems },
 
   data: () => ({
-    selectedTags: [],
-    searchText: '',
     fakeProblemsData,
   }),
 }

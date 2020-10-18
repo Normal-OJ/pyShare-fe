@@ -11,17 +11,9 @@
         </router-link>
         <div class="text-body-2 d-flex">
           Jul 12, 2020
-          <div
-            v-if="prob.tags && prob.tags.length > 0"
-            style="white-space: pre"
-          >
+          <div v-if="prob.tags && prob.tags.length > 0" style="white-space: pre">
             &nbsp;·&nbsp;
-            <v-chip
-              class="text-caption mr-1"
-              v-for="tag in prob.tags"
-              :key="tag"
-              small
-            >
+            <v-chip class="text-caption mr-1" v-for="tag in prob.tags" :key="tag" small>
               {{ tag }}
             </v-chip>
           </div>

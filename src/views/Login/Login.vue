@@ -4,7 +4,7 @@
       歡迎回來，請先登入
     </div>
     <LoginForm @submit="handleSubmit(payload)" />
-    <NoAccount color="primary" />
+    <!-- <NoAccount color="primary" /> -->
   </v-container>
 </template>
 
@@ -15,6 +15,7 @@ import LoginForm from '@/components/Login/LoginForm'
 export default {
   name: 'Login',
 
+  // eslint-disable-next-line vue/no-unused-components
   components: { NoAccount, LoginForm },
 
   methods: {

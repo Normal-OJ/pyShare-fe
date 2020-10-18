@@ -9,7 +9,7 @@
     <v-btn class="mb-7" color="secondary" width="140" :to="'login'">
       前往登入
     </v-btn>
-    <NoAccount color="white" />
+    <!-- <NoAccount color="white" /> -->
   </v-container>
 </template>
 
@@ -19,9 +19,14 @@ import NoAccount from '@/components/Login/NoAccount'
 export default {
   name: 'Home',
 
+  // eslint-disable-next-line vue/no-unused-components
   components: { NoAccount },
 
   data: () => ({}),
+
+  mounted() {
+    console.log(this.$cookies)
+  },
 }
 </script>
 

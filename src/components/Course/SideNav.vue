@@ -1,10 +1,5 @@
 <template>
-  <v-navigation-drawer
-    permanent
-    bottom
-    :mini-variant="isMinify"
-    mini-variant-width="50"
-  >
+  <v-navigation-drawer permanent bottom :mini-variant="isMinify" mini-variant-width="50">
     <v-list-item>
       <v-list-item-avatar class="rounded">
         <v-img src="http://fakeimg.pl/100x100" />
@@ -40,11 +35,7 @@
         <v-list-item link @click="isMinify = !isMinify">
           <v-list-item-icon>
             <v-icon>
-              {{
-                isMinify
-                  ? 'mdi-chevron-double-right'
-                  : 'mdi-chevron-double-left'
-              }}
+              {{ isMinify ? 'mdi-chevron-double-right' : 'mdi-chevron-double-left' }}
             </v-icon>
           </v-list-item-icon>
           <v-list-item-content>

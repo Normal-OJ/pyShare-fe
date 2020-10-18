@@ -1,10 +1,6 @@
 <template>
   <v-app-bar app color="primary" height="56" elevate-on-scroll>
-    <v-img
-      class="mr-2"
-      :src="require('@/assets/images/logo.png')"
-      max-width="32"
-    />
+    <v-img class="mr-2" :src="require('@/assets/images/logo.png')" max-width="32" />
     <v-toolbar-title style="color: white;" class="font-weight-bold mr-4">
       Python 創作分享平台
     </v-toolbar-title>

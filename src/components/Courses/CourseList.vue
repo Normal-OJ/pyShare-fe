@@ -11,10 +11,7 @@
       <tbody>
         <tr v-for="row in data" :key="row.name">
           <td v-for="{ key } in headers" :key="key" class="text-left">
-            <router-link
-              v-if="key === 'name'"
-              :to="{ name: 'course', params: { name: row[key] } }"
-            >
+            <router-link v-if="key === 'name'" :to="{ name: 'course', params: { name: row[key] } }">
               {{ row[key] }}
             </router-link>
             <span v-else>{{ row[key] }}</span>

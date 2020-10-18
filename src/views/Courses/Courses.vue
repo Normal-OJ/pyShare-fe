@@ -11,43 +11,39 @@
       </v-btn>
     </v-row>
 
-    <CourseList :data="fakeCoursesData" />
+    <CourseList :data="courses" />
 
     <v-row class="mt-15">
       <div class="text-h5">其他公開課程</div>
     </v-row>
 
-    <CourseList :data="fakePublicCoursesData" />
+    <CourseList :data="courses" />
   </v-container>
 </template>
 
 <script>
 import CourseList from '@/components/Courses/CourseList'
-
-const fakeCoursesData = [
-  {
-    name: 'DSCP',
-    semester: '108-2',
-    teacher: '蔣宗哲',
-  },
-]
-
-const fakePublicCoursesData = [
-  {
-    name: 'DSCP',
-    semester: '108-2',
-    teacher: '蔣宗哲',
-  },
-]
+import { mapState } from 'vuex'
+import store from '@/store'
+import { GET_COURSES } from '@/store/actions.type'
 
 export default {
   name: 'Courses',
 
   components: { CourseList },
 
-  data: () => ({
-    fakeCoursesData,
-    fakePublicCoursesData,
-  }),
+  beforeRouteEnter(to, from, next) {
+    store.dispatch(GET_COURSES).then(() => {
+      next()
+    })
+  },
+
+  computed: {
+    ...mapState({
+      courses: state => state.courses,
+    }),
+  },
+
+  data: () => ({}),
 }
 </script>

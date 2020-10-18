@@ -8,9 +8,7 @@
           mdi-help-circle-outline
         </v-icon>
       </template>
-      <span
-        >以訪客身份登入，您可以瀏覽所有公開的課程與主題創作，但僅供檢視。</span
-      >
+      <span>以訪客身份登入，您可以瀏覽所有公開的課程與主題創作，但僅供檢視。</span>
     </v-tooltip>
   </div>
 </template>

@@ -67,7 +67,7 @@ export default {
 
   methods: {
     submit() {
-      const { year, semester, teacher } = this
+      const { name, year, semester, teacher } = this
       this.$emit('submit', { name, year, semester, teacher })
       // TODO: getError and show feedback, conditionally close dialog
       this.dialog = false

@@ -1,6 +1,6 @@
 <template>
   <v-container fluid class="d-flex flex-column align-center banner">
-    <div class="text-h2 mb-6">
+    <div class="text-h2 mb-6 thin-font">
       歡迎來到 Python 創作分享平台
     </div>
     <div class="text-h5 mb-13">
@@ -23,10 +23,6 @@ export default {
   components: { NoAccount },
 
   data: () => ({}),
-
-  mounted() {
-    console.log(this.$cookies)
-  },
 }
 </script>
 
@@ -36,5 +32,10 @@ export default {
   background-color: var(--v-primary-base);
   padding-top: 110px;
   padding-bottom: 166px;
+}
+
+.thin-font {
+  font-family: 'Noto Sans TC' !important;
+  font-weight: 300;
 }
 </style>

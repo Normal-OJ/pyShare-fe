@@ -1,15 +1,16 @@
-// import Vue from 'vue'
-// import config from '@/constants/config'
+import Vue from 'vue'
+import config from '@/constants/config'
+import VueCookie from 'vue-cookie'
 
-// TODO: fix vue-cookies!
+Vue.use(VueCookie)
 
-// const vue = new Vue()
-export const getJwt = () => ({ isAuthenticated: true })
-// export const getJwt = () => {
-//   if (!vue.$cookies.isKey(config.jwt)) return { isAuthenticated: false }
-//   const { username, displayName, role, courses } = parseJwt(vue.$cookies.get(config.jwt))
-//   return { username, displayName, role, courses, isAuthenticated: true }
-// }
+const vue = new Vue()
+
+export const getJwt = () => {
+  if (!vue.$cookie.get(config.jwt)) return { isAuthenticated: false }
+  const { username, displayName, role, courses } = parseJwt(vue.$cookie.get(config.jwt))
+  return { username, displayName, role, courses, isAuthenticated: true }
+}
 
 // eslint-disable-next-line no-unused-vars
 function parseJwt(token) {

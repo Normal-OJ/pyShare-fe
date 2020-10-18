@@ -5,7 +5,7 @@ const queryString = require('query-string')
 
 const Auth = {
   login: body => Vue.axios.post('/auth/session', body),
-  logout: () => Vue.axios.get('auth/session'),
+  logout: () => Vue.axios.get('/auth/session'),
 }
 
 const User = {}

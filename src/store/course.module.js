@@ -12,8 +12,12 @@ const getters = {}
 
 const actions = {
   async [GET_COURSES]({ commit }) {
-    const { data } = await agent.Course.getList()
-    commit(SET_COURSES, data.success ? data.data : [])
+    try {
+      const { data } = await agent.Course.getList()
+      commit(SET_COURSES, data.data)
+    } catch (error) {
+      console.log('[vuex/course] error', error)
+    }
   },
 }
 

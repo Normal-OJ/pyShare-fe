@@ -2,11 +2,13 @@ import { SET_AUTH } from './mutations.type'
 import { getJwt } from '@/lib/jwt'
 
 const initialState = {
-  isAuthenticated: getJwt().isAuthenticated,
-  username: null,
-  displayName: null,
-  role: null,
-  courses: null,
+  // TODO: 日後在 router 設定先驗證 jwt 後，每次重開應都會 SET_AUTH
+  ...getJwt(),
+  // isAuthenticated: getJwt().isAuthenticated,
+  // username: null,
+  // displayName: null,
+  // role: null,
+  // courses: null,
 }
 
 const state = { ...initialState }

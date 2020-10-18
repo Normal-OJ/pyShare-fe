@@ -1,36 +1,16 @@
 <template>
-  <v-container fluid class="d-flex flex-column pt-12 px-16">
-    <v-row>
-      <div class="text-h5">我的課程</div>
-
-      <v-spacer />
-
-      <v-btn color="success">
-        <v-icon>mdi-plus</v-icon>
-        新增課程
-      </v-btn>
-    </v-row>
-
-    <CourseList :data="courses" />
-
-    <v-row class="mt-15">
-      <div class="text-h5">其他公開課程</div>
-    </v-row>
-
-    <CourseList :data="courses" />
-  </v-container>
+  <Courses :courses="courses" @submitCreateCourse="submitCreateCourse" />
 </template>
 
 <script>
-import CourseList from '@/components/Courses/CourseList'
+import Courses from '@/components/Courses/Courses'
 import { mapState } from 'vuex'
 import store from '@/store'
 import { GET_COURSES } from '@/store/actions.type'
+import agent from '@/api/agent'
 
 export default {
-  name: 'Courses',
-
-  components: { CourseList },
+  components: { Courses },
 
   beforeRouteEnter(to, from, next) {
     store.dispatch(GET_COURSES).then(() => {
@@ -40,10 +20,22 @@ export default {
 
   computed: {
     ...mapState({
-      courses: state => state.courses,
+      courses: state => state.course.courses,
     }),
   },
 
   data: () => ({}),
+
+  methods: {
+    async submitCreateCourse(body) {
+      try {
+        const result = await agent.Course.create(body)
+        console.log(result)
+        // TODO: give feedback for successfully create
+      } catch (error) {
+        // TODO: setError
+      }
+    },
+  },
 }
 </script>

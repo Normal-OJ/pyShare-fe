@@ -1,32 +1,11 @@
 <template>
-  <Problems :data="fakeProblemsData" />
+  <Problems :data="problems" />
 </template>
 
 <script>
 import Problems from '@/components/Course/Problems/Problems'
-
-const fakeProblemsData = [
-  {
-    id: '1',
-    title: 'GGGG',
-    tags: ['交通', '遊戲'],
-    creations: 55,
-    author: {
-      username: '40747024S',
-      displayName: '于子緯',
-    },
-  },
-  {
-    id: '2',
-    title: 'ABCDE',
-    tags: ['交通', '遊戲'],
-    creations: 55,
-    author: {
-      username: '40747024S',
-      displayName: '于子緯',
-    },
-  },
-]
+import { mapActions, mapState } from 'vuex'
+import { GET_PROBLEMS } from '@/store/actions.type'
 
 export default {
   // prevent maximum call stack size exceeded
@@ -35,8 +14,27 @@ export default {
 
   components: { Problems },
 
-  data: () => ({
-    fakeProblemsData,
-  }),
+  computed: {
+    ...mapState({
+      problems: state => state.problem.problems,
+    }),
+  },
+
+  data: () => ({}),
+
+  mounted() {
+    const getCourseAllProblems = {
+      offset: 0,
+      count: -1,
+      course: this.$route.params.name,
+    }
+    this.getProblems(getCourseAllProblems)
+  },
+
+  methods: {
+    ...mapActions({
+      getProblems: GET_PROBLEMS,
+    }),
+  },
 }
 </script>

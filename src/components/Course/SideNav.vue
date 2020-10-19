@@ -6,7 +6,7 @@
       </v-list-item-avatar>
       <v-list-item-content>
         <v-list-item-title>
-          108-2 DSCP
+          {{ $route.params.name }}
         </v-list-item-title>
       </v-list-item-content>
     </v-list-item>

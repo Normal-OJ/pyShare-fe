@@ -5,18 +5,11 @@
 <script>
 import Courses from '@/components/Courses/Courses'
 import { mapActions, mapState } from 'vuex'
-import store from '@/store'
 import { GET_COURSES } from '@/store/actions.type'
 import agent from '@/api/agent'
 
 export default {
   components: { Courses },
-
-  beforeRouteEnter(to, from, next) {
-    store.dispatch(GET_COURSES).then(() => {
-      next()
-    })
-  },
 
   computed: {
     ...mapState({

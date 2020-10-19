@@ -16,6 +16,8 @@ export default new Vuetify({
       light: {
         primary: colors.lightBlue.darken3, // #0277BD, LightBlue 800
         secondary: colors.pink.lighten2, // #F06292, Pink 300
+        success: colors.teal, // #009688, Teal 500
+        gray: colors.grey, // #9E9E9E, Grey 500
       },
     },
     options: { customProperties: true },

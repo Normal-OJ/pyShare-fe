@@ -27,6 +27,12 @@ export default {
         await agent.Auth.login(body)
         // TODO: give feedback for successfully login
         this.setAuth()
+        const { redirect } = this.$route.query
+        if (!redirect) {
+          this.$router.replace({ name: 'courses' })
+        } else {
+          this.$router.replace({ path: redirect })
+        }
       } catch (error) {
         // setError for login form
       }

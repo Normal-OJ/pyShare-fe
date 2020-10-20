@@ -10,11 +10,11 @@
 
     <CourseList :data="courses" />
 
-    <v-row class="mt-15">
+    <!-- <v-row class="mt-15">
       <div class="text-h5">其他公開課程</div>
     </v-row>
 
-    <CourseList :data="courses" />
+    <CourseList :data="courses" /> -->
   </v-container>
 </template>
 

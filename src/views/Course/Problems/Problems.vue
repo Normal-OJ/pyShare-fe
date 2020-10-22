@@ -22,7 +22,7 @@ export default {
 
   data: () => ({}),
 
-  mounted() {
+  created() {
     const getCourseAllProblems = {
       offset: 0,
       count: -1,

@@ -6,7 +6,10 @@
     <div class="text-h5 mb-13">
       利用 Python 實作資料科學，發表主題與創作，一起在分享中學習
     </div>
-    <div v-if="isLogin" class="mb-7">歡迎回來</div>
+    <div v-if="isLogin" class="mt-4 d-flex flex-column align-center">
+      <div class="mb-7 text-h6">您已登入，開始分享創作吧！</div>
+      <v-img :src="require('@/assets/images/freelancer.svg')" />
+    </div>
     <v-btn v-else class="mb-7" color="secondary" width="140" :to="'login'">
       前往登入
     </v-btn>
@@ -28,10 +31,6 @@ export default {
     ...mapState({
       isLogin: state => state.auth.isAuthenticated,
     }),
-  },
-
-  mounted() {
-    console.log(this.isLogin)
   },
 
   data: () => ({}),

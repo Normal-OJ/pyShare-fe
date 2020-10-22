@@ -4,7 +4,7 @@ export const HEADER_ITEMS = [
     routeName: 'courses',
   },
   {
-    label: '教師管理',
+    label: '管理',
     routeName: 'manages',
   },
   {

@@ -49,6 +49,11 @@ const routes = [
         component: () => import('@/views/Course/Problems/Problems'),
       },
       {
+        path: 'problems/:operation',
+        name: 'courseSetProblems',
+        component: () => import('@/views/Course/Problems/SetProblems'),
+      },
+      {
         path: 'problem/:id',
         name: 'courseProblem',
         component: () => import('@/views/Course/Problem/Problem'),
@@ -68,13 +73,6 @@ const routes = [
   {
     path: '/manages',
     name: 'manages',
-    children: [
-      {
-        path: '/problem/new',
-        name: 'problemSettings',
-        component: () => import('@/views/Manages/Problem/ProblemSettings'),
-      },
-    ],
   },
   {
     path: '/profile/:username',

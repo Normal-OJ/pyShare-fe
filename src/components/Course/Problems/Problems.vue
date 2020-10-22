@@ -23,7 +23,7 @@
         />
       </v-col>
       <v-spacer />
-      <v-btn color="success">
+      <v-btn color="success" :to="{ name: 'courseSetProblems', params: { operation: 'new' } }">
         <v-icon>mdi-plus</v-icon>
         新增主題
       </v-btn>

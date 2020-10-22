@@ -19,6 +19,10 @@ export default {
 
   data: () => ({}),
 
+  created() {
+    this.getCourse()
+  },
+
   methods: {
     async submitCreateCourse(body) {
       try {

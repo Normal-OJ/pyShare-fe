@@ -1,3 +1,4 @@
+import { GET_PROBLEM_BY_ID } from './getters.type'
 import { GET_PROBLEMS } from './actions.type'
 import { SET_PROBLEMS } from './mutations.type'
 import agent from '@/api/agent'
@@ -8,7 +9,11 @@ const initialState = {
 
 const state = { ...initialState }
 
-const getters = {}
+const getters = {
+  [GET_PROBLEM_BY_ID](state) {
+    return pid => state.problems.find(prob => prob.pid === pid)
+  },
+}
 
 const actions = {
   async [GET_PROBLEMS]({ commit }, params) {

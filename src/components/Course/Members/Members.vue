@@ -43,7 +43,7 @@
 
 <script>
 const headers = [
-  { text: '編號', value: 'id' },
+  // { text: '編號', value: 'id' },
   { text: '使用者名稱', value: 'username' },
   { text: '暱稱', value: 'displayName' },
 ]

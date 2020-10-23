@@ -1,5 +1,5 @@
 <template>
-  <v-navigation-drawer permanent bottom :mini-variant="isMinify" mini-variant-width="50">
+  <v-navigation-drawer permanent :mini-variant="isMinify" mini-variant-width="50">
     <v-list-item>
       <v-list-item-avatar class="rounded">
         <v-img src="http://fakeimg.pl/100x100" />
@@ -51,6 +51,7 @@
 
 <script>
 import { SIDE_NAVS } from '@/constants/course'
+
 export default {
   name: 'SideNav',
 

@@ -19,6 +19,6 @@ export default {
 .wrapper {
   display: flex;
   flex-wrap: nowrap;
-  height: 100%;
+  height: 80%;
 }
 </style>

@@ -51,11 +51,10 @@
         <router-link to="#">{{ item.author.displayName }}</router-link>
       </template>
       <template v-slot:[slotName] v-for="slotName in ['no-data', 'no-results']">
-        <v-row justify="center" :key="slotName">
-          <v-col cols="6">
-            <v-img src="http://fakeimg.pl/400x300?text=No Result" />
-          </v-col>
-        </v-row>
+        <div :key="slotName" class="d-flex flex-column align-center">
+          <div class="text-body-1 my-8">🦄 沒有結果</div>
+          <v-img :src="require('@/assets/images/nodata.svg')" max-height="300" contain />
+        </div>
       </template>
     </v-data-table>
   </v-container>

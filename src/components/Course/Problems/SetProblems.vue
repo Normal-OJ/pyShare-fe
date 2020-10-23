@@ -2,10 +2,11 @@
   <v-container fluid>
     <v-row>
       <v-col cols="12" md="6" class="problem">
-        <Problem :prob="prob" />
+        <div class="text-body-1">預覽</div>
+        <Problem :prob="newProb" />
       </v-col>
       <v-col cols="12" md="6">
-        <Form :availableTags="availableTags" :prob.sync="prob" />
+        <Form :availableTags="availableTags" :prob.sync="newProb" @submit="submit" />
       </v-col>
     </v-row>
   </v-container>
@@ -14,6 +15,7 @@
 <script>
 import Problem from '@/components/Course/Problem/Problem'
 import Form from './Form'
+import _ from 'lodash'
 
 export default {
   name: 'SetProblems',
@@ -36,6 +38,16 @@ export default {
     },
   },
 
-  data: () => ({}),
+  data() {
+    return {
+      newProb: _.cloneDeep(this.prob),
+    }
+  },
+
+  methods: {
+    submit() {
+      this.$emit('submit', this.newProb)
+    },
+  },
 }
 </script>

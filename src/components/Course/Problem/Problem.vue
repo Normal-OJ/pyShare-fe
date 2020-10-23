@@ -20,7 +20,7 @@
         </div>
       </div>
     </div>
-    <div class="text-body-1 mt-6" v-html="prob.content" />
+    <div class="text-body-1 mt-6" v-html="prob.description" />
   </Fragment>
 </template>
 

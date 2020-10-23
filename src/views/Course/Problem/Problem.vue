@@ -23,7 +23,7 @@ const prob = {
     displayName: '陳陳陳',
   },
   tags: ['休閒', '個人專題'],
-  content:
+  description:
     '<h1>H1</h1><h2>H2</h2><h3><strong>研究議題</strong>：Dcard熱門<span style="color: rgb(255, 194, 102);">文章</span>分析</h3><p><strong>說明</strong>：藉由 Dcard<em> 每日 T</em>OP 30 出現<u>在熱</u>門文章看板的文章，分析出哪<span style="background-color: rgb(250, 204, 204);">些看板上熱門</span>的頻率最高、愛心數前三的<s>文章和留</s>言數前三的</p><ul><li>a</li><li>b</li><li>d</li></ul><ul data-checked="false"><li>ja</li><li>bb</li></ul><ol><li>aa</li><li>sdf</li><li class="ql-indent-1">sdf</li><li>s</li></ol><p class="ql-align-center">gg</p><p class="ql-align-right">rr</p><blockquote>iii f sdf a sdf asdfsadfsdfasdfsf</blockquote><pre class="ql-syntax" spellcheck="false">print(\'Hello\'); </pre><p><a href="https:www.noj.tw" target="_blank">sdafasdf</a></p><p><br></p>',
 }
 

@@ -3,7 +3,8 @@
     <div class="d-flex align-center">
       <v-col cols="10" md="6" class="d-flex">
         <v-select
-          v-model="selectedTags"
+          :value="selectedTags"
+          @change="changeTags"
           class="mr-3"
           label="選擇分類"
           outlined
@@ -31,7 +32,7 @@
 
     <v-data-table
       :headers="headers"
-      :items="data"
+      :items="problems"
       :search="searchText"
       :items-per-page="Number(-1)"
       hide-default-footer
@@ -50,10 +51,16 @@
       <template v-slot:[`item.author`]="{ item }">
         <router-link to="#">{{ item.author.displayName }}</router-link>
       </template>
-      <template v-slot:[slotName] v-for="slotName in ['no-data', 'no-results']">
-        <div :key="slotName" class="d-flex flex-column align-center">
-          <div class="text-body-1 my-8">🦄 沒有結果</div>
-          <v-img :src="require('@/assets/images/nodata.svg')" max-height="300" contain />
+      <template v-slot:[`no-data`]>
+        <div class="d-flex flex-column align-center">
+          <div class="text-h6 my-8">這裡還沒有任何主題</div>
+          <v-img :src="require('@/assets/images/noData.svg')" max-height="300" contain />
+        </div>
+      </template>
+      <template v-slot:[`no-results`]>
+        <div class="d-flex flex-column align-center">
+          <div class="text-h6 my-8">找不到符合條件的主題</div>
+          <v-img :src="require('@/assets/images/noResults.svg')" max-height="300" contain />
         </div>
       </template>
     </v-data-table>
@@ -62,35 +69,44 @@
 
 <script>
 const headers = [
-  { text: '題號', value: 'id' },
+  { text: '題號', value: 'pid' },
   { text: '標題', value: 'title', sortable: false },
   { text: '分類', value: 'tags', sortable: false },
   { text: '累積創作數', value: 'creations' },
-  { text: '作者', value: 'author', sortable: false },
+  { text: '作者', value: 'author.displayName', sortable: false },
 ]
 
 export default {
   name: 'Problems',
 
   props: {
-    data: {
+    problems: {
       type: Array,
       required: true,
     },
     tags: {
       type: Array,
-      default: () => ['趕快串 API', '喔喔喔'],
+      required: true,
     },
     loading: {
       type: Boolean,
       default: false,
+    },
+    selectedTags: {
+      type: Array,
+      required: true,
     },
   },
 
   data: () => ({
     headers,
     searchText: '',
-    selectedTags: [],
   }),
+
+  methods: {
+    changeTags(event) {
+      console.log(event.target.value)
+    },
+  },
 }
 </script>

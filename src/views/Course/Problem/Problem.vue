@@ -30,7 +30,7 @@ const prob = {
 const comments = [
   {
     id: '1',
-    title: '星爆氣流斬',
+    title: '測試一下',
     floor: 3,
     author: {
       username: '12345678',
@@ -39,7 +39,7 @@ const comments = [
   },
   {
     id: '2',
-    title: '星爆氣流斬',
+    title: '測試一下',
     floor: 2,
     author: {
       username: '12345678',
@@ -48,7 +48,7 @@ const comments = [
   },
   {
     id: '3',
-    title: '星爆氣流斬',
+    title: '測試一下',
     floor: 1,
     author: {
       username: '12345678',

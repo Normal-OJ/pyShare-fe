@@ -1,6 +1,6 @@
 <template>
   <Fragment>
-    <div class="text-h4 title">{{ prob.title }}</div>
+    <div class="text-h4 font-weight-bold text-center">{{ prob.title }}</div>
     <div class="d-flex flex-row mt-4">
       <v-avatar class="mr-2" size="48">
         <img src="http://fakeimg.pl/48x48" />
@@ -42,11 +42,3 @@ export default {
   data: () => ({}),
 }
 </script>
-
-<style scoped>
-.title {
-  font-family: 'Noto Sans TC' !important;
-  font-weight: 600;
-  text-align: center;
-}
-</style>

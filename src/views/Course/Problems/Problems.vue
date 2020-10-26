@@ -1,11 +1,12 @@
 <template>
-  <Problems :data="problems" />
+  <Problems :problems="problems" :tags="tags" :selectedTags.sync="selectedTags" />
 </template>
 
 <script>
 import Problems from '@/components/Course/Problems/Problems'
-import { mapActions, mapState } from 'vuex'
-import { GET_PROBLEMS } from '@/store/actions.type'
+import { mapActions, mapGetters, mapState } from 'vuex'
+import { PROBLEMS } from '@/store/getters.type'
+import { GET_PROBLEMS, GET_TAGS } from '@/store/actions.type'
 
 export default {
   // prevent maximum call stack size exceeded
@@ -16,24 +17,46 @@ export default {
 
   computed: {
     ...mapState({
-      problems: state => state.problem.problems,
+      tags: state => state.tag.tags,
     }),
+    ...mapGetters({
+      problems: PROBLEMS,
+    }),
+    courseName() {
+      return this.$route.params.name
+    },
   },
 
-  data: () => ({}),
+  data: () => ({
+    selectedTags: [],
+  }),
 
   created() {
-    const getCourseAllProblems = {
-      offset: 0,
-      count: -1,
-      course: this.$route.params.name,
+    const paramsWithCourse = {
+      course: this.courseName,
     }
-    this.getProblems(getCourseAllProblems)
+    this.getProblems(paramsWithCourse)
+
+    const getTagsInCourse = {
+      course: this.courseName,
+    }
+    this.getTags(getTagsInCourse)
+  },
+
+  watch: {
+    selectedTags() {
+      const paramsWithTags = {
+        course: this.courseName,
+        tags: this.selectedTags,
+      }
+      this.getProblems(paramsWithTags)
+    },
   },
 
   methods: {
     ...mapActions({
       getProblems: GET_PROBLEMS,
+      getTags: GET_TAGS,
     }),
   },
 }

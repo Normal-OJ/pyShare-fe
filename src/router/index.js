@@ -71,8 +71,9 @@ const routes = [
     ],
   },
   {
-    path: '/manages',
-    name: 'manages',
+    path: '/profile',
+    name: 'profileRedirect',
+    redirect: { name: 'profile', params: { username: store.state.auth.username } },
   },
   {
     path: '/profile/:username',
@@ -81,6 +82,7 @@ const routes = [
   {
     path: '/about',
     name: 'about',
+    component: () => import('@/views/About/About'),
     meta: {
       isAllowGuest: true,
     },

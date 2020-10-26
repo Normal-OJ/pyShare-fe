@@ -24,6 +24,8 @@ const initialProb = {
   },
   attachments: [],
   defaultCode: '',
+  isTemplace: true,
+  allowMultipleComments: true,
 }
 
 export default {

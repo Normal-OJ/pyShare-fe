@@ -35,35 +35,4 @@ export default {
 
   data: () => ({}),
 }
-
-// const props = {
-//   id: {
-//     type: String,
-//     required: true,
-//   },
-//   title: {
-//     type: String,
-//     required: true,
-//   },
-//   content: {
-//     type: String,
-//     required: true,
-//   },
-//   code: {
-//     type: String,
-//     required: true,
-//   },
-//   stderr: {
-//     type: String,
-//     default: '',
-//   },
-//   stdout: {
-//     type: String,
-//     default: '',
-//   },
-//   files: {
-//     type: Array,
-//     default: () => [],
-//   },
-// }
 </script>

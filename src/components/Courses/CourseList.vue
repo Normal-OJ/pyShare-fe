@@ -18,7 +18,7 @@
               v-else-if="key === 'teacher'"
               :to="{ name: 'profile', params: { username: row[key].username } }"
             >
-              {{ row[key].displayedName }}
+              {{ row[key].displayName }}
             </router-link>
             <span v-else>{{ row[key] }}</span>
           </td>

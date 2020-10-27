@@ -6,7 +6,7 @@
 import Problems from '@/components/Course/Problems/Problems'
 import { mapActions, mapGetters, mapState } from 'vuex'
 import { PROBLEMS } from '@/store/getters.type'
-import { GET_PROBLEMS, GET_TAGS } from '@/store/actions.type'
+import { GET_PROBLEMS, GET_COURSE_TAGS } from '@/store/actions.type'
 
 export default {
   // prevent maximum call stack size exceeded
@@ -17,7 +17,7 @@ export default {
 
   computed: {
     ...mapState({
-      tags: state => state.tag.tags,
+      tags: state => state.course.courseTags,
     }),
     ...mapGetters({
       problems: PROBLEMS,
@@ -56,7 +56,7 @@ export default {
   methods: {
     ...mapActions({
       getProblems: GET_PROBLEMS,
-      getTags: GET_TAGS,
+      getTags: GET_COURSE_TAGS,
     }),
   },
 }

@@ -21,7 +21,7 @@
 
     <v-data-table
       :headers="headers"
-      :items="data"
+      :items="members"
       :search="searchText"
       :items-per-page="Number(-1)"
       hide-default-footer
@@ -30,12 +30,17 @@
       <template v-slot:[`item.author`]="{ item }">
         <router-link to="#">{{ item.author.displayName }}</router-link>
       </template>
-      <template v-slot:[slotName] v-for="slotName in ['no-data', 'no-results']">
-        <v-row justify="center" :key="slotName">
-          <v-col cols="6">
-            <v-img src="http://fakeimg.pl/400x300?text=No Result" />
-          </v-col>
-        </v-row>
+      <template v-slot:[`no-data`]>
+        <div class="d-flex flex-column align-center">
+          <div class="text-h6 my-8">這裡還沒有任何成員</div>
+          <v-img :src="require('@/assets/images/noData.svg')" max-height="300" contain />
+        </div>
+      </template>
+      <template v-slot:[`no-results`]>
+        <div class="d-flex flex-column align-center">
+          <div class="text-h6 my-8">找不到符合條件的成員</div>
+          <v-img :src="require('@/assets/images/noResults.svg')" max-height="300" contain />
+        </div>
       </template>
     </v-data-table>
   </v-container>
@@ -43,7 +48,6 @@
 
 <script>
 const headers = [
-  // { text: '編號', value: 'id' },
   { text: '使用者名稱', value: 'username' },
   { text: '暱稱', value: 'displayName' },
 ]
@@ -52,7 +56,7 @@ export default {
   name: 'MemberList',
 
   props: {
-    data: {
+    members: {
       type: Array,
       required: true,
     },

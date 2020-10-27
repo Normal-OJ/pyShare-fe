@@ -3,9 +3,9 @@ export const SET_AUTH = 'setAuth'
 
 // course module
 export const SET_COURSES = 'setCourses'
+export const SET_COURSE_STATS = 'setCourseStats'
+export const SET_COURSE_INFO = 'setCourseInfo'
+export const SET_COURSE_TAGS = 'setTags'
 
 // problem module
 export const SET_PROBLEMS = 'setProblems'
-
-// tag module
-export const SET_TAGS = 'setTags'

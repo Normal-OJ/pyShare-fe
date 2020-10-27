@@ -59,9 +59,15 @@ const routes = [
         component: () => import('@/views/Course/Problem/Problem'),
       },
       {
-        path: 'members',
-        name: 'courseMembers',
-        component: () => import('@/views/Course/Members/Members'),
+        path: 'manages',
+        name: 'courseManages',
+        component: () => import('@/views/Course/Manages/Manages'),
+      },
+      {
+        // temporary solution
+        path: 'manage/tags',
+        name: 'courseManageTags',
+        component: () => import('@/views/Course/Manages/ManageTags'),
       },
       {
         path: 'info',

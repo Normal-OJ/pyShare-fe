@@ -12,8 +12,8 @@ const Course = {
   delete: name => Vue.axios.delete(`/course/${name}`),
   addStudent: (name, body) => Vue.axios.post(`/course/${name}/student`, body),
   removeStudent: (name, body) => Vue.axios.delete(`/course/${name}/student`, body),
-  manageTags: (name, body) => Vue.axios.patch(`/course/${name}/tag`, body),
-  getStatistic: name => Vue.axios.get(`/course/${name}/statistic`),
+  patchTags: (name, body) => Vue.axios.patch(`/course/${name}/tag`, body),
+  getStats: name => Vue.axios.get(`/course/${name}/statistic`),
 }
 
 const Problem = {
@@ -32,7 +32,10 @@ const Tag = {
   delete: body => Vue.axios.delete('/tag', body),
 }
 
-const User = {}
+const User = {
+  getList: () => Vue.axios.get('/user'),
+  getStats: username => Vue.axios.get(`/user/${username}/statistic`),
+}
 
 export default {
   Auth,

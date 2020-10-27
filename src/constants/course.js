@@ -5,9 +5,9 @@ export const SIDE_NAVS = [
     routeName: 'courseProblems',
   },
   {
-    label: '成員',
-    icon: 'mdi-account-multiple',
-    routeName: 'courseMembers',
+    label: '管理',
+    icon: 'mdi-settings',
+    routeName: 'courseManages',
   },
   {
     label: '總覽',

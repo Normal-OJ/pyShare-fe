@@ -16,5 +16,5 @@ export const SIDE_NAVS = [
   },
 ]
 
-export const YEARS = ['108', '109', '110']
-export const SEMESTERS = ['1', '2', '3']
+export const YEARS = [108, 109, 110]
+export const SEMESTERS = [1, 2, 3]

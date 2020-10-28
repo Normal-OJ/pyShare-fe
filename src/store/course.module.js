@@ -63,7 +63,7 @@ const mutations = {
     state.courseInfo = payload
   },
   [SET_COURSE_TAGS](state, payload) {
-    state.tags = payload
+    state.courseTags = payload
   },
 }
 

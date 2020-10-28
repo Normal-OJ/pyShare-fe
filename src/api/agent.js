@@ -27,7 +27,7 @@ const Problem = {
 }
 
 const Tag = {
-  getList: body => Vue.axios.get('/tag', body),
+  getList: params => Vue.axios.get('/tag', { params }),
   create: body => Vue.axios.post('/tag', body),
   delete: body => Vue.axios.delete('/tag', body),
 }

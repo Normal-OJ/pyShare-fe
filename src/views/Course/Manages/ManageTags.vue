@@ -1,5 +1,10 @@
 <template>
-  <ManageTags :allTags="allTags || []" :courseTags="courseTags || []" />
+  <ManageTags
+    :allTags="allTags || []"
+    :courseTags="courseTags || []"
+    @submitNewTags="submitNewTags"
+    @submitPatchTags="submitPatchTags"
+  />
 </template>
 
 <script>
@@ -15,6 +20,9 @@ export default {
     ...mapState({
       courseTags: state => state.course.courseTags,
     }),
+    courseName() {
+      return this.$route.params.name
+    },
   },
 
   data: () => ({
@@ -22,22 +30,36 @@ export default {
   }),
 
   created() {
-    const getTagsInCourse = {
-      course: this.courseName,
-    }
-    this.getTags(getTagsInCourse)
+    this.getAllTags()
+    this.getCourseTags({ course: this.courseName })
   },
 
   methods: {
     ...mapActions({
-      getTags: GET_COURSE_TAGS,
+      getCourseTags: GET_COURSE_TAGS,
     }),
     async getAllTags() {
       try {
         const { data } = await agent.Tag.getList()
         this.allTags = data.data
       } catch (error) {
-        console.log('[views/ManageTags] error', error)
+        console.log('[views/ManageTags/getAllTags] error', error)
+      }
+    },
+    async submitPatchTags(body) {
+      try {
+        await agent.Course.patchTags(this.courseName, body)
+        this.getCourseTags({ course: this.courseName })
+      } catch (error) {
+        console.log('[components/ManageTags/submitPatchTags] error', error)
+      }
+    },
+    async submitNewTags(tags) {
+      try {
+        await agent.Tag.create({ tags })
+        this.getAllTags(this.courseName)
+      } catch (error) {
+        console.log('[views/ManageTags/submitNewTags] error', error)
       }
     },
   },

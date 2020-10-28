@@ -1,5 +1,5 @@
 <template>
-  <v-dialog :width="$vuetify.breakpoint.mdAndUp ? '70vw' : '95vw'">
+  <v-dialog v-model="dialog" width="750" persistent>
     <template v-slot:activator="{ on, attrs }">
       <v-btn color="success" dark v-bind="attrs" v-on="on">
         <v-icon class="mr-1">mdi-plus</v-icon>
@@ -10,7 +10,7 @@
     <v-card>
       <v-toolbar dark color="primary" dense>
         <v-toolbar-title>新增分類</v-toolbar-title>
-        <v-spacer></v-spacer>
+        <v-spacer />
         <v-toolbar-items>
           <v-btn icon dark @click="dialog = false">
             <v-icon>mdi-close</v-icon>
@@ -18,17 +18,22 @@
         </v-toolbar-items>
       </v-toolbar>
 
-      <v-card-text>
+      <v-card-text class="mt-8">
         <v-combobox
           v-model="newTags"
-          label="輸入分類名稱（可輸入多個，按下 Enter 來輸入下一個分類）"
+          label="輸入分類名稱"
           multiple="multiple"
           chips="chips"
-        ></v-combobox>
+          dense
+          hint="（可輸入多個，按下 Enter 來輸入下一個分類）"
+          persistent-hint
+        />
       </v-card-text>
+
+      <v-divider />
+
       <v-card-actions>
-        <v-spacer></v-spacer>
-        <v-btn class="mr-3" color="danger" dark="dark" @click="close">取消</v-btn>
+        <v-spacer />
         <v-btn color="primary" :disabled="newTags === []" @click="submit">確認</v-btn>
       </v-card-actions>
     </v-card>
@@ -41,14 +46,14 @@ export default {
 
   data: () => ({
     newTags: [],
+    dialog: false,
   }),
 
   methods: {
     submit() {
       this.$emit('submit', this.newTags)
-    },
-    close() {
-      this.$emit('close')
+      // TODO: getError and show feedback, conditionally close dialog
+      this.dialog = false
     },
   },
 }

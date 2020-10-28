@@ -10,7 +10,7 @@
     <v-card>
       <v-toolbar dark color="primary" dense>
         <v-toolbar-title>新增課程</v-toolbar-title>
-        <v-spacer></v-spacer>
+        <v-spacer />
         <v-toolbar-items>
           <v-btn icon dark @click="dialog = false">
             <v-icon>mdi-close</v-icon>
@@ -31,11 +31,11 @@
         <v-text-field label="教師" :value="teacher" outlined dense readonly />
       </v-card-text>
 
-      <v-divider></v-divider>
+      <v-divider />
 
       <v-card-actions>
-        <v-spacer></v-spacer>
-        <v-btn color="primary" @click="submit">
+        <v-spacer />
+        <v-btn color="primary" :disabled="!name || !year || !semester" @click="submit">
           送出
         </v-btn>
       </v-card-actions>

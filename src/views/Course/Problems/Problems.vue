@@ -1,5 +1,5 @@
 <template>
-  <Problems :problems="problems" :tags="tags" :selectedTags.sync="selectedTags" />
+  <Problems :problems="problems" :tags="tags" @getProblemsByTags="getProblemsByTags" />
 </template>
 
 <script>
@@ -27,9 +27,7 @@ export default {
     },
   },
 
-  data: () => ({
-    selectedTags: [],
-  }),
+  data: () => ({}),
 
   created() {
     const paramsWithCourse = {
@@ -43,21 +41,14 @@ export default {
     this.getTags(getTagsInCourse)
   },
 
-  watch: {
-    selectedTags() {
-      const paramsWithTags = {
-        course: this.courseName,
-        tags: this.selectedTags,
-      }
-      this.getProblems(paramsWithTags)
-    },
-  },
-
   methods: {
     ...mapActions({
       getProblems: GET_PROBLEMS,
       getTags: GET_COURSE_TAGS,
     }),
+    getProblemsByTags(paramsWithTags) {
+      this.getProblems({ ...paramsWithTags, course: this.courseName })
+    },
   },
 }
 </script>

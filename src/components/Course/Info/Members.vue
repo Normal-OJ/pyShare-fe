@@ -33,13 +33,13 @@
       <template v-slot:[`no-data`]>
         <div class="d-flex flex-column align-center">
           <div class="text-h6 my-8">這裡還沒有任何成員</div>
-          <v-img :src="require('@/assets/images/noData.svg')" max-height="300" contain />
+          <v-img :src="require('@/assets/images/noData.svg')" max-width="600" contain />
         </div>
       </template>
       <template v-slot:[`no-results`]>
         <div class="d-flex flex-column align-center">
           <div class="text-h6 my-8">找不到符合條件的成員</div>
-          <v-img :src="require('@/assets/images/noResults.svg')" max-height="300" contain />
+          <v-img :src="require('@/assets/images/noResults.svg')" max-width="600" contain />
         </div>
       </template>
     </v-data-table>

@@ -29,6 +29,7 @@ const actions = {
     }
     try {
       const { data } = await agent.Problem.getList({ ...paramsWithGetAll, ...params })
+      console.log('res', data.data)
       commit(SET_PROBLEMS, data.data)
     } catch (error) {
       console.log('[vuex/problem/getProblems] error', error)

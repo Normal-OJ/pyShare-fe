@@ -3,8 +3,7 @@
     <div class="d-flex align-center">
       <v-col cols="10" md="6" class="d-flex">
         <v-select
-          :value="selectedTags"
-          @change="changeTags"
+          v-model="selectedTags"
           class="mr-3"
           label="選擇分類"
           outlined
@@ -54,13 +53,13 @@
       <template v-slot:[`no-data`]>
         <div class="d-flex flex-column align-center">
           <div class="text-h6 my-8">這裡還沒有任何主題</div>
-          <v-img :src="require('@/assets/images/noData.svg')" max-height="300" contain />
+          <v-img :src="require('@/assets/images/noData.svg')" max-width="600" contain />
         </div>
       </template>
       <template v-slot:[`no-results`]>
         <div class="d-flex flex-column align-center">
           <div class="text-h6 my-8">找不到符合條件的主題</div>
-          <v-img :src="require('@/assets/images/noResults.svg')" max-height="300" contain />
+          <v-img :src="require('@/assets/images/noResults.svg')" max-width="600" contain />
         </div>
       </template>
     </v-data-table>
@@ -92,20 +91,20 @@ export default {
       type: Boolean,
       default: false,
     },
-    selectedTags: {
-      type: Array,
-      required: true,
-    },
   },
 
   data: () => ({
     headers,
     searchText: '',
+    selectedTags: [],
   }),
 
-  methods: {
-    changeTags(event) {
-      console.log(event.target.value)
+  watch: {
+    selectedTags() {
+      const paramsWithTags = {
+        tags: this.selectedTags.join(','),
+      }
+      this.$emit('getProblemsByTags', paramsWithTags)
     },
   },
 }

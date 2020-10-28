@@ -11,6 +11,7 @@
     "@mdi/font": "^3.6.95",
     "axios": "^0.20.0",
     "core-js": "^3.6.5",
+    "lodash.clonedeep": "^4.5.0",
     "monaco-editor": "^0.21.2",
     "roboto-fontface": "*",
     "vue": "^2.6.11",

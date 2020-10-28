@@ -12,27 +12,30 @@ const Course = {
   delete: name => Vue.axios.delete(`/course/${name}`),
   addStudent: (name, body) => Vue.axios.post(`/course/${name}/student`, body),
   removeStudent: (name, body) => Vue.axios.delete(`/course/${name}/student`, body),
-  manageTags: (name, body) => Vue.axios.patch(`/course/${name}/tag`, body),
-  getStatistic: name => Vue.axios.get(`/course/${name}/statistic`),
+  patchTags: (name, body) => Vue.axios.patch(`/course/${name}/tag`, body),
+  getStats: name => Vue.axios.get(`/course/${name}/statistic`),
 }
 
 const Problem = {
   getList: params => Vue.axios.get('/problem', { params }),
   get: pid => Vue.axios.get(`/problem/${pid}`),
   create: body => Vue.axios.post('/problem', body),
-  modify: (pid, body) => Vue.axios.put(`/problem/${pid}`, body),
+  update: (pid, body) => Vue.axios.put(`/problem/${pid}`, body),
   delete: pid => Vue.axios.put(`/problem/${pid}`),
   addAttachment: (pid, body) => Vue.axios.post(`/problem/${pid}/attachment`, body),
   removeAttachment: (pid, body) => Vue.axios.delete(`/problem/${pid}/attachment`, body),
 }
 
 const Tag = {
-  getList: body => Vue.axios.get('/tag', body),
+  getList: params => Vue.axios.get('/tag', { params }),
   create: body => Vue.axios.post('/tag', body),
   delete: body => Vue.axios.delete('/tag', body),
 }
 
-const User = {}
+const User = {
+  getList: () => Vue.axios.get('/user'),
+  getStats: username => Vue.axios.get(`/user/${username}/statistic`),
+}
 
 export default {
   Auth,

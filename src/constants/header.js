@@ -4,8 +4,8 @@ export const HEADER_ITEMS = [
     routeName: 'courses',
   },
   {
-    label: '管理',
-    routeName: 'manages',
+    label: '個人頁面',
+    routeName: 'profileRedirect',
   },
   {
     label: '關於平台',

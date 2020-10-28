@@ -12,7 +12,7 @@
         v-for="{ label, routeName } in headerItems"
         :key="label"
         :to="{ name: routeName }"
-        class="text-body-1 font-weight-bold "
+        class="text-body-1 font-weight-bold"
         color="white"
         text
       >

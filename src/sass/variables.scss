@@ -1,21 +1,5 @@
-// Import 'jf-openhuninn-1.1' from assets
-@font-face {
-  font-family: 'jf-openhuninn-1.1';
-  src: url('/src/assets/fonts/jf-openhuninn-11.eot');
-  src: url('/src/assets/fonts/jf-openhuninn-11.eot?#iefix')
-      format('embedded-opentype'),
-    url('/src/assets/fonts/jf-openhuninn-11.woff2') format('woff2'),
-    url('/src/assets/fonts/jf-openhuninn-11.woff') format('woff'),
-    url('/src/assets/fonts/jf-openhuninn-11.ttf') format('truetype'),
-    url('/src/assets/fonts/jf-openhuninn-11.svg#jf-openhuninn-1.1')
-      format('svg');
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-}
-
 // Import 'Noto Sans TC' from google fonts
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@100;300;400;500;700;900&display=swap');
 
 $body-font-family: 'Noto Sans TC', sans-serif;
-$heading-font-family: 'jf-openhuninn-1.1', $body-font-family;
+$heading-font-family: $body-font-family;

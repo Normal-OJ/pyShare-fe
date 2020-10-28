@@ -5,9 +5,9 @@ export const SIDE_NAVS = [
     routeName: 'courseProblems',
   },
   {
-    label: '成員',
-    icon: 'mdi-account-multiple',
-    routeName: 'courseMembers',
+    label: '管理',
+    icon: 'mdi-settings',
+    routeName: 'courseManages',
   },
   {
     label: '總覽',
@@ -16,5 +16,5 @@ export const SIDE_NAVS = [
   },
 ]
 
-export const YEARS = ['108', '109', '110']
-export const SEMESTERS = ['1', '2', '3']
+export const YEARS = [108, 109, 110]
+export const SEMESTERS = [1, 2, 3]

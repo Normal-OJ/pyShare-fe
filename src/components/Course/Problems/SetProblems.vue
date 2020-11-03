@@ -1,12 +1,12 @@
 <template>
   <v-container fluid>
     <v-row>
-      <v-col cols="12" md="6" class="problem">
+      <v-col cols="12">
+        <Form :availableTags="availableTags" :prob.sync="newProb" @submit="submit" />
+      </v-col>
+      <v-col cols="12" class="problem">
         <div class="text-body-1">預覽</div>
         <Problem :prob="newProb" />
-      </v-col>
-      <v-col cols="12" md="6">
-        <Form :availableTags="availableTags" :prob.sync="newProb" @submit="submit" />
       </v-col>
     </v-row>
   </v-container>

@@ -1,6 +1,6 @@
 <template>
   <Fragment>
-    <div class="text-h4 font-weight-bold text-center">{{ prob.title }}</div>
+    <div class="text-h5 font-weight-bold text-center">{{ prob.title }}</div>
     <div class="d-flex flex-row mt-4">
       <v-avatar class="mr-2" size="48">
         <img src="http://fakeimg.pl/48x48" />

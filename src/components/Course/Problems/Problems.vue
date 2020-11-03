@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid class="d-flex flex-column pt-4 px-8">
+  <v-container fluid class="d-flex flex-column px-8">
     <div class="d-flex align-center">
       <v-col cols="10" md="6" class="d-flex">
         <v-select
@@ -38,7 +38,7 @@
       :loading="loading"
     >
       <template v-slot:[`item.title`]="{ item }">
-        <router-link :to="{ name: 'courseProblem', params: { id: item.id } }">
+        <router-link :to="{ name: 'courseProblem', params: { id: item.pid } }">
           {{ item.title }}
         </router-link>
       </template>
@@ -48,18 +48,14 @@
         </v-chip>
       </template>
       <template v-slot:[`item.author`]="{ item }">
-        <router-link to="#">{{ item.author.displayName }}</router-link>
+        <router-link :to="{ name: 'profile', params: { username: item.author.username } }">
+          {{ item.author.displayName }}
+        </router-link>
       </template>
-      <template v-slot:[`no-data`]>
-        <div class="d-flex flex-column align-center">
-          <div class="text-h6 my-8">這裡還沒有任何主題</div>
+      <template v-slot:[slotName] v-for="slotName in ['no-data', 'no-results']">
+        <div class="d-flex flex-column align-center" :key="slotName">
+          <div class="text-h6 my-8">這裡還沒有任何主題，或找不到符合條件的主題</div>
           <v-img :src="require('@/assets/images/noData.svg')" max-width="600" contain />
-        </div>
-      </template>
-      <template v-slot:[`no-results`]>
-        <div class="d-flex flex-column align-center">
-          <div class="text-h6 my-8">找不到符合條件的主題</div>
-          <v-img :src="require('@/assets/images/noResults.svg')" max-width="600" contain />
         </div>
       </template>
     </v-data-table>
@@ -72,7 +68,7 @@ const headers = [
   { text: '標題', value: 'title', sortable: false },
   { text: '分類', value: 'tags', sortable: false },
   { text: '累積創作數', value: 'creations' },
-  { text: '作者', value: 'author.displayName', sortable: false },
+  { text: '作者', value: 'author', sortable: false },
 ]
 
 export default {

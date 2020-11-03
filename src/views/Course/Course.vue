@@ -1,24 +1,34 @@
 <template>
-  <div class="wrapper">
-    <SideNav />
-    <router-view />
-  </div>
+  <Course :breadcrumbs="breadcrumbs" />
 </template>
 
 <script>
-import SideNav from '@/components/Course/SideNav'
+import Course from '@/components/Course/Course'
 
 export default {
-  name: 'Course',
+  components: { Course },
 
-  components: { SideNav },
+  computed: {
+    courseName() {
+      return this.$route.params.name
+    },
+    breadcrumbs() {
+      return [
+        {
+          text: this.courseName,
+          to: { name: 'course' },
+        },
+        {
+          text: '主題列表',
+          disabled: false,
+          to: { name: 'courseProblems' },
+        },
+        {
+          text: '增修主題',
+          disabled: true,
+        },
+      ]
+    },
+  },
 }
 </script>
-
-<style scoped>
-.wrapper {
-  display: flex;
-  flex-wrap: nowrap;
-  height: 100%;
-}
-</style>

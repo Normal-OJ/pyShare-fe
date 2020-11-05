@@ -13,14 +13,21 @@
           Jul 12, 2020
           <div v-if="prob.tags && prob.tags.length > 0" style="white-space: pre">
             &nbsp;·&nbsp;
-            <v-chip class="text-caption mr-1" v-for="tag in prob.tags" :key="tag" small>
-              {{ tag }}
-            </v-chip>
           </div>
         </div>
       </div>
     </div>
-    <div class="text-body-1 mt-6" v-html="prob.description" />
+    <v-row class="mt-6">
+      <v-col cols="9">
+        <div class="text-body-1" v-html="prob.description" />
+      </v-col>
+      <v-col cols="3">
+        <div class="text-body-1">分類</div>
+        <v-chip class="text-caption mr-1" v-for="tag in prob.tags" :key="tag" small>
+          {{ tag }}
+        </v-chip>
+      </v-col>
+    </v-row>
   </Fragment>
 </template>
 

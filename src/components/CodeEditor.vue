@@ -12,6 +12,10 @@ export default {
       type: String,
       required: true,
     },
+    readOnly: {
+      type: Boolean,
+      default: false,
+    },
   },
 
   mounted() {
@@ -23,6 +27,7 @@ export default {
       scrollbar: {
         alwaysConsumeMouseWheel: false,
       },
+      readOnly: this.readOnly,
     })
   },
 }

@@ -28,7 +28,9 @@
       :loading="loading"
     >
       <template v-slot:[`item.author`]="{ item }">
-        <router-link to="#">{{ item.author.displayName }}</router-link>
+        <router-link :to="{ name: 'profile', params: { username: item.author.username } }">
+          {{ item.author.displayName }}
+        </router-link>
       </template>
       <template v-slot:[`no-data`]>
         <div class="d-flex flex-column align-center">

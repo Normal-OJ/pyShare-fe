@@ -5,8 +5,9 @@
         <Problem v-if="prob" :prob="prob" />
       </v-col>
       <v-col cols="12">
-        <CommentList v-if="!selectedCommentId" :comments="comments" />
-        <CommentDetail v-else :comment="selectedComment" />
+        <CommentList :selectedCommentId="selectedCommentId" :comments="comments" />
+        <!-- <CommentList v-if="!selectedCommentId" :comments="comments" /> -->
+        <!-- <CommentDetail v-else :comment="selectedComment" /> -->
       </v-col>
     </v-row>
   </v-container>
@@ -15,7 +16,6 @@
 <script>
 import Problem from '@/components/Course/Problem/Problem'
 import CommentList from '@/components/Course/Problem/CommentList'
-import CommentDetail from '@/components/Course/Problem/CommentDetail'
 import agent from '@/api/agent'
 
 const comments = [
@@ -27,6 +27,10 @@ const comments = [
       username: '12345678',
       displayName: '盧昭華',
     },
+    content: '<h5>真奇怪</h5>',
+    submission: {
+      code: "print('hi')",
+    },
   },
   {
     id: '2',
@@ -35,6 +39,10 @@ const comments = [
     author: {
       username: '12345678',
       displayName: '盧昭華',
+    },
+    content: '<h5>真奇怪</h5>',
+    submission: {
+      code: "print('hi')",
     },
   },
   {
@@ -45,13 +53,17 @@ const comments = [
       username: '12345678',
       displayName: '盧昭華',
     },
+    content: '<h5>真奇怪</h5>',
+    submission: {
+      code: "print('hi')",
+    },
   },
 ]
 
 export default {
   name: 'CourseProblem',
 
-  components: { Problem, CommentList, CommentDetail },
+  components: { Problem, CommentList },
 
   computed: {
     problem() {

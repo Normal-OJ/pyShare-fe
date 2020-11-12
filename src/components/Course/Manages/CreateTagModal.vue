@@ -2,7 +2,7 @@
   <v-dialog v-model="dialog" width="750" persistent>
     <template v-slot:activator="{ on, attrs }">
       <v-btn color="success" dark v-bind="attrs" v-on="on">
-        <v-icon class="mr-1">mdi-plus</v-icon>
+        <v-icon class="mr-1">mdi-tag-plus</v-icon>
         新增分類
       </v-btn>
     </template>

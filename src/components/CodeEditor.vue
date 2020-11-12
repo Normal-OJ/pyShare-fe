@@ -1,6 +1,7 @@
 <template>
-  <div ref="container" style="width:100%;height:600px;border:1px solid grey;text-align: left" />
+  <div ref="container" style="height: 300px;border:1px solid grey;text-align: left" />
 </template>
+
 <script>
 import * as monaco from 'monaco-editor'
 
@@ -18,15 +19,17 @@ export default {
     },
   },
 
+  data: () => ({
+    editor: null,
+  }),
+
   mounted() {
-    // eslint-disable-next-line no-unused-vars
-    const editor = monaco.editor.create(this.$refs.container, {
+    this.editor = monaco.editor.create(this.$refs.container, {
       value: this.code,
       language: 'python',
       fontSize: 14,
-      scrollbar: {
-        alwaysConsumeMouseWheel: false,
-      },
+      scrollbar: { alwaysConsumeMouseWheel: false },
+      minimap: { enabled: false },
       readOnly: this.readOnly,
     })
   },

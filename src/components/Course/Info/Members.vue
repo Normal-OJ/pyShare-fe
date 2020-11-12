@@ -14,7 +14,7 @@
       </v-col>
       <v-spacer />
       <v-btn color="success">
-        <v-icon>mdi-plus</v-icon>
+        <v-icon class="mr-1">mdi-account-plus</v-icon>
         新增學生
       </v-btn>
     </div>

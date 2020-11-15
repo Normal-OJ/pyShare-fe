@@ -4,11 +4,11 @@ var relativeTime = require('dayjs/plugin/relativeTime')
 dayjs.extend(relativeTime)
 
 const timeToNow = timestamp => {
-  return dayjs(timestamp).toNow()
+  return dayjs(timestamp * 1000).toNow()
 }
 
 const formattedTime = timestamp => {
-  return dayjs(timestamp).format('YYYY-MM-DD HH:mm')
+  return dayjs(timestamp * 1000).format('YYYY-MM-DD HH:mm')
 }
 
 export const dayjsPlugin = {

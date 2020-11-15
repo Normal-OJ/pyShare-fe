@@ -83,12 +83,13 @@
               </v-card-title>
               <!-- Second Row -->
               <v-card-subtitle class="d-flex flex-row align-center">
-                <div class="text-body-2" style="white-space: pre-line">
-                  {{ `${author.displayName} · #${floor} · ` }}
-                </div>
+                <router-link :to="{ name: 'profile', params: { username: author.username } }">
+                  {{ author.displayName }}
+                </router-link>
+                <div class="text-body-2">&nbsp;·&nbsp;{{ floor }}&nbsp;樓&nbsp;·&nbsp;</div>
                 <v-tooltip bottom>
                   <template v-slot:activator="{ on, attr }">
-                    <div class="text-body-2" style="white-space: pre-line" v-on="on" v-bind="attr">
+                    <div class="text-body-2" v-on="on" v-bind="attr">
                       {{ `opened ${$timeToNow(created)}` }}
                     </div>
                   </template>
@@ -112,7 +113,7 @@
                       {{ `updated ${$timeToNow(updated)}` }}
                     </div>
                   </template>
-                  <span>{{ `更新於 ${$formattedTime(updated)}` }}</span>
+                  <span>{{ `最後更新於 ${$formattedTime(updated)}` }}</span>
                 </v-tooltip>
               </v-card-subtitle>
             </div>

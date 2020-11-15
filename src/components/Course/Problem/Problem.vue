@@ -9,11 +9,8 @@
         <router-link :to="{ name: 'about' }">
           {{ prob.author.displayName }}
         </router-link>
-        <div class="text-body-2 d-flex">
-          Jul 12, 2020
-          <div v-if="prob.tags && prob.tags.length > 0" style="white-space: pre">
-            &nbsp;·&nbsp;
-          </div>
+        <div class="text-body-2">
+          {{ $formattedTime(prob.timestamp) }}
         </div>
       </div>
     </div>

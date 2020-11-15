@@ -12,10 +12,10 @@
     />
 
     <div class="text-body-1 mt-4">主題敘述</div>
-    <VueEditor v-model="prob.description" :editor-toolbar="customToolbar" />
+    <TextEditor v-model="prob.description" />
 
     <div class="text-body-1 mt-4">預設程式碼</div>
-    <CodeEditor :code="prob.defaultCode" />
+    <CodeEditor v-model="prob.defaultCode" />
 
     <v-btn class="mt-4" block color="primary" @click="submitProblem">
       送出
@@ -25,13 +25,13 @@
 
 <script>
 import { Fragment } from 'vue-fragment'
-import { VueEditor } from 'vue2-editor'
+import TextEditor from '@/components/TextEditor'
 import CodeEditor from '@/components/CodeEditor'
 
 export default {
   name: 'Form',
 
-  components: { Fragment, VueEditor, CodeEditor },
+  components: { Fragment, TextEditor, CodeEditor },
 
   props: {
     availableTags: {
@@ -55,14 +55,6 @@ export default {
 
   data() {
     return {
-      customToolbar: [
-        [{ header: [false, 1, 2, 3, 4, 5, 6] }],
-        ['bold', 'italic', 'underline', 'strike'], // toggled buttons
-        [{ list: 'ordered' }, { list: 'bullet' }, { indent: '-1' }, { indent: '+1' }],
-        [{ color: [] }, { background: [] }, 'blockquote', 'code-block'],
-        ['link', 'image', 'video'],
-        ['clean'], // remove formatting button
-      ],
       status: [
         { text: '顯示', value: 1 },
         { text: '隱藏', value: 0 },

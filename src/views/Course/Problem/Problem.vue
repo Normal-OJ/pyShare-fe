@@ -32,10 +32,15 @@ const comments = [
     submissions: [1, 2, 3],
     submission: {
       code: "print('hi')",
+      result: {
+        files: [],
+        stdout: '',
+        stderr: '',
+      },
     },
     liked: [],
-    created: 1605194262531,
-    updated: 1605078260111,
+    created: 1605194262,
+    updated: 1605078260,
     hasAccepted: true,
     replies: [],
   },
@@ -52,10 +57,15 @@ const comments = [
     submission: {
       code:
         "print('hi')\nprint('hi')\nprint('hi')\nprint('hi')\nprint('hi')print('hi')print('hi')print('hi')print('hi')print('hi')print('hi')print('hi')print('hi')print('hi')print('hi')print('hi')print('hi')print('hi')print('hi')",
+      result: {
+        files: [],
+        stdout: '',
+        stderr: '',
+      },
     },
     liked: [1, 2, 3],
-    created: 1605194489981,
-    updated: 1605194469881,
+    created: 1605194489,
+    updated: 1605194469,
     hasAccepted: false,
     replies: [1, 2, 3, 4, 5, 6],
   },
@@ -71,6 +81,11 @@ const comments = [
     submissions: [1],
     submission: {
       code: "print('hi')",
+      result: {
+        files: [],
+        stdout: '',
+        stderr: '',
+      },
     },
     liked: [1],
     created: 1603404000,

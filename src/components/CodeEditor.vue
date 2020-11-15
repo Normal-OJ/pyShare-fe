@@ -1,5 +1,9 @@
 <template>
-  <div ref="container" style="height: 300px;border:1px solid grey;text-align: left" />
+  <div
+    ref="container"
+    style="height: 300px;border:1px solid grey;text-align: left"
+    @input="$emit('input', $event.target.value)"
+  />
 </template>
 
 <script>
@@ -9,9 +13,9 @@ export default {
   name: 'CodeEditor',
 
   props: {
-    code: {
+    value: {
       type: String,
-      required: true,
+      default: '',
     },
     readOnly: {
       type: Boolean,
@@ -25,7 +29,7 @@ export default {
 
   mounted() {
     this.editor = monaco.editor.create(this.$refs.container, {
-      value: this.code,
+      value: this.value,
       language: 'python',
       fontSize: 14,
       scrollbar: { alwaysConsumeMouseWheel: false },

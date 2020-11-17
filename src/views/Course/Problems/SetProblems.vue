@@ -1,12 +1,19 @@
 <template>
-  <SetProblems :prob="prob" :tags="courseTags" @submit="handleSubmit" />
+  <SetProblems
+    v-if="prob"
+    :prob="prob"
+    :tags="courseTags"
+    :isEdit="isEdit"
+    @submit="handleSubmit"
+  />
+  <Spinner v-else />
 </template>
 
 <script>
+import Spinner from '@/components/Spinner'
 import SetProblems from '@/components/Course/Problems/SetProblems'
-import { mapActions, mapGetters, mapState } from 'vuex'
-import { GET_PROBLEM_BY_ID } from '@/store/getters.type'
-import { GET_PROBLEMS, GET_COURSE_TAGS } from '@/store/actions.type'
+import { mapActions, mapState } from 'vuex'
+import { GET_PROBLEMS, GET_PROBLEM_INFO, GET_COURSE_TAGS } from '@/store/actions.type'
 import agent from '@/api/agent'
 
 const OPERATION = {
@@ -29,56 +36,96 @@ const initialProb = {
 }
 
 export default {
-  components: { SetProblems },
+  components: { Spinner, SetProblems },
 
   computed: {
     ...mapState({
       courseTags: state => state.course.courseTags,
-    }),
-    ...mapGetters({
-      getProblemById: GET_PROBLEM_BY_ID,
+      problemInfo: state => state.problem.problemInfo,
     }),
     isEdit() {
       return this.$route.params.operation === OPERATION.EDIT
     },
-    prob() {
-      if (this.isEdit) {
-        return this.getProblemById(this.$route.query.pid)
-      }
-      return { ...initialProb, course: this.$route.params.name }
-    },
     courseName() {
       return this.$route.params.name
     },
+    pid() {
+      return this.$route.query.pid
+    },
+    prob() {
+      if (this.isEdit) return this.problemInfo
+      return { ...initialProb, course: this.courseName }
+    },
   },
 
-  created() {
+  async created() {
     this.getCourseTags({ course: this.courseName })
+    if (this.isEdit) await this.getProblemInfo(this.pid)
   },
 
   methods: {
     ...mapActions({
       getProblems: GET_PROBLEMS,
+      getProblemInfo: GET_PROBLEM_INFO,
       getCourseTags: GET_COURSE_TAGS,
     }),
-    async handleSubmit(body) {
+    async handleSubmit(body, willAddAttachments, willRemoveAttachments) {
       try {
         let result
         if (this.isEdit) {
-          result = await agent.Problem.update(body.pid, body)
+          result = await agent.Problem.update(this.pid, body)
         } else {
           result = await agent.Problem.create(body)
         }
-        console.log(result)
-        this.getProblems()
         // TODO: give feedback for successfully create
-        alert('success!')
-        this.$router.push({ name: 'courseProblems' })
+        alert('submit problem body success!')
+        const pid = this.isEdit ? this.pid : result.data.data.pid
+        if (willAddAttachments.length > 0) {
+          await Promise.all(
+            willAddAttachments.map(file => {
+              const formData = new FormData()
+              formData.append('attachment', file)
+              return agent.Problem.addAttachment(pid, formData)
+            }),
+          )
+          alert('submit problem attachment success!')
+        }
+        if (willRemoveAttachments.length > 0) {
+          await Promise.all(
+            willRemoveAttachments.map(filename => {
+              const formData = new FormData()
+              formData.append('attachmentName', filename)
+              return agent.Problem.removeAttachment(pid, formData)
+            }),
+          )
+          alert('remove problem attachment success!')
+        }
+        this.getProblems()
+        if (this.isEdit) this.getProblemInfo(pid)
+        else {
+          this.$router.push({
+            name: 'courseSetProblems',
+            params: { operation: 'edit' },
+            query: { pid },
+          })
+        }
+        // this.$router.push({ name: 'courseProblems' })
       } catch (error) {
         console.log('[views/SetProblems/handleSubmit] error', error)
         // TODO: setError
       }
     },
+    // async removeAttachmentFromProb(filename) {
+    //   try {
+    //     const formData = new FormData()
+    //     formData.append('attachmentName', filename)
+    //     await agent.Problem.removeAttachment(this.pid, formData)
+    //     alert('success!')
+    //     this.getProblemInfo(this.pid)
+    //   } catch (error) {
+    //     console.log('[views/SetProblems/removeAttachmentFromProb] error', error)
+    //   }
+    // },
   },
 }
 </script>

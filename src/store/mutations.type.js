@@ -9,3 +9,4 @@ export const SET_COURSE_TAGS = 'setTags'
 
 // problem module
 export const SET_PROBLEMS = 'setProblems'
+export const SET_PROBLEM_INFO = 'setProblemInfo'

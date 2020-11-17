@@ -9,7 +9,8 @@ const Course = {
   getList: () => Vue.axios.get('/course'),
   get: name => Vue.axios.get(`/course/${name}`),
   create: body => Vue.axios.post('/course', body),
-  delete: name => Vue.axios.delete(`/course/${name}`),
+  // TODO: refind delete api
+  // delete: name => Vue.axios.delete(`/course/${name}`),
   addStudent: (name, body) => Vue.axios.post(`/course/${name}/student`, body),
   removeStudent: (name, body) => Vue.axios.delete(`/course/${name}/student`, body),
   patchTags: (name, body) => Vue.axios.patch(`/course/${name}/tag`, body),
@@ -22,14 +23,17 @@ const Problem = {
   create: body => Vue.axios.post('/problem', body),
   update: (pid, body) => Vue.axios.put(`/problem/${pid}`, body),
   delete: pid => Vue.axios.put(`/problem/${pid}`),
+  getAttachment: (pid, name) => Vue.axios.get(`/problem/${pid}/attachment/${name}`),
   addAttachment: (pid, body) => Vue.axios.post(`/problem/${pid}/attachment`, body),
-  removeAttachment: (pid, body) => Vue.axios.delete(`/problem/${pid}/attachment`, body),
+  removeAttachment: (pid, body) =>
+    Vue.axios({ method: 'delete', url: `/problem/${pid}/attachment`, data: body }),
 }
 
 const Tag = {
   getList: params => Vue.axios.get('/tag', { params }),
   create: body => Vue.axios.post('/tag', body),
-  delete: body => Vue.axios.delete('/tag', body),
+  // TODO: refind delete api
+  // delete: body => Vue.axios.delete('/tag', body),
 }
 
 const User = {

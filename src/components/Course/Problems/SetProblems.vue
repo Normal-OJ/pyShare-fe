@@ -1,7 +1,7 @@
 <template>
   <v-container fluid class="pb-16">
     <v-row class="mb-4">
-      <div class="text-h5">新增主題</div>
+      <div class="text-h5">{{ isEdit ? '修改主題' : '新增主題' }}</div>
       <v-spacer />
       <PreviewNewProblem :prob="newProb" />
     </v-row>
@@ -29,23 +29,21 @@ export default {
       type: Array,
       required: true,
     },
-  },
-
-  computed: {
-    operation() {
-      return this.$route.params.operation
+    isEdit: {
+      type: Boolean,
+      required: true,
     },
   },
 
-  data() {
-    return {
-      newProb: _.cloneDeep(this.prob),
-    }
+  computed: {
+    newProb() {
+      return _.cloneDeep(this.prob)
+    },
   },
 
   methods: {
-    submit() {
-      this.$emit('submit', this.newProb)
+    submit(willAddAttachments, willRemoveAttachments) {
+      this.$emit('submit', this.newProb, willAddAttachments, willRemoveAttachments)
     },
   },
 }

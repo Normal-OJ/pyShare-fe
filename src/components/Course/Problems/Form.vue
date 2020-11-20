@@ -29,6 +29,7 @@
     </div>
     <div v-if="prob.attachments.length > 0" class="d-flex align-center flex-wrap mt-1">
       <div class="text-body-2">已上傳：</div>
+      <!-- TODO: take out three chip attachment component -->
       <v-chip
         v-for="name in prob.attachments"
         :key="name"
@@ -146,6 +147,8 @@ export default {
   methods: {
     submitProblem() {
       this.$emit('submit', this.willAddAttachments, this.willRemoveAttachments)
+      this.willAddAttachments = []
+      this.willRemoveAttachments = []
     },
     removeFromWillAddAttachments(removedFilename) {
       this.willAddAttachments = this.willAddAttachments.filter(
@@ -155,7 +158,6 @@ export default {
     removeAttachmentFromProb(removedFilename) {
       this.willRemoveAttachments.push(removedFilename)
       this.prob.attachments = this.prob.attachments.filter(file => file !== removedFilename)
-      // this.$emit('removeAttachmentFromProb', filename)
     },
     undoRemoveAttachmentFromProb(filename) {
       this.willRemoveAttachments = this.willRemoveAttachments.filter(file => file !== filename)

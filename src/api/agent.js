@@ -29,6 +29,11 @@ const Problem = {
     Vue.axios({ method: 'delete', url: `/problem/${pid}/attachment`, data: body }),
 }
 
+const Comment = {
+  create: body => Vue.axios.post('/comment', body),
+  createSubmission: (cid, body) => Vue.axios.post(`/comment/${cid}/submission`, body),
+}
+
 const Tag = {
   getList: params => Vue.axios.get('/tag', { params }),
   create: body => Vue.axios.post('/tag', body),
@@ -41,10 +46,16 @@ const User = {
   getStats: username => Vue.axios.get(`/user/${username}/statistic`),
 }
 
+const Submission = {
+  createTest: body => Vue.axios.post('/submission', body),
+}
+
 export default {
   Auth,
   Course,
   Problem,
+  Comment,
   Tag,
   User,
+  Submission,
 }

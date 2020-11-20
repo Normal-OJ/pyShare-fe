@@ -1,7 +1,7 @@
 <template>
   <Fragment>
-    <div class="my-2 d-flex flex-row align-center">
-      <v-col cols="10" md="6" class="d-flex">
+    <div class="my-2 d-flex flex-row align-center flex-wrap">
+      <v-col cols="12" md="6" class="d-flex">
         <v-select
           v-model="sortby"
           class="mr-3"
@@ -22,7 +22,7 @@
         />
       </v-col>
       <v-spacer />
-      <v-btn color="success">
+      <v-btn color="success" :to="{ query: { floor: 'new' } }">
         <v-icon class="mr-1">mdi-playlist-plus</v-icon>
         新增創作
       </v-btn>
@@ -46,15 +46,13 @@
         <!-- Card item -->
         <v-card class="mb-4 comment" :elevation="hover ? 6 : 2" tile @click="navigate(floor)">
           <div class="d-flex flex-row align-center">
-            <v-avatar class="ml-4" size="48">
-              <img src="http://fakeimg.pl/48x48" />
+            <v-avatar class="ml-4" size="48" color="primary">
+              <span class="pb-1 white--text headline">{{ author.displayName.slice(0, 1) }}</span>
             </v-avatar>
             <div class="d-flex flex-column" style="flex: 1">
               <!-- First Row -->
-              <v-card-title class="d-flex flex-row align-center">
-                <div class="text-body-1">
-                  {{ title }}
-                </div>
+              <v-card-title class="d-flex flex-row align-center flex-wrap">
+                <div class="text-body-1">{{ title }}</div>
                 <v-spacer />
                 <v-tooltip bottom>
                   <template v-slot:activator="{ on, attr }">
@@ -73,16 +71,14 @@
                       <div class="text-body-2 mr-4">{{ submissions.length }}</div>
                     </v-card-subtitle>
                   </template>
-                  <span>
-                    {{
-                      `${liked.length} 個喜歡、${replies.length} 則留言、${submissions.length} 個程式版本`
-                    }}
-                  </span>
+                  <span>{{
+                    `${liked.length} 個喜歡、${replies.length} 則留言、${submissions.length} 個程式版本`
+                  }}</span>
                 </v-tooltip>
                 <v-btn color="primary" small tile depressed>PENDING</v-btn>
               </v-card-title>
               <!-- Second Row -->
-              <v-card-subtitle class="d-flex flex-row align-center">
+              <v-card-subtitle class="d-flex flex-row align-center flex-wrap">
                 <router-link :to="{ name: 'profile', params: { username: author.username } }">
                   {{ author.displayName }}
                 </router-link>
@@ -167,7 +163,14 @@ export default {
       return Object.values(this.SORT_BY)
     },
     filteredComments() {
-      return this.comments.slice().sort(this.SORT_BY[this.sortby].method)
+      return this.comments
+        .slice()
+        .sort(this.SORT_BY[this.sortby].method)
+        .filter(
+          comment =>
+            comment.title.includes(this.searchText) ||
+            comment.author.displayName.includes(this.searchText),
+        )
     },
   },
 

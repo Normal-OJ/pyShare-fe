@@ -7,8 +7,14 @@
       <v-divider />
       <div>
         <CommentList v-if="!floor" :comments="comments" />
+        <NewComment
+          v-else-if="String(floor) === 'new'"
+          @submitTestSubmission="submitTestSubmission"
+          @submitNewComment="submitNewComment"
+        />
         <CommentDetail v-else :comment="selectedComment" />
       </div>
+      <div class="spacer" />
     </div>
   </v-container>
 </template>
@@ -17,100 +23,26 @@
 import Problem from '@/components/Course/Problem/Problem'
 import CommentList from '@/components/Course/Problem/CommentList'
 import CommentDetail from '@/components/Course/Problem/CommentDetail'
+import NewComment from '@/components/Course/Problem/NewComment'
 import agent from '@/api/agent'
-
-const comments = [
-  {
-    id: '3',
-    title: '測試一下',
-    floor: 3,
-    author: {
-      username: '12345678',
-      displayName: '盧昭華',
-    },
-    content: '<h5>真奇怪</h5>',
-    submissions: [1, 2, 3],
-    submission: {
-      code: "print('hi')",
-      result: {
-        files: [],
-        stdout: '',
-        stderr: '',
-      },
-    },
-    liked: [],
-    created: 1605194262,
-    updated: 1605078260,
-    hasAccepted: true,
-    replies: [],
-  },
-  {
-    id: '2',
-    title: '測試一下',
-    floor: 2,
-    author: {
-      username: '12345678',
-      displayName: '盧昭華',
-    },
-    content: '<h5>真奇怪</h5>',
-    submissions: [1, 2],
-    submission: {
-      code:
-        "print('hi')\nprint('hi')\nprint('hi')\nprint('hi')\nprint('hi')print('hi')print('hi')print('hi')print('hi')print('hi')print('hi')print('hi')print('hi')print('hi')print('hi')print('hi')print('hi')print('hi')print('hi')",
-      result: {
-        files: [],
-        stdout: '',
-        stderr: '',
-      },
-    },
-    liked: [1, 2, 3],
-    created: 1605194489,
-    updated: 1605194469,
-    hasAccepted: false,
-    replies: [1, 2, 3, 4, 5, 6],
-  },
-  {
-    id: '1',
-    title: '測試一下',
-    floor: 1,
-    author: {
-      username: '12345678',
-      displayName: '盧昭華',
-    },
-    content: '<h5>真奇怪</h5>',
-    submissions: [1],
-    submission: {
-      code: "print('hi')",
-      result: {
-        files: [],
-        stdout: '',
-        stderr: '',
-      },
-    },
-    liked: [1],
-    created: 1603404000,
-    updated: 1605078360,
-    hasAccepted: true,
-    replies: [],
-  },
-]
+import { comments } from './fake'
 
 export default {
   name: 'CourseProblem',
 
-  components: { Problem, CommentList, CommentDetail },
+  components: { Problem, CommentList, CommentDetail, NewComment },
 
   computed: {
-    problem() {
+    problem: () => {
       return this.prob
     },
     pid() {
-      return this.$route.params.id
+      return Number(this.$route.params.id)
     },
     floor() {
       const { floor } = this.$route.query
       if (!floor) return null
-      if (!this.comments.find(c => String(c.floor) === String(floor))) {
+      if (floor !== 'new' && !this.comments.find(c => String(c.floor) === String(floor))) {
         this.$router.replace({ query: null })
       }
       return floor
@@ -138,6 +70,35 @@ export default {
         console.log('[views/Problem/getProblem] error', error)
       }
     },
+    async submitTestSubmission(code) {
+      const body = { problemId: this.pid, code }
+      try {
+        const { data } = await agent.Submission.createTest(body)
+        alert(data.data)
+      } catch (error) {
+        console.log('[views/Problem/submitTestSubmission] error', error)
+      }
+    },
+    async submitNewComment(newComment) {
+      const body = {
+        target: 'problem',
+        id: `${this.pid}`,
+        ...newComment,
+      }
+      try {
+        const { data } = await agent.Comment.create(body)
+        alert(data.data)
+      } catch (error) {
+        console.log('[views/Problem/submitNewComment] error', error)
+      }
+    },
   },
 }
 </script>
+
+<style scoped>
+/* TODO: let Spacer as a component */
+.spacer {
+  padding-bottom: 200px;
+}
+</style>

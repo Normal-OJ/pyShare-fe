@@ -14,7 +14,7 @@
       </v-col>
       <v-spacer />
       <v-btn color="success">
-        <v-icon>mdi-plus</v-icon>
+        <v-icon class="mr-1">mdi-account-plus</v-icon>
         新增學生
       </v-btn>
     </div>
@@ -28,7 +28,9 @@
       :loading="loading"
     >
       <template v-slot:[`item.author`]="{ item }">
-        <router-link to="#">{{ item.author.displayName }}</router-link>
+        <router-link :to="{ name: 'profile', params: { username: item.author.username } }">
+          {{ item.author.displayName }}
+        </router-link>
       </template>
       <template v-slot:[`no-data`]>
         <div class="d-flex flex-column align-center">

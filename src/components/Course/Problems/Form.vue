@@ -12,12 +12,87 @@
     />
 
     <div class="text-body-1 mt-4">主題敘述</div>
-    <VueEditor v-model="prob.description" :editor-toolbar="customToolbar" />
+    <TextEditor v-model="prob.description" />
 
     <div class="text-body-1 mt-4">預設程式碼</div>
-    <CodeEditor :code="prob.defaultCode" />
+    <CodeEditor v-model="prob.defaultCode" />
 
-    <v-btn class="mt-4" block color="primary" @click="submitProblem">
+    <div class="d-flex align-center mt-4">
+      <div class="text-body-1 mt-2 mr-2">上傳附件</div>
+      <v-file-input
+        v-model="fileUploader"
+        color="primary"
+        hide-input
+        multiple
+        prepend-icon="mdi-plus"
+      />
+    </div>
+    <div v-if="prob.attachments.length > 0" class="d-flex align-center flex-wrap mt-1">
+      <div class="text-body-2">已上傳：</div>
+      <!-- TODO: take out three chip attachment component -->
+      <v-chip
+        v-for="name in prob.attachments"
+        :key="name"
+        class="ma-1"
+        outlined
+        label
+        color="primary"
+        close
+        @click:close="removeAttachmentFromProb(name)"
+      >
+        {{ name }}
+      </v-chip>
+    </div>
+
+    <div v-if="willAddAttachments.length > 0" class="d-flex align-center flex-wrap mt-1">
+      <v-tooltip bottom>
+        <template v-slot:activator="{ on, attr }">
+          <v-icon color="primary" small v-on="on" v-bind="attr">
+            mdi-information
+          </v-icon>
+        </template>
+        <span>待上傳的附件會在送出新題目或更新題目時才會進行上傳</span>
+      </v-tooltip>
+      <div class="text-body-2 ml-1">待上傳：</div>
+      <v-chip
+        v-for="{ name } in willAddAttachments"
+        :key="name"
+        class="ma-1"
+        outlined
+        label
+        color="primary"
+        close
+        @click:close="removeFromWillAddAttachments(name)"
+      >
+        {{ name }}
+      </v-chip>
+    </div>
+
+    <div v-if="willRemoveAttachments.length > 0" class="d-flex align-center flex-wrap mt-1">
+      <v-tooltip bottom>
+        <template v-slot:activator="{ on, attr }">
+          <v-icon color="primary" small v-on="on" v-bind="attr">
+            mdi-information
+          </v-icon>
+        </template>
+        <span>待刪除的附件會在更新題目時才會進行刪除</span>
+      </v-tooltip>
+      <div class="text-body-2 ml-1">待刪除：</div>
+      <v-chip
+        v-for="name in willRemoveAttachments"
+        :key="name"
+        class="ma-1"
+        outlined
+        label
+        color="primary"
+        close
+        @click:close="undoRemoveAttachmentFromProb(name)"
+      >
+        {{ name }}
+      </v-chip>
+    </div>
+
+    <v-btn class="mt-8" block color="primary" @click="submitProblem">
       送出
     </v-btn>
   </Fragment>
@@ -25,13 +100,13 @@
 
 <script>
 import { Fragment } from 'vue-fragment'
-import { VueEditor } from 'vue2-editor'
+import TextEditor from '@/components/TextEditor'
 import CodeEditor from '@/components/CodeEditor'
 
 export default {
   name: 'Form',
 
-  components: { Fragment, VueEditor, CodeEditor },
+  components: { Fragment, TextEditor, CodeEditor },
 
   props: {
     availableTags: {
@@ -48,31 +123,45 @@ export default {
     prob: {
       deep: true,
       handler(value) {
+        console.log('deep prob', value)
         this.$emit('update:prob', value)
       },
+    },
+    fileUploader() {
+      this.willAddAttachments = [...new Set([...this.willAddAttachments, ...this.fileUploader])]
     },
   },
 
   data() {
     return {
-      customToolbar: [
-        [{ header: [false, 1, 2, 3, 4, 5, 6] }],
-        ['bold', 'italic', 'underline', 'strike'], // toggled buttons
-        [{ color: [] }, { background: [] }, 'blockquote', 'code-block'],
-        [{ list: 'ordered' }, { list: 'bullet' }, { indent: '-1' }, { indent: '+1' }],
-        ['link', 'image', 'video'],
-        ['clean'], // remove formatting button
-      ],
       status: [
         { text: '顯示', value: 1 },
         { text: '隱藏', value: 0 },
       ],
+      willAddAttachments: [],
+      willRemoveAttachments: [],
+      fileUploader: [],
     }
   },
 
   methods: {
     submitProblem() {
-      this.$emit('submit')
+      this.$emit('submit', this.willAddAttachments, this.willRemoveAttachments)
+      this.willAddAttachments = []
+      this.willRemoveAttachments = []
+    },
+    removeFromWillAddAttachments(removedFilename) {
+      this.willAddAttachments = this.willAddAttachments.filter(
+        file => file.name !== removedFilename,
+      )
+    },
+    removeAttachmentFromProb(removedFilename) {
+      this.willRemoveAttachments.push(removedFilename)
+      this.prob.attachments = this.prob.attachments.filter(file => file !== removedFilename)
+    },
+    undoRemoveAttachmentFromProb(filename) {
+      this.willRemoveAttachments = this.willRemoveAttachments.filter(file => file !== filename)
+      this.prob.attachments.push(filename)
     },
   },
 }

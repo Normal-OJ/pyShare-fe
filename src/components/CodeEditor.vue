@@ -1,25 +1,40 @@
 <template>
-  <div ref="container" style="width:100%;height:600px;border:1px solid grey;text-align: left"></div>
+  <div
+    ref="container"
+    style="height: 300px;border:1px solid grey;text-align: left"
+    @input="$emit('input', $event.target.value)"
+  />
 </template>
+
 <script>
-import * as monaco from 'monaco-editor' // 包體很大了 但是demo可以跑起來
+import * as monaco from 'monaco-editor'
 
 export default {
   name: 'CodeEditor',
 
   props: {
-    code: {
+    value: {
       type: String,
-      required: true,
+      default: '',
+    },
+    readOnly: {
+      type: Boolean,
+      default: false,
     },
   },
 
+  data: () => ({
+    editor: null,
+  }),
+
   mounted() {
-    // eslint-disable-next-line no-unused-vars
-    const editor = monaco.editor.create(this.$refs.container, {
-      value: this.code,
+    this.editor = monaco.editor.create(this.$refs.container, {
+      value: this.value,
       language: 'python',
-      fontSize: 14, // 字型大小
+      fontSize: 14,
+      scrollbar: { alwaysConsumeMouseWheel: false },
+      minimap: { enabled: false },
+      readOnly: this.readOnly,
     })
   },
 }

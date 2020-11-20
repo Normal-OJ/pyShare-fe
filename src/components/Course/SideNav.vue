@@ -7,7 +7,10 @@
   >
     <v-list-item>
       <v-list-item-avatar class="rounded">
-        <v-img src="http://fakeimg.pl/100x100" />
+        <v-avatar size="48" color="secondary" tile>
+          <span class="white--text headline">{{ $route.params.name.slice(0, 1) }}</span>
+        </v-avatar>
+        <!-- <v-img src="http://fakeimg.pl/100x100" /> -->
       </v-list-item-avatar>
       <v-list-item-content>
         <v-list-item-title>
@@ -55,7 +58,23 @@
 </template>
 
 <script>
-import { SIDE_NAVS } from '@/constants/course'
+const SIDE_NAVS = [
+  {
+    label: '主題列表',
+    icon: 'mdi-view-list',
+    routeName: 'courseProblems',
+  },
+  {
+    label: '管理',
+    icon: 'mdi-settings',
+    routeName: 'courseManages',
+  },
+  {
+    label: '總覽',
+    icon: 'mdi-view-compact',
+    routeName: 'courseInfo',
+  },
+]
 
 export default {
   name: 'SideNav',

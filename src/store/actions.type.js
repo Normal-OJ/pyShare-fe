@@ -1,5 +1,6 @@
 // problem module
 export const GET_PROBLEMS = 'getProblems'
+export const GET_PROBLEM_INFO = 'getProblemInfo'
 
 // course module
 export const GET_COURSES = 'getCourses'

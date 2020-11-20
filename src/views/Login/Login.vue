@@ -29,9 +29,9 @@ export default {
         this.setAuth()
         const { redirect } = this.$route.query
         if (!redirect) {
-          this.$router.replace({ name: 'courses' })
+          this.$router.push({ name: 'courses' })
         } else {
-          this.$router.replace({ path: redirect })
+          this.$router.push({ path: redirect })
         }
       } catch (error) {
         // setError for login form

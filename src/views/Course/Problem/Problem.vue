@@ -1,14 +1,21 @@
 <template>
   <v-container fluid>
-    <v-row class="px-4">
-      <v-col cols="12">
+    <div class="px-4">
+      <div>
         <Problem v-if="prob" :prob="prob" />
-      </v-col>
-      <v-col cols="12">
-        <CommentList v-if="!selectedCommentId" :comments="comments" />
+      </div>
+      <v-divider />
+      <div>
+        <CommentList v-if="!floor" :comments="comments" />
+        <NewComment
+          v-else-if="String(floor) === 'new'"
+          @submitTestSubmission="submitTestSubmission"
+          @submitNewComment="submitNewComment"
+        />
         <CommentDetail v-else :comment="selectedComment" />
-      </v-col>
-    </v-row>
+      </div>
+      <div class="spacer" />
+    </div>
   </v-container>
 </template>
 
@@ -16,57 +23,32 @@
 import Problem from '@/components/Course/Problem/Problem'
 import CommentList from '@/components/Course/Problem/CommentList'
 import CommentDetail from '@/components/Course/Problem/CommentDetail'
+import NewComment from '@/components/Course/Problem/NewComment'
 import agent from '@/api/agent'
-
-const comments = [
-  {
-    id: '1',
-    title: '測試一下',
-    floor: 3,
-    author: {
-      username: '12345678',
-      displayName: '盧昭華',
-    },
-  },
-  {
-    id: '2',
-    title: '測試一下',
-    floor: 2,
-    author: {
-      username: '12345678',
-      displayName: '盧昭華',
-    },
-  },
-  {
-    id: '3',
-    title: '測試一下',
-    floor: 1,
-    author: {
-      username: '12345678',
-      displayName: '盧昭華',
-    },
-  },
-]
+import { comments } from './fake'
 
 export default {
   name: 'CourseProblem',
 
-  components: { Problem, CommentList, CommentDetail },
+  components: { Problem, CommentList, CommentDetail, NewComment },
 
   computed: {
-    problem() {
+    problem: () => {
       return this.prob
     },
     pid() {
-      return this.$route.params.id
+      return Number(this.$route.params.id)
     },
-    selectedCommentId() {
-      const { selectedCommentId } = this.$route.query
-      if (!selectedCommentId || !this.comments.find(c => c.id === selectedCommentId)) return null
-      return selectedCommentId
+    floor() {
+      const { floor } = this.$route.query
+      if (!floor) return null
+      if (floor !== 'new' && !this.comments.find(c => String(c.floor) === String(floor))) {
+        this.$router.replace({ query: null })
+      }
+      return floor
     },
     selectedComment() {
-      return this.comments.find(c => c.id === this.selectedCommentId)
+      return this.comments.find(c => String(c.floor) === String(this.floor))
     },
   },
 
@@ -88,6 +70,35 @@ export default {
         console.log('[views/Problem/getProblem] error', error)
       }
     },
+    async submitTestSubmission(code) {
+      const body = { problemId: this.pid, code }
+      try {
+        const { data } = await agent.Submission.createTest(body)
+        alert(data.data)
+      } catch (error) {
+        console.log('[views/Problem/submitTestSubmission] error', error)
+      }
+    },
+    async submitNewComment(newComment) {
+      const body = {
+        target: 'problem',
+        id: `${this.pid}`,
+        ...newComment,
+      }
+      try {
+        const { data } = await agent.Comment.create(body)
+        alert(data.data)
+      } catch (error) {
+        console.log('[views/Problem/submitNewComment] error', error)
+      }
+    },
   },
 }
 </script>
+
+<style scoped>
+/* TODO: let Spacer as a component */
+.spacer {
+  padding-bottom: 200px;
+}
+</style>

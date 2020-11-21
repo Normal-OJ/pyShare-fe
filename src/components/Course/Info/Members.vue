@@ -13,10 +13,7 @@
         />
       </v-col>
       <v-spacer />
-      <v-btn color="success">
-        <v-icon class="mr-1">mdi-account-plus</v-icon>
-        新增學生
-      </v-btn>
+      <AddStudentModal />
     </div>
 
     <v-data-table
@@ -34,13 +31,13 @@
       </template>
       <template v-slot:[`no-data`]>
         <div class="d-flex flex-column align-center">
-          <div class="text-h6 my-8">這裡還沒有任何成員</div>
+          <div class="text-subtitle-1 my-8">這裡還沒有任何成員</div>
           <v-img :src="require('@/assets/images/noData.svg')" max-width="600" contain />
         </div>
       </template>
       <template v-slot:[`no-results`]>
         <div class="d-flex flex-column align-center">
-          <div class="text-h6 my-8">找不到符合條件的成員</div>
+          <div class="text-subtitle-1 my-8">找不到符合條件的成員</div>
           <v-img :src="require('@/assets/images/noResults.svg')" max-width="600" contain />
         </div>
       </template>
@@ -49,6 +46,8 @@
 </template>
 
 <script>
+import AddStudentModal from './AddStudentModal'
+
 const headers = [
   { text: '使用者名稱', value: 'username' },
   { text: '暱稱', value: 'displayName' },
@@ -56,6 +55,8 @@ const headers = [
 
 export default {
   name: 'MemberList',
+
+  components: { AddStudentModal },
 
   props: {
     members: {

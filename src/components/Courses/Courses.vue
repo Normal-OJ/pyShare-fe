@@ -1,7 +1,7 @@
 <template>
   <v-container fluid class="d-flex flex-column pt-12 px-16">
-    <v-row>
-      <div class="text-h5">我的課程</div>
+    <v-row class="mb-4">
+      <div class="text-h1">我的課程</div>
 
       <v-spacer />
 
@@ -11,7 +11,7 @@
     <CourseList :data="courses" />
 
     <!-- <v-row class="mt-15">
-      <div class="text-h5">其他公開課程</div>
+      <div class="text-h1">其他公開課程</div>
     </v-row>
 
     <CourseList :data="courses" /> -->

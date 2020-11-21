@@ -1,6 +1,6 @@
 <template>
   <v-container fluid class="d-flex flex-column align-center login">
-    <div class="text-h3">
+    <div class="text-h1">
       歡迎回來，請先登入
     </div>
     <LoginForm @submit="handleSubmit" />

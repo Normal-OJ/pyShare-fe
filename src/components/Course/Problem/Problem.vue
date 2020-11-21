@@ -1,6 +1,6 @@
 <template>
   <Fragment>
-    <div class="text-h5 font-weight-bold text-center">{{ prob.title }}</div>
+    <div class="text-h1 font-weight-bold text-center">{{ prob.title }}</div>
     <div class="d-flex flex-row mt-4">
       <v-avatar class="mr-2" size="48" color="primary">
         <span class="pb-1 white--text headline">{{ prob.author.displayName.slice(0, 1) }}</span>

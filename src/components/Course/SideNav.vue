@@ -26,6 +26,7 @@
         v-for="{ label, icon, routeName } in items"
         :key="label"
         :to="{ name: routeName }"
+        color="primary"
       >
         <v-list-item-icon>
           <v-icon>{{ icon }}</v-icon>

@@ -1,6 +1,6 @@
 <template>
   <v-container fluid class="d-flex flex-column pt-12 px-16">
-    <v-row>
+    <v-row class="mb-4">
       <div class="text-h5">我的課程</div>
 
       <v-spacer />

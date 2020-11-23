@@ -54,7 +54,7 @@
       </template>
       <template v-slot:[slotName] v-for="slotName in ['no-data', 'no-results']">
         <div class="d-flex flex-column align-center" :key="slotName">
-          <div class="text-h6 my-8">這裡還沒有任何主題，或找不到符合條件的主題</div>
+          <div class="text-subtitle-1 my-8">這裡還沒有任何主題，或找不到符合條件的主題</div>
           <v-img :src="require('@/assets/images/noData.svg')" max-width="600" contain />
         </div>
       </template>

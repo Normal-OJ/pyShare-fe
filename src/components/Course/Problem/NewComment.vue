@@ -30,7 +30,7 @@
         <span>在送出創作前運行程式以預覽結果，送出之後也可以再加入新版的程式碼。</span>
       </v-tooltip>
       <v-spacer />
-      <v-btn color="primary" :disabled="isDisableSubmitComment" @click="submitNewComment">
+      <v-btn color="success" :disabled="isDisableSubmitComment" @click="submitNewComment">
         送出創作
       </v-btn>
     </div>

@@ -7,7 +7,7 @@
       利用 Python 實作資料科學，發表主題與創作，一起在分享中學習
     </div>
     <div v-if="isLogin" class="d-flex flex-column align-center">
-      <div class="mb-7 text-h6">嗨&nbsp;{{ displayName }}，開始分享創作吧！</div>
+      <div class="mb-7 text-body-1">嗨&nbsp;{{ displayName }}，開始分享創作吧！</div>
       <v-img :src="require('@/assets/images/freelancer.svg')" />
     </div>
     <v-btn v-else class="my-7" color="secondary" width="140" :to="'login'">

@@ -1,5 +1,67 @@
-// Import 'Noto Sans TC' from google fonts
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@100;300;400;500;700;900&display=swap');
+@font-face {
+  font-family: 'pyShare';
+  src: url('/src/assets/fonts/Lato-Thin.ttf') format('truetype');
+  font-weight: 100;
+  unicode-range: U+00-024F;
+}
+@font-face {
+  font-family: 'pyShare';
+  src: url('/src/assets/fonts/Lato-Light.ttf') format('truetype');
+  font-weight: 300;
+  unicode-range: U+00-024F;
+}
+@font-face {
+  font-family: 'pyShare';
+  src: url('/src/assets/fonts/Lato-Regular.ttf') format('truetype');
+  font-weight: 400;
+  unicode-range: U+00-024F;
+}
+@font-face {
+  font-family: 'pyShare';
+  src: url('/src/assets/fonts/Lato-Bold.ttf') format('truetype');
+  font-weight: 700;
+  unicode-range: U+00-024F;
+}
+@font-face {
+  font-family: 'pyShare';
+  src: url('/src/assets/fonts/Lato-Black.ttf') format('truetype');
+  font-weight: 900;
+  unicode-range: U+00-024F;
+}
 
-$body-font-family: 'Noto Sans TC', sans-serif;
+@font-face {
+  font-family: 'pyShare';
+  src: url('/src/assets/fonts/NotoSansTC-Thin.ttf') format('truetype');
+  font-weight: 100;
+  unicode-range: U+4E00-9FFF;
+}
+@font-face {
+  font-family: 'pyShare';
+  src: url('/src/assets/fonts/NotoSansTC-Light.ttf') format('truetype');
+  font-weight: 300;
+  unicode-range: U+4E00-9FFF;
+}
+@font-face {
+  font-family: 'pyShare';
+  src: url('/src/assets/fonts/NotoSansTC-Regular.ttf') format('truetype');
+  font-weight: 400;
+  unicode-range: U+4E00-9FFF;
+}
+@font-face {
+  font-family: 'pyShare';
+  src: url('/src/assets/fonts/NotoSansTC-Bold.ttf') format('truetype');
+  font-weight: 700;
+  unicode-range: U+4E00-9FFF;
+}
+@font-face {
+  font-family: 'pyShare';
+  src: url('/src/assets/fonts/NotoSansTC-Black.ttf') format('truetype');
+  font-weight: 900;
+  unicode-range: U+4E00-9FFF;
+}
+
+// Override font family
+$body-font-family: 'pyShare', sans-serif;
 $heading-font-family: $body-font-family;
+
+// TODO: resolve Failed to decode downloaded fonts

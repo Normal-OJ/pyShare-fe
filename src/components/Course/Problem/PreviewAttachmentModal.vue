@@ -13,7 +13,7 @@
           </v-btn>
         </v-toolbar-items>
       </v-toolbar>
-      <v-card-text class="mt-8" style="overflow: scroll">
+      <v-card-text class="mt-8 text--primary" style="overflow: scroll">
         <Spinner v-if="!displayFile" />
         <pre v-else>{{ displayFile }}</pre>
       </v-card-text>

@@ -30,6 +30,7 @@ const Problem = {
 }
 
 const Comment = {
+  get: cid => Vue.axios.get(`/comment/${cid}`),
   create: body => Vue.axios.post('/comment', body),
   createSubmission: (cid, body) => Vue.axios.post(`/comment/${cid}/submission`, body),
 }

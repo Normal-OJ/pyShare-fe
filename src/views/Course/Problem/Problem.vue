@@ -25,7 +25,9 @@ import CommentList from '@/components/Course/Problem/CommentList'
 import CommentDetail from '@/components/Course/Problem/CommentDetail'
 import NewComment from '@/components/Course/Problem/NewComment'
 import agent from '@/api/agent'
-import { comments } from './fake'
+import { mapActions, mapGetters } from 'vuex'
+import { GET_COMMENTS } from '@/store/actions.type'
+import { COMMENTS } from '@/store/getters.type'
 
 export default {
   name: 'CourseProblem',
@@ -33,6 +35,9 @@ export default {
   components: { Problem, CommentList, CommentDetail, NewComment },
 
   computed: {
+    ...mapGetters({
+      comments: COMMENTS,
+    }),
     problem: () => {
       return this.prob
     },
@@ -57,15 +62,18 @@ export default {
   },
 
   data: () => ({
-    comments,
     prob: null,
   }),
 
   methods: {
+    ...mapActions({
+      getComments: GET_COMMENTS,
+    }),
     async getProblem(pid) {
       try {
         const { data } = await agent.Problem.get(pid)
         this.prob = data.data
+        this.getComments(data.data.comments)
       } catch (error) {
         console.log('[views/Problem/getProblem] error', error)
       }

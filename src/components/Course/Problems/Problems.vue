@@ -47,6 +47,9 @@
           {{ tag }}
         </v-chip>
       </template>
+      <template v-slot:[`item.creations`]="{ item }">
+        {{ item.comments.length }}
+      </template>
       <template v-slot:[`item.author`]="{ item }">
         <router-link :to="{ name: 'profile', params: { username: item.author.username } }">
           {{ item.author.displayName }}

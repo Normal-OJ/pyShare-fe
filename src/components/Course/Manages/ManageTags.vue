@@ -7,7 +7,7 @@
 
     <v-row>
       <v-col cols="12" md="5">
-        <div class="text-h1">課程分類</div>
+        <div class="text-h5">課程分類</div>
         <div class="text-subtitle-1">以下為在此課程內的主題可選取的分類</div>
         <v-card class="my-6" tile>
           <v-list>
@@ -59,7 +59,7 @@
       </v-col>
 
       <v-col cols="12" md="5">
-        <div class="text-h1">其他分類</div>
+        <div class="text-h5">其他分類</div>
         <div class="text-subtitle-1">可以在此新增分類，若要移除分類請洽管理員</div>
         <v-card class="my-6" tile>
           <v-list>

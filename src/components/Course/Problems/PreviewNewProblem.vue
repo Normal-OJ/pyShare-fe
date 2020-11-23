@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="dialog" persistent>
+  <v-dialog v-model="dialog" persistent width="80vw">
     <template v-slot:activator="{ on, attrs }">
       <v-btn color="success" dark v-bind="attrs" v-on="on">
         <v-icon class="mr-1">mdi-eye</v-icon>
@@ -18,7 +18,7 @@
         </v-toolbar-items>
       </v-toolbar>
 
-      <v-card-text class="mt-8">
+      <v-card-text class="mt-8 text--primary">
         <Problem :prob="prob" />
       </v-card-text>
     </v-card>

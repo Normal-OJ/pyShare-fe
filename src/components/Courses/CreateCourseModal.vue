@@ -35,7 +35,7 @@
 
       <v-card-actions>
         <v-spacer />
-        <v-btn color="primary" :disabled="!name || !year || !semester" @click="submit">
+        <v-btn color="success" :disabled="!name || !year || !semester" @click="submit">
           送出
         </v-btn>
       </v-card-actions>

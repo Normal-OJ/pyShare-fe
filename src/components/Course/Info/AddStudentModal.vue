@@ -27,13 +27,19 @@
         <v-tab-item>
           <v-card flat>
             <v-card-text class="text--primary">
-              <v-file-input
-                v-model="newStudentFile"
-                label="上傳 csv 檔案"
-                outlined
-                truncate-length="50"
-                hide-details
-              />
+              <div class="d-flex align-center mt-2">
+                <v-file-input
+                  v-model="newStudentFile"
+                  label="上傳 csv 檔案"
+                  outlined
+                  truncate-length="50"
+                  hide-details
+                  dense
+                />
+                <v-btn class="ml-2" color="success" :disabled="!newStudentFile" @click="submit">
+                  送出
+                </v-btn>
+              </div>
               <div class="text-body-1 font-weight-bold mt-4 mb-1">檔案格式說明</div>
               <div class="text-body-2">
                 您可以上傳一個以 <strong>utf-8</strong> 編碼的 csv 檔案（逗號分隔檔案）。
@@ -42,7 +48,7 @@
               </div>
 
               <div class="text-body-1 font-weight-bold mt-4 mb-1">
-                標題列
+                標題列（第一列）
               </div>
               <div class="text-body-2">
                 必須包含四欄，分別是：
@@ -51,15 +57,18 @@
                     <pre>{{ header }}</pre>
                   </li>
                 </ul>
+                <code>displayName</code> 為平台內顯示的名稱，目前僅開放
+                <code>password</code> 支援修改。
               </div>
 
               <div class="text-body-1 font-weight-bold mt-4 mb-1">
-                學生資料列
+                學生資料列（第二列以後）
               </div>
               <div class="text-body-2">
                 第二列開始為欲加入的學生的帳號資料，系統將會判斷該
-                <code>username</code>
-                若不存在，會以填寫的四個資料在系統新增這個使用者的帳號。
+                <code>username</code> 是否存在於系統。
+                <br />
+                若不存在，會以填寫的四個資料在系統新增這個使用者的帳號，隨後將該使用者加入此課程。
                 <br />
                 反之，若已存在於系統，將會忽略其他三個欄位的資料，然後將該使用者加入此課程。
               </div>
@@ -70,7 +79,7 @@
               <v-simple-table>
                 <template v-slot:default>
                   <thead>
-                    <tr class="text--primary text-body-1">
+                    <tr class="text-body-1">
                       <th v-for="header in headers" :key="header">
                         <pre>{{ header }}</pre>
                       </th>
@@ -81,9 +90,9 @@
                       <td v-for="(data, index2) in content" :key="index2">{{ data }}</td>
                     </tr>
                     <tr>
-                      <td>B123456789</td>
-                      <td colspan="3" class="text--secondary text-center">
-                        （已註冊過的帳號，其他欄位可填可不填）
+                      <td>{{ contents[contents.length - 1][0] }}</td>
+                      <td colspan="3" class="text--secondary">
+                        {{ contents[contents.length - 1][1] }}
                       </td>
                     </tr>
                   </tbody>
@@ -97,7 +106,34 @@
         </v-tab-item>
         <v-tab-item>
           <v-card flat>
-            <v-card-text>hi 1</v-card-text>
+            <v-card-text class="text--primary">
+              <v-form ref="form" v-model="validForm">
+                <v-text-field
+                  v-model="newStudent.username"
+                  :rule="[v => !!v || '此欄位為必填']"
+                  label="username（使用者名稱）"
+                  outlined
+                  dense
+                />
+                <div class="text-body-1 mb-4">若帳號尚未創立，請填寫以下資料。</div>
+                <v-text-field
+                  v-model="newStudent.displayName"
+                  label="displayName（顯示名稱）"
+                  outlined
+                  dense
+                />
+                <v-text-field
+                  v-model="newStudent.password"
+                  label="password（密碼）"
+                  outlined
+                  dense
+                />
+                <v-text-field v-model="newStudent.email" label="email（信箱）" outlined dense />
+                <v-btn class="my-4" block color="success">
+                  送出
+                </v-btn>
+              </v-form>
+            </v-card-text>
           </v-card>
         </v-tab-item>
       </v-tabs-items>
@@ -115,13 +151,20 @@ export default {
     contents: [
       ['407123000S', '王大明', 'gB7hj31p', 'bigming@ntnu.edu.tw'],
       ['409456000H', '陳耳東', '409456000H', 'earEast@ntu.edu.tw'],
-      ['B123456789', '（已註冊過的帳號，其他欄位可填可不填）'],
+      ['B123456789', '（若是已註冊過的帳號，其他欄位可填可不填）'],
     ],
+    validForm: true,
+    newStudent: {
+      username: '',
+      displayName: '',
+      password: '',
+      email: '',
+    },
   }),
 
   methods: {
     submit() {
-      this.$emit('submit')
+      this.$emit('submitAddMultipleStudents', this.newStudentFile)
       // TODO: getError and show feedback, conditionally close dialog
       this.dialog = false
     },

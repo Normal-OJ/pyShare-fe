@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid class="d-flex flex-column pt-4 px-8">
+  <v-container fluid class="d-flex flex-column mt-4 px-8">
     <div class="d-flex align-center">
       <v-col cols="10" md="6" class="d-flex">
         <v-text-field
@@ -23,22 +23,16 @@
       :items-per-page="Number(-1)"
       hide-default-footer
       :loading="loading"
+      class="table"
+      @click:row="handleRowClick"
     >
-      <template v-slot:[`item.author`]="{ item }">
-        <router-link :to="{ name: 'profile', params: { username: item.author.username } }">
-          {{ item.author.displayName }}
-        </router-link>
+      <template v-slot:[`item.teacher`]="{ item }">
+        {{ item.teacher ? '教師' : '學生' }}
       </template>
-      <template v-slot:[`no-data`]>
-        <div class="d-flex flex-column align-center">
-          <div class="text-subtitle-1 my-8">這裡還沒有任何成員</div>
+      <template v-slot:[slotName] v-for="slotName in ['no-data', 'no-results']">
+        <div class="d-flex flex-column align-center" :key="slotName">
+          <div class="text-subtitle-1 my-8">這裡還沒有任何成員，或找不到符合條件的成員</div>
           <v-img :src="require('@/assets/images/noData.svg')" max-width="600" contain />
-        </div>
-      </template>
-      <template v-slot:[`no-results`]>
-        <div class="d-flex flex-column align-center">
-          <div class="text-subtitle-1 my-8">找不到符合條件的成員</div>
-          <v-img :src="require('@/assets/images/noResults.svg')" max-width="600" contain />
         </div>
       </template>
     </v-data-table>
@@ -50,7 +44,8 @@ import AddStudentModal from './AddStudentModal'
 
 const headers = [
   { text: '使用者名稱', value: 'username' },
-  { text: '暱稱', value: 'displayName' },
+  { text: '顯示名稱', value: 'displayName' },
+  { text: '身份', value: 'teacher' },
 ]
 
 export default {
@@ -70,5 +65,18 @@ export default {
     searchText: '',
     loading: false,
   }),
+
+  methods: {
+    handleRowClick(value) {
+      const route = this.$router.resolve({ name: 'profile', params: { username: value.username } })
+      window.open(route.href, '_blank')
+    },
+  },
 }
 </script>
+
+<style scoped>
+.table >>> tbody tr :hover {
+  cursor: pointer;
+}
+</style>

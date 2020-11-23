@@ -100,32 +100,19 @@ export default {
           )
           alert('remove problem attachment success!')
         }
-        this.getProblems()
-        if (this.isEdit) this.getProblemInfo(pid)
-        else {
+        this.getProblemInfo(pid)
+        if (!this.isEdit) {
           this.$router.push({
             name: 'courseSetProblems',
             params: { operation: 'edit' },
             query: { pid },
           })
         }
-        // this.$router.push({ name: 'courseProblems' })
       } catch (error) {
         console.log('[views/SetProblems/handleSubmit] error', error)
         // TODO: setError
       }
     },
-    // async removeAttachmentFromProb(filename) {
-    //   try {
-    //     const formData = new FormData()
-    //     formData.append('attachmentName', filename)
-    //     await agent.Problem.removeAttachment(this.pid, formData)
-    //     alert('success!')
-    //     this.getProblemInfo(this.pid)
-    //   } catch (error) {
-    //     console.log('[views/SetProblems/removeAttachmentFromProb] error', error)
-    //   }
-    // },
   },
 }
 </script>

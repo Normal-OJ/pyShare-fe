@@ -34,7 +34,7 @@
 
       <v-card-actions>
         <v-spacer />
-        <v-btn color="primary" :disabled="newTags === []" @click="submit">確認</v-btn>
+        <v-btn color="success" :disabled="newTags === []" @click="submit">確認</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>

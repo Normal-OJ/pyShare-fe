@@ -1,115 +1,67 @@
-// Import 'Noto Sans TC' from google fonts
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@100;300;400;500;700;900&display=swap');
+@font-face {
+  font-family: 'pyShare';
+  src: url('/src/assets/fonts/Lato-Thin.ttf') format('truetype');
+  font-weight: 100;
+  unicode-range: U+00-024F;
+}
+@font-face {
+  font-family: 'pyShare';
+  src: url('/src/assets/fonts/Lato-Light.ttf') format('truetype');
+  font-weight: 300;
+  unicode-range: U+00-024F;
+}
+@font-face {
+  font-family: 'pyShare';
+  src: url('/src/assets/fonts/Lato-Regular.ttf') format('truetype');
+  font-weight: 400;
+  unicode-range: U+00-024F;
+}
+@font-face {
+  font-family: 'pyShare';
+  src: url('/src/assets/fonts/Lato-Bold.ttf') format('truetype');
+  font-weight: 700;
+  unicode-range: U+00-024F;
+}
+@font-face {
+  font-family: 'pyShare';
+  src: url('/src/assets/fonts/Lato-Black.ttf') format('truetype');
+  font-weight: 900;
+  unicode-range: U+00-024F;
+}
+
+@font-face {
+  font-family: 'pyShare';
+  src: url('/src/assets/fonts/NotoSansTC-Thin.ttf') format('truetype');
+  font-weight: 100;
+  unicode-range: U+4E00-9FFF;
+}
+@font-face {
+  font-family: 'pyShare';
+  src: url('/src/assets/fonts/NotoSansTC-Light.ttf') format('truetype');
+  font-weight: 300;
+  unicode-range: U+4E00-9FFF;
+}
+@font-face {
+  font-family: 'pyShare';
+  src: url('/src/assets/fonts/NotoSansTC-Regular.ttf') format('truetype');
+  font-weight: 400;
+  unicode-range: U+4E00-9FFF;
+}
+@font-face {
+  font-family: 'pyShare';
+  src: url('/src/assets/fonts/NotoSansTC-Bold.ttf') format('truetype');
+  font-weight: 700;
+  unicode-range: U+4E00-9FFF;
+}
+@font-face {
+  font-family: 'pyShare';
+  src: url('/src/assets/fonts/NotoSansTC-Black.ttf') format('truetype');
+  font-weight: 900;
+  unicode-range: U+4E00-9FFF;
+}
 
 // Override font family
-// TODO: replace with Lato for Alphanumeric
-$body-font-family: 'Noto Sans TC', sans-serif;
+$body-font-family: 'pyShare', sans-serif;
 $heading-font-family: $body-font-family;
 
-// Override font size of headings
-$headings: (
-  'h1': (
-    'size': 2.488rem,
-    'weight': 300,
-    'line-height': 2.488rem,
-    'letter-spacing': -0.015625em,
-    'font-family': $heading-font-family,
-    'text-transform': false,
-  ),
-  'h2': (
-    'size': 2.074rem,
-    'weight': 300,
-    'line-height': 2.074rem,
-    'letter-spacing': -0.0083333333em,
-    'font-family': $heading-font-family,
-    'text-transform': false,
-  ),
-  'h3': (
-    'size': 1.728rem,
-    'weight': 400,
-    'line-height': 1.9rem,
-    'letter-spacing': normal,
-    'font-family': $heading-font-family,
-    'text-transform': false,
-  ),
-  'h4': (
-    'size': 1.44rem,
-    'weight': 400,
-    'line-height': 1.6rem,
-    'letter-spacing': 0.0073529412em,
-    'font-family': $heading-font-family,
-    'text-transform': false,
-  ),
-  'h5': (
-    'size': 1.2rem,
-    'weight': 400,
-    'line-height': 1.8rem,
-    'letter-spacing': normal,
-    'font-family': $heading-font-family,
-    'text-transform': false,
-  ),
-  'h6': (
-    'size': 1rem,
-    'weight': 500,
-    'line-height': 1.5rem,
-    'letter-spacing': 0.0125em,
-    'font-family': $heading-font-family,
-    'text-transform': false,
-  ),
-  'subtitle-1': (
-    'size': 1rem,
-    'weight': normal,
-    'line-height': 1.75rem,
-    'letter-spacing': 0.009375em,
-    'font-family': $body-font-family,
-    'text-transform': false,
-  ),
-  'subtitle-2': (
-    'size': 0.875rem,
-    'weight': 500,
-    'line-height': 1.375rem,
-    'letter-spacing': 0.0071428571em,
-    'font-family': $body-font-family,
-    'text-transform': false,
-  ),
-  'body-1': (
-    'size': 1rem,
-    'weight': 400,
-    'line-height': 1.5rem,
-    'letter-spacing': 0.03125em,
-    'font-family': $body-font-family,
-    'text-transform': false,
-  ),
-  'body-2': (
-    'size': 0.875rem,
-    'weight': 400,
-    'line-height': 1.25rem,
-    'letter-spacing': 0.0178571429em,
-    'font-family': $body-font-family,
-    'text-transform': false,
-  ),
-  'button': (
-    'size': 0.875rem,
-    'weight': 500,
-    'line-height': 2.25rem,
-    'letter-spacing': 0.0892857143em,
-    'font-family': $body-font-family,
-    'text-transform': uppercase,
-  ),
-  'caption': (
-    'size': 0.75rem,
-    'weight': 400,
-    'line-height': 1.25rem,
-    'letter-spacing': 0.0333333333em,
-    'font-family': $body-font-family,
-    'text-transform': false,
-  ),
-  'overline': (
-    'size': 0.75rem,
-    'weight': 500,
-    'line-height': 2rem,
-    'letter-spacing': 0.1666666667em,
-    'font-family': $body-font-family,
-    'text-transform': uppercase,
-  ),
-);
+// TODO: resolve Failed to decode downloaded fonts

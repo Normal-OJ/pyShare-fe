@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="mt-4 text-h1">新增創作</div>
+    <div class="mt-4 text-h5">新增創作</div>
     <div class="mt-4 d-flex flex-column">
       <div class="text-body-1">創作標題（必填）</div>
       <v-text-field v-model="newComment.title" outlined dense hide-details autofocus />
@@ -30,7 +30,7 @@
         <span>在送出創作前運行程式以預覽結果，送出之後也可以再加入新版的程式碼。</span>
       </v-tooltip>
       <v-spacer />
-      <v-btn color="primary" :disabled="isDisableSubmitComment" @click="submitNewComment">
+      <v-btn color="success" :disabled="isDisableSubmitComment" @click="submitNewComment">
         送出創作
       </v-btn>
     </div>

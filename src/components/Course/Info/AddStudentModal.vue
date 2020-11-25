@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="dialog" width="750" persistent>
+  <v-dialog v-model="dialog" width="750">
     <template v-slot:activator="{ on, attrs }">
       <v-btn color="success" v-bind="attrs" v-on="on">
         <v-icon class="mr-1">mdi-account-plus</v-icon>
@@ -52,7 +52,10 @@
               </div>
               <div class="text-body-2">
                 必須包含四欄，分別是：
-                <ul v-for="header in headers" :key="header">
+                <ul
+                  v-for="header in ['username', 'displayName', 'password', 'email']"
+                  :key="header"
+                >
                   <li>
                     <pre>{{ header }}</pre>
                   </li>
@@ -76,31 +79,19 @@
               <div class="text-body-1 font-weight-bold mt-4 mb-1">
                 範例
               </div>
-              <v-simple-table>
-                <template v-slot:default>
-                  <thead>
-                    <tr class="text-body-1">
-                      <th v-for="header in headers" :key="header">
-                        <pre>{{ header }}</pre>
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr v-for="(content, index) in contents.slice(0, 2)" :key="index">
-                      <td v-for="(data, index2) in content" :key="index2">{{ data }}</td>
-                    </tr>
-                    <tr>
-                      <td>{{ contents[contents.length - 1][0] }}</td>
-                      <td colspan="3" class="text--secondary">
-                        {{ contents[contents.length - 1][1] }}
-                      </td>
-                    </tr>
-                  </tbody>
-                </template>
-              </v-simple-table>
+              <PreviewCSV :data="template" />
               <v-btn class="my-4" block color="primary" @click="downloadExample">
                 下載模板
               </v-btn>
+              <ConfirmModal
+                v-if="isShowConfirmModal"
+                @close="closeConfirmModal"
+                @confirm="confirmSubmit"
+              >
+                <template v-slot:content>
+                  <PreviewCSV v-if="previewFile" :data="previewFile" />
+                </template>
+              </ConfirmModal>
             </v-card-text>
           </v-card>
         </v-tab-item>
@@ -129,7 +120,7 @@
                   dense
                 />
                 <v-text-field v-model="newStudent.email" label="email（信箱）" outlined dense />
-                <v-btn class="my-4" block color="success">
+                <v-btn class="my-4" block color="success" @click="submitAddStudent">
                   送出
                 </v-btn>
               </v-form>
@@ -142,17 +133,20 @@
 </template>
 
 <script>
+import PreviewCSV from '@/components/PreviewCSV'
+import ConfirmModal from '@/components/ConfirmModal'
+
+const template =
+  'username,displayName,password,email\n407123000S,王大明,gB7hj31p,bigming@ntnu.edu.tw\n409456000H,陳耳東,409456000H,earEast@ntu.edu.tw\nB123456789,（若是已註冊過的帳號,其他欄位可填可不填）'
+
 export default {
+  components: { PreviewCSV, ConfirmModal },
+
   data: () => ({
     dialog: false,
     tab: 0,
     newStudentFile: null,
-    headers: ['username', 'displayName', 'password', 'email'],
-    contents: [
-      ['407123000S', '王大明', 'gB7hj31p', 'bigming@ntnu.edu.tw'],
-      ['409456000H', '陳耳東', '409456000H', 'earEast@ntu.edu.tw'],
-      ['B123456789', '（若是已註冊過的帳號，其他欄位可填可不填）'],
-    ],
+    template,
     validForm: true,
     newStudent: {
       username: '',
@@ -160,23 +154,42 @@ export default {
       password: '',
       email: '',
     },
+    isShowConfirmModal: false,
+    previewFile: null,
   }),
 
   methods: {
-    submit() {
+    async submit() {
+      const r = new FileReader()
+      r.onload = async e => {
+        this.previewFile = await e.target.result
+      }
+      await r.readAsText(this.newStudentFile)
+      this.isShowConfirmModal = true
+    },
+    closeConfirmModal() {
+      this.isShowConfirmModal = false
+    },
+    confirmSubmit() {
       this.$emit('submitAddMultipleStudents', this.newStudentFile)
+      this.closeConfirmModal()
       // TODO: getError and show feedback, conditionally close dialog
       this.dialog = false
     },
     downloadExample() {
-      const allContents = this.contents.slice()
-      allContents.unshift(this.headers)
-      const csvContent =
-        'data:text/csv;charset=utf-8,' + allContents.map(e => e.join(',')).join('\n')
+      const csvContent = 'data:text/csv;charset=utf-8,' + this.template
       const link = document.createElement('a')
       link.download = 'template.csv'
       link.href = csvContent
       link.click()
+    },
+    submitAddStudent() {
+      this.$emit(
+        'submitAddStudent',
+        `${Object.keys(this.newStudent).join(',')}\n${Object.values(this.newStudent).join(',')}`,
+      )
+      // TODO: getError and show feedback, conditionally close dialog
+      this.dialog = false
     },
   },
 }

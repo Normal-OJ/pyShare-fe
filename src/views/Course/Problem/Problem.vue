@@ -12,7 +12,7 @@
           @submitTestSubmission="submitTestSubmission"
           @submitNewComment="submitNewComment"
         />
-        <CommentDetail v-else :comment="selectedComment" />
+        <CommentDetail v-else :comment="selectedComment" @updateComment="updateComment" />
       </div>
       <div class="spacer" />
     </div>
@@ -82,7 +82,7 @@ export default {
       const body = { problemId: this.pid, code }
       try {
         const { data } = await agent.Submission.createTest(body)
-        alert(data.data)
+        console.log('[test submission]', data)
       } catch (error) {
         console.log('[views/Problem/submitTestSubmission] error', error)
       }
@@ -95,9 +95,21 @@ export default {
       }
       try {
         const { data } = await agent.Comment.create(body)
-        alert(data.data)
+        console.log('[submit new comment]', data)
+        await this.getProblem(this.pid)
+        const { floor } = this.prob.comments.find(comment => comment.id === data.data.id)
+        this.$router.push({ query: { floor } })
       } catch (error) {
         console.log('[views/Problem/submitNewComment] error', error)
+      }
+    },
+    async updateComment(cid, newComment) {
+      try {
+        const { data } = await agent.Comment.update(cid, newComment)
+        this.getComments(this.prob.comments)
+        console.log(data)
+      } catch (error) {
+        console.log('[views/Problem/updateComment] error', error)
       }
     },
   },

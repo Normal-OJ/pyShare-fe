@@ -16,14 +16,15 @@
     </div>
     <v-row class="mt-6">
       <v-col cols="12" md="8">
-        <div class="text-body-1" v-html="prob.description" />
+        <div class="text-h6">主題說明</div>
+        <div class="text-body-1 ma-1" v-html="prob.description" />
       </v-col>
       <v-col cols="12" md="4">
-        <div class="text-body-1">分類</div>
-        <v-chip class="text-caption mr-1" v-for="tag in prob.tags" :key="tag" small>
+        <div class="text-h6">分類</div>
+        <v-chip class="text-caption ma-1" v-for="tag in prob.tags" :key="tag" small>
           {{ tag }}
         </v-chip>
-        <div class="text-body-1 mt-4">附件</div>
+        <div class="text-h6 mt-4">附件</div>
         <v-chip
           v-for="filename in prob.attachments"
           :key="filename"

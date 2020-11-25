@@ -3,7 +3,7 @@
     <div class="mt-4 text-h5">新增創作</div>
     <div class="mt-4 d-flex flex-column">
       <div class="text-body-1">創作標題（必填）</div>
-      <v-text-field v-model="newComment.title" outlined dense hide-details autofocus />
+      <v-text-field v-model="newComment.title" outlined dense hide-details />
     </div>
     <div class="mt-4 d-flex flex-column">
       <div class="text-body-1">創作說明</div>

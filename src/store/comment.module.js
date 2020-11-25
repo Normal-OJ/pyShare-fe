@@ -24,10 +24,12 @@ const actions = {
   async [GET_COMMENTS]({ commit }, commentIds) {
     try {
       const results = await Promise.all(commentIds.map(commentId => agent.Comment.get(commentId)))
-      commit(
-        SET_COMMENTS,
-        results.map(result => result.data.data),
-      )
+      const comments = results.map(result => result.data.data)
+      const commentsWithId = comments.map((comment, index) => ({
+        id: commentIds[index],
+        ...comment,
+      }))
+      commit(SET_COMMENTS, commentsWithId)
     } catch (error) {
       console.log('[vuex/comment/getComments] error', error)
     }

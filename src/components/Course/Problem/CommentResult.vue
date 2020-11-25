@@ -83,7 +83,12 @@ export default {
     },
     result: {
       type: Object,
-      required: true,
+      default: () => ({
+        stdout: '',
+        stderr: '',
+        files: [],
+      }),
+      // required: true,
     },
   },
 

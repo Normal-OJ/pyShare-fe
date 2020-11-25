@@ -14,13 +14,12 @@
             <router-link v-if="key === 'name'" :to="{ name: 'course', params: { name: row[key] } }">
               {{ row[key] }}
             </router-link>
-            <router-link
-              v-else-if="key === 'teacher'"
-              :to="{ name: 'profile', params: { username: row[key].username } }"
-            >
+            <span v-else-if="key === 'semester'">
+              {{ row.year ? `${row.year}-${row.semester}` : '' }}
+            </span>
+            <router-link v-else :to="{ name: 'profile', params: { username: row[key].username } }">
               {{ row[key].displayName }}
             </router-link>
-            <span v-else>{{ row[key] }}</span>
           </td>
         </tr>
       </tbody>

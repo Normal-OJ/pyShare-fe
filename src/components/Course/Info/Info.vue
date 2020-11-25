@@ -33,7 +33,11 @@
       </div>
     </div>
     <div class="text-h5 mt-4">成員</div>
-    <Members :members="members" />
+    <Members
+      :members="members"
+      @submitAddMultipleStudents="submitAddMultipleStudents"
+      @submitAddStudent="submitAddStudent"
+    />
   </v-container>
 </template>
 
@@ -56,6 +60,15 @@ export default {
     members() {
       if (!this.info) return []
       return this.info ? [{ ...this.info.teacher, teacher: true }].concat(this.info.students) : []
+    },
+  },
+
+  methods: {
+    submitAddMultipleStudents(file) {
+      this.$emit('submitAddMultipleStudents', file)
+    },
+    submitAddStudent(csvString) {
+      this.$emit('submitAddStudent', csvString)
     },
   },
 }

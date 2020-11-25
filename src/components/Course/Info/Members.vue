@@ -13,7 +13,10 @@
         />
       </v-col>
       <v-spacer />
-      <AddStudentModal />
+      <AddStudentModal
+        @submitAddMultipleStudents="submitAddMultipleStudents"
+        @submitAddStudent="submitAddStudent"
+      />
     </div>
 
     <v-data-table
@@ -70,6 +73,12 @@ export default {
     handleRowClick(value) {
       const route = this.$router.resolve({ name: 'profile', params: { username: value.username } })
       window.open(route.href, '_blank')
+    },
+    submitAddMultipleStudents(file) {
+      this.$emit('submitAddMultipleStudents', file)
+    },
+    submitAddStudent(csvString) {
+      this.$emit('submitAddStudent', csvString)
     },
   },
 }

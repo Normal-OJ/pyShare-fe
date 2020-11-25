@@ -5,20 +5,22 @@
         <img src="http://fakeimg.pl/48x48" />
       </v-avatar>
       <div class="d-flex flex-column" style="flex: 1">
-        <!-- title -->
-        <div class="d-flex flex-row text-body-1 align-center">
-          <v-btn
-            v-if="!isEdit[COMMENT_KEY.TITLE]"
-            class="text-body-1 px-2"
-            text
-            :ripple="false"
-            @click="editComment(COMMENT_KEY.TITLE)"
-          >
-            {{ comment.title }}
-          </v-btn>
+        <!-- First Row -->
+        <div class="d-flex flex-row align-center">
+          <div v-if="!isEdit[COMMENT_KEY.TITLE]" class="d-flex align-center">
+            <div class="text-body-1">{{ comment.title }}</div>
+            <v-btn class="ml-2" small icon @click.stop="editComment(COMMENT_KEY.TITLE)">
+              <v-icon small>mdi-pencil</v-icon>
+            </v-btn>
+          </div>
           <div v-else class="d-flex">
-            <v-text-field v-model="newComment.title" outlined dense hide-details autofocus />
-            <v-btn class="ma-1" color="primary" small @click="cancelEditComment(COMMENT_KEY.TITLE)">
+            <v-text-field v-model="newComment.title" outlined dense hide-details />
+            <v-btn
+              class="ma-1"
+              color="primary"
+              small
+              @click="confirmEditComment(COMMENT_KEY.TITLE)"
+            >
               <v-icon>mdi-check</v-icon>
             </v-btn>
             <v-btn class="ma-1" color="primary" small @click="cancelEditComment(COMMENT_KEY.TITLE)">
@@ -43,8 +45,8 @@
             <v-icon>mdi-close</v-icon>
           </v-btn>
         </div>
-        <!-- subtitle -->
-        <div class="d-flex flex-row align-center text-body-2 pl-2">
+        <!-- Second Row -->
+        <div class="d-flex flex-row align-center text-body-2">
           <router-link :to="{ name: 'profile', params: { username: comment.author.username } }">
             {{ comment.author.displayName }}
           </router-link>
@@ -75,9 +77,9 @@
       <!-- Creation Content -->
       <v-expansion-panel>
         <v-expansion-panel-header>
-          <div class="d-flex align-center">
+          <div class="text-body-1 font-weight-bold d-flex align-center">
             創作說明
-            <v-btn class="ml-4" small icon @click.stop="editComment(COMMENT_KEY.CONTENT)">
+            <v-btn class="ml-2" small icon @click.stop="editComment(COMMENT_KEY.CONTENT)">
               <v-icon small>mdi-pencil</v-icon>
             </v-btn>
           </div>
@@ -91,7 +93,7 @@
                 class="ma-1"
                 color="primary"
                 small
-                @click="cancelEditComment(COMMENT_KEY.CONTENT)"
+                @click="confirmEditComment(COMMENT_KEY.CONTENT)"
               >
                 <v-icon>mdi-check</v-icon>
               </v-btn>
@@ -110,7 +112,9 @@
       <!-- Code -->
       <v-expansion-panel>
         <v-divider />
-        <v-expansion-panel-header>程式</v-expansion-panel-header>
+        <v-expansion-panel-header>
+          <div class="text-body-1 font-weight-bold">程式</div>
+        </v-expansion-panel-header>
         <v-expansion-panel-content>
           <CodeEditor v-model="comment.submission.code" readOnly />
         </v-expansion-panel-content>
@@ -118,7 +122,9 @@
       <!-- Result -->
       <v-expansion-panel>
         <v-divider />
-        <v-expansion-panel-header>執行結果</v-expansion-panel-header>
+        <v-expansion-panel-header>
+          <div class="text-body-1 font-weight-bold">執行結果</div>
+        </v-expansion-panel-header>
         <v-expansion-panel-content>
           <CommentResult :cid="comment.id" :result="comment.submission.result" />
         </v-expansion-panel-content>
@@ -161,10 +167,7 @@ export default {
     SUBMISSION_STATUS,
     SUBMISSION_COLOR,
     COMMENT_KEY,
-    newComment: {
-      [COMMENT_KEY.TITLE]: '',
-      [COMMENT_KEY.CONTENT]: '',
-    },
+    newComment: {},
     isEdit: {
       [COMMENT_KEY.TITLE]: false,
       [COMMENT_KEY.CONTENT]: false,
@@ -182,7 +185,13 @@ export default {
     cancelEditComment(key) {
       this.isEdit[key] = false
     },
-    submitEditComment() {},
+    confirmEditComment(key) {
+      this.updateComment()
+      this.cancelEditComment(key)
+    },
+    updateComment() {
+      this.$emit('updateComment', this.comment.id, { ...this.comment, ...this.newComment })
+    },
   },
 }
 </script>

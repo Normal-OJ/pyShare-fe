@@ -27,13 +27,19 @@
     </v-btn>
     <v-menu offset-y v-if="isLogin">
       <template v-slot:activator="{ on, attrs }">
-        <v-btn class="text-body-1 font-weight-bold" color="white" text v-bind="attrs" v-on="on">
+        <v-btn
+          class="text-body-1 font-weight-bold text-none"
+          color="white"
+          text
+          v-bind="attrs"
+          v-on="on"
+        >
           {{ username }}
         </v-btn>
       </template>
       <v-list>
         <v-list-item link @click="$emit('logout')">
-          <v-list-item-title>登出</v-list-item-title>
+          <v-list-item-title class="text-center">登出</v-list-item-title>
         </v-list-item>
       </v-list>
     </v-menu>

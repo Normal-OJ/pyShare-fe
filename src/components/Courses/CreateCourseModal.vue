@@ -19,7 +19,15 @@
       </v-toolbar>
 
       <v-card-text class="mt-8">
-        <v-text-field label="課程名稱" v-model="name" :rules="nameRules" outlined dense />
+        <v-text-field
+          label="課程名稱"
+          v-model="name"
+          :rules="nameRules"
+          outlined
+          dense
+          persistent-hint
+          hint="課程名稱僅能包含：A-Z、a-z、0-9、空白、底線、減號、點"
+        />
         <v-row>
           <v-col cols="8">
             <v-select label="學年度" v-model="year" :items="years" outlined dense />
@@ -51,8 +59,10 @@ export default {
   data: () => ({
     dialog: false,
     name: '',
-    // TODO: 課程名稱限制
-    nameRules: [val => !!val || '請輸入課程名稱'],
+    nameRules: [
+      val => !!val || '請輸入課程名稱',
+      val => RegExp(/[\w. _-]+$/).test(val) || '課程名稱包含非法字元',
+    ],
     year: null,
     semester: null,
     years: YEARS,
@@ -67,6 +77,7 @@ export default {
 
   methods: {
     submit() {
+      // TODO: do validation
       const { name, year, semester, teacher } = this
       this.$emit('submit', { name, year, semester, teacher })
       // TODO: getError and show feedback, conditionally close dialog

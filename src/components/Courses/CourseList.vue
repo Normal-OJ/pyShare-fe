@@ -1,37 +1,29 @@
 <template>
-  <v-simple-table>
-    <template v-slot:default>
-      <thead>
-        <tr>
-          <th v-for="{ label, key } in headers" :key="key" class="text-left">
-            {{ label }}
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="row in data" :key="row.name">
-          <td v-for="{ key } in headers" :key="key" class="text-left">
-            <router-link v-if="key === 'name'" :to="{ name: 'course', params: { name: row[key] } }">
-              {{ row[key] }}
-            </router-link>
-            <span v-else-if="key === 'semester'">
-              {{ row.year ? `${row.year}-${row.semester}` : '' }}
-            </span>
-            <router-link v-else :to="{ name: 'profile', params: { username: row[key].username } }">
-              {{ row[key].displayName }}
-            </router-link>
-          </td>
-        </tr>
-      </tbody>
+  <v-data-table
+    :headers="headers"
+    :items="data"
+    :items-per-page="Number(-1)"
+    hide-default-footer
+    :loading="loading"
+    class="table"
+    @click:row="handleRowClick"
+  >
+    <template v-slot:[`item.semester`]="{ item }">
+      {{ item.year ? `${item.year}-${item.semester}` : '' }}
     </template>
-  </v-simple-table>
+    <template v-slot:[`item.teacher`]="{ item }">
+      <router-link :to="{ name: 'profile', params: { username: item.teacher.username } }">
+        {{ item.teacher.displayName }}
+      </router-link>
+    </template>
+  </v-data-table>
 </template>
 
 <script>
 const headers = [
-  { label: '課程', key: 'name' },
-  { label: '學期', key: 'semester' },
-  { label: '教師', key: 'teacher' },
+  { text: '課程', value: 'name' },
+  { text: '學期', value: 'semester' },
+  { text: '教師', value: 'teacher' },
 ]
 
 export default {
@@ -42,10 +34,26 @@ export default {
       type: Array,
       required: true,
     },
+    loading: {
+      type: Boolean,
+      required: true,
+    },
   },
 
   data: () => ({
     headers,
   }),
+
+  methods: {
+    handleRowClick(value) {
+      this.$router.push({ name: 'course', params: { name: value.name } })
+    },
+  },
 }
 </script>
+
+<style scoped>
+.table >>> tbody tr :hover {
+  cursor: pointer;
+}
+</style>

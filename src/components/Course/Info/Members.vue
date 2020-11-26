@@ -14,6 +14,7 @@
       </v-col>
       <v-spacer />
       <AddStudentModal
+        v-permission="[TEACHER]"
         @submitAddMultipleStudents="submitAddMultipleStudents"
         @submitAddStudent="submitAddStudent"
       />
@@ -44,6 +45,9 @@
 
 <script>
 import AddStudentModal from './AddStudentModal'
+import { ROLE } from '@/constants/auth'
+
+const { TEACHER } = ROLE
 
 const headers = [
   { text: '使用者名稱', value: 'username' },
@@ -67,6 +71,7 @@ export default {
     headers,
     searchText: '',
     loading: false,
+    TEACHER,
   }),
 
   methods: {

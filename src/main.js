@@ -9,12 +9,14 @@ import { dayjsPlugin } from './lib/dayjsPlugin'
 import 'roboto-fontface/css/roboto/roboto-fontface.css'
 import '@mdi/font/css/materialdesignicons.css'
 import { apiSetup } from './api/api'
+import permission from './directive/permission'
 
 Vue.config.productionTip = false
 
 Vue.use(Fragment.Plugin)
 Vue.use(Vue2Editor)
 Vue.use(dayjsPlugin)
+Vue.directive('permission', permission)
 
 apiSetup()
 

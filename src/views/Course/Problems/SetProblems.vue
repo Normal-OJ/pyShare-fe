@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import Spinner from '@/components/Spinner'
+import Spinner from '@/components/UI/Spinner'
 import SetProblems from '@/components/Course/Problems/SetProblems'
 import { mapActions, mapState } from 'vuex'
 import { GET_PROBLEMS, GET_PROBLEM_INFO, GET_COURSE_TAGS } from '@/store/actions.type'

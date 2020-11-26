@@ -133,8 +133,8 @@
 </template>
 
 <script>
-import PreviewCSV from '@/components/PreviewCSV'
-import ConfirmModal from '@/components/ConfirmModal'
+import PreviewCSV from '@/components/UI/PreviewCSV'
+import ConfirmModal from '@/components/UI/ConfirmModal'
 
 const template =
   'username,displayName,password,email\n407123000S,王大明,gB7hj31p,bigming@ntnu.edu.tw\n409456000H,陳耳東,409456000H,earEast@ntu.edu.tw\nB123456789,（若是已註冊過的帳號,其他欄位可填可不填）'

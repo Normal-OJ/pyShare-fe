@@ -36,12 +36,9 @@
       :items-per-page="Number(-1)"
       hide-default-footer
       :loading="loading"
+      class="table"
+      @click:row="handleRowClick"
     >
-      <template v-slot:[`item.title`]="{ item }">
-        <router-link :to="{ name: 'courseProblem', params: { id: item.pid } }">
-          {{ item.title }}
-        </router-link>
-      </template>
       <template v-slot:[`item.tags`]="{ item }">
         <v-chip v-for="tag in item.tags" :key="tag" color="primary" small class="mx-1">
           {{ tag }}
@@ -106,5 +103,17 @@ export default {
       this.$emit('getProblemsByTags', paramsWithTags)
     },
   },
+
+  methods: {
+    handleRowClick(value) {
+      this.$router.push({ name: 'courseProblem', params: { id: value.pid } })
+    },
+  },
 }
 </script>
+
+<style scoped>
+.table >>> tbody tr :hover {
+  cursor: pointer;
+}
+</style>

@@ -25,13 +25,26 @@
     <v-btn class="text-body-1" icon>
       <v-icon color="white">mdi-bell</v-icon>
     </v-btn>
+    <v-menu offset-y v-if="isLogin">
+      <template v-slot:activator="{ on, attrs }">
+        <v-btn class="text-body-1 font-weight-bold" color="white" text v-bind="attrs" v-on="on">
+          {{ username }}
+        </v-btn>
+      </template>
+      <v-list>
+        <v-list-item link @click="$emit('logout')">
+          <v-list-item-title>登出</v-list-item-title>
+        </v-list-item>
+      </v-list>
+    </v-menu>
     <v-btn
+      v-else
       :to="isLogin ? { name: 'profile', params: { username } } : { name: 'login' }"
       class="text-body-1 font-weight-bold"
-      color="white"
+      dark
       text
     >
-      {{ isLogin ? username : '登入' }}
+      登入
     </v-btn>
   </v-app-bar>
 </template>

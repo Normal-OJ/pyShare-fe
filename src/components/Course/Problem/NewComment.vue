@@ -38,8 +38,8 @@
 </template>
 
 <script>
-import TextEditor from '@/components/TextEditor'
-import CodeEditor from '@/components/CodeEditor'
+import TextEditor from '@/components/UI/TextEditor'
+import CodeEditor from '@/components/UI/CodeEditor'
 
 export default {
   components: { TextEditor, CodeEditor },

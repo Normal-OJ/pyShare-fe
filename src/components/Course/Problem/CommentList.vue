@@ -86,7 +86,7 @@
                 <v-tooltip bottom>
                   <template v-slot:activator="{ on, attr }">
                     <div class="text-body-2" v-on="on" v-bind="attr">
-                      {{ `opened ${$timeToNow(created)}` }}
+                      {{ `發布於 ${$timeFromNow(created)}` }}
                     </div>
                   </template>
                   <span>{{ `發布於 ${$formattedTime(created)}` }}</span>
@@ -106,10 +106,10 @@
                 <v-tooltip left>
                   <template v-slot:activator="{ on, attr }">
                     <div class="text-body-2" v-on="on" v-bind="attr">
-                      {{ `updated ${$timeToNow(updated)}` }}
+                      {{ `更新於 ${$timeFromNow(updated)}` }}
                     </div>
                   </template>
-                  <span>{{ `最後更新於 ${$formattedTime(updated)}` }}</span>
+                  <span>{{ `更新於 ${$formattedTime(updated)}` }}</span>
                 </v-tooltip>
               </v-card-subtitle>
             </div>

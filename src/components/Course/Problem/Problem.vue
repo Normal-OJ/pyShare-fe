@@ -34,11 +34,11 @@
           color="primary"
         >
           {{ filename }}
-          <v-btn class="ml-1" icon small>
-            <v-icon color="primary" @click="setPreviewAttachment(filename)">mdi-eye</v-icon>
+          <v-btn class="ml-1" icon small @click="setPreviewAttachment(filename)">
+            <v-icon color="primary">mdi-eye</v-icon>
           </v-btn>
-          <v-btn icon small>
-            <v-icon color="primary" @click="downloadAttachment(filename)">mdi-download</v-icon>
+          <v-btn icon small @click="downloadAttachment(filename)">
+            <v-icon color="primary">mdi-download</v-icon>
           </v-btn>
         </v-chip>
       </v-col>

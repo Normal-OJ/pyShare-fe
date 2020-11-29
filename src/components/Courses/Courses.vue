@@ -22,7 +22,9 @@
 <script>
 import CourseList from '@/components/Courses/CourseList'
 import CreateCourseModal from '@/components/Courses/CreateCourseModal'
-import { TEACHER } from '@/constants/auth'
+import { ROLE } from '@/constants/auth'
+
+const { TEACHER } = ROLE
 
 export default {
   name: 'Courses',

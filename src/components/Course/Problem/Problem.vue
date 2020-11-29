@@ -21,9 +21,7 @@
       </v-col>
       <v-col cols="12" md="4">
         <div class="text-h6">分類</div>
-        <v-chip class="text-caption ma-1" v-for="tag in prob.tags" :key="tag" small>
-          {{ tag }}
-        </v-chip>
+        <ColorLabel v-for="tag in prob.tags" :key="tag" :tag="tag" small class="ma-1" />
         <div class="text-h6 mt-4">附件</div>
         <v-chip
           v-for="filename in prob.attachments"
@@ -55,6 +53,7 @@
 <script>
 import { Fragment } from 'vue-fragment'
 import PreviewAttachmentModal from './PreviewAttachmentModal'
+import ColorLabel from '@/components/UI/ColorLabel'
 
 export default {
   name: 'Problem',
@@ -66,7 +65,7 @@ export default {
     },
   },
 
-  components: { Fragment, PreviewAttachmentModal },
+  components: { Fragment, PreviewAttachmentModal, ColorLabel },
 
   data: () => ({
     isPreviewAttachment: false,

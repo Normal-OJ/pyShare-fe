@@ -36,13 +36,21 @@
       :items-per-page="Number(-1)"
       hide-default-footer
       :loading="loading"
-      class="table"
-      @click:row="handleRowClick"
     >
+      <template v-slot:[`item.title`]="{ item }">
+        <router-link :to="{ name: 'courseProblem', params: { id: item.pid } }">
+          {{ item.title }}
+        </router-link>
+      </template>
       <template v-slot:[`item.tags`]="{ item }">
-        <v-chip v-for="tag in item.tags" :key="tag" color="primary" small class="mx-1">
-          {{ tag }}
-        </v-chip>
+        <ColorLabel
+          v-for="tag in item.tags"
+          :key="tag"
+          :tag="tag"
+          small
+          class="ma-1"
+          @click.native="selectTag(tag)"
+        />
       </template>
       <template v-slot:[`item.creations`]="{ item }">
         {{ item.comments.length }}
@@ -63,6 +71,8 @@
 </template>
 
 <script>
+import ColorLabel from '@/components/UI/ColorLabel'
+
 const headers = [
   { text: '題號', value: 'pid' },
   { text: '標題', value: 'title', sortable: false },
@@ -73,6 +83,8 @@ const headers = [
 
 export default {
   name: 'Problems',
+
+  components: { ColorLabel },
 
   props: {
     problems: {
@@ -105,15 +117,9 @@ export default {
   },
 
   methods: {
-    handleRowClick(value) {
-      this.$router.push({ name: 'courseProblem', params: { id: value.pid } })
+    selectTag(tag) {
+      this.selectedTags = [...new Set([...this.selectedTags, tag])]
     },
   },
 }
 </script>
-
-<style scoped>
-.table >>> tbody tr :hover {
-  cursor: pointer;
-}
-</style>

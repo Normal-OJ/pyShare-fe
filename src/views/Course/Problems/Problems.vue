@@ -9,7 +9,7 @@ import { PROBLEMS } from '@/store/getters.type'
 import { GET_PROBLEMS, GET_COURSE_TAGS } from '@/store/actions.type'
 
 export default {
-  // prevent maximum call stack size exceeded
+  // TODO: prevent maximum call stack size exceeded
   // https://github.com/vuejs/vue/issues/9081
   // name: 'Problems',
 

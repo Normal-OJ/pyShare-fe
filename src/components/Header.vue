@@ -22,9 +22,20 @@
 
     <v-spacer />
 
-    <v-btn class="text-body-1" icon>
-      <v-icon color="white">mdi-bell</v-icon>
-    </v-btn>
+    <!-- Notification -->
+    <v-menu offset-y v-if="isLogin">
+      <template v-slot:activator="{ on, attrs }">
+        <v-btn class="text-body-1" icon v-bind="attrs" v-on="on">
+          <v-icon color="white">mdi-bell</v-icon>
+        </v-btn>
+      </template>
+      <v-card width="400" class="d-flex flex-column align-center py-5">
+        <div class="text-h5 font-weight-black mb-5">🚧 頁面建置中</div>
+        <v-img :src="require('@/assets/images/underConstruction.svg')" max-width="300" contain />
+      </v-card>
+    </v-menu>
+
+    <!-- Auth -->
     <v-menu offset-y v-if="isLogin">
       <template v-slot:activator="{ on, attrs }">
         <v-btn
@@ -34,7 +45,7 @@
           v-bind="attrs"
           v-on="on"
         >
-          {{ username }}
+          {{ displayName }}
         </v-btn>
       </template>
       <v-list>
@@ -80,6 +91,7 @@ export default {
     ...mapState({
       isLogin: state => state.auth.isAuthenticated,
       username: state => state.auth.username,
+      displayName: state => state.auth.displayName,
     }),
   },
 

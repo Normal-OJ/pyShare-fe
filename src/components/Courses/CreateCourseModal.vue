@@ -18,7 +18,7 @@
         </v-toolbar-items>
       </v-toolbar>
 
-      <v-card-text class="mt-8">
+      <v-card-text class="mt-8 text--primary">
         <v-text-field
           label="課程名稱"
           v-model="name"
@@ -37,6 +37,30 @@
           </v-col>
         </v-row>
         <v-text-field label="教師" :value="teacher" outlined dense readonly />
+
+        <div class="text-h6">課程狀態</div>
+        <v-row justify="space-between" no-gutters>
+          <v-card
+            v-for="{ status, icon, title, subtitle } in statusOptions"
+            :key="status"
+            width="30%"
+            class="pa-3"
+            hover
+            :ripple="false"
+            @click="checkedOption = status"
+            :style="{
+              border: checkedOption === status ? 'solid 3px var(--v-primary-base)' : null,
+            }"
+          >
+            <div class="d-flex flex-column align-center">
+              <v-icon size="54" :color="checkedOption === status ? 'primary' : null">
+                {{ icon }}
+              </v-icon>
+              <div class="text-h6">{{ title }}</div>
+              <div class="text-subtitle-1">{{ subtitle }}</div>
+            </div>
+          </v-card>
+        </v-row>
       </v-card-text>
 
       <v-divider />
@@ -67,6 +91,27 @@ export default {
     semester: null,
     years: YEARS,
     semesters: SEMESTERS,
+    checkedOption: 1,
+    statusOptions: [
+      {
+        status: 2,
+        icon: 'mdi-earth',
+        title: '開放課程',
+        subtitle: '任何使用者都可以造訪，並擁有在課程內創作的權限',
+      },
+      {
+        status: 1,
+        icon: 'mdi-eye',
+        title: '公開課程',
+        subtitle: '任何使用者都可以造訪，但僅供檢視，沒有創作權限',
+      },
+      {
+        status: 0,
+        icon: 'mdi-lock',
+        title: '不公開課程',
+        subtitle: '僅有被加入課程的學生才可造訪以及創作',
+      },
+    ],
   }),
 
   computed: {
@@ -78,8 +123,8 @@ export default {
   methods: {
     submit() {
       // TODO: do validation
-      const { name, year, semester, teacher } = this
-      this.$emit('submit', { name, year, semester, teacher })
+      const { name, year, semester, teacher, checkedOption } = this
+      this.$emit('submit', { name, year, semester, teacher, status: checkedOption })
       // TODO: getError and show feedback, conditionally close dialog
       this.dialog = false
     },
@@ -87,4 +132,8 @@ export default {
 }
 </script>
 
-<style></style>
+<style>
+.v-card--link {
+  background-color: white;
+}
+</style>

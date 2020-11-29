@@ -23,7 +23,7 @@
       </v-col>
       <v-spacer />
       <v-btn color="success" :to="{ query: { floor: 'new' } }">
-        <v-icon class="mr-1">mdi-playlist-plus</v-icon>
+        <v-icon class="mr-1">mdi-pencil-plus</v-icon>
         新增創作
       </v-btn>
     </div>

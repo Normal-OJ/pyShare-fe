@@ -25,14 +25,10 @@ const initialProb = {
   description: '',
   tags: [],
   status: 1,
-  author: {
-    username: '',
-    displayName: '',
-  },
   attachments: [],
   defaultCode: '',
   isTemplate: false,
-  allowMultipleComments: false,
+  allowMultipleComments: true,
 }
 
 export default {

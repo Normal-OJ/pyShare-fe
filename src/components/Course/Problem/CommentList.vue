@@ -47,7 +47,7 @@
         <v-card class="mb-4 comment" :elevation="hover ? 6 : 2" tile @click="navigate(floor)">
           <div class="d-flex flex-row align-center">
             <v-avatar class="ml-4" size="48" color="primary">
-              <span class="pb-1 white--text headline">{{ author.displayName.slice(0, 1) }}</span>
+              <span class="white--text headline">{{ author.displayName.slice(0, 1) }}</span>
             </v-avatar>
             <div class="d-flex flex-column" style="flex: 1">
               <!-- First Row -->

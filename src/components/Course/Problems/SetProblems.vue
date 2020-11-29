@@ -17,6 +17,13 @@
       outlined
     />
 
+    <v-checkbox
+      v-permission="[TEACHER]"
+      v-model="newProb.allowMultipleComments"
+      label="允許主題下可以發表多個創作"
+      hide-details
+    />
+
     <div class="text-body-1 mt-4">主題敘述</div>
     <TextEditor v-model="newProb.description" />
 
@@ -112,6 +119,11 @@ import PreviewNewProblem from '@/components/Course/Problems/PreviewNewProblem'
 import TextEditor from '@/components/UI/TextEditor'
 import CodeEditor from '@/components/UI/CodeEditor'
 import _ from 'lodash'
+import { mapGetters } from 'vuex'
+import { ROLE } from '@/store/getters.type'
+import { ROLE as _ROLE } from '@/constants/auth'
+
+const { TEACHER } = _ROLE
 
 export default {
   name: 'SetProblems',
@@ -135,6 +147,9 @@ export default {
 
   created() {
     this.newProb = _.cloneDeep(this.prob)
+    if (this.role <= this.TEACHER) {
+      this.newProb.allowMultipleComments = false
+    }
   },
 
   watch: {
@@ -146,6 +161,12 @@ export default {
     },
   },
 
+  computed: {
+    ...mapGetters({
+      role: ROLE,
+    }),
+  },
+
   data: () => ({
     status: [
       { text: '顯示', value: 1 },
@@ -155,6 +176,7 @@ export default {
     willAddAttachments: [],
     willRemoveAttachments: [],
     fileUploader: [],
+    TEACHER,
   }),
 
   methods: {

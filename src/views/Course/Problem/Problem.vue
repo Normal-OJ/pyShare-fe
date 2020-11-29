@@ -9,6 +9,7 @@
         <CommentList v-if="!floor" :comments="comments" />
         <NewComment
           v-else-if="String(floor) === 'new'"
+          :defaultCode="prob && prob.defaultCode"
           @submitTestSubmission="submitTestSubmission"
           @submitNewComment="submitNewComment"
         />
@@ -43,9 +44,6 @@ export default {
     ...mapGetters({
       comments: COMMENTS,
     }),
-    problem: () => {
-      return this.prob
-    },
     pid() {
       return Number(this.$route.params.id)
     },
@@ -64,12 +62,6 @@ export default {
 
   created() {
     this.getProblem(this.pid)
-  },
-
-  watch: {
-    comments() {
-      console.log('comments change', this.comments)
-    },
   },
 
   data: () => ({
@@ -121,9 +113,8 @@ export default {
     },
     async updateComment(cid, newComment) {
       try {
-        const { data } = await agent.Comment.update(cid, newComment)
+        await agent.Comment.update(cid, newComment)
         this.getComments(this.prob.comments)
-        console.log(data)
       } catch (error) {
         console.log('[views/Problem/updateComment] error', error)
       }

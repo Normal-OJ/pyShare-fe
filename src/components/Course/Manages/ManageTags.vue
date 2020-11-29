@@ -159,7 +159,6 @@ export default {
   methods: {
     submitPatchTags(option, tags) {
       const body = { ...initialPatchTagsBody, [option]: tags }
-      console.log('body', body)
       this.$emit('submitPatchTags', body)
     },
     submitNewTags(tags) {

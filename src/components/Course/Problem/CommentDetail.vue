@@ -1,8 +1,8 @@
 <template>
   <v-card class="pa-4 mt-4">
     <div class="d-flex flex-row align-center">
-      <v-avatar class="mr-2" size="48">
-        <img src="http://fakeimg.pl/48x48" />
+      <v-avatar class="mr-2" size="48" color="primary">
+        <span class="white--text headline">{{ comment.author.displayName.slice(0, 1) }}</span>
       </v-avatar>
       <div class="d-flex flex-column" style="flex: 1">
         <!-- First Row -->

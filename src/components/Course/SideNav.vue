@@ -10,7 +10,6 @@
         <v-avatar size="48" color="secondary" tile>
           <span class="white--text headline">{{ $route.params.name.slice(0, 1) }}</span>
         </v-avatar>
-        <!-- <v-img src="http://fakeimg.pl/100x100" /> -->
       </v-list-item-avatar>
       <v-list-item-content>
         <v-list-item-title>

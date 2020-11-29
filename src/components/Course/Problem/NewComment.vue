@@ -52,12 +52,25 @@ import CodeEditor from '@/components/UI/CodeEditor'
 export default {
   components: { TextEditor, CodeEditor },
 
+  props: {
+    defaultCode: {
+      type: String,
+      default: '',
+    },
+  },
+
   computed: {
     isDisableSubmitTestSubmission() {
       return !this.newComment.code
     },
     isDisableSubmitComment() {
       return !this.newComment.title
+    },
+  },
+
+  watch: {
+    defaultCode() {
+      this.newComment.code = this.defaultCode
     },
   },
 
@@ -75,9 +88,6 @@ export default {
     },
     submitNewComment() {
       this.$emit('submitNewComment', this.newComment)
-    },
-    print() {
-      console.log(this.newComment.code)
     },
   },
 }

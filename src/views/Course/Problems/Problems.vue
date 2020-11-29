@@ -1,5 +1,10 @@
 <template>
-  <Problems :problems="problems" :tags="tags" @getProblemsByTags="getProblemsByTags" />
+  <Problems
+    :problems="problems"
+    :tags="tags"
+    :loading="isWaiting"
+    @getProblemsByTags="getProblemsByTags"
+  />
 </template>
 
 <script>
@@ -9,7 +14,7 @@ import { PROBLEMS } from '@/store/getters.type'
 import { GET_PROBLEMS, GET_COURSE_TAGS } from '@/store/actions.type'
 
 export default {
-  // prevent maximum call stack size exceeded
+  // TODO: prevent maximum call stack size exceeded
   // https://github.com/vuejs/vue/issues/9081
   // name: 'Problems',
 
@@ -27,18 +32,16 @@ export default {
     },
   },
 
-  data: () => ({}),
+  data: () => ({
+    isWaiting: true,
+  }),
 
-  created() {
+  async created() {
     const paramsWithCourse = {
       course: this.courseName,
     }
-    this.getProblems(paramsWithCourse)
-
-    const getTagsInCourse = {
-      course: this.courseName,
-    }
-    this.getTags(getTagsInCourse)
+    await Promise.all([this.getProblems(paramsWithCourse), this.getTags(paramsWithCourse)])
+    this.isWaiting = false
   },
 
   methods: {

@@ -6,7 +6,7 @@
         <span class="pb-1 white--text headline">{{ prob.author.displayName.slice(0, 1) }}</span>
       </v-avatar>
       <div class="d-flex flex-column">
-        <router-link :to="{ name: 'about' }">
+        <router-link :to="{ name: 'profile', params: { username: prob.author.username } }">
           {{ prob.author.displayName }}
         </router-link>
         <div class="text-body-2">
@@ -16,14 +16,13 @@
     </div>
     <v-row class="mt-6">
       <v-col cols="12" md="8">
-        <div class="text-body-1" v-html="prob.description" />
+        <div class="text-h6">主題說明</div>
+        <div class="text-body-1 ma-1" v-html="prob.description" />
       </v-col>
       <v-col cols="12" md="4">
-        <div class="text-body-1">分類</div>
-        <v-chip class="text-caption mr-1" v-for="tag in prob.tags" :key="tag" small>
-          {{ tag }}
-        </v-chip>
-        <div class="text-body-1 mt-4">附件</div>
+        <div class="text-h6">分類</div>
+        <ColorLabel v-for="tag in prob.tags" :key="tag" :tag="tag" small class="ma-1" />
+        <div class="text-h6 mt-4">附件</div>
         <v-chip
           v-for="filename in prob.attachments"
           :key="filename"
@@ -33,11 +32,11 @@
           color="primary"
         >
           {{ filename }}
-          <v-btn class="ml-1" icon small>
-            <v-icon color="primary" @click="setPreviewAttachment(filename)">mdi-eye</v-icon>
+          <v-btn class="ml-1" icon small @click="setPreviewAttachment(filename)">
+            <v-icon color="primary">mdi-eye</v-icon>
           </v-btn>
-          <v-btn icon small>
-            <v-icon color="primary" @click="downloadAttachment(filename)">mdi-download</v-icon>
+          <v-btn icon small @click="downloadAttachment(filename)">
+            <v-icon color="primary">mdi-download</v-icon>
           </v-btn>
         </v-chip>
       </v-col>
@@ -54,6 +53,7 @@
 <script>
 import { Fragment } from 'vue-fragment'
 import PreviewAttachmentModal from './PreviewAttachmentModal'
+import ColorLabel from '@/components/UI/ColorLabel'
 
 export default {
   name: 'Problem',
@@ -65,7 +65,7 @@ export default {
     },
   },
 
-  components: { Fragment, PreviewAttachmentModal },
+  components: { Fragment, PreviewAttachmentModal, ColorLabel },
 
   data: () => ({
     isPreviewAttachment: false,

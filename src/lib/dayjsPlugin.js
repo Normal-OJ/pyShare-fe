@@ -1,10 +1,13 @@
 import dayjs from 'dayjs'
+import 'dayjs/locale/zh-tw'
+
+dayjs.locale('zh-tw')
 
 var relativeTime = require('dayjs/plugin/relativeTime')
 dayjs.extend(relativeTime)
 
-const timeToNow = timestamp => {
-  return dayjs(timestamp * 1000).toNow()
+const timeFromNow = timestamp => {
+  return dayjs(timestamp * 1000).fromNow()
 }
 
 const formattedTime = timestamp => {
@@ -14,7 +17,7 @@ const formattedTime = timestamp => {
 export const dayjsPlugin = {
   install(Vue) {
     Vue.prototype.$dayjs = dayjs
-    Vue.prototype.$timeToNow = timeToNow
+    Vue.prototype.$timeFromNow = timeFromNow
     Vue.prototype.$formattedTime = formattedTime
   },
 }

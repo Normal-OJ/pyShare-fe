@@ -12,7 +12,12 @@
           @submitTestSubmission="submitTestSubmission"
           @submitNewComment="submitNewComment"
         />
-        <CommentDetail v-else :comment="selectedComment" />
+        <CommentDetail
+          v-else-if="selectedComment"
+          :comment="selectedComment"
+          @updateComment="updateComment"
+          @fetchSubmission="fetchSubmission"
+        />
       </div>
       <div class="spacer" />
     </div>
@@ -25,7 +30,9 @@ import CommentList from '@/components/Course/Problem/CommentList'
 import CommentDetail from '@/components/Course/Problem/CommentDetail'
 import NewComment from '@/components/Course/Problem/NewComment'
 import agent from '@/api/agent'
-import { comments } from './fake'
+import { mapActions, mapGetters } from 'vuex'
+import { GET_COMMENTS } from '@/store/actions.type'
+import { COMMENTS } from '@/store/getters.type'
 
 export default {
   name: 'CourseProblem',
@@ -33,6 +40,9 @@ export default {
   components: { Problem, CommentList, CommentDetail, NewComment },
 
   computed: {
+    ...mapGetters({
+      comments: COMMENTS,
+    }),
     problem: () => {
       return this.prob
     },
@@ -56,25 +66,37 @@ export default {
     this.getProblem(this.pid)
   },
 
+  watch: {
+    comments() {
+      console.log('comments change', this.comments)
+    },
+  },
+
   data: () => ({
-    comments,
     prob: null,
   }),
 
   methods: {
+    ...mapActions({
+      getComments: GET_COMMENTS,
+    }),
     async getProblem(pid) {
       try {
         const { data } = await agent.Problem.get(pid)
         this.prob = data.data
+        await this.getComments(data.data.comments)
       } catch (error) {
         console.log('[views/Problem/getProblem] error', error)
       }
+    },
+    fetchSubmission() {
+      this.getComments(this.prob.comments)
     },
     async submitTestSubmission(code) {
       const body = { problemId: this.pid, code }
       try {
         const { data } = await agent.Submission.createTest(body)
-        alert(data.data)
+        console.log('[test submission]', data)
       } catch (error) {
         console.log('[views/Problem/submitTestSubmission] error', error)
       }
@@ -87,9 +109,23 @@ export default {
       }
       try {
         const { data } = await agent.Comment.create(body)
-        alert(data.data)
+        await this.getProblem(this.pid)
+        let that = this
+        this.$nextTick(() => {
+          const { floor } = that.comments.find(comment => comment.id === data.data.id)
+          that.$router.push({ query: { floor } })
+        })
       } catch (error) {
         console.log('[views/Problem/submitNewComment] error', error)
+      }
+    },
+    async updateComment(cid, newComment) {
+      try {
+        const { data } = await agent.Comment.update(cid, newComment)
+        this.getComments(this.prob.comments)
+        console.log(data)
+      } catch (error) {
+        console.log('[views/Problem/updateComment] error', error)
       }
     },
   },

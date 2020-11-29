@@ -3,7 +3,12 @@
     <div class="text-h3">
       歡迎回來，請先登入
     </div>
-    <LoginForm @submit="handleSubmit" />
+    <LoginForm
+      :isWaiting="isWaiting"
+      :errorMsg="errorMsg"
+      @submit="handleSubmit"
+      @clear-error-msg="() => (errorMsg = '')"
+    />
     <!-- <NoAccount color="primary" /> -->
   </v-container>
 </template>
@@ -21,9 +26,15 @@ export default {
   // eslint-disable-next-line vue/no-unused-components
   components: { NoAccount, LoginForm },
 
+  data: () => ({
+    isWaiting: false,
+    errorMsg: '',
+  }),
+
   methods: {
     async handleSubmit(body) {
       try {
+        this.isWaiting = true
         await agent.Auth.login(body)
         // TODO: give feedback for successfully login
         this.setAuth()
@@ -34,8 +45,15 @@ export default {
           this.$router.push({ path: redirect })
         }
       } catch (error) {
-        // setError for login form
+        switch (error.message) {
+          case 'Login Failed':
+            this.errorMsg = '登入失敗：使用者名稱或密碼有誤'
+            break
+          default:
+            this.errorMsg = '登入失敗：系統異常，請洽管理員'
+        }
       }
+      this.isWaiting = false
     },
     ...mapMutations({
       setAuth: SET_AUTH,

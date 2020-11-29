@@ -23,10 +23,11 @@
 
     <v-list dense :nav="!isMinify">
       <v-list-item
-        v-for="{ label, icon, routeName } in items"
+        v-for="{ label, icon, routeName, permission } in items"
         :key="label"
         :to="{ name: routeName }"
         color="primary"
+        v-permission="permission"
       >
         <v-list-item-icon>
           <v-icon>{{ icon }}</v-icon>
@@ -59,21 +60,28 @@
 </template>
 
 <script>
+import { ROLE } from '@/constants/auth'
+
+const { TEACHER, STUDENT } = ROLE
+
 const SIDE_NAVS = [
   {
     label: '主題列表',
     icon: 'mdi-view-list',
     routeName: 'courseProblems',
+    permission: [TEACHER, STUDENT],
   },
   {
     label: '管理',
     icon: 'mdi-settings',
     routeName: 'courseManages',
+    permission: [TEACHER],
   },
   {
     label: '總覽',
     icon: 'mdi-view-compact',
     routeName: 'courseInfo',
+    permission: [TEACHER, STUDENT],
   },
 ]
 

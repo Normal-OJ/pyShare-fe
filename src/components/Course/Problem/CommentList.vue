@@ -23,7 +23,7 @@
       </v-col>
       <v-spacer />
       <v-btn color="success" :to="{ query: { floor: 'new' } }">
-        <v-icon class="mr-1">mdi-playlist-plus</v-icon>
+        <v-icon class="mr-1">mdi-pencil-plus</v-icon>
         新增創作
       </v-btn>
     </div>
@@ -86,7 +86,7 @@
                 <v-tooltip bottom>
                   <template v-slot:activator="{ on, attr }">
                     <div class="text-body-2" v-on="on" v-bind="attr">
-                      {{ `opened ${$timeToNow(created)}` }}
+                      {{ `發布於 ${$timeFromNow(created)}` }}
                     </div>
                   </template>
                   <span>{{ `發布於 ${$formattedTime(created)}` }}</span>
@@ -106,10 +106,10 @@
                 <v-tooltip left>
                   <template v-slot:activator="{ on, attr }">
                     <div class="text-body-2" v-on="on" v-bind="attr">
-                      {{ `updated ${$timeToNow(updated)}` }}
+                      {{ `更新於 ${$timeFromNow(updated)}` }}
                     </div>
                   </template>
-                  <span>{{ `最後更新於 ${$formattedTime(updated)}` }}</span>
+                  <span>{{ `更新於 ${$formattedTime(updated)}` }}</span>
                 </v-tooltip>
               </v-card-subtitle>
             </div>

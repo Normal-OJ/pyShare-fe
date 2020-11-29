@@ -1,5 +1,9 @@
 <template>
-  <Courses :courses="courses" @submitCreateCourse="submitCreateCourse" />
+  <Courses
+    :courses="courses"
+    :isWaitingCourseList="isWaitingCourseList"
+    @submitCreateCourse="submitCreateCourse"
+  />
 </template>
 
 <script>
@@ -17,20 +21,26 @@ export default {
     }),
   },
 
-  data: () => ({}),
+  data: () => ({
+    isWaitingCourseList: false,
+  }),
 
   created() {
-    this.getCourse()
+    this.getCourseList()
   },
 
   methods: {
+    async getCourseList() {
+      this.isWaitingCourseList = true
+      await this.getCourse()
+      this.isWaitingCourseList = false
+    },
     async submitCreateCourse(body) {
       try {
-        const result = await agent.Course.create(body)
-        console.log(result)
+        await agent.Course.create(body)
         this.getCourse()
-        // TODO: give feedback for successfully create
       } catch (error) {
+        console.log('[views/Courses/submitCreateCourse] error', error)
         // TODO: setError
       }
     },

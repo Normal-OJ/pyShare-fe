@@ -4,7 +4,7 @@ import Home from '@/views/Home/Home'
 import store from '@/store'
 
 Vue.use(VueRouter)
-
+// TODO: block users that no permission from the specific route
 const routes = [
   {
     path: '/',
@@ -84,6 +84,7 @@ const routes = [
   {
     path: '/profile/:username',
     name: 'profile',
+    component: () => import('@/views/Profile/Profile'),
   },
   {
     path: '/about',

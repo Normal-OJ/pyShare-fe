@@ -9,6 +9,7 @@
         style="width: 320px"
         outlined
         @keyup.enter="handleSubmit"
+        @input="$emit('clear-error-msg')"
       />
 
       <v-text-field
@@ -22,6 +23,9 @@
         :append-icon="isShowPassword ? 'mdi-eye-off' : 'mdi-eye'"
         @click:append="isShowPassword = !isShowPassword"
         @keyup.enter="handleSubmit"
+        :error="!!errorMsg"
+        :error-messages="errorMsg"
+        @input="$emit('clear-error-msg')"
       />
     </v-form>
 
@@ -30,6 +34,7 @@
       width="140"
       class="my-7"
       :disabled="isInputInvalid"
+      :loading="isWaiting"
       @click="handleSubmit"
     >
       登入
@@ -40,6 +45,17 @@
 <script>
 export default {
   name: 'LoginForm',
+
+  props: {
+    isWaiting: {
+      type: Boolean,
+      required: true,
+    },
+    errorMsg: {
+      type: String,
+      required: true,
+    },
+  },
 
   data: () => ({
     username: '',

@@ -1,28 +1,43 @@
 <template>
-  <Fragment>
-    <div class="mt-4 d-flex flex-row align-center">
+  <v-card class="pa-4 mt-4">
+    <div class="d-flex flex-row align-center">
       <v-avatar class="mr-2" size="48">
         <img src="http://fakeimg.pl/48x48" />
       </v-avatar>
       <div class="d-flex flex-column" style="flex: 1">
-        <!-- title -->
-        <div class="d-flex flex-row text-body-1 align-center">
-          <v-btn
-            v-if="!isEdit[COMMENT_KEY.TITLE]"
-            class="text-body-1 px-2"
-            text
-            :ripple="false"
-            @click="editComment(COMMENT_KEY.TITLE)"
-          >
-            {{ comment.title }}
-          </v-btn>
-          <div v-else class="d-flex">
-            <v-text-field v-model="newComment.title" outlined dense hide-details autofocus />
-            <v-btn class="ma-1" color="primary" small @click="cancelEditComment(COMMENT_KEY.TITLE)">
-              <v-icon>mdi-check</v-icon>
+        <!-- First Row -->
+        <div class="d-flex flex-row align-center">
+          <div v-if="!isEdit[COMMENT_KEY.TITLE]" class="d-flex align-center">
+            <div class="text-body-1">{{ comment && comment.title }}</div>
+            <v-btn
+              v-if="$isSelf(comment.author.username)"
+              class="ml-2"
+              small
+              icon
+              @click.stop="editComment(COMMENT_KEY.TITLE)"
+            >
+              <v-icon small>mdi-pencil</v-icon>
             </v-btn>
-            <v-btn class="ma-1" color="primary" small @click="cancelEditComment(COMMENT_KEY.TITLE)">
-              <v-icon>mdi-close</v-icon>
+          </div>
+          <div v-else class="d-flex align-center">
+            <v-text-field v-model="newComment.title" outlined dense hide-details />
+            <v-btn
+              class="mx-2"
+              color="primary"
+              tile
+              small
+              @click="confirmEditComment(COMMENT_KEY.TITLE)"
+            >
+              儲存
+            </v-btn>
+            <v-btn
+              color="primary"
+              outlined
+              tile
+              small
+              @click="cancelEditComment(COMMENT_KEY.TITLE)"
+            >
+              取消
             </v-btn>
           </div>
           <v-spacer />
@@ -43,8 +58,8 @@
             <v-icon>mdi-close</v-icon>
           </v-btn>
         </div>
-        <!-- subtitle -->
-        <div class="d-flex flex-row align-center text-body-2 pl-2">
+        <!-- Second Row -->
+        <div class="d-flex flex-row align-center text-body-2">
           <router-link :to="{ name: 'profile', params: { username: comment.author.username } }">
             {{ comment.author.displayName }}
           </router-link>
@@ -52,7 +67,7 @@
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attr }">
               <div class="text-body-2" v-on="on" v-bind="attr">
-                {{ `opened ${$timeToNow(comment.created)}` }}
+                {{ `發布於 ${$timeFromNow(comment.created)}` }}
               </div>
             </template>
             <span>{{ `發布於 ${$formattedTime(comment.created)}` }}</span>
@@ -71,66 +86,65 @@
         </div>
       </div>
     </div>
-    <v-expansion-panels class="mt-6" accordion multiple :value="[0, 1, 2]">
+    <div class="mt-4">
       <!-- Creation Content -->
-      <v-expansion-panel>
-        <v-expansion-panel-header>
-          <div class="d-flex align-center">
-            創作說明
-            <v-btn class="ml-4" small icon @click.stop="editComment(COMMENT_KEY.CONTENT)">
-              <v-icon small>mdi-pencil</v-icon>
-            </v-btn>
-          </div>
-        </v-expansion-panel-header>
-        <v-expansion-panel-content>
-          <div v-if="!isEdit[COMMENT_KEY.CONTENT]" v-html="comment.content" />
-          <div v-else>
-            <TextEditor v-model="newComment.content" />
-            <div class="d-flex">
-              <v-btn
-                class="ma-1"
-                color="primary"
-                small
-                @click="cancelEditComment(COMMENT_KEY.CONTENT)"
-              >
-                <v-icon>mdi-check</v-icon>
-              </v-btn>
-              <v-btn
-                class="ma-1"
-                color="primary"
-                small
-                @click="cancelEditComment(COMMENT_KEY.CONTENT)"
-              >
-                <v-icon>mdi-close</v-icon>
-              </v-btn>
-            </div>
-          </div>
-        </v-expansion-panel-content>
-      </v-expansion-panel>
-      <!-- Code -->
-      <v-expansion-panel>
-        <v-divider />
-        <v-expansion-panel-header>程式</v-expansion-panel-header>
-        <v-expansion-panel-content>
-          <CodeEditor v-model="comment.submission.code" readOnly />
-        </v-expansion-panel-content>
-      </v-expansion-panel>
-      <!-- Result -->
-      <v-expansion-panel>
-        <v-divider />
-        <v-expansion-panel-header>執行結果</v-expansion-panel-header>
-        <v-expansion-panel-content>
-          <CommentResult :cid="comment.id" :result="comment.submission.result" />
-        </v-expansion-panel-content>
-      </v-expansion-panel>
-    </v-expansion-panels>
-  </Fragment>
+      <div class="text-body-1 font-weight-bold d-flex align-center my-4">
+        創作說明
+        <v-btn
+          v-if="$isSelf(comment.author.username)"
+          class="ml-2"
+          small
+          icon
+          @click.stop="editComment(COMMENT_KEY.CONTENT)"
+        >
+          <v-icon small>mdi-pencil</v-icon>
+        </v-btn>
+      </div>
+      <div v-if="!isEdit[COMMENT_KEY.CONTENT]" v-html="comment.content" />
+      <div v-else>
+        <TextEditor v-model="newComment.content" />
+        <div class="d-flex mt-1">
+          <v-btn
+            class="mr-2"
+            color="primary"
+            small
+            tile
+            @click="confirmEditComment(COMMENT_KEY.CONTENT)"
+          >
+            儲存
+            <!-- <v-icon>mdi-check</v-icon> -->
+          </v-btn>
+          <v-btn
+            color="primary"
+            outlined
+            tile
+            small
+            @click="cancelEditComment(COMMENT_KEY.CONTENT)"
+          >
+            取消
+            <!-- <v-icon>mdi-close</v-icon> -->
+          </v-btn>
+        </div>
+      </div>
+      <!-- Creation Code -->
+      <div class="text-body-1 font-weight-bold my-4">程式</div>
+      <CodeEditor v-model="comment.submission.code" readOnly />
+      <!-- Creation Result -->
+      <div class="text-body-1 font-weight-bold my-4">執行結果</div>
+      <Spinner v-if="isSubmittionPending" />
+      <CommentResult
+        v-else
+        :sid="comment.submissions[comment.submissions.length - 1]"
+        :result="comment.submission"
+      />
+    </div>
+  </v-card>
 </template>
 
 <script>
-import { Fragment } from 'vue-fragment'
-import TextEditor from '@/components/TextEditor'
-import CodeEditor from '@/components/CodeEditor'
+import TextEditor from '@/components/UI/TextEditor'
+import CodeEditor from '@/components/UI/CodeEditor'
+import Spinner from '@/components/UI/Spinner'
 import { SUBMISSION_STATUS, SUBMISSION_COLOR } from '@/constants/submission'
 import CommentResult from './CommentResult'
 
@@ -142,7 +156,7 @@ const COMMENT_KEY = {
 export default {
   name: 'Comment',
 
-  components: { Fragment, TextEditor, CodeEditor, CommentResult },
+  components: { TextEditor, CodeEditor, Spinner, CommentResult },
 
   props: {
     comment: {
@@ -155,16 +169,34 @@ export default {
     submissionStatusOptions() {
       return Object.keys(SUBMISSION_STATUS)
     },
+    isSubmittionPending() {
+      if (!this.comment || !this.comment.submission) return false
+      return !Object.keys(this.comment.submission).some(key => key === 'stdout')
+    },
+  },
+
+  created() {
+    this.pollingSubmittion = setInterval(
+      pending => {
+        if (pending) {
+          this.$emit('fetchSubmission')
+        }
+      },
+      3000,
+      this.isSubmittionPending,
+    )
+  },
+
+  beforeDestroy() {
+    clearInterval(this.pollingSubmittion)
   },
 
   data: () => ({
+    pollingSubmittion: null,
     SUBMISSION_STATUS,
     SUBMISSION_COLOR,
     COMMENT_KEY,
-    newComment: {
-      [COMMENT_KEY.TITLE]: '',
-      [COMMENT_KEY.CONTENT]: '',
-    },
+    newComment: {},
     isEdit: {
       [COMMENT_KEY.TITLE]: false,
       [COMMENT_KEY.CONTENT]: false,
@@ -182,7 +214,13 @@ export default {
     cancelEditComment(key) {
       this.isEdit[key] = false
     },
-    submitEditComment() {},
+    confirmEditComment(key) {
+      this.updateComment()
+      this.cancelEditComment(key)
+    },
+    updateComment() {
+      this.$emit('updateComment', this.comment.id, { ...this.comment, ...this.newComment })
+    },
   },
 }
 </script>

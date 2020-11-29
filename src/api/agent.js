@@ -3,6 +3,7 @@ import Vue from 'vue'
 const Auth = {
   login: body => Vue.axios.post('/auth/session', body),
   logout: () => Vue.axios.get('/auth/session'),
+  batchSignup: body => Vue.axios.post('/auth/batch-signup', body),
 }
 
 const Course = {
@@ -30,7 +31,9 @@ const Problem = {
 }
 
 const Comment = {
+  get: cid => Vue.axios.get(`/comment/${cid}`),
   create: body => Vue.axios.post('/comment', body),
+  update: (cid, body) => Vue.axios.put(`/comment/${cid}`, body),
   createSubmission: (cid, body) => Vue.axios.post(`/comment/${cid}/submission`, body),
 }
 

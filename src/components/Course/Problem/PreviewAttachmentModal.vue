@@ -23,7 +23,7 @@
 
 <script>
 import agent from '@/api/agent'
-import Spinner from '@/components/Spinner'
+import Spinner from '@/components/UI/Spinner'
 
 export default {
   props: {

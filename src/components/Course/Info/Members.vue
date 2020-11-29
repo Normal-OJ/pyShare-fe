@@ -13,7 +13,11 @@
         />
       </v-col>
       <v-spacer />
-      <AddStudentModal />
+      <AddStudentModal
+        v-permission="[TEACHER]"
+        @submitAddMultipleStudents="submitAddMultipleStudents"
+        @submitAddStudent="submitAddStudent"
+      />
     </div>
 
     <v-data-table
@@ -41,6 +45,9 @@
 
 <script>
 import AddStudentModal from './AddStudentModal'
+import { ROLE } from '@/constants/auth'
+
+const { TEACHER } = ROLE
 
 const headers = [
   { text: '使用者名稱', value: 'username' },
@@ -64,12 +71,19 @@ export default {
     headers,
     searchText: '',
     loading: false,
+    TEACHER,
   }),
 
   methods: {
     handleRowClick(value) {
       const route = this.$router.resolve({ name: 'profile', params: { username: value.username } })
       window.open(route.href, '_blank')
+    },
+    submitAddMultipleStudents(file) {
+      this.$emit('submitAddMultipleStudents', file)
+    },
+    submitAddStudent(csvString) {
+      this.$emit('submitAddStudent', csvString)
     },
   },
 }

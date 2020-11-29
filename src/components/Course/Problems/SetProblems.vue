@@ -1,7 +1,7 @@
 <template>
   <v-container fluid class="pb-16">
     <v-row class="mb-4">
-      <div class="text-h5">{{ isEdit ? '修改主題' : '新增主題' }}</div>
+      <div class="text-h6">{{ isEdit ? '修改主題' : '新增主題' }}</div>
       <v-spacer />
       <PreviewNewProblem :prob="newProb" />
     </v-row>
@@ -109,8 +109,8 @@
 
 <script>
 import PreviewNewProblem from '@/components/Course/Problems/PreviewNewProblem'
-import TextEditor from '@/components/TextEditor'
-import CodeEditor from '@/components/CodeEditor'
+import TextEditor from '@/components/UI/TextEditor'
+import CodeEditor from '@/components/UI/CodeEditor'
 import _ from 'lodash'
 
 export default {

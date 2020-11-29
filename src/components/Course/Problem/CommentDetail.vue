@@ -8,8 +8,14 @@
         <!-- First Row -->
         <div class="d-flex flex-row align-center">
           <div v-if="!isEdit[COMMENT_KEY.TITLE]" class="d-flex align-center">
-            <div class="text-body-1">{{ comment.title }}</div>
-            <v-btn class="ml-2" small icon @click.stop="editComment(COMMENT_KEY.TITLE)">
+            <div class="text-body-1">{{ comment && comment.title }}</div>
+            <v-btn
+              v-if="$isSelf(comment.author.username)"
+              class="ml-2"
+              small
+              icon
+              @click.stop="editComment(COMMENT_KEY.TITLE)"
+            >
               <v-icon small>mdi-pencil</v-icon>
             </v-btn>
           </div>
@@ -84,7 +90,13 @@
       <!-- Creation Content -->
       <div class="text-body-1 font-weight-bold d-flex align-center my-4">
         創作說明
-        <v-btn class="ml-2" small icon @click.stop="editComment(COMMENT_KEY.CONTENT)">
+        <v-btn
+          v-if="$isSelf(comment.author.username)"
+          class="ml-2"
+          small
+          icon
+          @click.stop="editComment(COMMENT_KEY.CONTENT)"
+        >
           <v-icon small>mdi-pencil</v-icon>
         </v-btn>
       </div>
@@ -119,7 +131,12 @@
       <CodeEditor v-model="comment.submission.code" readOnly />
       <!-- Creation Result -->
       <div class="text-body-1 font-weight-bold my-4">執行結果</div>
-      <CommentResult :cid="comment.id" :result="comment.submission.result" />
+      <Spinner v-if="isSubmittionPending" />
+      <CommentResult
+        v-else
+        :sid="comment.submissions[comment.submissions.length - 1]"
+        :result="comment.submission"
+      />
     </div>
   </v-card>
 </template>
@@ -127,6 +144,7 @@
 <script>
 import TextEditor from '@/components/UI/TextEditor'
 import CodeEditor from '@/components/UI/CodeEditor'
+import Spinner from '@/components/UI/Spinner'
 import { SUBMISSION_STATUS, SUBMISSION_COLOR } from '@/constants/submission'
 import CommentResult from './CommentResult'
 
@@ -138,7 +156,7 @@ const COMMENT_KEY = {
 export default {
   name: 'Comment',
 
-  components: { TextEditor, CodeEditor, CommentResult },
+  components: { TextEditor, CodeEditor, Spinner, CommentResult },
 
   props: {
     comment: {
@@ -151,9 +169,30 @@ export default {
     submissionStatusOptions() {
       return Object.keys(SUBMISSION_STATUS)
     },
+    isSubmittionPending() {
+      if (!this.comment || !this.comment.submission) return false
+      return !Object.keys(this.comment.submission).some(key => key === 'stdout')
+    },
+  },
+
+  created() {
+    this.pollingSubmittion = setInterval(
+      pending => {
+        if (pending) {
+          this.$emit('fetchSubmission')
+        }
+      },
+      3000,
+      this.isSubmittionPending,
+    )
+  },
+
+  beforeDestroy() {
+    clearInterval(this.pollingSubmittion)
   },
 
   data: () => ({
+    pollingSubmittion: null,
     SUBMISSION_STATUS,
     SUBMISSION_COLOR,
     COMMENT_KEY,

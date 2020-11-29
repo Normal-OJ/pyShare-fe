@@ -9,6 +9,7 @@
 
     <v-card>
       <v-toolbar dark color="primary" dense>
+        <v-icon class="mr-1">mdi-tag-plus</v-icon>
         <v-toolbar-title>新增分類</v-toolbar-title>
         <v-spacer />
         <v-toolbar-items>

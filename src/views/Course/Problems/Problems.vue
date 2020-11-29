@@ -1,5 +1,10 @@
 <template>
-  <Problems :problems="problems" :tags="tags" @getProblemsByTags="getProblemsByTags" />
+  <Problems
+    :problems="problems"
+    :tags="tags"
+    :loading="isWaiting"
+    @getProblemsByTags="getProblemsByTags"
+  />
 </template>
 
 <script>
@@ -27,18 +32,16 @@ export default {
     },
   },
 
-  data: () => ({}),
+  data: () => ({
+    isWaiting: true,
+  }),
 
-  created() {
+  async created() {
     const paramsWithCourse = {
       course: this.courseName,
     }
-    this.getProblems(paramsWithCourse)
-
-    const getTagsInCourse = {
-      course: this.courseName,
-    }
-    this.getTags(getTagsInCourse)
+    await Promise.all([this.getProblems(paramsWithCourse), this.getTags(paramsWithCourse)])
+    this.isWaiting = false
   },
 
   methods: {

@@ -1,7 +1,7 @@
 import { LOGOUT } from './actions.type'
 import { SET_AUTH } from './mutations.type'
 import { getJwt } from '@/lib/jwt'
-import { ROLE } from './getters.type'
+import { ROLE, USERNAME } from './getters.type'
 
 const initialState = {
   // TODO: 日後在 router 設定先驗證 jwt 後，每次重開應都會 SET_AUTH
@@ -18,6 +18,9 @@ const state = { ...initialState }
 const getters = {
   [ROLE](state) {
     return state.role
+  },
+  [USERNAME](state) {
+    return state.username
   },
 }
 

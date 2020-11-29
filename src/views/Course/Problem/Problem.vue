@@ -12,7 +12,12 @@
           @submitTestSubmission="submitTestSubmission"
           @submitNewComment="submitNewComment"
         />
-        <CommentDetail v-else :comment="selectedComment" @updateComment="updateComment" />
+        <CommentDetail
+          v-else-if="selectedComment"
+          :comment="selectedComment"
+          @updateComment="updateComment"
+          @fetchSubmission="fetchSubmission"
+        />
       </div>
       <div class="spacer" />
     </div>
@@ -61,6 +66,12 @@ export default {
     this.getProblem(this.pid)
   },
 
+  watch: {
+    comments() {
+      console.log('comments change', this.comments)
+    },
+  },
+
   data: () => ({
     prob: null,
   }),
@@ -73,10 +84,13 @@ export default {
       try {
         const { data } = await agent.Problem.get(pid)
         this.prob = data.data
-        this.getComments(data.data.comments)
+        await this.getComments(data.data.comments)
       } catch (error) {
         console.log('[views/Problem/getProblem] error', error)
       }
+    },
+    fetchSubmission() {
+      this.getComments(this.prob.comments)
     },
     async submitTestSubmission(code) {
       const body = { problemId: this.pid, code }
@@ -95,10 +109,12 @@ export default {
       }
       try {
         const { data } = await agent.Comment.create(body)
-        console.log('[submit new comment]', data)
         await this.getProblem(this.pid)
-        const { floor } = this.prob.comments.find(comment => comment.id === data.data.id)
-        this.$router.push({ query: { floor } })
+        let that = this
+        this.$nextTick(() => {
+          const { floor } = that.comments.find(comment => comment.id === data.data.id)
+          that.$router.push({ query: { floor } })
+        })
       } catch (error) {
         console.log('[views/Problem/submitNewComment] error', error)
       }

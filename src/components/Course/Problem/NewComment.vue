@@ -1,6 +1,12 @@
 <template>
   <div>
-    <div class="mt-4 text-h5">新增創作</div>
+    <div class="mt-4 d-flex">
+      <div class="text-h5">新增創作</div>
+      <v-spacer />
+      <v-btn icon @click="$router.replace({ query: null })">
+        <v-icon>mdi-close</v-icon>
+      </v-btn>
+    </div>
     <div class="mt-4 d-flex flex-column">
       <div class="text-body-1">創作標題（必填）</div>
       <v-text-field v-model="newComment.title" outlined dense hide-details />
@@ -34,6 +40,8 @@
         送出創作
       </v-btn>
     </div>
+    <!-- <Spinner v-if="!isSubmittionPending" />
+    <CommentResult v-else :cid="comment.id" :result="comment.submission" /> -->
   </div>
 </template>
 
@@ -67,6 +75,9 @@ export default {
     },
     submitNewComment() {
       this.$emit('submitNewComment', this.newComment)
+    },
+    print() {
+      console.log(this.newComment.code)
     },
   },
 }

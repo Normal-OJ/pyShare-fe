@@ -1,6 +1,6 @@
 <template>
   <Fragment>
-    <v-tabs vertical>
+    <v-tabs fixed-tabs>
       <v-tab>
         <v-icon left>mdi-card-text</v-icon>
         標準輸出
@@ -14,21 +14,21 @@
         輸出檔案
       </v-tab>
 
-      <v-tab-item>
+      <v-tab-item class="pt-4" style="overflow: scroll">
         <v-card outlined>
-          <v-card-text>
-            <pre>{{ result.stdout }}</pre>
+          <v-card-text class="text-primary text-body-1">
+            <pre style="white-space: pre-wrap">{{ result.stdout }}</pre>
           </v-card-text>
         </v-card>
       </v-tab-item>
-      <v-tab-item>
+      <v-tab-item class="pt-4">
         <v-card outlined>
-          <v-card-text>
-            <pre>{{ result.stderr }}</pre>
+          <v-card-text class="text-primary text-body-1">
+            <pre style="white-space: pre-wrap">{{ result.stderr }}</pre>
           </v-card-text>
         </v-card>
       </v-tab-item>
-      <v-tab-item>
+      <v-tab-item class="pt-4">
         <v-menu offset-y>
           <template v-slot:activator="{ on }">
             <v-btn outlined v-on="on" small>
@@ -77,18 +77,13 @@ const imageFilePossibleExtension = ['png', 'jpg', 'gif', 'jpeg', 'webp', 'svg', 
 
 export default {
   props: {
-    cid: {
+    sid: {
       type: String,
       required: true,
     },
     result: {
       type: Object,
-      default: () => ({
-        stdout: '',
-        stderr: '',
-        files: [],
-      }),
-      // required: true,
+      required: true,
     },
   },
 
@@ -96,7 +91,7 @@ export default {
 
   computed: {
     imageUrls() {
-      return this.imageFiles.map(filename => `/api/comment/${this.cid}/file/${filename}`)
+      return this.imageFiles.map(filename => `/api/submission/${this.sid}/file/${filename}`)
     },
     imageFiles() {
       return this.result.files.filter(filename => {
@@ -129,7 +124,7 @@ export default {
       return isFound
     },
     download(file) {
-      const url = `/api/comment/${this.cid}/file/${file}`
+      const url = `/api/submission/${this.sid}/file/${file}`
       const routeData = this.$router.resolve({ path: url })
       window.open(routeData.href, '_blank')
     },

@@ -1,5 +1,6 @@
 <template>
   <Fragment>
+    <div></div>
     <div class="my-2 d-flex flex-row align-center flex-wrap">
       <v-col cols="12" md="6" class="d-flex">
         <v-select
@@ -22,10 +23,22 @@
         />
       </v-col>
       <v-spacer />
-      <v-btn color="success" :to="{ query: { floor: 'new' } }">
-        <v-icon class="mr-1">mdi-pencil-plus</v-icon>
-        新增創作
-      </v-btn>
+      <v-tooltip bottom :disabled="!isDisabledNewComment">
+        <template v-slot:activator="{ on, attrs }">
+          <div v-on="on">
+            <v-btn
+              color="success"
+              :disabled="isDisabledNewComment"
+              v-bind="attrs"
+              @click="navigate('new')"
+            >
+              <v-icon class="mr-1">mdi-pencil-plus</v-icon>
+              新增創作
+            </v-btn>
+          </div>
+        </template>
+        <span>此主題僅限一則創作，您可以在一則創作上建立新版本的程式</span>
+      </v-tooltip>
     </div>
     <div
       v-for="{
@@ -122,6 +135,8 @@
 
 <script>
 import { Fragment } from 'vue-fragment'
+import { mapGetters } from 'vuex'
+import { USERNAME } from '@/store/getters.type'
 
 const SORT_BY = {
   TIME_DESCENDING: {
@@ -154,11 +169,21 @@ export default {
       type: Array,
       required: true,
     },
+    isAllowMultipleComments: {
+      required: null,
+    },
   },
 
   components: { Fragment },
 
   computed: {
+    ...mapGetters({
+      username: USERNAME,
+    }),
+    isDisabledNewComment() {
+      if (this.isAllowMultipleComments) return false
+      return this.comments.some(comment => comment.author.username === this.username)
+    },
     sortOptions() {
       return Object.values(this.SORT_BY)
     },
@@ -184,6 +209,7 @@ export default {
     navigate(floor) {
       if (this.$route.query.floor !== floor) {
         this.$router.replace({ query: { floor } })
+        this.$emit('refetchFloor')
       }
     },
   },

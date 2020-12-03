@@ -3,7 +3,7 @@
     <div class="mt-4 d-flex">
       <div class="text-h5">新增創作</div>
       <v-spacer />
-      <v-btn icon @click="$router.replace({ query: null })">
+      <v-btn icon @click="closeNewComment">
         <v-icon>mdi-close</v-icon>
       </v-btn>
     </div>
@@ -16,7 +16,13 @@
       <TextEditor v-model="newComment.content" />
     </div>
     <div class="mt-4 d-flex flex-column">
-      <div class="text-body-1">創作程式</div>
+      <div class="d-flex pb-1">
+        <div class="text-body-1">創作程式</div>
+        <v-spacer />
+        <v-btn class="mr-2" color="primary" outlined tile small @click="setDefaultCode">
+          回復預設程式碼
+        </v-btn>
+      </div>
       <CodeEditor v-model="newComment.code" />
     </div>
     <div class="mt-4 d-flex">
@@ -40,22 +46,31 @@
         送出創作
       </v-btn>
     </div>
-    <!-- <Spinner v-if="!isSubmittionPending" />
-    <CommentResult v-else :cid="comment.id" :result="comment.submission" /> -->
+    <div v-if="testResult !== null">
+      <div class="text-body-1 font-weight-bold my-4">測試執行結果</div>
+      <Spinner v-if="isTestSubmissionPending" />
+      <CommentResult v-else :sid="''" :result="testResult" isTest />
+    </div>
   </div>
 </template>
 
 <script>
 import TextEditor from '@/components/UI/TextEditor'
 import CodeEditor from '@/components/UI/CodeEditor'
+import Spinner from '@/components/UI/Spinner'
+import CommentResult from './CommentResult'
 
 export default {
-  components: { TextEditor, CodeEditor },
+  components: { TextEditor, CodeEditor, Spinner, CommentResult },
 
   props: {
     defaultCode: {
       type: String,
       default: '',
+    },
+    testResult: {
+      type: Object,
+      required: true,
     },
   },
 
@@ -66,6 +81,26 @@ export default {
     isDisableSubmitComment() {
       return !this.newComment.title
     },
+    isTestSubmissionPending() {
+      if (!this.testResult) return false
+      return !Object.keys(this.testResult).some(key => key === 'stdout')
+    },
+  },
+
+  created() {
+    this.pollingSubmission = setInterval(
+      that => {
+        if (that.isTestSubmissionPending) {
+          this.$emit('fetchTestSubmission', 'new')
+        }
+      },
+      1000,
+      this,
+    )
+  },
+
+  beforeDestroy() {
+    clearInterval(this.pollingSubmission)
   },
 
   watch: {
@@ -80,11 +115,19 @@ export default {
       content: '',
       code: '',
     },
+    pollingSubmission: null,
   }),
 
   methods: {
+    setDefaultCode() {
+      this.newComment = { ...this.newComment, code: this.defaultCode }
+    },
+    closeNewComment() {
+      this.$router.replace({ query: null })
+      this.$emit('refetchFloor')
+    },
     submitTestSubmission() {
-      this.$emit('submitTestSubmission', this.newComment.code)
+      this.$emit('submitTestSubmission', this.newComment.code, 'new')
     },
     submitNewComment() {
       this.$emit('submitNewComment', this.newComment)

@@ -50,6 +50,7 @@ const User = {
 }
 
 const Submission = {
+  get: sid => Vue.axios.get(`/submission/${sid}`),
   createTest: body => Vue.axios.post('/submission', body),
 }
 

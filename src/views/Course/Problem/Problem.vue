@@ -1,23 +1,39 @@
 <template>
   <v-container fluid>
-    <div class="px-4">
+    <Spinner v-if="isWaiting" />
+    <div class="px-4" v-show="!isWaiting">
       <div>
         <Problem v-if="prob" :prob="prob" />
       </div>
       <v-divider />
       <div>
-        <CommentList v-if="!floor" :comments="comments" />
+        <CommentList
+          v-if="!floor"
+          :comments="comments"
+          :isAllowMultipleComments="prob && prob.allowMultipleComments"
+          @refetchFloor="fetchFloor"
+        />
         <NewComment
           v-else-if="String(floor) === 'new'"
           :defaultCode="prob && prob.defaultCode"
+          :testResult="testResult['new']"
+          @refetchFloor="fetchFloor"
+          @fetchTestSubmission="fetchTestSubmission"
           @submitTestSubmission="submitTestSubmission"
           @submitNewComment="submitNewComment"
         />
         <CommentDetail
           v-else-if="selectedComment"
           :comment="selectedComment"
+          :defaultCode="prob && prob.defaultCode"
+          :testResult="testResult['detail']"
+          @refetchFloor="fetchFloor"
           @updateComment="updateComment"
           @fetchSubmission="fetchSubmission"
+          @fetchTestSubmission="fetchTestSubmission"
+          @submitTestSubmission="submitTestSubmission"
+          @submitNewSubmission="submitNewSubmission"
+          @setIsEdit="setIsEdit"
         />
       </div>
       <div class="spacer" />
@@ -34,11 +50,12 @@ import agent from '@/api/agent'
 import { mapActions, mapGetters } from 'vuex'
 import { GET_COMMENTS } from '@/store/actions.type'
 import { COMMENTS } from '@/store/getters.type'
+import Spinner from '@/components/UI/Spinner'
 
 export default {
   name: 'CourseProblem',
 
-  components: { Problem, CommentList, CommentDetail, NewComment },
+  components: { Problem, CommentList, CommentDetail, NewComment, Spinner },
 
   computed: {
     ...mapGetters({
@@ -47,31 +64,46 @@ export default {
     pid() {
       return Number(this.$route.params.id)
     },
-    floor() {
-      const { floor } = this.$route.query
-      if (!floor) return null
-      if (floor !== 'new' && !this.comments.find(c => String(c.floor) === String(floor))) {
-        this.$router.replace({ query: null })
-      }
-      return floor
-    },
     selectedComment() {
       return this.comments.find(c => String(c.floor) === String(this.floor))
     },
   },
 
-  created() {
-    this.getProblem(this.pid)
+  async created() {
+    await this.getProblem(this.pid)
+    this.fetchFloor()
+    this.isWaiting = false
   },
 
   data: () => ({
     prob: null,
+    isWaiting: true,
+    isEdit: false,
+    floor: null,
+    testResult: {
+      new: null,
+      detail: null,
+    },
+    testResultSubmissionId: null,
   }),
 
   methods: {
     ...mapActions({
       getComments: GET_COMMENTS,
     }),
+    fetchFloor() {
+      const { floor } = this.$route.query
+      if (!floor) {
+        this.floor = null
+        return
+      }
+      if (floor !== 'new' && !this.comments.find(c => String(c.floor) === String(floor))) {
+        this.$router.replace({ query: null })
+        this.floor = null
+        return
+      }
+      this.floor = floor
+    },
     async getProblem(pid) {
       try {
         const { data } = await agent.Problem.get(pid)
@@ -84,11 +116,20 @@ export default {
     fetchSubmission() {
       this.getComments(this.prob.comments)
     },
-    async submitTestSubmission(code) {
+    fetchTestSubmission(source) {
+      agent.Submission.get(this.testResultSubmissionId).then(res => {
+        this.testResult[source] = res.data.data
+      })
+    },
+    async submitTestSubmission(code, source) {
       const body = { problemId: this.pid, code }
       try {
         const { data } = await agent.Submission.createTest(body)
-        console.log('[test submission]', data)
+        const { submissionId } = data.data
+        this.testResultSubmissionId = submissionId
+        agent.Submission.get(submissionId).then(res => {
+          this.testResult[source] = res.data.data
+        })
       } catch (error) {
         console.log('[views/Problem/submitTestSubmission] error', error)
       }
@@ -106,9 +147,18 @@ export default {
         this.$nextTick(() => {
           const { floor } = that.comments.find(comment => comment.id === data.data.id)
           that.$router.push({ query: { floor } })
+          that.fetchFloor()
         })
       } catch (error) {
         console.log('[views/Problem/submitNewComment] error', error)
+      }
+    },
+    async submitNewSubmission(cid, code) {
+      try {
+        await agent.Comment.createSubmission(cid, { code })
+        await this.getProblem(this.pid)
+      } catch (error) {
+        console.log('[views/Problem/submitTestSubmission] error', error)
       }
     },
     async updateComment(cid, newComment) {
@@ -119,6 +169,23 @@ export default {
         console.log('[views/Problem/updateComment] error', error)
       }
     },
+    setIsEdit(value) {
+      this.isEdit = value
+    },
+  },
+
+  beforeRouteLeave(to, from, next) {
+    if (!this.floor) next()
+    if (this.floor === 'new' || this.isEdit) {
+      const answer = window.confirm('確定要離開嗎？未完成的編輯將不會儲存。')
+      if (!answer) {
+        next(false)
+      } else {
+        next()
+      }
+    } else {
+      next()
+    }
   },
 }
 </script>

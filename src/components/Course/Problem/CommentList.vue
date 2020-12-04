@@ -51,6 +51,7 @@
         updated,
         liked,
         submissions,
+        submission,
         replies,
       } in filteredComments"
       :key="id"
@@ -88,7 +89,14 @@
                     `${liked.length} 個喜歡、${replies.length} 則留言、${submissions.length} 個程式版本`
                   }}</span>
                 </v-tooltip>
-                <v-btn color="primary" small tile depressed>PENDING</v-btn>
+                <v-btn
+                  :color="SUBMISSION_COLOR[SUBMISSION_STATE[submission.state]]"
+                  small
+                  tile
+                  depressed
+                >
+                  {{ SUBMISSION_STATE[submission.state] }}
+                </v-btn>
               </v-card-title>
               <!-- Second Row -->
               <v-card-subtitle class="d-flex flex-row align-center flex-wrap">
@@ -137,6 +145,7 @@
 import { Fragment } from 'vue-fragment'
 import { mapGetters } from 'vuex'
 import { USERNAME } from '@/store/getters.type'
+import { SUBMISSION_STATE, SUBMISSION_COLOR } from '@/constants/submission'
 
 const SORT_BY = {
   TIME_DESCENDING: {
@@ -201,6 +210,8 @@ export default {
 
   data: () => ({
     SORT_BY,
+    SUBMISSION_STATE,
+    SUBMISSION_COLOR,
     sortby: SORT_BY.TIME_ASCENDING.value,
     searchText: '',
   }),

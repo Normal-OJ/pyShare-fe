@@ -41,16 +41,38 @@
             </v-btn>
           </div>
           <v-spacer />
-          <!-- <v-chip v-permission="[STUDENT]" :color="SUBMISSION_COLOR[comment.state]]" label small>{{ comment.state }}</v-chip> -->
-          <v-menu offset-y rounded="0" v-permission="[TEACHER]">
+          <v-chip
+            v-permission="[STUDENT, 'MAGIC']"
+            :color="SUBMISSION_COLOR[SUBMISSION_STATE[`${comment.submission.state}`]]"
+            class="text-subtitle-2"
+            label
+          >
+            {{ SUBMISSION_STATE[`${comment.submission.state}`] }}
+          </v-chip>
+          <v-menu offset-y rounded="0" v-permission="[TEACHER]" @change="grade">
             <template v-slot:activator="{ on, attrs }">
-              <v-btn color="primary" v-bind="attrs" v-on="on" small depressed>PENDING</v-btn>
+              <v-btn
+                class="text-subtitle-2"
+                :color="SUBMISSION_COLOR[SUBMISSION_STATE[`${comment.submission.state}`]]"
+                v-bind="attrs"
+                v-on="on"
+                small
+                depressed
+              >
+                {{ SUBMISSION_STATE[`${comment.submission.state}`] }}
+                <v-icon class="ml-1">mdi-chevron-down</v-icon>
+              </v-btn>
               <!-- TODO: add chevron down for teacher -->
             </template>
             <v-list>
-              <v-list-item v-for="option in submissionStatusOptions" :key="option" link>
+              <v-list-item
+                v-for="{ value, label } in submissionStatusOptions"
+                :key="value"
+                link
+                @click="gradeSubmission(value)"
+              >
                 <v-list-item-title class="text-body-2">
-                  <v-chip :color="SUBMISSION_COLOR[option]" label small>{{ option }}</v-chip>
+                  <v-chip :color="SUBMISSION_COLOR[label]" label small>{{ label }}</v-chip>
                 </v-list-item-title>
               </v-list-item>
             </v-list>
@@ -270,7 +292,7 @@ export default {
 
   computed: {
     submissionStatusOptions() {
-      return Object.keys(SUBMISSION_STATUS)
+      return Object.entries(SUBMISSION_STATE).map(([value, label]) => ({ value, label }))
     },
     isSubmissionPending() {
       if (!this.comment || !this.comment.submission) return false
@@ -342,6 +364,7 @@ export default {
     setDefaultCode() {
       this.newComment = { ...this.newComment, code: this.defaultCode }
     },
+    grade() {},
     closeSelectedComment() {
       this.$router.replace({ query: null })
       this.$emit('refetchFloor')
@@ -383,6 +406,9 @@ export default {
     },
     checkIsDisableSubmitSubmission() {
       this.isDisableSubmitSubmission = !this.newComment[COMMENT_KEY.CODE]
+    },
+    gradeSubmission(value) {
+      this.$emit('gradeSubmission', this.comment.submissions.slice(-1)[0], value)
     },
   },
 }

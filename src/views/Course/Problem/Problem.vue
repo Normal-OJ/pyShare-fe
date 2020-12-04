@@ -34,6 +34,7 @@
           @submitTestSubmission="submitTestSubmission"
           @submitNewSubmission="submitNewSubmission"
           @setIsEdit="setIsEdit"
+          @gradeSubmission="gradeSubmission"
         />
       </div>
       <div class="spacer" />
@@ -164,6 +165,14 @@ export default {
     async updateComment(cid, newComment) {
       try {
         await agent.Comment.update(cid, newComment)
+        this.getComments(this.prob.comments)
+      } catch (error) {
+        console.log('[views/Problem/updateComment] error', error)
+      }
+    },
+    async gradeSubmission(sid, value) {
+      try {
+        await agent.Submission.grade(sid, Number(value))
         this.getComments(this.prob.comments)
       } catch (error) {
         console.log('[views/Problem/updateComment] error', error)

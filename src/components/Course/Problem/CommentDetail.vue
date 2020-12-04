@@ -20,7 +20,7 @@
             </v-btn>
           </div>
           <div v-else class="d-flex align-center">
-            <v-text-field v-model="newComment.title" outlined dense hide-details />
+            <v-text-field v-model="newComment[COMMENT_KEY.TITLE]" outlined dense hide-details />
             <v-btn
               class="mx-2"
               color="primary"
@@ -41,15 +41,38 @@
             </v-btn>
           </div>
           <v-spacer />
-          <v-menu offset-y rounded="0">
+          <v-chip
+            v-permission="[STUDENT, 'MAGIC']"
+            :color="SUBMISSION_COLOR[SUBMISSION_STATE[`${comment.submission.state}`]]"
+            class="text-subtitle-2"
+            label
+          >
+            {{ SUBMISSION_STATE[`${comment.submission.state}`] }}
+          </v-chip>
+          <v-menu offset-y rounded="0" v-permission="[TEACHER]" @change="grade">
             <template v-slot:activator="{ on, attrs }">
-              <v-btn color="primary" v-bind="attrs" v-on="on" small depressed>PENDING</v-btn>
+              <v-btn
+                class="text-subtitle-2"
+                :color="SUBMISSION_COLOR[SUBMISSION_STATE[`${comment.submission.state}`]]"
+                v-bind="attrs"
+                v-on="on"
+                small
+                depressed
+              >
+                {{ SUBMISSION_STATE[`${comment.submission.state}`] }}
+                <v-icon class="ml-1">mdi-chevron-down</v-icon>
+              </v-btn>
               <!-- TODO: add chevron down for teacher -->
             </template>
             <v-list>
-              <v-list-item v-for="option in submissionStatusOptions" :key="option" link>
+              <v-list-item
+                v-for="{ value, label } in submissionStatusOptions"
+                :key="value"
+                link
+                @click="gradeSubmission(value)"
+              >
                 <v-list-item-title class="text-body-2">
-                  <v-chip :color="SUBMISSION_COLOR[option]" label small>{{ option }}</v-chip>
+                  <v-chip :color="SUBMISSION_COLOR[label]" label small>{{ label }}</v-chip>
                 </v-list-item-title>
               </v-list-item>
             </v-list>
@@ -102,7 +125,7 @@
       </div>
       <div v-if="!isEdit[COMMENT_KEY.CONTENT]" v-html="comment.content" />
       <div v-else>
-        <TextEditor v-model="newComment.content" />
+        <TextEditor v-model="newComment[COMMENT_KEY.CONTENT]" />
         <div class="d-flex mt-1">
           <v-btn
             class="mr-2"
@@ -127,16 +150,107 @@
         </div>
       </div>
       <!-- Creation Code -->
-      <div class="text-body-1 font-weight-bold my-4">程式</div>
-      <CodeEditor v-model="comment.submission.code" readOnly />
-      <!-- Creation Result -->
-      <div class="text-body-1 font-weight-bold my-4">執行結果</div>
-      <Spinner v-if="isSubmittionPending" />
-      <CommentResult
-        v-else
-        :sid="comment.submissions[comment.submissions.length - 1]"
-        :result="comment.submission"
+      <div class="text-body-1 font-weight-bold d-flex align-center my-4">
+        創作程式
+        <v-btn
+          v-if="$isSelf(comment.author.username) && !isBrowsingHistory"
+          class="ml-2"
+          small
+          icon
+          @click.stop="editComment(COMMENT_KEY.CODE)"
+        >
+          <v-icon small>mdi-pencil-plus</v-icon>
+        </v-btn>
+        <v-menu offset-y rounded="0">
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn class="ml-2" small icon v-bind="attrs" v-on="on">
+              <v-icon size="20">mdi-history</v-icon>
+            </v-btn>
+          </template>
+          <v-list>
+            <v-list-item
+              v-for="(submission, index) in historySubmissions"
+              :key="submission.id"
+              link
+              @click="browsingSubmissionIndex = index"
+            >
+              <v-list-item-title class="text-body-1">
+                {{ `版本 ${index + 1}（${$formattedTime(submission.timestamp)}）` }}
+                <v-chip
+                  :color="SUBMISSION_COLOR[SUBMISSION_STATE[`${submission.state}`]]"
+                  label
+                  small
+                >
+                  {{ SUBMISSION_STATE[`${submission.state}`] }}
+                </v-chip>
+                {{ index === browsingSubmissionIndex ? '（目前顯示）' : '' }}
+              </v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-menu>
+      </div>
+      <Spinner v-if="historySubmissions.length === 0" />
+      <CodeEditor
+        v-else-if="!isEdit[COMMENT_KEY.CODE]"
+        v-model="historySubmissions[browsingSubmissionIndex].code"
+        readOnly
       />
+      <div v-else>
+        <div class="d-flex mb-2">
+          <div class="text-body-1">新增程式版本</div>
+          <v-spacer />
+          <v-btn class="mr-2" color="primary" outlined tile small @click="setDefaultCode">
+            回復預設程式碼
+          </v-btn>
+          <v-btn color="primary" outlined tile small @click="cancelEditComment(COMMENT_KEY.CODE)">
+            取消
+          </v-btn>
+        </div>
+        <CodeEditor
+          v-model="newComment[COMMENT_KEY.CODE]"
+          @input="checkIsDisableSubmitSubmission"
+        />
+      </div>
+      <!-- Creation Result -->
+      <div v-if="!isEdit[COMMENT_KEY.CODE]">
+        <div class="text-body-1 font-weight-bold my-4">執行結果</div>
+        <Spinner
+          v-if="(isSubmissionPending && !isBrowsingHistory) || historySubmissions.length === 0"
+        />
+        <CommentResult
+          v-else
+          :sid="historySubmissions[browsingSubmissionIndex].id"
+          :result="historySubmissions[browsingSubmissionIndex]"
+        />
+      </div>
+      <div v-else>
+        <div class="mt-4 d-flex">
+          <v-btn
+            color="success"
+            :disabled="isDisableSubmitSubmission"
+            @click="submitTestSubmission"
+          >
+            測試程式
+          </v-btn>
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on, attr }">
+              <v-icon class="ml-1" color="primary" v-on="on" v-bind="attr">
+                mdi-information
+              </v-icon>
+            </template>
+            <span>在送出創作前運行程式以預覽結果，送出之後也可以再加入新版的程式碼。</span>
+          </v-tooltip>
+          <v-spacer />
+          <v-btn color="success" @click="submitNewSubmission">
+            送出創作
+          </v-btn>
+        </div>
+        <div v-if="testResult">
+          <div class="text-body-1 font-weight-bold my-4">測試執行結果</div>
+          <Spinner v-if="isTestSubmissionPending" />
+          <CommentResult v-else :sid="''" :result="testResult" isTest />
+        </div>
+      </div>
     </div>
   </v-card>
 </template>
@@ -145,12 +259,16 @@
 import TextEditor from '@/components/UI/TextEditor'
 import CodeEditor from '@/components/UI/CodeEditor'
 import Spinner from '@/components/UI/Spinner'
-import { SUBMISSION_STATUS, SUBMISSION_COLOR } from '@/constants/submission'
+import { SUBMISSION_STATE, SUBMISSION_STATUS, SUBMISSION_COLOR } from '@/constants/submission'
 import CommentResult from './CommentResult'
+import { ROLE } from '@/constants/auth'
+import agent from '@/api/agent'
 
+const { TEACHER, STUDENT } = ROLE
 const COMMENT_KEY = {
   TITLE: 'title',
   CONTENT: 'content',
+  CODE: 'code',
 }
 
 export default {
@@ -163,56 +281,114 @@ export default {
       type: Object,
       required: true,
     },
+    defaultCode: {
+      type: String,
+      default: '',
+    },
+    testResult: {
+      type: Object,
+    },
   },
 
   computed: {
     submissionStatusOptions() {
-      return Object.keys(SUBMISSION_STATUS)
+      return Object.entries(SUBMISSION_STATE).map(([value, label]) => ({ value, label }))
     },
-    isSubmittionPending() {
+    isSubmissionPending() {
       if (!this.comment || !this.comment.submission) return false
       return !Object.keys(this.comment.submission).some(key => key === 'stdout')
+    },
+    isTestSubmissionPending() {
+      if (!this.testResult) return false
+      return !Object.keys(this.testResult).some(key => key === 'stdout')
+    },
+    isBrowsingHistory() {
+      return this.browsingSubmissionIndex !== this.comment.submissions.length - 1
+    },
+    submissions() {
+      return this.comment.submissions
     },
   },
 
   created() {
-    this.pollingSubmittion = setInterval(
-      pending => {
-        if (pending) {
+    this.pollingSubmission = setInterval(
+      that => {
+        if (that.isSubmissionPending) {
           this.$emit('fetchSubmission')
         }
+        if (that.isTestSubmissionPending) {
+          this.$emit('fetchTestSubmission', 'detail')
+        }
       },
-      3000,
-      this.isSubmittionPending,
+      1000,
+      this,
     )
+    this.getSubmissions()
+  },
+
+  watch: {
+    submissions: {
+      handler() {
+        this.browsingSubmissionIndex = this.submissions.length - 1
+      },
+      immediate: true,
+    },
   },
 
   beforeDestroy() {
-    clearInterval(this.pollingSubmittion)
+    clearInterval(this.pollingSubmission)
   },
 
-  data: () => ({
-    pollingSubmittion: null,
-    SUBMISSION_STATUS,
-    SUBMISSION_COLOR,
-    COMMENT_KEY,
-    newComment: {},
-    isEdit: {
-      [COMMENT_KEY.TITLE]: false,
-      [COMMENT_KEY.CONTENT]: false,
-    },
-  }),
+  data() {
+    return {
+      TEACHER,
+      STUDENT,
+      pollingSubmission: null,
+      SUBMISSION_STATE,
+      SUBMISSION_STATUS,
+      SUBMISSION_COLOR,
+      COMMENT_KEY,
+      newComment: {},
+      isEdit: {
+        [COMMENT_KEY.TITLE]: false,
+        [COMMENT_KEY.CONTENT]: false,
+        [COMMENT_KEY.CODE]: false,
+      },
+      isDisableSubmitSubmission: false,
+      historySubmissions: [],
+      browsingSubmissionIndex: this.comment.submissions.length - 1,
+    }
+  },
 
   methods: {
+    setDefaultCode() {
+      this.newComment = { ...this.newComment, code: this.defaultCode }
+    },
+    grade() {},
     closeSelectedComment() {
       this.$router.replace({ query: null })
+      this.$emit('refetchFloor')
+    },
+    getSubmissions() {
+      Promise.all(this.comment.submissions.map(sid => agent.Submission.get(sid))).then(resp => {
+        this.historySubmissions = resp.map((res, index) => ({
+          ...res.data.data,
+          id: this.comment.submissions[index],
+        }))
+      })
     },
     editComment(key) {
-      this.newComment[key] = this.comment[key]
+      if (key !== this.COMMENT_KEY.CODE) this.newComment[key] = this.comment[key]
+      else {
+        this.newComment[key] = this.comment.submission.code
+        this.isDisableSubmitSubmission = !this.newComment[key]
+      }
       this.isEdit[key] = true
+      this.$emit('setIsEdit', true)
     },
     cancelEditComment(key) {
       this.isEdit[key] = false
+      this.$emit('setIsEdit', false)
     },
     confirmEditComment(key) {
       this.updateComment()
@@ -220,6 +396,19 @@ export default {
     },
     updateComment() {
       this.$emit('updateComment', this.comment.id, { ...this.comment, ...this.newComment })
+    },
+    submitTestSubmission() {
+      this.$emit('submitTestSubmission', this.newComment[this.COMMENT_KEY.CODE], 'detail')
+    },
+    submitNewSubmission() {
+      this.$emit('submitNewSubmission', this.comment.id, this.newComment[this.COMMENT_KEY.CODE])
+      this.cancelEditComment(this.COMMENT_KEY.CODE)
+    },
+    checkIsDisableSubmitSubmission() {
+      this.isDisableSubmitSubmission = !this.newComment[COMMENT_KEY.CODE]
+    },
+    gradeSubmission(value) {
+      this.$emit('gradeSubmission', this.comment.submissions.slice(-1)[0], value)
     },
   },
 }

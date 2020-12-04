@@ -26,12 +26,25 @@
           <v-menu offset-y>
             <template v-slot:activator="{ on }">
               <v-btn outlined v-on="on" small class="text-none">
-                {{ browsing === noSelection ? '選擇檔案' : browsing }}
+                {{ browsing === noSelection ? '選擇檔案' : isTest ? browsing.filename : browsing }}
                 <v-icon>mdi-chevron-down</v-icon>
               </v-btn>
             </template>
-            <v-list>
-              <v-list-item v-for="file in miscFiles" :key="file" @click="browsing = file">
+            <v-list v-if="isTest">
+              <v-list-item
+                v-for="file in [...miscFiles, ...imageFiles]"
+                :key="file.filename"
+                @click="browsing = file"
+              >
+                <v-list-item-title>{{ file.filename }}</v-list-item-title>
+              </v-list-item>
+            </v-list>
+            <v-list v-else>
+              <v-list-item
+                v-for="file in [...miscFiles, ...imageFiles]"
+                :key="file"
+                @click="browsing = file"
+              >
                 <v-list-item-title>{{ file }}</v-list-item-title>
               </v-list-item>
             </v-list>
@@ -87,24 +100,31 @@ export default {
       type: Object,
       required: true,
     },
+    isTest: {
+      type: Boolean,
+      default: false,
+    },
   },
 
   components: { Fragment },
 
   computed: {
     imageUrls() {
+      if (this.isTest) {
+        return this.imageFiles.map(file => `data:image/png;base64,${file.content}`)
+      }
       return this.imageFiles.map(filename => `/api/submission/${this.sid}/file/${filename}`)
     },
     imageFiles() {
       return this.result.files.filter(filename => {
-        const splittedName = filename.split('.')
+        const splittedName = this.isTest ? filename.filename.split('.') : filename.split('.')
         const extension = splittedName[splittedName.length - 1]
         return this.isImageFile(extension)
       })
     },
     miscFiles() {
       return this.result.files.filter(filename => {
-        const splittedName = filename.split('.')
+        const splittedName = this.isTest ? filename.filename.split('.') : filename.split('.')
         const extension = splittedName[splittedName.length - 1]
         return !this.isImageFile(extension)
       })
@@ -126,8 +146,15 @@ export default {
       return isFound
     },
     download(file) {
-      const url = `https://pyshare.noj.tw/api/submission/${this.sid}/file/${file}`
-      window.open(url, '_blank')
+      if (this.isTest) {
+        const link = document.createElement('a')
+        link.download = file.filename
+        link.href = `data:application/octet-stream;base64,${file.content}`
+        link.click()
+      } else {
+        const url = `https://pyshare.noj.tw/api/submission/${this.sid}/file/${file}`
+        window.open(url, '_blank')
+      }
     },
   },
 }

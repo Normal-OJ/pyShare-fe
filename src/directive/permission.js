@@ -12,7 +12,9 @@ function checkPermission(el, binding) {
       const permissionRoles = value
 
       // ADMIN has all permission, or check if the permission includes my role level or not
-      const hasPermission = role === ROLES.ADMIN || permissionRoles.includes(role)
+      const hasPermission =
+        (role === ROLES.ADMIN && !permissionRoles.includes('MAGIC')) ||
+        permissionRoles.includes(role)
 
       if (!hasPermission) {
         el.parentNode && el.parentNode.removeChild(el)

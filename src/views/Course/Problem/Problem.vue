@@ -27,6 +27,7 @@
           :comment="selectedComment"
           :defaultCode="prob && prob.defaultCode"
           :testResult="testResult['detail']"
+          :username="username"
           @refetchFloor="fetchFloor"
           @updateComment="updateComment"
           @fetchSubmission="fetchSubmission"
@@ -35,6 +36,8 @@
           @submitNewSubmission="submitNewSubmission"
           @setIsEdit="setIsEdit"
           @gradeSubmission="gradeSubmission"
+          @like-comment="likeComment"
+          @submitReply="submitReply"
         />
       </div>
       <div class="spacer" />
@@ -48,7 +51,7 @@ import CommentList from '@/components/Course/Problem/CommentList'
 import CommentDetail from '@/components/Course/Problem/CommentDetail'
 import NewComment from '@/components/Course/Problem/NewComment'
 import agent from '@/api/agent'
-import { mapActions, mapGetters } from 'vuex'
+import { mapActions, mapGetters, mapState } from 'vuex'
 import { GET_COMMENTS } from '@/store/actions.type'
 import { COMMENTS } from '@/store/getters.type'
 import Spinner from '@/components/UI/Spinner'
@@ -59,6 +62,9 @@ export default {
   components: { Problem, CommentList, CommentDetail, NewComment, Spinner },
 
   computed: {
+    ...mapState({
+      username: state => state.auth.username,
+    }),
     ...mapGetters({
       comments: COMMENTS,
     }),
@@ -154,6 +160,15 @@ export default {
         console.log('[views/Problem/submitNewComment] error', error)
       }
     },
+    async submitReply(id, content) {
+      const body = { target: 'comment', id, content, title: '', code: '' }
+      try {
+        await agent.Comment.create(body)
+        await this.getProblem(this.pid)
+      } catch (error) {
+        console.log('[views/Problem/submitReply] error', error)
+      }
+    },
     async submitNewSubmission(cid, code) {
       try {
         await agent.Comment.createSubmission(cid, { code })
@@ -175,7 +190,15 @@ export default {
         await agent.Submission.grade(sid, Number(value))
         this.getComments(this.prob.comments)
       } catch (error) {
-        console.log('[views/Problem/updateComment] error', error)
+        console.log('[views/Problem/gradeSubmission] error', error)
+      }
+    },
+    async likeComment(cid) {
+      try {
+        await agent.Comment.like(cid)
+        this.getComments(this.prob.comments)
+      } catch (error) {
+        console.log('[views/Problem/likeComment] error', error)
       }
     },
     setIsEdit(value) {

@@ -20,7 +20,7 @@
         style="width: 320px"
         outlined
         :type="isShowPassword ? 'text' : 'password'"
-        :append-icon="isShowPassword ? 'mdi-eye-off' : 'mdi-eye'"
+        :append-icon="isShowPassword ? 'mdi-eye' : 'mdi-eye-off'"
         @click:append="isShowPassword = !isShowPassword"
         @keyup.enter="handleSubmit"
         :error="!!errorMsg"

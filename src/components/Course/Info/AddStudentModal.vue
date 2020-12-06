@@ -88,6 +88,9 @@
                 @close="closeConfirmModal"
                 @confirm="confirmSubmit"
               >
+                <template v-slor:title>
+                  確認是否送出
+                </template>
                 <template v-slot:content>
                   <PreviewCSV v-if="previewFile" :data="previewFile" />
                 </template>

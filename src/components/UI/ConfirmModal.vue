@@ -2,7 +2,7 @@
   <v-dialog :value="true" width="750">
     <v-card>
       <v-card-title>
-        確認是否送出
+        <slot name="title" />
       </v-card-title>
 
       <v-card-text class="text--primary">

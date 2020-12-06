@@ -34,6 +34,7 @@ const Comment = {
   get: cid => Vue.axios.get(`/comment/${cid}`),
   create: body => Vue.axios.post('/comment', body),
   update: (cid, body) => Vue.axios.put(`/comment/${cid}`, body),
+  delete: cid => Vue.axios.delete(`/comment/${cid}`),
   like: cid => Vue.axios.get(`/comment/${cid}/like`),
   createSubmission: (cid, body) => Vue.axios.post(`/comment/${cid}/submission`, body),
 }

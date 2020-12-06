@@ -38,6 +38,8 @@
           @gradeSubmission="gradeSubmission"
           @like-comment="likeComment"
           @submitReply="submitReply"
+          @update-reply="updateReply"
+          @delete-reply="deleteReply"
         />
       </div>
       <div class="spacer" />
@@ -199,6 +201,23 @@ export default {
         this.getComments(this.prob.comments)
       } catch (error) {
         console.log('[views/Problem/likeComment] error', error)
+      }
+    },
+    async updateReply(cid, content) {
+      const body = { title: '', content }
+      try {
+        await agent.Comment.update(cid, body)
+        this.getComments(this.prob.comments)
+      } catch (error) {
+        console.log('[views/Problem/updateReply] error', error)
+      }
+    },
+    async deleteReply(cid) {
+      try {
+        await agent.Comment.delete(cid)
+        this.getComments(this.prob.comments)
+      } catch (error) {
+        console.log('[views/Problem/deleteReply] error', error)
       }
     },
     setIsEdit(value) {

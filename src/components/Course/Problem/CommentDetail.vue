@@ -298,7 +298,12 @@
       </div>
     </div>
     <Spinner v-if="!replies" />
-    <CommentReplies v-else :replies="replies" />
+    <CommentReplies
+      v-else
+      :replies="replies"
+      @update-reply="(id, index) => $emit('update-reply', id, index)"
+      @delete-reply="id => $emit('delete-reply', id)"
+    />
   </Fragment>
 </template>
 

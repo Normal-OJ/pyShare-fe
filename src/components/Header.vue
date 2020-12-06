@@ -9,9 +9,9 @@
 
     <v-toolbar-items>
       <v-btn
-        v-for="{ label, routeName } in headerItems"
+        v-for="{ label, route } in headerItems"
         :key="label"
-        :to="{ name: routeName }"
+        :to="route"
         class="text-body-1 font-weight-bold"
         color="white"
         text
@@ -69,21 +69,6 @@
 <script>
 import { mapState } from 'vuex'
 
-const HEADER_ITEMS = [
-  {
-    label: '課程',
-    routeName: 'courses',
-  },
-  {
-    label: '個人頁面',
-    routeName: 'profileRedirect',
-  },
-  {
-    label: '關於平台',
-    routeName: 'about',
-  },
-]
-
 export default {
   name: 'Header',
 
@@ -93,10 +78,22 @@ export default {
       username: state => state.auth.username,
       displayName: state => state.auth.displayName,
     }),
+    headerItems() {
+      return [
+        {
+          label: '課程',
+          route: { name: 'courses' },
+        },
+        {
+          label: '個人頁面',
+          route: { name: 'profile', params: { username: this.username } },
+        },
+        {
+          label: '關於平台',
+          route: { name: 'about' },
+        },
+      ]
+    },
   },
-
-  data: () => ({
-    headerItems: HEADER_ITEMS,
-  }),
 }
 </script>

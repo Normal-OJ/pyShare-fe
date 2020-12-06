@@ -77,11 +77,6 @@ const routes = [
     ],
   },
   {
-    path: '/profile',
-    name: 'profileRedirect',
-    redirect: { name: 'profile', params: { username: store.state.auth.username } },
-  },
-  {
     path: '/profile/:username',
     name: 'profile',
     component: () => import('@/views/Profile/Profile'),

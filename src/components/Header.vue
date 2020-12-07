@@ -49,18 +49,15 @@
         </v-btn>
       </template>
       <v-list>
+        <v-list-item link :to="{ name: 'profile', params: { username: username } }">
+          <v-list-item-title class="text-center">個人頁面</v-list-item-title>
+        </v-list-item>
         <v-list-item link @click="$emit('logout')">
           <v-list-item-title class="text-center">登出</v-list-item-title>
         </v-list-item>
       </v-list>
     </v-menu>
-    <v-btn
-      v-else
-      :to="isLogin ? { name: 'profile', params: { username } } : { name: 'login' }"
-      class="text-body-1 font-weight-bold"
-      dark
-      text
-    >
+    <v-btn v-else :to="{ name: 'login' }" class="text-body-1 font-weight-bold" dark text>
       登入
     </v-btn>
   </v-app-bar>
@@ -83,10 +80,6 @@ export default {
         {
           label: '課程',
           route: { name: 'courses' },
-        },
-        {
-          label: '個人頁面',
-          route: { name: 'profile', params: { username: this.username } },
         },
         {
           label: '關於平台',

@@ -1,6 +1,7 @@
 // auth module
 export const ROLE = 'role'
 export const USERNAME = 'username'
+export const USER = 'user'
 
 // problem module
 export const GET_PROBLEM_BY_ID = 'getProblemById'

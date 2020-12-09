@@ -23,7 +23,7 @@
         />
       </v-col>
       <v-spacer />
-      <v-btn color="success" :to="{ name: 'courseManageProblems' }" class="mr-3" outlined>
+      <v-btn color="primary" :to="{ name: 'courseManageProblems' }" class="mr-3" outlined>
         <v-icon class="mr-1">mdi-settings</v-icon>
         管理主題
       </v-btn>

@@ -145,16 +145,15 @@ export default {
     },
   },
 
-  created() {
-    this.newProb = _.cloneDeep(this.prob)
-    if (this.role <= this.TEACHER) {
-      this.newProb.allowMultipleComments = false
-    }
-  },
-
   watch: {
-    prob() {
-      this.newProb = _.cloneDeep(this.prob)
+    prob: {
+      handler() {
+        this.newProb = _.cloneDeep(this.prob)
+        if (this.role <= this.TEACHER) {
+          this.newProb.allowMultipleComments = false
+        }
+      },
+      immediate: true,
     },
     fileUploader() {
       this.willAddAttachments = [...new Set([...this.willAddAttachments, ...this.fileUploader])]

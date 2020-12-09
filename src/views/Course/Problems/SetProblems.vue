@@ -12,8 +12,9 @@
 <script>
 import Spinner from '@/components/UI/Spinner'
 import SetProblems from '@/components/Course/Problems/SetProblems'
-import { mapActions, mapState } from 'vuex'
+import { mapActions, mapGetters, mapState } from 'vuex'
 import { GET_PROBLEMS, GET_PROBLEM_INFO, GET_COURSE_TAGS } from '@/store/actions.type'
+import { USER } from '@/store/getters.type'
 import agent from '@/api/agent'
 
 const OPERATION = {
@@ -39,6 +40,9 @@ export default {
       courseTags: state => state.course.courseTags,
       problemInfo: state => state.problem.problemInfo,
     }),
+    ...mapGetters({
+      USER,
+    }),
     isEdit() {
       return this.$route.params.operation === OPERATION.EDIT
     },
@@ -50,7 +54,7 @@ export default {
     },
     prob() {
       if (this.isEdit) return this.problemInfo
-      return { ...initialProb, course: this.courseName }
+      return { ...initialProb, course: this.courseName, author: this.USER }
     },
   },
 
@@ -73,7 +77,6 @@ export default {
         } else {
           result = await agent.Problem.create(body)
         }
-        // TODO: give feedback for successfully create
         alert('更新主題內容成功。')
         const pid = this.isEdit ? this.pid : result.data.data.pid
         if (willAddAttachments.length > 0) {

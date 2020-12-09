@@ -64,14 +64,12 @@ const routes = [
         component: () => import('@/views/Course/Manages/Manages'),
       },
       {
-        // temporary solution
-        path: 'manage/tags',
+        path: 'manages/tags',
         name: 'courseManageTags',
         component: () => import('@/views/Course/Manages/ManageTags'),
       },
       {
-        // temporary solution
-        path: 'manage/problems',
+        path: 'manages/problems',
         name: 'courseManageProblems',
         component: () => import('@/views/Course/Manages/ManageProblems'),
       },

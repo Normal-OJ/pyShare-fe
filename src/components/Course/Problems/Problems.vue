@@ -1,5 +1,6 @@
 <template>
-  <v-container fluid class="d-flex flex-column px-8">
+  <v-container fluid class="d-flex flex-column">
+    <div class="text-h5">主題列表</div>
     <div class="d-flex align-center">
       <v-col cols="10" md="6" class="d-flex">
         <v-select
@@ -24,8 +25,7 @@
       </v-col>
       <v-spacer />
       <v-btn color="primary" :to="{ name: 'courseManageProblems' }" class="mr-3" outlined>
-        <v-icon class="mr-1">mdi-settings</v-icon>
-        管理主題
+        管理我的主題
       </v-btn>
       <v-btn color="success" :to="{ name: 'courseSetProblems', params: { operation: 'new' } }">
         <v-icon class="mr-1">mdi-playlist-plus</v-icon>
@@ -60,7 +60,7 @@
       <template v-slot:[`item.creations`]="{ item }">
         {{ item.comments.length }}
       </template>
-      <template v-slot:[`item.author`]="{ item }">
+      <template v-slot:[`item.author.displayName`]="{ item }">
         <router-link :to="{ name: 'profile', params: { username: item.author.username } }">
           {{ item.author.displayName }}
         </router-link>
@@ -83,7 +83,7 @@ const headers = [
   { text: '標題', value: 'title', sortable: false },
   { text: '分類', value: 'tags', sortable: false },
   { text: '累積創作數', value: 'creations' },
-  { text: '作者', value: 'author', sortable: false },
+  { text: '作者', value: 'author.displayName', sortable: false },
 ]
 
 export default {

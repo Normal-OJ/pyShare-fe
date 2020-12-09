@@ -37,11 +37,12 @@ export default {
       r.onload = async e => {
         const csvString = e.target.result
         try {
-          const { data } = await agent.Auth.batchSignup({ course, csvString })
-          console.log('data', data)
+          await agent.Auth.batchSignup({ course, csvString })
           this.getCourseInfo(course)
+          alert('新增學生成功。')
         } catch (error) {
           console.log('[views/Info/submitAddMultipleStudents error]', error)
+          alert('新增學生失敗。')
         }
       }
       r.readAsText(file)
@@ -49,11 +50,12 @@ export default {
     async submitAddStudent(csvString) {
       try {
         const course = this.$route.params.name
-        const { data } = await agent.Auth.batchSignup({ course, csvString })
-        console.log('data', data)
+        await agent.Auth.batchSignup({ course, csvString })
         this.getCourseInfo(course)
+        alert('新增學生成功。')
       } catch (error) {
         console.log('[views/Info/submitAddStudent error]', error)
+        alert('新增學生失敗。')
       }
     },
   },

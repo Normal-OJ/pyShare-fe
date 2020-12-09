@@ -23,6 +23,9 @@
         />
       </v-col>
       <v-spacer />
+      <v-btn color="primary" :to="{ name: 'courseProblems' }" class="mr-3" outlined>
+        回到主題列表
+      </v-btn>
       <v-btn color="success" :to="{ name: 'courseSetProblems', params: { operation: 'new' } }">
         <v-icon class="mr-1">mdi-playlist-plus</v-icon>
         新增主題

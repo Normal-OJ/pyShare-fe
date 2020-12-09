@@ -41,7 +41,7 @@ export default {
       problemInfo: state => state.problem.problemInfo,
     }),
     ...mapGetters({
-      USER,
+      user: USER,
     }),
     isEdit() {
       return this.$route.params.operation === OPERATION.EDIT
@@ -54,7 +54,7 @@ export default {
     },
     prob() {
       if (this.isEdit) return this.problemInfo
-      return { ...initialProb, course: this.courseName, author: this.USER }
+      return { ...initialProb, course: this.courseName, author: this.user }
     },
   },
 
@@ -103,7 +103,7 @@ export default {
                 return agent.Problem.removeAttachment(pid, formData)
               }),
             )
-            alert('移除主題附件成功')
+            alert('移除主題附件成功。')
           } catch (error) {
             console.log('[views/SetProblems/handleSubmit - remove attachments] error', error)
             alert('移除主題附件失敗。')

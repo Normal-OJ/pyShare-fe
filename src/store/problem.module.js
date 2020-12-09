@@ -1,4 +1,4 @@
-import { PROBLEMS, TEMPLATES } from './getters.type'
+import { PROBLEMS, TEMPLATES, PROBLEMS_OF_MINE } from './getters.type'
 import { GET_PROBLEMS, GET_PROBLEM_INFO } from './actions.type'
 import { SET_PROBLEMS, SET_PROBLEM_INFO } from './mutations.type'
 import agent from '@/api/agent'
@@ -17,6 +17,10 @@ const getters = {
   [TEMPLATES](state) {
     return state.problems.filter(p => p.isTemplate)
   },
+  [PROBLEMS_OF_MINE](state, getters, rootState) {
+    const username = rootState.auth
+    return getters[PROBLEMS].filter(p => p.author.username === username)
+  }
 }
 
 const actions = {

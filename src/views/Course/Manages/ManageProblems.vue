@@ -11,7 +11,7 @@
 <script>
 import ManageProblems from '@/components/Course/Manages/ManageProblems'
 import { mapActions, mapGetters, mapState } from 'vuex'
-import { PROBLEMS } from '@/store/getters.type'
+import { PROBLEMS_OF_MINE } from '@/store/getters.type'
 import { GET_PROBLEMS, GET_COURSE_TAGS } from '@/store/actions.type'
 import agent from '@/api/agent'
 
@@ -23,7 +23,7 @@ export default {
       tags: state => state.course.courseTags,
     }),
     ...mapGetters({
-      problems: PROBLEMS,
+      problems: PROBLEMS_OF_MINE,
     }),
     courseName() {
       return this.$route.params.name

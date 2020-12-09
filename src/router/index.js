@@ -70,6 +70,12 @@ const routes = [
         component: () => import('@/views/Course/Manages/ManageTags'),
       },
       {
+        // temporary solution
+        path: 'manage/problems',
+        name: 'courseManageProblems',
+        component: () => import('@/views/Course/Manages/ManageProblems'),
+      },
+      {
         path: 'info',
         name: 'courseInfo',
         component: () => import('@/views/Course/Info/Info'),

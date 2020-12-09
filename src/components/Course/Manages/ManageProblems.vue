@@ -23,10 +23,6 @@
         />
       </v-col>
       <v-spacer />
-      <v-btn color="success" :to="{ name: 'courseManageProblems' }" class="mr-3" outlined>
-        <v-icon class="mr-1">mdi-settings</v-icon>
-        管理主題
-      </v-btn>
       <v-btn color="success" :to="{ name: 'courseSetProblems', params: { operation: 'new' } }">
         <v-icon class="mr-1">mdi-playlist-plus</v-icon>
         新增主題
@@ -60,10 +56,23 @@
       <template v-slot:[`item.creations`]="{ item }">
         {{ item.comments.length }}
       </template>
-      <template v-slot:[`item.author`]="{ item }">
-        <router-link :to="{ name: 'profile', params: { username: item.author.username } }">
-          {{ item.author.displayName }}
-        </router-link>
+      <template v-slot:[`item.manage`]="{ item }">
+        <v-btn
+          :to="{
+            name: 'courseSetProblems',
+            params: { operation: 'edit' },
+            query: { pid: item.pid },
+          }"
+          color="primary"
+          small
+        >
+          <v-icon class="mr-1" small>mdi-pencil</v-icon>
+          修改
+        </v-btn>
+        <v-btn class="ml-3" color="error" small @click="deleteProblem(item.pid)">
+          <v-icon class="mr-1" small>mdi-trash-can</v-icon>
+          刪除
+        </v-btn>
       </template>
       <template v-slot:[slotName] v-for="slotName in ['no-data', 'no-results']">
         <div class="d-flex flex-column align-center" :key="slotName">
@@ -83,12 +92,10 @@ const headers = [
   { text: '標題', value: 'title', sortable: false },
   { text: '分類', value: 'tags', sortable: false },
   { text: '累積創作數', value: 'creations' },
-  { text: '作者', value: 'author', sortable: false },
+  { text: '管理', value: 'manage', sortable: false },
 ]
 
 export default {
-  name: 'Problems',
-
   components: { ColorLabel },
 
   props: {
@@ -142,6 +149,12 @@ export default {
         }
       })
       return items
+    },
+    deleteProblem(pid) {
+      const result = window.confirm('確認要刪除嗎？')
+      if (result) {
+        this.$emit('delete-problem', pid)
+      }
     },
   },
 }

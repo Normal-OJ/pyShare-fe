@@ -20,7 +20,7 @@ const getters = {
   [PROBLEMS_OF_MINE](state, getters, rootState) {
     const username = rootState.auth
     return getters[PROBLEMS].filter(p => p.author.username === username)
-  }
+  },
 }
 
 const actions = {

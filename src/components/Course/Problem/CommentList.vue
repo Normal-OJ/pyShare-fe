@@ -25,7 +25,7 @@
       <v-spacer />
       <v-tooltip bottom :disabled="!isDisabledNewComment">
         <template v-slot:activator="{ on, attrs }">
-          <div v-on="on">
+          <div v-on="on" v-permission="['ALL', 'COURSE']">
             <v-btn
               color="success"
               :disabled="isDisabledNewComment"
@@ -124,7 +124,7 @@
                   <span>此創作已有其中一個版本 AC </span>
                 </v-tooltip>
                 <v-spacer />
-                <v-tooltip left>
+                <v-tooltip bottom>
                   <template v-slot:activator="{ on, attr }">
                     <div class="text-body-2" v-on="on" v-bind="attr">
                       {{ `更新於 ${$timeFromNow(updated)}` }}

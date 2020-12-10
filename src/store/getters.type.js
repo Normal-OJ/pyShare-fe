@@ -11,3 +11,6 @@ export const PROBLEMS_OF_MINE = 'problemsOfMine'
 
 // comment module
 export const COMMENTS = 'comments' // get comments that are visible (not deleted)
+
+// course module
+export const COURSE_INFO = 'courseInfo'

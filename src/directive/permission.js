@@ -1,7 +1,19 @@
 // ref: https://github.com/PanJiaChen/vue-element-admin/tree/master/src/directive/permission
 import store from '@/store'
-import { ROLE } from '@/store/getters.type'
+import { ROLE, USERNAME, COURSE_INFO } from '@/store/getters.type'
 import { ROLE as ROLES } from '@/constants/auth'
+
+const COURSE = 'COURSE'
+
+function checkCoursePermission() {
+  const courseInfo = store.getters && store.getters[COURSE_INFO]
+  // if course is PUBLIC
+  if (!courseInfo || courseInfo.status === 2) return true
+  const username = store.getters && store.getters[USERNAME]
+  const isTeacher = courseInfo.teacher.username === username
+  const isStudent = courseInfo.students.findIndex(s => s.username === username) !== -1
+  return isTeacher || isStudent
+}
 
 function checkPermission(el, binding) {
   const { value } = binding
@@ -10,13 +22,13 @@ function checkPermission(el, binding) {
   if (value && value instanceof Array) {
     if (value.length > 0) {
       const permissionRoles = value
+      // ADMIN has all permission, but when MAGIC is found in array, it means take permission away from ADMIN
+      const isAdmin = role === ROLES.ADMIN && !permissionRoles.includes('MAGIC')
+      // Check if the permission includes my role level or not
+      const hasRolePermission = permissionRoles.includes(role) || permissionRoles.includes('ALL')
+      const hasCoursePermission = !permissionRoles.includes(COURSE) || checkCoursePermission()
 
-      // ADMIN has all permission, or check if the permission includes my role level or not
-      const hasPermission =
-        (role === ROLES.ADMIN && !permissionRoles.includes('MAGIC')) ||
-        permissionRoles.includes(role)
-
-      if (!hasPermission) {
+      if (!isAdmin && (!hasRolePermission || !hasCoursePermission)) {
         el.parentNode && el.parentNode.removeChild(el)
       }
     }

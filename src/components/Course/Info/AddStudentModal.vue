@@ -52,15 +52,22 @@
               </div>
               <div class="text-body-2">
                 必須包含四欄，分別是：
-                <ul
-                  v-for="header in ['username', 'displayName', 'password', 'email']"
-                  :key="header"
-                >
+                <ul>
+                  <li>
+                    <pre>username（至多 16 字元）</pre>
+                  </li>
+                </ul>
+                <ul>
+                  <li>
+                    <pre>displayName（至多 32 字元）</pre>
+                  </li>
+                </ul>
+                <ul v-for="header in ['password', 'email']" :key="header">
                   <li>
                     <pre>{{ header }}</pre>
                   </li>
                 </ul>
-                <code>displayName</code> 為平台內顯示的名稱，目前僅開放
+                <code>displayName</code> 為平台內顯示的名稱，另外目前僅開放
                 <code>password</code> 支援修改。
               </div>
 
@@ -104,7 +111,10 @@
               <v-form ref="form" v-model="validForm">
                 <v-text-field
                   v-model="newStudent.username"
-                  :rule="[v => !!v || '此欄位為必填']"
+                  :rules="[
+                    val => !!val || '此欄位為必填',
+                    val => val.length <= 16 || '使用者名稱至多 16 字元',
+                  ]"
                   label="username（使用者名稱）"
                   outlined
                   dense
@@ -113,6 +123,7 @@
                 <v-text-field
                   v-model="newStudent.displayName"
                   label="displayName（顯示名稱）"
+                  :rules="[v => v.length <= 32 || '顯示名稱至多 32 字元']"
                   outlined
                   dense
                 />
@@ -123,7 +134,13 @@
                   dense
                 />
                 <v-text-field v-model="newStudent.email" label="email（信箱）" outlined dense />
-                <v-btn class="my-4" block color="success" @click="submitAddStudent">
+                <v-btn
+                  class="my-4"
+                  block
+                  color="success"
+                  :disabled="isAddStudentDisabled"
+                  @click="submitAddStudent"
+                >
                   送出
                 </v-btn>
               </v-form>
@@ -150,7 +167,7 @@ export default {
     tab: 0,
     newStudentFile: null,
     template,
-    validForm: true,
+    validForm: false,
     newStudent: {
       username: '',
       displayName: '',
@@ -160,6 +177,12 @@ export default {
     isShowConfirmModal: false,
     previewFile: null,
   }),
+
+  computed: {
+    isAddStudentDisabled() {
+      return !this.newStudent.username || !this.validForm
+    },
+  },
 
   methods: {
     async submit() {
@@ -187,10 +210,12 @@ export default {
       link.click()
     },
     submitAddStudent() {
-      this.$emit(
-        'submitAddStudent',
-        `${Object.keys(this.newStudent).join(',')}\n${Object.values(this.newStudent).join(',')}`,
-      )
+      if (this.$refs.form.validate()) {
+        this.$emit(
+          'submitAddStudent',
+          `${Object.keys(this.newStudent).join(',')}\n${Object.values(this.newStudent).join(',')}`,
+        )
+      }
       // TODO: getError and show feedback, conditionally close dialog
       this.dialog = false
     },

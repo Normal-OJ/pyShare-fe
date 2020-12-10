@@ -45,6 +45,14 @@
         <router-link :to="{ name: 'courseProblem', params: { id: item.pid } }">
           {{ item.title }}
         </router-link>
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on, attrs }">
+            <v-icon class="ml-1" small v-bind="attrs" v-on="on" v-if="item.status === 0">
+              mdi-minus-circle
+            </v-icon>
+          </template>
+          <span>隱藏的主題</span>
+        </v-tooltip>
       </template>
       <template v-slot:[`item.tags`]="{ item }">
         <ColorLabel
@@ -70,7 +78,7 @@
           small
         >
           <v-icon class="mr-1" small>mdi-pencil</v-icon>
-          修改
+          編輯
         </v-btn>
         <v-btn class="ml-3" color="error" small @click="deleteProblem(item.pid)">
           <v-icon class="mr-1" small>mdi-trash-can</v-icon>

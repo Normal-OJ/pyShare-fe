@@ -14,7 +14,18 @@
         </div>
       </div>
       <v-spacer />
-      <v-btn outlined color="primary" class="align-self-end">
+      <v-btn
+        v-if="$isSelf(prob.author.username)"
+        outlined
+        color="default"
+        class="align-self-end rounded"
+        :to="{
+          name: 'courseSetProblems',
+          params: { operation: 'edit' },
+          query: { pid: prob.pid },
+        }"
+        icon
+      >
         <v-icon>mdi-pencil-outline</v-icon>
       </v-btn>
     </div>
@@ -66,6 +77,10 @@ export default {
     prob: {
       type: Object,
       required: true,
+    },
+    isPreview: {
+      type: Boolean,
+      default: false,
     },
   },
 

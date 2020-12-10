@@ -1,5 +1,11 @@
 <template>
-  <v-chip label :small="small" :color="labelColor.color" :dark="labelColor.dark">
+  <v-chip
+    label
+    :small="small"
+    :color="labelColor.color"
+    :dark="labelColor.dark"
+    class="text-button"
+  >
     {{ tag }}
   </v-chip>
 </template>

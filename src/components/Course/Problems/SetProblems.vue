@@ -1,7 +1,7 @@
 <template>
   <v-container fluid class="pb-16">
     <v-row class="mb-4">
-      <div class="text-h6">{{ isEdit ? '修改主題' : '新增主題' }}</div>
+      <div class="text-h6">{{ isEdit ? '編輯主題' : '新增主題' }}</div>
       <v-spacer />
       <PreviewNewProblem :prob="newProb" />
     </v-row>

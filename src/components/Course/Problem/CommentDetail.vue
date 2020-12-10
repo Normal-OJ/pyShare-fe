@@ -71,7 +71,6 @@
                   {{ SUBMISSION_STATE[`${comment.submission.state}`] }}
                   <v-icon class="ml-1">mdi-chevron-down</v-icon>
                 </v-btn>
-                <!-- TODO: add chevron down for teacher -->
               </template>
               <v-list>
                 <v-list-item
@@ -86,9 +85,14 @@
                 </v-list-item>
               </v-list>
             </v-menu>
-            <v-btn class="ml-4" icon @click="closeSelectedComment">
-              <v-icon>mdi-close</v-icon>
-            </v-btn>
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn class="ml-4" icon @click="closeSelectedComment" v-on="on" v-bind="attrs">
+                  <v-icon>mdi-window-minimize</v-icon>
+                </v-btn>
+              </template>
+              <span>關閉創作，回到列表</span>
+            </v-tooltip>
           </div>
           <!-- Second Row -->
           <div class="d-flex flex-row align-center text-body-2">
@@ -281,7 +285,7 @@
         </v-icon>
         愛心
       </v-btn>
-      <v-btn text width="50%" @click="isReply = true">
+      <v-btn text width="50%" @click="isReply = true" v-permission="['ALL', 'COURSE']">
         <v-icon class="mr-1">mdi-comment-outline</v-icon>
         留言
       </v-btn>

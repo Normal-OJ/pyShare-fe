@@ -1,7 +1,7 @@
 <template>
   <v-data-table
     :headers="headers"
-    :items="courses"
+    :items="data"
     :items-per-page="Number(-1)"
     hide-default-footer
     :loading="loading"
@@ -59,11 +59,9 @@ export default {
 
   computed: {
     ...mapState({
+      username: state => state.auth.username,
       role: state => state.auth.role,
     }),
-    courses() {
-      return this.data.filter(d => d.status !== 0 || this.role === 0)
-    },
   },
 
   data: () => ({

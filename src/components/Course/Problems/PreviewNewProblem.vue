@@ -19,7 +19,7 @@
       </v-toolbar>
 
       <v-card-text class="mt-8 text--primary">
-        <Problem :prob="prob" />
+        <Problem :prob="prob" isPreview />
       </v-card-text>
     </v-card>
   </v-dialog>

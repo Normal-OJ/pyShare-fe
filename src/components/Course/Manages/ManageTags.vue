@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid class="pt-4 px-8">
+  <v-container fluid>
     <v-row no-gutters>
       <v-spacer></v-spacer>
       <CreateTagModal @submit="submitNewTags" />

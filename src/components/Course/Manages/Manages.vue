@@ -1,13 +1,14 @@
 <template>
   <v-container fluid>
+    <div class="text-h5">課程管理</div>
     <v-hover v-slot:default="{ hover }">
       <v-card
         class="px-4 mt-6 mx-6"
         :elevation="hover ? 6 : 2"
-        max-width="300"
+        max-width="500"
         @click="clickCard('courseManageTags')"
       >
-        <div class="d-flex justify-space-around">
+        <div class="d-flex justify-start flex-wrap">
           <div class="d-flex justify-center align-center">
             <v-icon size="60" color="primary">mdi-tag-multiple</v-icon>
           </div>
@@ -20,8 +21,8 @@
     </v-hover>
 
     <v-hover v-slot:default="{ hover }">
-      <v-card class="px-4 mt-6 mx-6" :elevation="hover ? 6 : 2" max-width="300">
-        <div class="d-flex justify-space-around">
+      <v-card class="px-4 mt-6 mx-6" :elevation="hover ? 6 : 2" max-width="500">
+        <div class="d-flex justify-start flex-wrap">
           <div class="d-flex justify-center align-center">
             <v-icon size="60" color="primary">mdi-account-multiple</v-icon>
           </div>
@@ -34,14 +35,19 @@
     </v-hover>
 
     <v-hover v-slot:default="{ hover }">
-      <v-card class="px-4 mt-6 mx-6" :elevation="hover ? 6 : 2" max-width="300">
-        <div class="d-flex justify-space-around">
+      <v-card
+        class="px-4 mt-6 mx-6"
+        :elevation="hover ? 6 : 2"
+        max-width="500"
+        @click="clickCard('courseManageProblems')"
+      >
+        <div class="d-flex justify-start flex-wrap">
           <div class="d-flex justify-center align-center">
             <v-icon size="60" color="primary">mdi-file-document</v-icon>
           </div>
           <div>
-            <v-card-title>管理範本</v-card-title>
-            <v-card-subtitle>在這裡管理課程中可使用的主題範本</v-card-subtitle>
+            <v-card-title>管理主題</v-card-title>
+            <v-card-subtitle>在這裡管理課程中的主題</v-card-subtitle>
           </div>
         </div>
       </v-card>

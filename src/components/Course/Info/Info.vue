@@ -13,6 +13,10 @@
               <td class="font-weight-bold">教師</td>
               <td>{{ info.teacher ? info.teacher.displayName : '' }}</td>
             </tr>
+            <tr>
+              <td class="font-weight-bold">課程狀態</td>
+              <td>{{ COURSE_STATUS[`${info.status}`] }}</td>
+            </tr>
           </tbody>
         </template>
       </v-simple-table>
@@ -43,6 +47,7 @@
 
 <script>
 import Members from '@/components/Course/Info/Members'
+import { COURSE_STATUS } from '@/constants/course'
 
 export default {
   name: 'Info',
@@ -55,6 +60,8 @@ export default {
       required: true,
     },
   },
+
+  data: () => ({ COURSE_STATUS }),
 
   computed: {
     members() {

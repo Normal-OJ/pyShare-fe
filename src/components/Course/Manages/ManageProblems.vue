@@ -1,6 +1,5 @@
 <template>
-  <v-container fluid class="d-flex flex-column">
-    <div class="text-h5">主題列表</div>
+  <v-container fluid class="d-flex flex-column px-8">
     <div class="d-flex align-center">
       <v-col cols="10" md="6" class="d-flex">
         <v-select
@@ -24,8 +23,8 @@
         />
       </v-col>
       <v-spacer />
-      <v-btn color="primary" :to="{ name: 'courseManageProblems' }" class="mr-3" outlined>
-        管理我的主題
+      <v-btn color="primary" :to="{ name: 'courseProblems' }" class="mr-3" outlined>
+        回到主題列表
       </v-btn>
       <v-btn color="success" :to="{ name: 'courseSetProblems', params: { operation: 'new' } }">
         <v-icon class="mr-1">mdi-playlist-plus</v-icon>
@@ -60,10 +59,23 @@
       <template v-slot:[`item.creations`]="{ item }">
         {{ item.comments.length }}
       </template>
-      <template v-slot:[`item.author.displayName`]="{ item }">
-        <router-link :to="{ name: 'profile', params: { username: item.author.username } }">
-          {{ item.author.displayName }}
-        </router-link>
+      <template v-slot:[`item.manage`]="{ item }">
+        <v-btn
+          :to="{
+            name: 'courseSetProblems',
+            params: { operation: 'edit' },
+            query: { pid: item.pid },
+          }"
+          color="primary"
+          small
+        >
+          <v-icon class="mr-1" small>mdi-pencil</v-icon>
+          修改
+        </v-btn>
+        <v-btn class="ml-3" color="error" small @click="deleteProblem(item.pid)">
+          <v-icon class="mr-1" small>mdi-trash-can</v-icon>
+          刪除
+        </v-btn>
       </template>
       <template v-slot:[slotName] v-for="slotName in ['no-data', 'no-results']">
         <div class="d-flex flex-column align-center" :key="slotName">
@@ -83,12 +95,10 @@ const headers = [
   { text: '標題', value: 'title', sortable: false },
   { text: '分類', value: 'tags', sortable: false },
   { text: '累積創作數', value: 'creations' },
-  { text: '作者', value: 'author.displayName', sortable: false },
+  { text: '管理', value: 'manage', sortable: false },
 ]
 
 export default {
-  name: 'Problems',
-
   components: { ColorLabel },
 
   props: {
@@ -142,6 +152,12 @@ export default {
         }
       })
       return items
+    },
+    deleteProblem(pid) {
+      const result = window.confirm('確認要刪除嗎？')
+      if (result) {
+        this.$emit('delete-problem', pid)
+      }
     },
   },
 }

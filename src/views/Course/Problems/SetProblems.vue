@@ -12,8 +12,9 @@
 <script>
 import Spinner from '@/components/UI/Spinner'
 import SetProblems from '@/components/Course/Problems/SetProblems'
-import { mapActions, mapState } from 'vuex'
+import { mapActions, mapGetters, mapState } from 'vuex'
 import { GET_PROBLEMS, GET_PROBLEM_INFO, GET_COURSE_TAGS } from '@/store/actions.type'
+import { USER } from '@/store/getters.type'
 import agent from '@/api/agent'
 
 const OPERATION = {
@@ -39,6 +40,9 @@ export default {
       courseTags: state => state.course.courseTags,
       problemInfo: state => state.problem.problemInfo,
     }),
+    ...mapGetters({
+      user: USER,
+    }),
     isEdit() {
       return this.$route.params.operation === OPERATION.EDIT
     },
@@ -50,7 +54,7 @@ export default {
     },
     prob() {
       if (this.isEdit) return this.problemInfo
-      return { ...initialProb, course: this.courseName }
+      return { ...initialProb, course: this.courseName, author: this.user }
     },
   },
 
@@ -73,28 +77,37 @@ export default {
         } else {
           result = await agent.Problem.create(body)
         }
-        // TODO: give feedback for successfully create
-        alert('submit problem body success!')
+        alert('更新主題內容成功。')
         const pid = this.isEdit ? this.pid : result.data.data.pid
         if (willAddAttachments.length > 0) {
-          await Promise.all(
-            willAddAttachments.map(file => {
-              const formData = new FormData()
-              formData.append('attachment', file)
-              return agent.Problem.addAttachment(pid, formData)
-            }),
-          )
-          alert('submit problem attachment success!')
+          try {
+            await Promise.all(
+              willAddAttachments.map(file => {
+                const formData = new FormData()
+                formData.append('attachment', file)
+                return agent.Problem.addAttachment(pid, formData)
+              }),
+            )
+            alert('新增主題附件成功。')
+          } catch (error) {
+            console.log('[views/SetProblems/handleSubmit - add attachments] error', error)
+            alert('新增主題附件失敗。')
+          }
         }
         if (willRemoveAttachments.length > 0) {
-          await Promise.all(
-            willRemoveAttachments.map(filename => {
-              const formData = new FormData()
-              formData.append('attachmentName', filename)
-              return agent.Problem.removeAttachment(pid, formData)
-            }),
-          )
-          alert('remove problem attachment success!')
+          try {
+            await Promise.all(
+              willRemoveAttachments.map(filename => {
+                const formData = new FormData()
+                formData.append('attachmentName', filename)
+                return agent.Problem.removeAttachment(pid, formData)
+              }),
+            )
+            alert('移除主題附件成功。')
+          } catch (error) {
+            console.log('[views/SetProblems/handleSubmit - remove attachments] error', error)
+            alert('移除主題附件失敗。')
+          }
         }
         this.getProblemInfo(pid)
         if (!this.isEdit) {
@@ -106,7 +119,7 @@ export default {
         }
       } catch (error) {
         console.log('[views/SetProblems/handleSubmit] error', error)
-        // TODO: setError
+        alert('更新主題內容失敗。')
       }
     },
   },

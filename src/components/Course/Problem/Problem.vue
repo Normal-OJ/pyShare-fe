@@ -1,6 +1,6 @@
 <template>
   <Fragment>
-    <div class="text-h5 font-weight-bold text-center">{{ prob.title }}</div>
+    <div class="text-h4 font-weight-bold text-center">{{ prob.title }}</div>
     <div class="d-flex flex-row mt-4">
       <v-avatar class="mr-2" size="48" color="primary">
         <span class="white--text headline">{{ prob.author.displayName.slice(0, 1) }}</span>
@@ -13,6 +13,10 @@
           {{ $formattedTime(prob.timestamp || Math.floor(new Date() / 1000)) }}
         </div>
       </div>
+      <v-spacer />
+      <v-btn outlined color="primary" class="align-self-end">
+        <v-icon>mdi-pencil-outline</v-icon>
+      </v-btn>
     </div>
     <v-row class="mt-6">
       <v-col cols="12" md="8">

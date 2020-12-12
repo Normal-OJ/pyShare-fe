@@ -75,18 +75,19 @@ export default {
       username: state => state.auth.username,
       displayName: state => state.auth.displayName,
     }),
-    headerItems() {
-      return [
-        {
-          label: '課程',
-          route: { name: 'courses' },
-        },
-        {
-          label: '關於平台',
-          route: { name: 'about' },
-        },
-      ]
-    },
   },
+
+  data: () => ({
+    headerItems: [
+      {
+        label: '課程',
+        route: { name: 'courses' },
+      },
+      {
+        label: '關於平台',
+        route: { name: 'about' },
+      },
+    ],
+  }),
 }
 </script>

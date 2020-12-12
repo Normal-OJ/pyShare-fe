@@ -17,3 +17,8 @@ $body-font-family: 'pyShare', sans-serif;
 $heading-font-family: $body-font-family;
 
 // TODO: resolve Failed to decode downloaded fonts
+
+// Import Vuetify SASS Variables to override data-table's variable based on $headings
+@import '~vuetify/src/styles/styles.sass';
+
+$data-table-regular-header-font-size: map-deep-get($headings, 'subtitle-2', 'size') !default;

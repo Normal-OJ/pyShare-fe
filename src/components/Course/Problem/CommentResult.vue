@@ -60,10 +60,15 @@
             下載
           </v-btn>
           <v-row>
-            <v-col cols="12" md="3" v-for="imageUrl in imageUrls" :key="imageUrl">
-              <v-img max-height="200" contain :src="imageUrl" @click="displayImage = imageUrl" />
+            <v-col cols="12" md="3" v-for="(imageUrl, index) in imageUrls" :key="imageUrl">
+              <v-img max-height="200" contain :src="imageUrl" @click="openLightbox(index)" />
             </v-col>
           </v-row>
+          <FsLightbox
+            :toggler="lightboxToggler"
+            :sourceIndex="lightboxIndex"
+            :sources="imageUrls"
+          />
         </div>
       </v-tab-item>
       <v-tab-item class="pt-4">
@@ -75,11 +80,11 @@
       </v-tab-item>
     </v-tabs>
     <v-dialog :value="displayImage">
-      <div class="d-flex flex-column align-center justify-center">
-        <v-btn icon @click="displayImage = null">
-          <v-icon>mdi-close</v-icon>
+      <div class="d-flex justify-center">
+        <v-img contain :src="displayImage" height="70vh" />
+        <v-btn color="white" icon @click="displayImage = null">
+          <v-icon>mdi-close-circle</v-icon>
         </v-btn>
-        <v-img max-width="60vw" contain :src="displayImage" />
       </div>
     </v-dialog>
   </Fragment>
@@ -87,6 +92,7 @@
 
 <script>
 import { Fragment } from 'vue-fragment'
+import FsLightbox from 'fslightbox-vue'
 
 const imageFilePossibleExtension = ['png', 'jpg', 'gif', 'jpeg', 'webp', 'svg', 'bmp']
 
@@ -106,7 +112,7 @@ export default {
     },
   },
 
-  components: { Fragment },
+  components: { Fragment, FsLightbox },
 
   computed: {
     imageUrls() {
@@ -137,6 +143,8 @@ export default {
       displayImage: null,
       noSelection: '請選擇',
       browsing: '請選擇',
+      lightboxToggler: false,
+      lightboxIndex: 0,
     }
   },
 
@@ -155,6 +163,10 @@ export default {
         const url = `https://pyshare.noj.tw/api/submission/${this.sid}/file/${file}`
         window.open(url, '_blank')
       }
+    },
+    openLightbox(index) {
+      this.lightboxIndex = index
+      this.lightboxToggler = !this.lightboxToggler
     },
   },
 }

@@ -12,7 +12,11 @@
           :items="tags"
           multiple
           dense
-        />
+        >
+          <template v-slot:selection="{ item }">
+            <ColorLabel :tag="item" small class="mt-2 mr-1" />
+          </template>
+        </v-select>
         <v-text-field
           v-model="searchText"
           label="快速搜尋"
@@ -24,13 +28,15 @@
         />
       </v-col>
       <v-spacer />
-      <v-btn color="primary" :to="{ name: 'courseManageProblems' }" class="mr-3" outlined>
-        管理我的主題
-      </v-btn>
-      <v-btn color="success" :to="{ name: 'courseSetProblems', params: { operation: 'new' } }">
-        <v-icon class="mr-1">mdi-playlist-plus</v-icon>
-        新增主題
-      </v-btn>
+      <div v-permission="['ALL', 'COURSE']">
+        <v-btn color="primary" :to="{ name: 'courseManageProblems' }" class="mr-3" outlined>
+          管理我的主題
+        </v-btn>
+        <v-btn color="success" :to="{ name: 'courseSetProblems', params: { operation: 'new' } }">
+          <v-icon class="mr-1">mdi-playlist-plus</v-icon>
+          新增主題
+        </v-btn>
+      </div>
     </div>
 
     <v-data-table
@@ -46,6 +52,14 @@
         <router-link :to="{ name: 'courseProblem', params: { id: item.pid } }">
           {{ item.title }}
         </router-link>
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on, attrs }">
+            <v-icon class="ml-1" small v-bind="attrs" v-on="on" v-if="item.status === 0">
+              mdi-minus-circle
+            </v-icon>
+          </template>
+          <span>隱藏的主題</span>
+        </v-tooltip>
       </template>
       <template v-slot:[`item.tags`]="{ item }">
         <ColorLabel
@@ -54,6 +68,7 @@
           :tag="tag"
           small
           class="ma-1"
+          style="cursor: pointer"
           @click.native="selectTag(tag)"
         />
       </template>
@@ -124,6 +139,9 @@ export default {
   methods: {
     selectTag(tag) {
       this.selectedTags = [...new Set([...this.selectedTags, tag])]
+    },
+    unselectTag(tag) {
+      this.selectedTags = this.selectedTags.filter(t => t !== tag)
     },
     customSort(items, index, isDesc) {
       items.sort((a, b) => {

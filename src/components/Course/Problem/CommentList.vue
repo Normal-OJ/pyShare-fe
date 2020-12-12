@@ -25,7 +25,7 @@
       <v-spacer />
       <v-tooltip bottom :disabled="!isDisabledNewComment">
         <template v-slot:activator="{ on, attrs }">
-          <div v-on="on">
+          <div v-on="on" v-permission="['ALL', 'COURSE']">
             <v-btn
               color="success"
               :disabled="isDisabledNewComment"
@@ -103,7 +103,9 @@
                 <router-link :to="{ name: 'profile', params: { username: author.username } }">
                   {{ author.displayName }}
                 </router-link>
-                <div class="text-body-2">&nbsp;·&nbsp;{{ floor }}&nbsp;樓&nbsp;·&nbsp;</div>
+                <div class="text-body-2" style="white-space: pre">
+                  &nbsp;·&nbsp;{{ floor }}&nbsp;樓&nbsp;·&nbsp;
+                </div>
                 <v-tooltip bottom>
                   <template v-slot:activator="{ on, attr }">
                     <div class="text-body-2" v-on="on" v-bind="attr">
@@ -114,7 +116,7 @@
                 </v-tooltip>
                 <v-tooltip bottom>
                   <template v-slot:activator="{ on, attr }">
-                    <div v-if="hasAccepted">
+                    <div v-show="hasAccepted" style="white-space: pre">
                       &nbsp;·&nbsp;
                       <v-icon color="primary" small v-on="on" v-bind="attr">
                         mdi-check-circle
@@ -124,7 +126,7 @@
                   <span>此創作已有其中一個版本 AC </span>
                 </v-tooltip>
                 <v-spacer />
-                <v-tooltip left>
+                <v-tooltip bottom>
                   <template v-slot:activator="{ on, attr }">
                     <div class="text-body-2" v-on="on" v-bind="attr">
                       {{ `更新於 ${$timeFromNow(updated)}` }}

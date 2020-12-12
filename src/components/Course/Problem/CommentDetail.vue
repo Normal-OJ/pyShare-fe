@@ -1,6 +1,6 @@
 <template>
   <Fragment>
-    <v-card class="pa-4 mt-4">
+    <v-card class="py-4 px-6 mt-4">
       <div class="d-flex flex-row align-center">
         <v-avatar class="mr-2" size="48" color="primary">
           <span class="white--text headline">{{ comment.author.displayName.slice(0, 1) }}</span>
@@ -10,15 +10,24 @@
           <div class="d-flex flex-row align-center">
             <div v-if="!isEdit[COMMENT_KEY.TITLE]" class="d-flex align-center">
               <div class="text-body-1">{{ comment && comment.title }}</div>
-              <v-btn
-                v-if="$isSelf(comment.author.username)"
-                class="ml-2"
-                small
-                icon
-                @click.stop="editComment(COMMENT_KEY.TITLE)"
-              >
-                <v-icon small>mdi-pencil</v-icon>
-              </v-btn>
+              <v-tooltip right>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn
+                    v-if="$isSelf(comment.author.username)"
+                    class="ml-2 rounded"
+                    color="primary darken-3"
+                    x-small
+                    icon
+                    outlined
+                    @click.stop="editComment(COMMENT_KEY.TITLE)"
+                    v-on="on"
+                    v-bind="attrs"
+                  >
+                    <v-icon small>mdi-pencil-outline</v-icon>
+                  </v-btn>
+                </template>
+                <span>編輯創作標題</span>
+              </v-tooltip>
             </div>
             <div v-else class="d-flex align-center">
               <v-text-field v-model="newComment[COMMENT_KEY.TITLE]" outlined dense hide-details />
@@ -42,60 +51,38 @@
               </v-btn>
             </div>
             <v-spacer />
-            <v-btn
-              class="mr-4"
-              :color="hasLiked ? 'secondary' : 'default'"
-              icon
-              @click="likeComment"
-            >
-              <v-icon>{{ hasLiked ? 'mdi-heart' : 'mdi-heart-outline' }}</v-icon>
-            </v-btn>
-            <v-chip
-              v-permission="[STUDENT, 'MAGIC']"
-              :color="SUBMISSION_COLOR[SUBMISSION_STATE[`${comment.submission.state}`]]"
-              class="text-subtitle-2"
-              label
-            >
-              {{ SUBMISSION_STATE[`${comment.submission.state}`] }}
-            </v-chip>
-            <v-menu offset-y rounded="0" v-permission="[TEACHER]" @change="grade">
+            <v-tooltip bottom>
               <template v-slot:activator="{ on, attrs }">
                 <v-btn
-                  class="text-subtitle-2"
-                  :color="SUBMISSION_COLOR[SUBMISSION_STATE[`${comment.submission.state}`]]"
-                  v-bind="attrs"
+                  :color="hasLiked ? 'secondary' : 'default'"
+                  icon
+                  @click="likeComment"
                   v-on="on"
-                  small
-                  depressed
+                  v-bind="attrs"
                 >
-                  {{ SUBMISSION_STATE[`${comment.submission.state}`] }}
-                  <v-icon class="ml-1">mdi-chevron-down</v-icon>
+                  <v-icon>{{ hasLiked ? 'mdi-heart' : 'mdi-heart-outline' }}</v-icon>
                 </v-btn>
-                <!-- TODO: add chevron down for teacher -->
               </template>
-              <v-list>
-                <v-list-item
-                  v-for="{ value, label } in submissionStatusOptions"
-                  :key="value"
-                  link
-                  @click="gradeSubmission(value)"
-                >
-                  <v-list-item-title class="text-body-2">
-                    <v-chip :color="SUBMISSION_COLOR[label]" label small>{{ label }}</v-chip>
-                  </v-list-item-title>
-                </v-list-item>
-              </v-list>
-            </v-menu>
-            <v-btn class="ml-4" icon @click="closeSelectedComment">
-              <v-icon>mdi-close</v-icon>
-            </v-btn>
+              <span>愛心</span>
+            </v-tooltip>
+
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn class="ml-4" icon @click="closeSelectedComment" v-on="on" v-bind="attrs">
+                  <v-icon>mdi-close</v-icon>
+                </v-btn>
+              </template>
+              <span>關閉創作，回到列表</span>
+            </v-tooltip>
           </div>
           <!-- Second Row -->
           <div class="d-flex flex-row align-center text-body-2">
             <router-link :to="{ name: 'profile', params: { username: comment.author.username } }">
               {{ comment.author.displayName }}
             </router-link>
-            <div class="text-body-2">&nbsp;·&nbsp;{{ comment.floor }}&nbsp;樓&nbsp;·&nbsp;</div>
+            <div class="text-body-2" style="white-space: pre">
+              &nbsp;·&nbsp;{{ comment.floor }}&nbsp;樓&nbsp;·&nbsp;
+            </div>
             <v-tooltip bottom>
               <template v-slot:activator="{ on, attr }">
                 <div class="text-body-2" v-on="on" v-bind="attr">
@@ -106,7 +93,7 @@
             </v-tooltip>
             <v-tooltip bottom>
               <template v-slot:activator="{ on, attr }">
-                <div v-if="comment.hasAccepted">
+                <div v-show="hasAccepted" style="white-space: pre">
                   &nbsp;·&nbsp;
                   <v-icon color="primary" small v-on="on" v-bind="attr">
                     mdi-check-circle
@@ -122,15 +109,24 @@
         <!-- Creation Content -->
         <div class="text-body-1 font-weight-bold d-flex align-center my-4">
           創作說明
-          <v-btn
-            v-if="$isSelf(comment.author.username)"
-            class="ml-2"
-            small
-            icon
-            @click.stop="editComment(COMMENT_KEY.CONTENT)"
-          >
-            <v-icon small>mdi-pencil</v-icon>
-          </v-btn>
+          <v-tooltip right>
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn
+                v-show="$isSelf(comment.author.username) && !isEdit[COMMENT_KEY.CONTENT]"
+                class="ml-2 rounded"
+                color="primary darken-3"
+                x-small
+                icon
+                outlined
+                @click.stop="editComment(COMMENT_KEY.CONTENT)"
+                v-on="on"
+                v-bind="attrs"
+              >
+                <v-icon small>mdi-pencil-outline</v-icon>
+              </v-btn>
+            </template>
+            <span>編輯創作說明</span>
+          </v-tooltip>
         </div>
         <div v-if="!isEdit[COMMENT_KEY.CONTENT]" v-html="comment.content" />
         <div v-else>
@@ -162,26 +158,43 @@
         <div class="text-body-1 font-weight-bold d-flex align-center my-4">
           創作程式
           <v-btn
-            v-if="$isSelf(comment.author.username) && !isBrowsingHistory"
-            class="ml-2"
+            v-show="$isSelf(comment.author.username) && !isEdit[COMMENT_KEY.CODE]"
+            class="ml-2 rounded"
+            color="primary darken-2"
             small
-            icon
+            outlined
             @click.stop="editComment(COMMENT_KEY.CODE)"
           >
-            <v-icon small>mdi-pencil-plus</v-icon>
+            <v-icon small>mdi-pencil-plus-outline</v-icon>
+            <div class="text-button ml-1">新增程式版本</div>
           </v-btn>
+
           <v-menu offset-y rounded="0">
-            <template v-slot:activator="{ on, attrs }">
-              <v-btn
-                v-show="!isEdit[COMMENT_KEY.CODE]"
-                class="ml-2"
-                small
-                icon
-                v-bind="attrs"
-                v-on="on"
-              >
-                <v-icon size="20">mdi-history</v-icon>
-              </v-btn>
+            <template v-slot:activator="{ on: menu, attrs }">
+              <v-tooltip right>
+                <template v-slot:activator="{ on: tooltip }">
+                  <v-btn
+                    v-show="!isEdit[COMMENT_KEY.CODE]"
+                    class="ml-2 rounded"
+                    color="primary darken-2"
+                    outlined
+                    small
+                    v-bind="attrs"
+                    v-on="{ ...menu, ...tooltip }"
+                  >
+                    <v-icon size="20">mdi-history</v-icon>
+                    <div class="text-button ml-1">
+                      {{ `版本 ${browsingSubmissionIndex + 1}` }}
+                      {{
+                        browsingSubmissionIndex === historySubmissions.length - 1
+                          ? '（最新版）'
+                          : ''
+                      }}
+                    </div>
+                  </v-btn>
+                </template>
+                <span>檢視歷史版本</span>
+              </v-tooltip>
             </template>
             <v-list>
               <v-list-item
@@ -204,13 +217,66 @@
               </v-list-item>
             </v-list>
           </v-menu>
+          <v-spacer />
+          <div class="text-body-2" v-if="browsingSubmission">
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on, attrs }">
+                <span v-on="on" v-bind="attrs">
+                  {{
+                    `版本 ${browsingSubmissionIndex + 1} · ${$timeFromNow(
+                      browsingSubmission.timestamp,
+                    )}`
+                  }}
+                </span>
+              </template>
+              <span>{{ $formattedTime(browsingSubmission.timestamp) }}</span>
+            </v-tooltip>
+            <v-chip
+              v-permission="[STUDENT, 'MAGIC']"
+              :color="SUBMISSION_COLOR[SUBMISSION_STATE[`${browsingSubmission.state}`]]"
+              class="text-subtitle-2 ml-4"
+              label
+            >
+              {{ SUBMISSION_STATE[`${browsingSubmission.state}`] }}
+            </v-chip>
+            <v-menu offset-y rounded="0" v-permission="[TEACHER]">
+              <template v-slot:activator="{ on: menu, attrs }">
+                <v-tooltip bottom>
+                  <template v-slot:activator="{ on: tooltip }">
+                    <v-btn
+                      class="text-subtitle-2 ml-4"
+                      :color="SUBMISSION_COLOR[SUBMISSION_STATE[`${browsingSubmission.state}`]]"
+                      v-bind="attrs"
+                      v-on="{ ...tooltip, ...menu }"
+                      small
+                      depressed
+                    >
+                      {{ SUBMISSION_STATE[`${browsingSubmission.state}`] }}
+                      <v-icon class="ml-1">mdi-chevron-down</v-icon>
+                    </v-btn>
+                  </template>
+                  <span>批改創作</span>
+                </v-tooltip>
+              </template>
+              <v-list>
+                <v-list-item
+                  v-for="{ value, label } in submissionStatusOptions"
+                  :key="value"
+                  link
+                  @click="gradeSubmission(value, browsingSubmission.id)"
+                >
+                  <v-list-item-title class="text-body-2">
+                    <v-chip :color="SUBMISSION_COLOR[label]" label small>{{ label }}</v-chip>
+                  </v-list-item-title>
+                </v-list-item>
+              </v-list>
+            </v-menu>
+          </div>
         </div>
-        <Spinner
-          v-if="historySubmissions.length === 0 || !historySubmissions[browsingSubmissionIndex]"
-        />
+        <Spinner v-if="!browsingSubmission" />
         <CodeEditor
           v-else-if="!isEdit[COMMENT_KEY.CODE]"
-          v-model="historySubmissions[browsingSubmissionIndex].code"
+          v-model="browsingSubmission.code"
           readOnly
         />
         <div v-else>
@@ -218,7 +284,7 @@
             <div class="text-body-1">新增程式版本</div>
             <v-spacer />
             <v-btn class="mr-2" color="primary" outlined tile small @click="setDefaultCode">
-              回復預設程式碼
+              套用預設程式碼
             </v-btn>
             <v-btn color="primary" outlined tile small @click="cancelEditComment(COMMENT_KEY.CODE)">
               取消
@@ -232,18 +298,8 @@
         <!-- Creation Result -->
         <div v-if="!isEdit[COMMENT_KEY.CODE]">
           <div class="text-body-1 font-weight-bold my-4">執行結果</div>
-          <Spinner
-            v-if="
-              (isSubmissionPending && !isBrowsingHistory) ||
-                historySubmissions.length === 0 ||
-                !historySubmissions[browsingSubmissionIndex]
-            "
-          />
-          <CommentResult
-            v-else
-            :sid="historySubmissions[browsingSubmissionIndex].id"
-            :result="historySubmissions[browsingSubmissionIndex]"
-          />
+          <Spinner v-if="(isSubmissionPending && !isBrowsingHistory) || !browsingSubmission" />
+          <CommentResult v-else :sid="browsingSubmission.id" :result="browsingSubmission" />
         </div>
         <div v-else>
           <div class="mt-4 d-flex">
@@ -281,9 +337,9 @@
         </v-icon>
         愛心
       </v-btn>
-      <v-btn text width="50%" @click="isReply = true">
+      <v-btn text width="50%" @click="isReply = true" v-permission="['ALL', 'COURSE']">
         <v-icon class="mr-1">mdi-comment-outline</v-icon>
-        留言
+        留言 （{{ comment.replies && comment.replies.length }}）
       </v-btn>
     </v-card>
     <div v-show="isReply" class="mt-6">
@@ -346,6 +402,10 @@ export default {
       type: String,
       required: true,
     },
+    historySubmissions: {
+      type: Array,
+      required: true,
+    },
   },
 
   computed: {
@@ -354,10 +414,8 @@ export default {
     },
     isSubmissionPending() {
       if (!this.comment || !this.comment.submission) return false
-      if (!this.historySubmissions[this.browsingSubmissionIndex]) return true
-      return !Object.keys(this.historySubmissions[this.browsingSubmissionIndex]).some(
-        key => key === 'stdout',
-      )
+      if (!this.browsingSubmission) return true
+      return !Object.keys(this.browsingSubmission).some(key => key === 'stdout')
     },
     isTestSubmissionPending() {
       if (!this.testResult) return false
@@ -374,6 +432,12 @@ export default {
     },
     commentReplies() {
       return this.comment.replies
+    },
+    browsingSubmission() {
+      return this.historySubmissions[this.browsingSubmissionIndex]
+    },
+    hasAccepted() {
+      return this.historySubmissions.some(submission => submission.state === 1)
     },
   },
 
@@ -396,7 +460,7 @@ export default {
     submissions: {
       handler() {
         this.browsingSubmissionIndex = this.submissions.length - 1
-        this.getSubmissions()
+        this.$emit('getSubmissions', this.comment.id)
       },
       immediate: true,
     },
@@ -428,7 +492,6 @@ export default {
         [COMMENT_KEY.CODE]: false,
       },
       isDisableSubmitSubmission: false,
-      historySubmissions: [],
       browsingSubmissionIndex: this.comment.submissions.length - 1,
       replies: null,
       isReply: false,
@@ -438,20 +501,14 @@ export default {
 
   methods: {
     setDefaultCode() {
+      const result = window.confirm('套用預設程式碼將會覆蓋掉現有的程式碼，是否要繼續？')
+      if (!result) return
       this.newComment = { ...this.newComment, code: this.defaultCode }
     },
-    grade() {},
     closeSelectedComment() {
+      this.$emit('fetchSubmission')
       this.$router.replace({ query: null })
       this.$emit('refetchFloor')
-    },
-    getSubmissions() {
-      Promise.all(this.comment.submissions.map(sid => agent.Submission.get(sid))).then(resp => {
-        this.historySubmissions = resp.map((res, index) => ({
-          ...res.data.data,
-          id: this.comment.submissions[index],
-        }))
-      })
     },
     getReplies() {
       Promise.all(this.comment.replies.map(cid => agent.Comment.get(cid))).then(resp => {
@@ -491,8 +548,8 @@ export default {
     checkIsDisableSubmitSubmission() {
       this.isDisableSubmitSubmission = !this.newComment[COMMENT_KEY.CODE]
     },
-    gradeSubmission(value) {
-      this.$emit('gradeSubmission', this.comment.submissions.slice(-1)[0], value)
+    gradeSubmission(value, sid) {
+      this.$emit('gradeSubmission', sid, value, this.comment.id)
     },
     likeComment() {
       this.$emit('like-comment', this.comment.id)

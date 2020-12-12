@@ -14,9 +14,27 @@
         </div>
       </div>
       <v-spacer />
-      <v-btn outlined color="primary" class="align-self-end">
-        <v-icon>mdi-pencil-outline</v-icon>
-      </v-btn>
+      <v-tooltip bottom>
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn
+            v-show="!isPreview && $isSelf(prob.author.username)"
+            outlined
+            color="primary darken-2"
+            class="align-self-end rounded"
+            :to="{
+              name: 'courseSetProblems',
+              params: { operation: 'edit' },
+              query: { pid: prob.pid },
+            }"
+            icon
+            v-on="on"
+            v-bind="attrs"
+          >
+            <v-icon>mdi-pencil-outline</v-icon>
+          </v-btn>
+        </template>
+        <span>編輯主題</span>
+      </v-tooltip>
     </div>
     <v-row class="mt-6">
       <v-col cols="12" md="8">
@@ -66,6 +84,10 @@ export default {
     prob: {
       type: Object,
       required: true,
+    },
+    isPreview: {
+      type: Boolean,
+      default: false,
     },
   },
 

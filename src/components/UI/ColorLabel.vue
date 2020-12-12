@@ -1,5 +1,13 @@
 <template>
-  <v-chip label :small="small" :color="labelColor.color" :dark="labelColor.dark">
+  <v-chip
+    label
+    :small="small"
+    :color="labelColor.color"
+    :dark="labelColor.dark"
+    class="text-button"
+    :close="close"
+    @click:close="$emit('close-chip')"
+  >
     {{ tag }}
   </v-chip>
 </template>
@@ -14,6 +22,10 @@ export default {
     tag: {
       type: String,
       required: true,
+    },
+    close: {
+      type: Boolean,
+      default: false,
     },
   },
 

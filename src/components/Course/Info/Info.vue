@@ -11,11 +11,29 @@
             </tr>
             <tr>
               <td class="font-weight-bold">教師</td>
-              <td>{{ info.teacher ? info.teacher.displayName : '' }}</td>
+              <td>{{ info ? info.teacher.displayName : '' }}</td>
             </tr>
             <tr>
               <td class="font-weight-bold">課程狀態</td>
-              <td>{{ COURSE_STATUS[`${info.status}`] }}</td>
+              <td>
+                {{ info ? COURSE_STATUS[`${info.status}`] : '' }}
+                <v-tooltip right v-if="info">
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-icon class="ml-1" color="primary" small v-bind="attrs" v-on="on">
+                      mdi-help-circle
+                    </v-icon>
+                  </template>
+                  <span>
+                    {{
+                      [
+                        '僅課程內成員可使用此課程',
+                        '任何人皆可檢視內容',
+                        '任何人皆可在此課程進行創作',
+                      ][info.status]
+                    }}
+                  </span>
+                </v-tooltip>
+              </td>
             </tr>
           </tbody>
         </template>
@@ -57,7 +75,6 @@ export default {
   props: {
     info: {
       type: Object,
-      required: true,
     },
   },
 

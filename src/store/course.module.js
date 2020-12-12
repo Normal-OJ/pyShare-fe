@@ -1,4 +1,5 @@
 import agent from '@/api/agent'
+import { COURSE_INFO } from './getters.type'
 import { GET_COURSES, GET_COURSE_STATS, GET_COURSE_INFO, GET_COURSE_TAGS } from './actions.type'
 import { SET_COURSES, SET_COURSE_STATS, SET_COURSE_INFO, SET_COURSE_TAGS } from './mutations.type'
 
@@ -11,7 +12,11 @@ const initialState = {
 
 const state = { ...initialState }
 
-const getters = {}
+const getters = {
+  [COURSE_INFO](state) {
+    return state.courseInfo
+  },
+}
 
 const actions = {
   async [GET_COURSES]({ commit }) {
@@ -22,6 +27,11 @@ const actions = {
       console.log('[vuex/course/getCourses] error', error)
     }
   },
+  /**
+   * get courses statistics
+   * @param {Object} context
+   * @param {String} payload course name
+   */
   async [GET_COURSE_STATS]({ commit }, name) {
     try {
       const { data } = await agent.Course.getStats(name)
@@ -30,10 +40,15 @@ const actions = {
       console.log('[vuex/course/getCourseStats] error', error)
     }
   },
+  /**
+   * get course information
+   * @param {Object} context
+   * @param {String} payload course name
+   */
   async [GET_COURSE_INFO]({ commit }, name) {
     try {
       const { data } = await agent.Course.get(name)
-      commit(SET_COURSE_INFO, data.data)
+      commit(SET_COURSE_INFO, { ...data.data, name })
     } catch (error) {
       console.log('[vuex/course/getCourseInfo] error', error)
     }

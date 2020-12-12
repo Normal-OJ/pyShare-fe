@@ -8,8 +8,9 @@
 
 <script>
 import Info from '@/components/Course/Info/Info'
-import { mapActions, mapState } from 'vuex'
-import { GET_COURSE_INFO } from '@/store/actions.type'
+// import { mapActions, mapState } from 'vuex'
+import { mapState } from 'vuex'
+// import { GET_COURSE_INFO } from '@/store/actions.type'
 import agent from '@/api/agent'
 
 export default {
@@ -23,14 +24,15 @@ export default {
     }),
   },
 
-  created() {
-    this.getCourseInfo(this.$route.params.name)
-  },
+  // created() {
+  //   this.getCourseInfo(this.$route.params.name)
+  // },
 
   methods: {
-    ...mapActions({
-      getCourseInfo: GET_COURSE_INFO,
-    }),
+    // get course info at navigation guard
+    // ...mapActions({
+    //   getCourseInfo: GET_COURSE_INFO,
+    // }),
     submitAddMultipleStudents(file) {
       const r = new FileReader()
       const course = this.$route.params.name

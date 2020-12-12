@@ -1,5 +1,6 @@
 // auth module
 export const SET_AUTH = 'setAuth'
+export const CLEAR_AUTH = 'clearAuth'
 
 // course module
 export const SET_COURSES = 'setCourses'

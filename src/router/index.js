@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '@/views/Home/Home'
 import store from '@/store'
+import { GET_COURSE_INFO } from '@/store/actions.type'
 
 Vue.use(VueRouter)
 // TODO: block users that no permission from the specific route
@@ -79,6 +80,10 @@ const routes = [
         component: () => import('@/views/Course/Info/Info'),
       },
     ],
+    beforeEnter: (to, from, next) => {
+      store.dispatch(GET_COURSE_INFO, to.params.name)
+      next()
+    },
   },
   {
     path: '/profile/:username',

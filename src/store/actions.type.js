@@ -1,4 +1,5 @@
 // auth module
+export const LOGIN = 'logIN'
 export const LOGOUT = 'logout'
 
 // problem module

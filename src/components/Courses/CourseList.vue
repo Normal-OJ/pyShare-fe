@@ -12,7 +12,7 @@
       {{ header.text }}
       <v-tooltip top>
         <template v-slot:activator="{ on, attrs }">
-          <v-icon class="ml-1" color="primary" small v-bind="attrs" v-on="on">
+          <v-icon class="mx-1" color="primary" small v-bind="attrs" v-on="on">
             mdi-help-circle
           </v-icon>
         </template>
@@ -40,8 +40,8 @@ import { mapState } from 'vuex'
 const headers = [
   { text: '課程', value: 'name' },
   { text: '學期', value: 'semester' },
-  { text: '狀態', value: 'status', sortable: false },
-  { text: '教師', value: 'teacher' },
+  { text: '狀態', value: 'status', sortable: true },
+  { text: '教師', value: 'teacher', sortable: false },
 ]
 export default {
   name: 'CourseList',

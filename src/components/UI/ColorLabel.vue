@@ -5,6 +5,8 @@
     :color="labelColor.color"
     :dark="labelColor.dark"
     class="text-button"
+    :close="close"
+    @click:close="$emit('close-chip')"
   >
     {{ tag }}
   </v-chip>
@@ -20,6 +22,10 @@ export default {
     tag: {
       type: String,
       required: true,
+    },
+    close: {
+      type: Boolean,
+      default: false,
     },
   },
 

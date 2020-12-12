@@ -1,28 +1,46 @@
 <template>
   <v-container fluid class="pb-16">
     <v-row class="mb-4">
-      <div class="text-h6">{{ isEdit ? '編輯主題' : '新增主題' }}</div>
+      <div class="text-h5">{{ isEdit ? '編輯主題' : '新增主題' }}</div>
       <v-spacer />
       <PreviewNewProblem :prob="newProb" />
     </v-row>
 
-    <v-text-field label="主題名稱" v-model="newProb.title" outlined />
-    <v-select label="主題分類" v-model="newProb.tags" :items="tags" multiple outlined />
-    <v-select
-      label="顯示狀態"
-      v-model="newProb.status"
-      :items="status"
-      hint="隱藏僅老師和創題者可見"
-      persistent-hint
-      outlined
-    />
+    <v-row>
+      <v-col cols="12" md="6">
+        <v-text-field label="主題名稱" v-model="newProb.title" outlined dense />
+      </v-col>
+      <v-col cols="12" md="6">
+        <v-select label="主題分類" v-model="newProb.tags" :items="tags" multiple outlined dense>
+          <template v-slot:selection="{ item }">
+            <ColorLabel :tag="item" small class="mt-2 mr-1" />
+          </template>
+        </v-select>
+      </v-col>
+    </v-row>
 
-    <v-checkbox
-      v-permission="[TEACHER]"
-      v-model="newProb.allowMultipleComments"
-      label="允許主題下可以發表多個創作"
-      hide-details
-    />
+    <v-row align="start">
+      <v-col cols="12" md="6">
+        <v-select
+          label="顯示狀態"
+          v-model="newProb.status"
+          :items="status"
+          hint="隱藏僅老師和創題者可見"
+          persistent-hint
+          outlined
+          dense
+        />
+      </v-col>
+      <v-col cols="12" md="6">
+        <v-checkbox
+          v-permission="[TEACHER]"
+          class="pt-0 mt-0"
+          v-model="newProb.allowMultipleComments"
+          label="允許主題下可以發表多個創作"
+          hide-details
+        />
+      </v-col>
+    </v-row>
 
     <div class="text-body-1 mt-4">主題敘述</div>
     <TextEditor v-model="newProb.description" />
@@ -118,6 +136,7 @@
 import PreviewNewProblem from '@/components/Course/Problems/PreviewNewProblem'
 import TextEditor from '@/components/UI/TextEditor'
 import CodeEditor from '@/components/UI/CodeEditor'
+import ColorLabel from '@/components/UI/ColorLabel'
 import _ from 'lodash'
 import { mapGetters } from 'vuex'
 import { ROLE } from '@/store/getters.type'
@@ -128,7 +147,7 @@ const { TEACHER } = _ROLE
 export default {
   name: 'SetProblems',
 
-  components: { PreviewNewProblem, TextEditor, CodeEditor },
+  components: { PreviewNewProblem, TextEditor, CodeEditor, ColorLabel },
 
   props: {
     prob: {

@@ -1,9 +1,9 @@
 import store from '@/store'
 import { USERNAME } from '@/store/getters.type'
 
-const username = store.getters && store.getters[USERNAME]
-
 const isSelf = target => {
+  const username = store.getters && store.getters[USERNAME]
+  if (!username) return false
   return target === username
 }
 

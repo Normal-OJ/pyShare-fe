@@ -12,7 +12,11 @@
           :items="tags"
           multiple
           dense
-        />
+        >
+          <template v-slot:selection="{ item }">
+            <ColorLabel :tag="item" small class="mt-2 mr-1" />
+          </template>
+        </v-select>
         <v-text-field
           v-model="searchText"
           label="快速搜尋"
@@ -64,6 +68,7 @@
           :tag="tag"
           small
           class="ma-1"
+          style="cursor: pointer"
           @click.native="selectTag(tag)"
         />
       </template>
@@ -134,6 +139,9 @@ export default {
   methods: {
     selectTag(tag) {
       this.selectedTags = [...new Set([...this.selectedTags, tag])]
+    },
+    unselectTag(tag) {
+      this.selectedTags = this.selectedTags.filter(t => t !== tag)
     },
     customSort(items, index, isDesc) {
       items.sort((a, b) => {

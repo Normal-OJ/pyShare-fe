@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <Header @logout="logout" />
+    <Header @logout="handleLogout" />
     <v-main>
       <router-view />
     </v-main>
@@ -9,7 +9,6 @@
 
 <script>
 import Header from '@/components/Header'
-import agent from '@/api/agent'
 import { mapActions } from 'vuex'
 import { LOGOUT } from '@/store/actions.type'
 
@@ -20,13 +19,12 @@ export default {
 
   methods: {
     ...mapActions({
-      clearAuth: LOGOUT,
+      logout: LOGOUT,
     }),
-    async logout() {
+    async handleLogout() {
       try {
-        await agent.Auth.logout()
-        this.clearAuth()
-        this.$router.push({ name: 'home' })
+        this.logout()
+        if (this.$route.name !== 'home') this.$router.push({ name: 'home' })
       } catch (error) {
         console.log('[App/logout] error', error)
       }

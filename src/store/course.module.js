@@ -48,7 +48,7 @@ const actions = {
   async [GET_COURSE_INFO]({ commit }, name) {
     try {
       const { data } = await agent.Course.get(name)
-      commit(SET_COURSE_INFO, data.data)
+      commit(SET_COURSE_INFO, { ...data.data, name })
     } catch (error) {
       console.log('[vuex/course/getCourseInfo] error', error)
     }

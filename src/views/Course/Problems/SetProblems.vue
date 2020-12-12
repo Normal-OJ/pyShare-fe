@@ -77,7 +77,8 @@ export default {
         } else {
           result = await agent.Problem.create(body)
         }
-        alert('更新主題內容成功。')
+        alert(`${this.isEdit ? '更新' : '新增'}主題內容成功。`)
+        let submitSuccess = true
         const pid = this.isEdit ? this.pid : result.data.data.pid
         if (willAddAttachments.length > 0) {
           try {
@@ -92,6 +93,7 @@ export default {
           } catch (error) {
             console.log('[views/SetProblems/handleSubmit - add attachments] error', error)
             alert('新增主題附件失敗。')
+            submitSuccess = false
           }
         }
         if (willRemoveAttachments.length > 0) {
@@ -107,19 +109,26 @@ export default {
           } catch (error) {
             console.log('[views/SetProblems/handleSubmit - remove attachments] error', error)
             alert('移除主題附件失敗。')
+            submitSuccess = false
           }
         }
         this.getProblemInfo(pid)
-        if (!this.isEdit) {
-          this.$router.push({
-            name: 'courseSetProblems',
-            params: { operation: 'edit' },
-            query: { pid },
-          })
+        if (submitSuccess) {
+          if (!this.isEdit) {
+            this.$router.push({
+              name: 'courseProblems',
+              params: { name: this.$route.params.name },
+            })
+          } else {
+            this.$router.push({
+              name: 'courseProblem',
+              params: { name: this.$route.params.name, id: pid },
+            })
+          }
         }
       } catch (error) {
         console.log('[views/SetProblems/handleSubmit] error', error)
-        alert('更新主題內容失敗。')
+        alert(`${this.isEdit ? '更新' : '新增'}主題內容失敗。`)
       }
     },
   },

@@ -28,6 +28,7 @@
           :defaultCode="prob && prob.defaultCode"
           :testResult="testResult['detail']"
           :username="username"
+          :historySubmissions="historySubmissions"
           @refetchFloor="fetchFloor"
           @updateComment="updateComment"
           @fetchSubmission="fetchSubmission"
@@ -35,6 +36,7 @@
           @submitTestSubmission="submitTestSubmission"
           @submitNewSubmission="submitNewSubmission"
           @setIsEdit="setIsEdit"
+          @getSubmissions="getSubmissions"
           @gradeSubmission="gradeSubmission"
           @like-comment="likeComment"
           @submitReply="submitReply"
@@ -94,6 +96,7 @@ export default {
       detail: null,
     },
     testResultSubmissionId: null,
+    historySubmissions: [],
   }),
 
   methods: {
@@ -187,10 +190,19 @@ export default {
         console.log('[views/Problem/updateComment] error', error)
       }
     },
-    async gradeSubmission(sid, value) {
+    getSubmissions(cid) {
+      const comment = this.comments.find(comment => comment.id === cid)
+      Promise.all(comment.submissions.map(sid => agent.Submission.get(sid))).then(resp => {
+        this.historySubmissions = resp.map((res, index) => ({
+          ...res.data.data,
+          id: comment.submissions[index],
+        }))
+      })
+    },
+    async gradeSubmission(sid, value, cid) {
       try {
         await agent.Submission.grade(sid, Number(value))
-        this.getComments(this.prob.comments)
+        this.getSubmissions(cid)
       } catch (error) {
         console.log('[views/Problem/gradeSubmission] error', error)
       }

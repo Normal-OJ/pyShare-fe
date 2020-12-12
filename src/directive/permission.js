@@ -2,13 +2,15 @@
 import store from '@/store'
 import { ROLE, USERNAME, COURSE_INFO } from '@/store/getters.type'
 import { ROLE as ROLES } from '@/constants/auth'
+import router from '@/router/index'
 
 const COURSE = 'COURSE'
 
 function checkCoursePermission() {
   const courseInfo = store.getters && store.getters[COURSE_INFO]
-  // if course is PUBLIC
-  if (!courseInfo || courseInfo.status === 2) return true
+  // if no course info or if course is PUBLIC
+  if (!courseInfo || courseInfo.status === 2 || courseInfo.name !== router.currentRoute.params.name)
+    return true
   const username = store.getters && store.getters[USERNAME]
   const isTeacher = courseInfo.teacher.username === username
   const isStudent = courseInfo.students.findIndex(s => s.username === username) !== -1
@@ -27,10 +29,8 @@ function checkPermission(el, binding) {
       // Check if the permission includes my role level or not
       const hasRolePermission = permissionRoles.includes(role) || permissionRoles.includes('ALL')
       const hasCoursePermission = !permissionRoles.includes(COURSE) || checkCoursePermission()
-
-      if (!isAdmin && (!hasRolePermission || !hasCoursePermission)) {
-        el.parentNode && el.parentNode.removeChild(el)
-      }
+      const isHideElement = !isAdmin && (!hasRolePermission || !hasCoursePermission)
+      isHideElement && el.parentNode && el.parentNode.removeChild(el)
     }
   } else {
     throw new Error(`need roles! Like v-permission="['admin', 'teacher']"`)

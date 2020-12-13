@@ -55,12 +55,13 @@
               <template v-slot:activator="{ on, attrs }">
                 <v-btn
                   :color="hasLiked ? 'secondary' : 'default'"
-                  icon
                   @click="likeComment"
+                  outlined
                   v-on="on"
                   v-bind="attrs"
                 >
                   <v-icon>{{ hasLiked ? 'mdi-heart' : 'mdi-heart-outline' }}</v-icon>
+                  （{{ comment.liked && comment.liked.length }}）
                 </v-btn>
               </template>
               <span>愛心</span>
@@ -335,11 +336,11 @@
         <v-icon class="mr-1" :color="hasLiked ? 'secondary' : 'default'">
           {{ hasLiked ? 'mdi-heart' : 'mdi-heart-outline' }}
         </v-icon>
-        愛心
+        愛心（{{ comment.liked && comment.liked.length }}）
       </v-btn>
       <v-btn text width="50%" @click="isReply = true" v-permission="['ALL', 'COURSE']">
         <v-icon class="mr-1">mdi-comment-outline</v-icon>
-        留言 （{{ comment.replies && comment.replies.length }}）
+        留言（{{ comment.replies && comment.replies.length }}）
       </v-btn>
     </v-card>
     <div v-show="isReply" class="mt-6">

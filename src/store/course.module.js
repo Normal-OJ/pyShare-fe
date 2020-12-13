@@ -5,7 +5,7 @@ import { SET_COURSES, SET_COURSE_STATS, SET_COURSE_INFO, SET_COURSE_TAGS } from 
 
 const initialState = {
   courses: [],
-  courseStats: [],
+  courseStats: null,
   courseInfo: null,
   courseTags: [],
 }

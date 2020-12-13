@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid class="d-flex flex-column mt-4 px-8">
+  <v-container fluid class="d-flex flex-column mt-4">
     <div class="d-flex align-center">
       <v-col cols="10" md="6" class="d-flex">
         <v-text-field

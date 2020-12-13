@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid class="d-flex flex-column">
+  <v-container fluid>
     <div class="text-h5">主題列表</div>
     <div class="d-flex align-center">
       <v-col cols="10" md="6" class="d-flex">

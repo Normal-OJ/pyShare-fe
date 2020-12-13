@@ -70,6 +70,11 @@ const routes = [
         component: () => import('@/views/Course/Manages/ManageTags'),
       },
       {
+        path: 'manages/members',
+        name: 'courseManageMembers',
+        component: () => import('@/views/Course/Manages/ManageMembers'),
+      },
+      {
         path: 'manages/problems',
         name: 'courseManageProblems',
         component: () => import('@/views/Course/Manages/ManageProblems'),
@@ -87,8 +92,19 @@ const routes = [
   },
   {
     path: '/profile/:username',
-    name: 'profile',
-    component: () => import('@/views/Profile/Profile'),
+    component: () => import('@/views/Profile/ProfileEntry'),
+    children: [
+      {
+        path: '',
+        name: 'profile',
+        component: () => import('@/views/Profile/Profile'),
+      },
+      {
+        path: 'stats',
+        name: 'profileStats',
+        component: () => import('@/views/Profile/Stats'),
+      },
+    ],
   },
   {
     path: '/about',

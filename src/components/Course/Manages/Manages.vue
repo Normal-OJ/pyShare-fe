@@ -21,7 +21,12 @@
     </v-hover>
 
     <v-hover v-slot:default="{ hover }">
-      <v-card class="px-4 mt-6 mx-6" :elevation="hover ? 6 : 2" max-width="500">
+      <v-card
+        class="px-4 mt-6 mx-6"
+        :elevation="hover ? 6 : 2"
+        max-width="500"
+        @click="clickCard('courseManageMembers')"
+      >
         <div class="d-flex justify-start flex-wrap">
           <div class="d-flex justify-center align-center">
             <v-icon size="60" color="primary">mdi-account-multiple</v-icon>

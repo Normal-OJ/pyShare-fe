@@ -1,31 +1,41 @@
 <template>
-  <Info
-    :info="info"
+  <ManageMembers
+    :stats="stats ? stats : []"
     @submitAddMultipleStudents="submitAddMultipleStudents"
     @submitAddStudent="submitAddStudent"
   />
 </template>
 
 <script>
-import Info from '@/components/Course/Info/Info'
+import ManageMembers from '@/components/Course/Manages/ManageMembers'
 import { mapActions, mapState } from 'vuex'
-import { GET_COURSE_INFO } from '@/store/actions.type'
+import { GET_COURSE_STATS } from '@/store/actions.type'
 import agent from '@/api/agent'
 
 export default {
-  components: { Info },
-
-  data: () => ({}),
+  components: { ManageMembers },
 
   computed: {
     ...mapState({
-      info: state => state.course.courseInfo,
+      stats: state => state.course.courseStats,
     }),
+    courseName() {
+      return this.$route.params.name
+    },
+  },
+
+  watch: {
+    courseName: {
+      handler() {
+        this.getStats(this.courseName)
+      },
+      immediate: true,
+    },
   },
 
   methods: {
     ...mapActions({
-      getCourseInfo: GET_COURSE_INFO,
+      getStats: GET_COURSE_STATS,
     }),
     submitAddMultipleStudents(file) {
       const r = new FileReader()
@@ -34,10 +44,10 @@ export default {
         const csvString = e.target.result
         try {
           await agent.Auth.batchSignup({ course, csvString })
-          this.getCourseInfo(course)
+          this.getStats(course)
           alert('新增學生成功。')
         } catch (error) {
-          console.log('[views/Info/submitAddMultipleStudents error]', error)
+          console.log('[views/ManageMembers/submitAddMultipleStudents error]', error)
           alert('新增學生失敗。')
         }
       }
@@ -47,10 +57,10 @@ export default {
       try {
         const course = this.$route.params.name
         await agent.Auth.batchSignup({ course, csvString })
-        this.getCourseInfo(course)
+        this.getStats(course)
         alert('新增學生成功。')
       } catch (error) {
-        console.log('[views/Info/submitAddStudent error]', error)
+        console.log('[views/ManageMembers/submitAddStudent error]', error)
         alert('新增學生失敗。')
       }
     },

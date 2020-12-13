@@ -1,6 +1,7 @@
 <template>
   <v-container fluid>
     <v-row no-gutters>
+      <div class="text-h5">管理標籤</div>
       <v-spacer></v-spacer>
       <CreateTagModal @submit="submitNewTags" />
     </v-row>

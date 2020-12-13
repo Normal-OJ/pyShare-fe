@@ -22,7 +22,13 @@
         </template>
       </v-simple-table>
     </div>
-    <div class="text-h5 mt-4">統計</div>
+    <div class="d-flex align-center mt-4">
+      <div class="text-h5">統計</div>
+      <v-spacer />
+      <v-btn color="primary" outlined :to="{ name: 'profileStats', params: { username } }">
+        查看詳細統計
+      </v-btn>
+    </div>
     <Spinner v-if="!stats" />
     <div v-else class="mt-4 d-flex justify-space-around flex-wrap">
       <div class="d-flex flex-column align-center">
@@ -77,13 +83,7 @@
           />
         </v-col>
       </v-row>
-      <v-btn
-        block="block"
-        dark="dark"
-        color="primary"
-        :loading="loading"
-        @click="submitNewPassword"
-      >
+      <v-btn color="primary" :loading="loading" @click="submitNewPassword">
         送出
       </v-btn>
     </v-form>

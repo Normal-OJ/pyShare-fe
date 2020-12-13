@@ -11,7 +11,7 @@ const Course = {
   getList: () => Vue.axios.get('/course'),
   get: name => Vue.axios.get(`/course/${name}`),
   create: body => Vue.axios.post('/course', body),
-  // TODO: refind delete api
+  // TODO: re-define delete api
   // delete: name => Vue.axios.delete(`/course/${name}`),
   addStudent: (name, body) => Vue.axios.post(`/course/${name}/student`, body),
   removeStudent: (name, body) => Vue.axios.delete(`/course/${name}/student`, body),
@@ -43,7 +43,7 @@ const Comment = {
 const Tag = {
   getList: params => Vue.axios.get('/tag', { params }),
   create: body => Vue.axios.post('/tag', body),
-  // TODO: refind delete api
+  // TODO: re-define delete api
   // delete: body => Vue.axios.delete('/tag', body),
 }
 

@@ -16,7 +16,9 @@
             mdi-help-circle
           </v-icon>
         </template>
-        <span>開放課程：任何人皆可在此課程進行創作<br />公開課程：任何人皆可檢視內容</span>
+        <span>
+          開放課程：任何人皆可檢視、創作<br />公開課程：任何人皆可檢視<br />不公開課程：僅課程內成員可檢視、創作
+        </span>
       </v-tooltip>
     </template>
     <template v-slot:[`item.semester`]="{ item }">

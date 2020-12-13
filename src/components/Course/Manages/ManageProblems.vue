@@ -1,5 +1,6 @@
 <template>
-  <v-container fluid class="d-flex flex-column px-8">
+  <v-container fluid>
+    <div class="text-h5">管理主題</div>
     <div class="d-flex align-center">
       <v-col cols="10" md="6" class="d-flex">
         <v-select

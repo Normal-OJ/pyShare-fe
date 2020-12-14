@@ -18,7 +18,7 @@ const getters = {
     return state.problems.filter(p => p.isTemplate)
   },
   [PROBLEMS_OF_MINE](state, getters, rootState) {
-    const username = rootState.auth
+    const { username } = rootState.auth
     return getters[PROBLEMS].filter(p => p.author.username === username)
   },
 }

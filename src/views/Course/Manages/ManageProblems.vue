@@ -56,6 +56,7 @@ export default {
     async deleteProblem(pid) {
       try {
         await agent.Problem.delete(pid)
+        this.fetchData()
         alert('刪除題目成功。')
       } catch (error) {
         console.log('[view/Course/Manages/ManageProblems] error', error)

@@ -41,7 +41,7 @@
       </div>
       <div class="d-flex flex-column align-center">
         <div class="text-h6">獲得愛心</div>
-        <div class="font-weight-thin text-h1">{{ stats.liked.length }}</div>
+        <div class="font-weight-thin text-h1">{{ totalLikedAmount }}</div>
       </div>
     </div>
     <div class="text-h5 mt-4" v-if="$isSelf(username)">更改密碼</div>
@@ -130,6 +130,15 @@ export default {
     isShowNewPassword: false,
     isShowConfirmPasssword: false,
   }),
+
+  computed: {
+    totalLikedAmount() {
+      if (!this.stats) return ''
+      return this.stats.liked.reduce((a, b) => {
+        return a + b.starers.length
+      }, 0)
+    },
+  },
 
   methods: {
     submitNewPassword() {

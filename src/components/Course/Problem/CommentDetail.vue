@@ -346,7 +346,7 @@
     <div v-show="isReply" class="mt-6">
       <TextEditor v-model="newReply" />
       <div class="d-flex mt-1">
-        <v-btn class="mr-2" color="primary" small tile @click="submitReply">
+        <v-btn class="mr-2" color="primary" small tile @click="handleSubmitReply">
           送出
         </v-btn>
         <v-btn color="primary" outlined tile small @click="isReply = false">
@@ -409,6 +409,10 @@ export default {
       required: true,
     },
     setIsEdit: {
+      type: Function,
+      required: true,
+    },
+    submitReply: {
       type: Function,
       required: true,
     },
@@ -562,9 +566,14 @@ export default {
     likeComment() {
       this.$emit('like-comment', this.comment.id)
     },
-    submitReply() {
-      this.$emit('submitReply', this.comment.id, this.newReply)
-      this.isReply = false
+    async handleSubmitReply() {
+      try {
+        await this.submitReply(this.comment.id, this.newReply)
+        this.newReply = ''
+        this.isReply = false
+      } catch (error) {
+        alert('新增留言失敗。')
+      }
     },
   },
 }

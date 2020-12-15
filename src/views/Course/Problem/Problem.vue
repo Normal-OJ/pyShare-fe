@@ -31,6 +31,7 @@
           :historySubmissions="historySubmissions"
           :setIsEdit="setIsEdit"
           :submitReply="submitReply"
+          :deleteReply="deleteReply"
           @refetchFloor="fetchFloor"
           @updateComment="updateComment"
           @fetchSubmission="fetchSubmission"

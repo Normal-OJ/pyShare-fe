@@ -44,6 +44,7 @@ export default {
         } else {
           this.$router.push({ path: redirect })
         }
+        this.isWaiting = false
       } catch (error) {
         switch (error.message) {
           case 'Login Failed':
@@ -52,9 +53,9 @@ export default {
           default:
             this.errorMsg = '登入失敗：系統異常，請洽管理員'
         }
+        this.isWaiting = false
         throw error
       }
-      this.isWaiting = false
     },
     ...mapMutations({
       setAuth: SET_AUTH,

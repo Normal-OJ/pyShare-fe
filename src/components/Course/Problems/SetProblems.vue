@@ -8,7 +8,7 @@
 
     <v-row>
       <v-col cols="12" md="6">
-        <v-text-field label="主題名稱" v-model="newProb.title" outlined dense />
+        <v-text-field label="主題名稱（必填）" v-model="newProb.title" outlined dense />
       </v-col>
       <v-col cols="12" md="6">
         <v-select label="主題分類" v-model="newProb.tags" :items="tags" multiple outlined dense>
@@ -126,7 +126,7 @@
       </v-chip>
     </div>
 
-    <v-btn class="mt-8" block color="success" @click="submit">
+    <v-btn class="mt-8" block color="success" :disabled="newProb.title === ''" @click="submit">
       送出
     </v-btn>
   </v-container>

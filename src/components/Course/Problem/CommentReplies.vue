@@ -18,7 +18,7 @@
             >
               {{ author.displayName }}
             </router-link>
-            <v-tooltip right>
+            <v-tooltip top>
               <template v-slot:activator="{ on, attr }">
                 <div v-on="on" v-bind="attr">
                   {{ `${$timeFromNow(created)}` }}
@@ -27,9 +27,42 @@
               <span>{{ `發布於 ${$formattedTime(created)}` }}</span>
             </v-tooltip>
             {{ created !== updated ? '（已編輯）' : '' }}
+            <div v-if="$isSelf(author.username) && !isEdit[index] && status !== 0">
+              <v-tooltip top>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn
+                    class="ml-2 rounded"
+                    color="primary darken-3"
+                    x-small
+                    icon
+                    @click="editReply(index)"
+                    v-on="on"
+                    v-bind="attrs"
+                  >
+                    <v-icon small>mdi-pencil-outline</v-icon>
+                  </v-btn>
+                </template>
+                <span>編輯留言</span>
+              </v-tooltip>
+              <v-tooltip top>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn
+                    class="ml-2 rounded"
+                    color="primary darken-3"
+                    x-small
+                    icon
+                    @click="deleteReply(id)"
+                    v-on="on"
+                    v-bind="attrs"
+                  >
+                    <v-icon small>mdi-trash-can-outline</v-icon>
+                  </v-btn>
+                </template>
+                <span>刪除留言</span>
+              </v-tooltip>
+            </div>
           </v-card-title>
-
-          <div v-if="status === 0" v-html="'<p><i>此留言已刪除</i></p>'" />
+          <div v-if="status === 0" v-html="'<p>&nbsp;&nbsp;<i>此留言已刪除</i></p>'" />
           <div v-else-if="isEdit[index]">
             <TextEditor v-model="newReplies[index]" />
             <div class="d-flex mt-1">
@@ -42,16 +75,6 @@
             </div>
           </div>
           <div v-else class="px-4 pb-2 text--primary" v-html="content" />
-
-          <!-- TODO: edit & delete -->
-          <div class="d-flex" v-if="$isSelf(author.username) && !isEdit[index]">
-            <v-btn class="text-button" text small @click="editReply(index)">
-              編輯
-            </v-btn>
-            <v-btn class="text-button" text small @click="deleteReply(id)">
-              刪除
-            </v-btn>
-          </div>
         </div>
       </div>
     </v-card>

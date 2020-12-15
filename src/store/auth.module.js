@@ -51,7 +51,7 @@ const mutations = {
     state.displayName = displayName
     state.role = role
     state.courses = courses
-  }
+  },
 }
 
 export default {

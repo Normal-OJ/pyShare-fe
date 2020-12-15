@@ -94,6 +94,7 @@ export default {
             console.log('[views/SetProblems/handleSubmit - add attachments] error', error)
             alert('新增主題附件失敗。')
             submitSuccess = false
+            throw error
           }
         }
         if (willRemoveAttachments.length > 0) {
@@ -110,6 +111,7 @@ export default {
             console.log('[views/SetProblems/handleSubmit - remove attachments] error', error)
             alert('移除主題附件失敗。')
             submitSuccess = false
+            throw error
           }
         }
         this.getProblemInfo(pid)
@@ -129,6 +131,7 @@ export default {
       } catch (error) {
         console.log('[views/SetProblems/handleSubmit] error', error)
         alert(`${this.isEdit ? '更新' : '新增'}主題內容失敗。`)
+        throw error
       }
     },
   },

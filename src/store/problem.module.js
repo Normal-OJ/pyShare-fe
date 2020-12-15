@@ -34,6 +34,7 @@ const actions = {
       commit(SET_PROBLEMS, data.data)
     } catch (error) {
       console.log('[vuex/problem/getProblems] error', error)
+      throw error
     }
   },
   async [GET_PROBLEM_INFO]({ commit }, pid) {
@@ -42,6 +43,7 @@ const actions = {
       commit(SET_PROBLEM_INFO, data.data)
     } catch (error) {
       console.log('[vuex/problem/getProblemInfo] error', error)
+      throw error
     }
   },
 }

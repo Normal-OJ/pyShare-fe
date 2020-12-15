@@ -292,6 +292,7 @@ export default {
       } catch (error) {
         console.log('[views/Stats/getStats] error', error)
         this.isNotFound = error.message.includes('not found')
+        throw error
       }
     },
   },

@@ -32,6 +32,7 @@ const actions = {
       commit(SET_COMMENTS, commentsWithId)
     } catch (error) {
       console.log('[vuex/comment/getComments] error', error)
+      throw error
     }
   },
 }

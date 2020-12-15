@@ -31,6 +31,7 @@ const actions = {
       commit(CLEAR_AUTH)
     } catch (error) {
       console.log('[vuex/auth/logout] error', error)
+      throw error
     }
   },
 }

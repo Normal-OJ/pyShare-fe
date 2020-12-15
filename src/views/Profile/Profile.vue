@@ -75,6 +75,7 @@ export default {
         this.displayName = user.displayName
       } catch (error) {
         console.log('[views/Profile/getUser] error', error)
+        throw error
       }
     },
     async getStats(username) {
@@ -83,6 +84,7 @@ export default {
         this.stats = data.data
       } catch (error) {
         console.log('[views/Profile/getStats] error', error)
+        throw error
       }
     },
     async submitNewPassword(passwordInfo) {
@@ -99,6 +101,7 @@ export default {
           value: true,
           ...this.snackbarType.fail,
         }
+        throw error
       }
       this.loading = false
     },

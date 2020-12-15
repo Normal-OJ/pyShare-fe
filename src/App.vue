@@ -27,6 +27,7 @@ export default {
         if (this.$route.name !== 'home') this.$router.push({ name: 'home' })
       } catch (error) {
         console.log('[App/logout] error', error)
+        throw error
       }
     },
   },

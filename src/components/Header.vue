@@ -30,7 +30,7 @@
         </v-btn>
       </template>
       <v-card width="400" class="d-flex flex-column align-center py-5">
-        <div class="text-h5 font-weight-black mb-5">🚧 頁面建置中</div>
+        <div class="text-h5 font-weight-black mb-5">🚧 功能建置中</div>
         <v-img :src="require('@/assets/images/underConstruction.svg')" max-width="300" contain />
       </v-card>
     </v-menu>
@@ -49,9 +49,9 @@
         </v-btn>
       </template>
       <v-list>
-        <v-list-item link :to="{ name: 'profile', params: { username: username } }">
+        <!-- <v-list-item link :to="{ name: 'profile', params: { username: username } }">
           <v-list-item-title class="text-center">個人頁面</v-list-item-title>
-        </v-list-item>
+        </v-list-item> -->
         <v-list-item link @click="$emit('logout')">
           <v-list-item-title class="text-center">登出</v-list-item-title>
         </v-list-item>
@@ -75,19 +75,22 @@ export default {
       username: state => state.auth.username,
       displayName: state => state.auth.displayName,
     }),
+    headerItems() {
+      return [
+        {
+          label: '課程',
+          route: { name: 'courses' },
+        },
+        {
+          label: '個人頁面',
+          route: { name: 'profile', params: { username: this.username } },
+        },
+        {
+          label: '關於平台',
+          route: { name: 'about' },
+        },
+      ]
+    },
   },
-
-  data: () => ({
-    headerItems: [
-      {
-        label: '課程',
-        route: { name: 'courses' },
-      },
-      {
-        label: '關於平台',
-        route: { name: 'about' },
-      },
-    ],
-  }),
 }
 </script>

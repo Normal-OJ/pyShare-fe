@@ -87,6 +87,7 @@ export default {
 
   methods: {
     editReply(index) {
+      this.$set(this.newReplies, index, this.replies[index].content)
       this.$set(this.isEdit, index, true)
       this.setIsEdit(true)
     },

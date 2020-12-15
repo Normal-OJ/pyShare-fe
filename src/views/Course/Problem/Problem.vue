@@ -30,6 +30,7 @@
           :username="username"
           :historySubmissions="historySubmissions"
           :setIsEdit="setIsEdit"
+          :submitReply="submitReply"
           @refetchFloor="fetchFloor"
           @updateComment="updateComment"
           @fetchSubmission="fetchSubmission"
@@ -39,7 +40,6 @@
           @getSubmissions="getSubmissions"
           @gradeSubmission="gradeSubmission"
           @like-comment="likeComment"
-          @submitReply="submitReply"
           @update-reply="updateReply"
           @delete-reply="deleteReply"
         />
@@ -173,6 +173,7 @@ export default {
       try {
         await agent.Comment.create(body)
         await this.getProblem(this.pid)
+        return true
       } catch (error) {
         console.log('[views/Problem/submitReply] error', error)
         throw error

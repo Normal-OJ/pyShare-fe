@@ -14,6 +14,7 @@
       </v-col>
       <v-spacer />
       <AddStudentModal
+        :submitSuccess="submitSuccess"
         v-permission="[TEACHER]"
         @submitAddMultipleStudents="submitAddMultipleStudents"
         @submitAddStudent="submitAddStudent"
@@ -63,6 +64,10 @@ export default {
   props: {
     members: {
       type: Array,
+      required: true,
+    },
+    submitSuccess: {
+      type: Boolean,
       required: true,
     },
   },

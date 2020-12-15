@@ -13,7 +13,7 @@
         <v-toolbar-title>新增分類</v-toolbar-title>
         <v-spacer />
         <v-toolbar-items>
-          <v-btn icon dark @click="dialog = false">
+          <v-btn icon dark @click="close">
             <v-icon>mdi-close</v-icon>
           </v-btn>
         </v-toolbar-items>
@@ -35,7 +35,7 @@
 
       <v-card-actions>
         <v-spacer />
-        <v-btn color="success" :disabled="newTags === []" @click="submit">確認</v-btn>
+        <v-btn color="success" :disabled="isSubmitDisabled" @click="submit">確認</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -45,16 +45,44 @@
 export default {
   name: 'CreateTagModal',
 
+  props: {
+    submitNewTags: {
+      type: Function,
+      required: true,
+    },
+  },
+
   data: () => ({
     newTags: [],
     dialog: false,
   }),
 
+  computed: {
+    isSubmitDisabled() {
+      return this.newTags.length === 0
+    },
+  },
+
   methods: {
-    submit() {
-      this.$emit('submit', this.newTags)
-      // TODO: getError and show feedback, conditionally close dialog
-      this.dialog = false
+    async submit() {
+      try {
+        await this.submitNewTags(this.newTags)
+        alert('新增分類成功！')
+        this.dialog = false
+        this.newTags = []
+      } catch (error) {
+        alert('新增分類失敗。')
+      }
+    },
+    close() {
+      if (this.newTags.length > 0) {
+        const result = window.confirm('確定要放棄新增嗎？輸入的資料將不會被儲存。')
+        if (result) {
+          this.dialog = false
+        }
+      } else {
+        this.dialog = false
+      }
     },
   },
 }

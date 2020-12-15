@@ -63,6 +63,10 @@ export default {
     if (this.isEdit) await this.getProblemInfo(this.pid)
   },
 
+  data: () => ({
+    submitSuccess: false,
+  }),
+
   methods: {
     ...mapActions({
       getProblems: GET_PROBLEMS,
@@ -77,8 +81,8 @@ export default {
         } else {
           result = await agent.Problem.create(body)
         }
+        this.submitSuccess = true
         alert(`${this.isEdit ? '更新' : '新增'}主題內容成功。`)
-        let submitSuccess = true
         const pid = this.isEdit ? this.pid : result.data.data.pid
         if (willAddAttachments.length > 0) {
           try {
@@ -93,7 +97,7 @@ export default {
           } catch (error) {
             console.log('[views/SetProblems/handleSubmit - add attachments] error', error)
             alert('新增主題附件失敗。')
-            submitSuccess = false
+            this.submitSuccess = false
             throw error
           }
         }
@@ -110,12 +114,12 @@ export default {
           } catch (error) {
             console.log('[views/SetProblems/handleSubmit - remove attachments] error', error)
             alert('移除主題附件失敗。')
-            submitSuccess = false
+            this.submitSuccess = false
             throw error
           }
         }
         this.getProblemInfo(pid)
-        if (submitSuccess) {
+        if (this.submitSuccess) {
           if (!this.isEdit) {
             this.$router.push({
               name: 'courseProblems',
@@ -134,6 +138,18 @@ export default {
         throw error
       }
     },
+  },
+
+  beforeRouteLeave(to, from, next) {
+    if (this.submitSuccess) next()
+    else {
+      const answer = window.confirm('確定要離開嗎？未完成的編輯將不會儲存。')
+      if (answer) {
+        next()
+      } else {
+        next(false)
+      }
+    }
   },
 }
 </script>

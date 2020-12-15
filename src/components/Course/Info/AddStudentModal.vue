@@ -158,8 +158,21 @@ import ConfirmModal from '@/components/UI/ConfirmModal'
 
 const template =
   'username,displayName,password,email\n407123000S,王大明,gB7hj31p,bigming@ntnu.edu.tw\n409456000H,陳耳東,409456000H,earEast@ntu.edu.tw\nB123456789,（若是已註冊過的帳號,其他欄位可填可不填）'
+const initNewStudent = {
+  username: '',
+  displayName: '',
+  password: '',
+  email: '',
+}
 
 export default {
+  props: {
+    submitSuccess: {
+      type: Boolean,
+      required: true,
+    },
+  },
+
   components: { PreviewCSV, ConfirmModal },
 
   data: () => ({
@@ -168,15 +181,24 @@ export default {
     newStudentFile: null,
     template,
     validForm: false,
-    newStudent: {
-      username: '',
-      displayName: '',
-      password: '',
-      email: '',
-    },
+    newStudent: { ...initNewStudent },
     isShowConfirmModal: false,
     previewFile: null,
   }),
+
+  watch: {
+    submitSuccess() {
+      if (this.submitSuccess) {
+        this.dialog = false
+        if (this.newStudentFile) {
+          this.newStudentFile = null
+        } else {
+          this.validForm = false
+          this.newStudent = { ...initNewStudent }
+        }
+      }
+    },
+  },
 
   computed: {
     isAddStudentDisabled() {
@@ -199,8 +221,6 @@ export default {
     confirmSubmit() {
       this.$emit('submitAddMultipleStudents', this.newStudentFile)
       this.closeConfirmModal()
-      // TODO: getError and show feedback, conditionally close dialog
-      this.dialog = false
     },
     downloadExample() {
       const csvContent = 'data:text/csv;charset=utf-8,' + this.template
@@ -216,8 +236,6 @@ export default {
           `${Object.keys(this.newStudent).join(',')}\n${Object.values(this.newStudent).join(',')}`,
         )
       }
-      // TODO: getError and show feedback, conditionally close dialog
-      this.dialog = false
     },
   },
 }

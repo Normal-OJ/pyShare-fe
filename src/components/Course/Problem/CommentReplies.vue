@@ -67,6 +67,10 @@ export default {
       type: Array,
       required: true,
     },
+    setIsEdit: {
+      type: Function,
+      required: true,
+    },
   },
 
   components: { TextEditor },
@@ -84,9 +88,13 @@ export default {
   methods: {
     editReply(index) {
       this.$set(this.isEdit, index, true)
+      this.setIsEdit(true)
     },
     cancelEditReply(index) {
       this.$set(this.isEdit, index, false)
+      if (this.isEdit.every(edit => !edit)) {
+        this.setIsEdit(false)
+      }
     },
     updateReply(id, index) {
       this.$emit('update-reply', id, this.newReplies[index])

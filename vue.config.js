@@ -4,7 +4,8 @@ const webpack = require('webpack')
 module.exports = {
   transpileDependencies: ['vuetify'],
   devServer: {
-    proxy: 'https://pyshare.noj.tw',
+    proxy: 'http://s2.noj.tw:1122',
+    // proxy: 'https://pyshare.noj.tw',
   },
   configureWebpack: {
     plugins: [

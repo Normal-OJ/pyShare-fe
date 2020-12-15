@@ -57,6 +57,7 @@
     <div class="text-h5 mt-4">成員</div>
     <Members
       :members="members"
+      :submitSuccess="submitSuccess"
       @submitAddMultipleStudents="submitAddMultipleStudents"
       @submitAddStudent="submitAddStudent"
     />
@@ -75,6 +76,10 @@ export default {
   props: {
     info: {
       type: Object,
+    },
+    submitSuccess: {
+      type: Boolean,
+      required: true,
     },
   },
 

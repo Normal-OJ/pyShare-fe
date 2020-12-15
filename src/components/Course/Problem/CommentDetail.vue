@@ -358,6 +358,7 @@
     <CommentReplies
       v-else
       :replies="replies"
+      :setIsEdit="setIsEdit"
       @update-reply="(id, index) => $emit('update-reply', id, index)"
       @delete-reply="id => $emit('delete-reply', id)"
     />
@@ -405,6 +406,10 @@ export default {
     },
     historySubmissions: {
       type: Array,
+      required: true,
+    },
+    setIsEdit: {
+      type: Function,
       required: true,
     },
   },
@@ -526,11 +531,13 @@ export default {
         this.isDisableSubmitSubmission = !this.newComment[key]
       }
       this.isEdit[key] = true
-      this.$emit('setIsEdit', true)
+      this.setIsEdit(true)
     },
     cancelEditComment(key) {
       this.isEdit[key] = false
-      this.$emit('setIsEdit', false)
+      if (Object.values(this.isEdit).every(edit => !edit)) {
+        this.setIsEdit(false)
+      }
     },
     confirmEditComment(key) {
       this.updateComment()

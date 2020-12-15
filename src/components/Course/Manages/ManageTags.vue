@@ -1,9 +1,9 @@
 <template>
   <v-container fluid>
     <v-row no-gutters>
-      <div class="text-h5">管理標籤</div>
-      <v-spacer></v-spacer>
-      <CreateTagModal @submit="submitNewTags" />
+      <div class="text-h5">管理分類</div>
+      <v-spacer />
+      <CreateTagModal :submitNewTags="submitNewTags" />
     </v-row>
 
     <v-row>
@@ -27,7 +27,7 @@
                     v-on="on"
                     small="small"
                     icon
-                    @click="submitPatchTags(PATCH_OPTION.POP, [item])"
+                    @click="handleSubmitPatchTags(PATCH_OPTION.POP, [item])"
                   >
                     <v-icon>mdi-close</v-icon>
                   </v-btn>
@@ -49,7 +49,7 @@
                 v-on="on"
                 large="large"
                 :disabled="selectedTags && selectedTags.length === 0"
-                @click="submitPatchTags(PATCH_OPTION.PUSH, selectedTags)"
+                @click="handleSubmitPatchTags(PATCH_OPTION.PUSH, selectedTags)"
               >
                 <v-icon>mdi-transfer-left</v-icon>
               </v-btn>
@@ -125,6 +125,14 @@ export default {
       type: Array,
       required: true,
     },
+    submitPatchTags: {
+      type: Function,
+      required: true,
+    },
+    submitNewTags: {
+      type: Function,
+      required: true,
+    },
   },
 
   data: () => ({
@@ -158,12 +166,9 @@ export default {
   },
 
   methods: {
-    submitPatchTags(option, tags) {
+    async handleSubmitPatchTags(option, tags) {
       const body = { ...initialPatchTagsBody, [option]: tags }
-      this.$emit('submitPatchTags', body)
-    },
-    submitNewTags(tags) {
-      this.$emit('submitNewTags', tags)
+      this.submitPatchTags(body)
     },
     async toggleAll() {
       await this.$nextTick()

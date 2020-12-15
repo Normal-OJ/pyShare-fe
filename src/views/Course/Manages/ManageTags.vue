@@ -2,8 +2,8 @@
   <ManageTags
     :allTags="allTags || []"
     :courseTags="courseTags || []"
-    @submitNewTags="submitNewTags"
-    @submitPatchTags="submitPatchTags"
+    :submitPatchTags="submitPatchTags"
+    :submitNewTags="submitNewTags"
   />
 </template>
 
@@ -50,16 +50,20 @@ export default {
       try {
         await agent.Course.patchTags(this.courseName, body)
         this.getCourseTags({ course: this.courseName })
+        return true
       } catch (error) {
         console.log('[components/ManageTags/submitPatchTags] error', error)
+        return false
       }
     },
     async submitNewTags(tags) {
       try {
         await agent.Tag.create({ tags })
         this.getAllTags(this.courseName)
+        return true
       } catch (error) {
         console.log('[views/ManageTags/submitNewTags] error', error)
+        return false
       }
     },
   },

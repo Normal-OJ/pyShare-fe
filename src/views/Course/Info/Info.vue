@@ -1,6 +1,7 @@
 <template>
   <Info
     :info="info"
+    :submitSuccess="submitSuccess"
     @submitAddMultipleStudents="submitAddMultipleStudents"
     @submitAddStudent="submitAddStudent"
   />
@@ -15,7 +16,9 @@ import agent from '@/api/agent'
 export default {
   components: { Info },
 
-  data: () => ({}),
+  data: () => ({
+    submitSuccess: false,
+  }),
 
   computed: {
     ...mapState({
@@ -35,6 +38,8 @@ export default {
         try {
           await agent.Auth.batchSignup({ course, csvString })
           this.getCourseInfo(course)
+          this.submitSuccess = true
+          this.submitSuccess = false
           alert('新增學生成功。')
         } catch (error) {
           console.log('[views/Info/submitAddMultipleStudents error]', error)
@@ -48,6 +53,7 @@ export default {
         const course = this.$route.params.name
         await agent.Auth.batchSignup({ course, csvString })
         this.getCourseInfo(course)
+        this.submitSuccess = true
         alert('新增學生成功。')
       } catch (error) {
         console.log('[views/Info/submitAddStudent error]', error)

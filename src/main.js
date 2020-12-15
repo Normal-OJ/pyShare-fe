@@ -25,7 +25,7 @@ Vue.use(Rollbar, {
   accessToken: process.env.VUE_APP_ROLLBAR_TOKEN,
   captureUncaught: true,
   captureUnhandledRejections: true,
-  enabled: true,
+  enabled: process.env.VUE_APP_ROLLBAR_ENABLED === 'false' ? false : true,
   source_map_enabled: true,
   environment: process.env.VUE_APP_ROLLBAR_ENV || ROLLBAR_ENV_PRODUCTION,
   payload: {

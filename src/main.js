@@ -40,6 +40,11 @@ Vue.directive('permission', permission)
 
 apiSetup()
 
+Vue.config.errorHandler = err => {
+  Vue.rollbar.error(err)
+  throw err
+}
+
 new Vue({
   router,
   store,

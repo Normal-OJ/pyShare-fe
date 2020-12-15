@@ -52,6 +52,7 @@ export default {
           default:
             this.errorMsg = '登入失敗：系統異常，請洽管理員'
         }
+        throw error
       }
       this.isWaiting = false
     },

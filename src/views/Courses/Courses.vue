@@ -42,6 +42,7 @@ export default {
       } catch (error) {
         console.log('[views/Courses/submitCreateCourse] error', error)
         // TODO: setError
+        throw error
       }
     },
     ...mapActions({

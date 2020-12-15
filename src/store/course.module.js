@@ -25,6 +25,7 @@ const actions = {
       commit(SET_COURSES, data.data)
     } catch (error) {
       console.log('[vuex/course/getCourses] error', error)
+      throw error
     }
   },
   /**
@@ -38,6 +39,7 @@ const actions = {
       commit(SET_COURSE_STATS, data.data)
     } catch (error) {
       console.log('[vuex/course/getCourseStats] error', error)
+      throw error
     }
   },
   /**
@@ -51,6 +53,7 @@ const actions = {
       commit(SET_COURSE_INFO, { ...data.data, name })
     } catch (error) {
       console.log('[vuex/course/getCourseInfo] error', error)
+      throw error
     }
   },
   async [GET_COURSE_TAGS]({ commit }, params) {
@@ -59,6 +62,7 @@ const actions = {
       commit(SET_COURSE_TAGS, data.data)
     } catch (error) {
       console.log('[vuex/tag/getTags] error', error)
+      throw error
     }
   },
 }

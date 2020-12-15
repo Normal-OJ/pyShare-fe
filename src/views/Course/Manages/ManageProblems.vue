@@ -61,6 +61,7 @@ export default {
       } catch (error) {
         console.log('[view/Course/Manages/ManageProblems] error', error)
         alert('刪除題目失敗。')
+        throw error
       }
     },
   },

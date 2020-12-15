@@ -49,6 +49,7 @@ export default {
         } catch (error) {
           console.log('[views/ManageMembers/submitAddMultipleStudents error]', error)
           alert('新增學生失敗。')
+          throw error
         }
       }
       r.readAsText(file)
@@ -62,6 +63,7 @@ export default {
       } catch (error) {
         console.log('[views/ManageMembers/submitAddStudent error]', error)
         alert('新增學生失敗。')
+        throw error
       }
     },
   },

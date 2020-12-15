@@ -64,13 +64,13 @@ export default {
   },
 
   methods: {
-    submit() {
-      const result = this.submitNewTags(this.newTags)
-      if (result) {
+    async submit() {
+      try {
+        await this.submitNewTags(this.newTags)
         alert('新增分類成功！')
         this.dialog = false
         this.newTags = []
-      } else {
+      } catch (error) {
         alert('新增分類失敗。')
       }
     },

@@ -44,6 +44,7 @@ export default {
         this.allTags = data.data
       } catch (error) {
         console.log('[views/ManageTags/getAllTags] error', error)
+        throw error
       }
     },
     async submitPatchTags(body) {
@@ -53,7 +54,7 @@ export default {
         return true
       } catch (error) {
         console.log('[components/ManageTags/submitPatchTags] error', error)
-        return false
+        throw error
       }
     },
     async submitNewTags(tags) {
@@ -63,7 +64,7 @@ export default {
         return true
       } catch (error) {
         console.log('[views/ManageTags/submitNewTags] error', error)
-        return false
+        throw error
       }
     },
   },

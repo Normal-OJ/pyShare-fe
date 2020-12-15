@@ -123,6 +123,7 @@ export default {
         await this.getComments(data.data.comments)
       } catch (error) {
         console.log('[views/Problem/getProblem] error', error)
+        throw error
       }
     },
     fetchSubmission() {
@@ -144,6 +145,7 @@ export default {
         })
       } catch (error) {
         console.log('[views/Problem/submitTestSubmission] error', error)
+        throw error
       }
     },
     async submitNewComment(newComment) {
@@ -163,6 +165,7 @@ export default {
         })
       } catch (error) {
         console.log('[views/Problem/submitNewComment] error', error)
+        throw error
       }
     },
     async submitReply(id, content) {
@@ -172,6 +175,7 @@ export default {
         await this.getProblem(this.pid)
       } catch (error) {
         console.log('[views/Problem/submitReply] error', error)
+        throw error
       }
     },
     async submitNewSubmission(cid, code) {
@@ -180,6 +184,7 @@ export default {
         await this.getProblem(this.pid)
       } catch (error) {
         console.log('[views/Problem/submitTestSubmission] error', error)
+        throw error
       }
     },
     async updateComment(cid, newComment) {
@@ -188,6 +193,7 @@ export default {
         this.getComments(this.prob.comments)
       } catch (error) {
         console.log('[views/Problem/updateComment] error', error)
+        throw error
       }
     },
     getSubmissions(cid) {
@@ -205,6 +211,7 @@ export default {
         this.getSubmissions(cid)
       } catch (error) {
         console.log('[views/Problem/gradeSubmission] error', error)
+        throw error
       }
     },
     async likeComment(cid) {
@@ -213,6 +220,7 @@ export default {
         this.getComments(this.prob.comments)
       } catch (error) {
         console.log('[views/Problem/likeComment] error', error)
+        throw error
       }
     },
     async updateReply(cid, content) {
@@ -222,6 +230,7 @@ export default {
         this.getComments(this.prob.comments)
       } catch (error) {
         console.log('[views/Problem/updateReply] error', error)
+        throw error
       }
     },
     async deleteReply(cid) {
@@ -230,6 +239,7 @@ export default {
         this.getComments(this.prob.comments)
       } catch (error) {
         console.log('[views/Problem/deleteReply] error', error)
+        throw error
       }
     },
     setIsEdit(value) {

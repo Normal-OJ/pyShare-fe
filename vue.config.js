@@ -5,7 +5,7 @@ module.exports = {
   transpileDependencies: ['vuetify'],
   devServer: {
     proxy: 'http://s2.noj.tw:1122',
-    // proxy: 'https://pyshare.noj.tw',
+    disableHostCheck: process.env.VUE_APP_DISABLE_HOST_CHECK === 'true',
   },
   configureWebpack: {
     plugins: [

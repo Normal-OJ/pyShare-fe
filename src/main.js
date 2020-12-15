@@ -13,7 +13,6 @@ import { apiSetup } from './api/api'
 import permission from './directive/permission'
 
 var Rollbar = require('vue-rollbar')
-const ROLLBAR_ENV_PRODUCTION = 'production'
 
 Vue.config.productionTip = false
 
@@ -27,7 +26,7 @@ Vue.use(Rollbar, {
   captureUnhandledRejections: true,
   enabled: process.env.VUE_APP_ROLLBAR_ENABLED === 'false' ? false : true,
   source_map_enabled: true,
-  environment: process.env.VUE_APP_ROLLBAR_ENV || ROLLBAR_ENV_PRODUCTION,
+  environment: process.env.NODE_ENV,
   payload: {
     client: {
       javascript: {

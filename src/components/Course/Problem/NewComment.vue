@@ -103,8 +103,11 @@ export default {
   },
 
   watch: {
-    defaultCode() {
-      this.newComment.code = this.defaultCode
+    defaultCode: {
+      handler() {
+        this.newComment.code = this.defaultCode
+      },
+      immediate: true,
     },
   },
 
@@ -119,6 +122,8 @@ export default {
 
   methods: {
     setDefaultCode() {
+      const result = window.confirm('套用預設程式碼將會覆蓋掉現有的程式碼，是否要繼續？')
+      if (!result) return
       this.newComment = { ...this.newComment, code: this.defaultCode }
     },
     closeNewComment() {

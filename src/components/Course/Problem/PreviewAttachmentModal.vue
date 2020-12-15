@@ -14,7 +14,8 @@
         </v-toolbar-items>
       </v-toolbar>
       <v-card-text class="mt-8 text--primary" style="overflow: scroll">
-        <Spinner v-if="!displayFile" />
+        <div v-if="isImg" class="text-h5">目前無法預覽圖片附件</div>
+        <Spinner v-else-if="!displayFile" />
         <pre v-else>{{ displayFile }}</pre>
       </v-card-text>
     </v-card>
@@ -24,6 +25,8 @@
 <script>
 import agent from '@/api/agent'
 import Spinner from '@/components/UI/Spinner'
+
+const imageFilePossibleExtension = ['png', 'jpg', 'gif', 'jpeg', 'webp', 'svg', 'bmp']
 
 export default {
   props: {
@@ -36,6 +39,8 @@ export default {
   components: { Spinner },
 
   data: () => ({
+    imageFilePossibleExtension,
+    isImg: false,
     displayFile: null,
   }),
 
@@ -44,9 +49,19 @@ export default {
   },
 
   methods: {
+    isImageFile(name) {
+      const splittedName = name.split('.')
+      const extension = splittedName[splittedName.length - 1]
+      const isFound = this.imageFilePossibleExtension.indexOf(extension.toLowerCase()) !== -1
+      return isFound
+    },
     async getFileData() {
-      const { data } = await agent.Problem.getAttachment(this.$route.params.id, this.filename)
-      this.displayFile = data
+      if (this.isImageFile(this.filename)) {
+        this.isImg = true
+      } else {
+        const { data } = await agent.Problem.getAttachment(this.$route.params.id, this.filename)
+        this.displayFile = data
+      }
     },
   },
 }

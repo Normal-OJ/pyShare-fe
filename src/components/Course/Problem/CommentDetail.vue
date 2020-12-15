@@ -1,8 +1,34 @@
 <template>
   <Fragment>
     <v-card class="py-4 px-6 mt-4">
+      <div class="d-flex">
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn icon @click="closeSelectedComment" v-on="on" v-bind="attrs">
+              <v-icon>mdi-close</v-icon>
+            </v-btn>
+          </template>
+          <span>關閉創作，回到列表</span>
+        </v-tooltip>
+        <v-spacer />
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              icon
+              @click="deleteSelectedComment"
+              v-on="on"
+              v-bind="attrs"
+              v-if="$isSelf(comment.author.username)"
+            >
+              <v-icon>mdi-trash-can</v-icon>
+            </v-btn>
+          </template>
+          <span>刪除創作</span>
+        </v-tooltip>
+      </div>
+      <v-divider class="mt-1 mb-4" />
       <div class="d-flex flex-row align-center">
-        <v-avatar class="mr-2" size="48" color="primary">
+        <v-avatar class="mr-4" size="48" color="primary">
           <span class="white--text headline">{{ comment.author.displayName.slice(0, 1) }}</span>
         </v-avatar>
         <div class="d-flex flex-column" style="flex: 1">
@@ -18,7 +44,6 @@
                     color="primary darken-3"
                     x-small
                     icon
-                    outlined
                     @click.stop="editComment(COMMENT_KEY.TITLE)"
                     v-on="on"
                     v-bind="attrs"
@@ -66,15 +91,6 @@
               </template>
               <span>愛心</span>
             </v-tooltip>
-
-            <v-tooltip bottom>
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn class="ml-4" icon @click="closeSelectedComment" v-on="on" v-bind="attrs">
-                  <v-icon>mdi-close</v-icon>
-                </v-btn>
-              </template>
-              <span>關閉創作，回到列表</span>
-            </v-tooltip>
           </div>
           <!-- Second Row -->
           <div class="d-flex flex-row align-center text-body-2">
@@ -118,7 +134,6 @@
                 color="primary darken-3"
                 x-small
                 icon
-                outlined
                 @click.stop="editComment(COMMENT_KEY.CONTENT)"
                 v-on="on"
                 v-bind="attrs"
@@ -416,6 +431,10 @@ export default {
       type: Function,
       required: true,
     },
+    deleteReply: {
+      type: Function,
+      required: true,
+    },
   },
 
   computed: {
@@ -519,6 +538,17 @@ export default {
       this.$emit('fetchSubmission')
       this.$router.replace({ query: null })
       this.$emit('refetchFloor')
+    },
+    async deleteSelectedComment() {
+      const result = window.confirm('確認要刪除創作嗎？')
+      if (!result) return
+      try {
+        await this.deleteReply(this.comment.id)
+        this.$router.replace({ query: null })
+        this.$emit('refetchFloor')
+      } catch (error) {
+        alert('刪除失敗。')
+      }
     },
     getReplies() {
       Promise.all(this.comment.replies.map(cid => agent.Comment.get(cid))).then(resp => {

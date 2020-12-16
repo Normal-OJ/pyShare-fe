@@ -1,6 +1,5 @@
 <template>
   <Fragment>
-    <div></div>
     <div class="my-2 d-flex flex-row align-center flex-wrap">
       <v-col cols="12" md="6" class="d-flex">
         <v-select
@@ -39,6 +38,10 @@
         </template>
         <span>此主題僅限一則創作，您可以在一則創作上建立新版本的程式</span>
       </v-tooltip>
+    </div>
+    <div class="d-flex flex-column align-center" v-if="filteredComments.length === 0">
+      <div class="text-subtitle-1 gray--text my-8">這裡還沒有任何創作，或找不到符合條件的創作</div>
+      <v-img :src="require('@/assets/images/noData.svg')" max-width="600" contain />
     </div>
     <div
       v-for="{
@@ -170,6 +173,10 @@ const SORT_BY = {
     text: '愛心數（少到多）',
     method: (a, b) => a.liked.length - b.liked.length,
   },
+  SHOW_MINE: {
+    value: 'SHOW_MINE',
+    text: '優先顯示我的創作',
+  },
 }
 
 export default {
@@ -199,6 +206,20 @@ export default {
       return Object.values(this.SORT_BY)
     },
     filteredComments() {
+      if (this.sortby === SORT_BY.SHOW_MINE.value) {
+        return this.comments
+          .slice()
+          .sort((a, b) => {
+            if (a.author.username === this.username) return -1
+            if (b.author.username === this.username) return 1
+            return 0
+          })
+          .filter(
+            comment =>
+              comment.title.includes(this.searchText) ||
+              comment.author.displayName.includes(this.searchText),
+          )
+      }
       return this.comments
         .slice()
         .sort(this.SORT_BY[this.sortby].method)
@@ -214,7 +235,7 @@ export default {
     SORT_BY,
     SUBMISSION_STATE,
     SUBMISSION_COLOR,
-    sortby: SORT_BY.TIME_ASCENDING.value,
+    sortby: SORT_BY.SHOW_MINE.value,
     searchText: '',
   }),
 

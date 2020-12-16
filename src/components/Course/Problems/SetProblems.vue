@@ -173,6 +173,7 @@ export default {
         }
       },
       immediate: true,
+      deep: true,
     },
     fileUploader() {
       this.willAddAttachments = [...new Set([...this.willAddAttachments, ...this.fileUploader])]

@@ -14,3 +14,4 @@ export const GET_COURSE_TAGS = 'getTags'
 
 // comment module
 export const GET_COMMENTS = 'getComments'
+export const GET_COMMENT = 'getComment'

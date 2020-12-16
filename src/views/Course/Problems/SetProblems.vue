@@ -90,6 +90,7 @@ export default {
               willAddAttachments.map(file => {
                 const formData = new FormData()
                 formData.append('attachment', file)
+                formData.append('attachmentName', file.name)
                 return agent.Problem.addAttachment(pid, formData)
               }),
             )

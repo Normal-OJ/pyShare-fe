@@ -550,13 +550,18 @@ export default {
         alert('刪除失敗。')
       }
     },
-    getReplies() {
-      Promise.all(this.comment.replies.map(cid => agent.Comment.get(cid))).then(resp => {
-        this.replies = resp.map((res, index) => ({
-          ...res.data.data,
-          id: this.comment.replies[index],
-        }))
-      })
+    async getReplies() {
+      const commentReplies = this.comment.replies.slice()
+      await Promise.all(commentReplies.map((cid, index, arr) => this.getReply(cid, index, arr)))
+      this.replies = [...commentReplies]
+    },
+    async getReply(cid, index, arr) {
+      try {
+        const result = await agent.Comment.get(cid)
+        arr[index] = { ...result.data.data, id: cid }
+      } catch (error) {
+        arr[index] = { status: 0, id: cid }
+      }
     },
     editComment(key) {
       if (key !== this.COMMENT_KEY.CODE) this.newComment[key] = this.comment[key]

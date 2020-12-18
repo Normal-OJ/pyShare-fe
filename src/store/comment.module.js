@@ -35,7 +35,7 @@ const actions = {
       throw error
     }
   },
-  async [GET_COMMENT]({ commit }, { cid, index, arr }) {
+  async [GET_COMMENT](_, { cid, index, arr }) {
     try {
       const result = await agent.Comment.get(cid)
       arr[index] = result.data.data
@@ -44,7 +44,7 @@ const actions = {
       arr[index] = { status: 0, id: cid }
       // throw error
     }
-  }
+  },
 }
 
 const mutations = {

@@ -1,5 +1,5 @@
 export default {
-  BASE_API_URL: '/api',
+  API_BASE_URL: '/api',
 
   jwt: 'jwt',
 }

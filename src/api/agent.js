@@ -62,7 +62,7 @@ const Submission = {
 const Gitlab = {
   getReleases: () => {
     const url = `${gitlab.API_BASE_URL}/projects/${gitlab.PROJECT_ID}/releases`
-    return fetch(url, { headers: { ...gitlab.HEADER } }).then(response => response.json())
+    return fetch(url).then(response => response.json())
   },
 }
 

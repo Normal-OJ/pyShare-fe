@@ -1,6 +1,6 @@
 <template>
   <v-container fluid>
-    <div class="d-flex flex-column align-center mt-6">
+    <div class="d-flex flex-column align-center my-6">
       <div class="text-h3">Meet The Team</div>
       <div class="text-subtitle-1 mt-4">此平台由國立臺灣師範大學建置與維護</div>
       <!-- Chair -->
@@ -46,7 +46,3 @@
     </div>
   </v-container>
 </template>
-
-<script>
-export default {}
-</script>

@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import gitlab from '@/constants/gitlab'
 
 const Auth = {
   login: body => Vue.axios.post('/auth/session', body),
@@ -58,6 +59,13 @@ const Submission = {
   createTest: body => Vue.axios.post('/submission', body),
 }
 
+const Gitlab = {
+  getReleases: () => {
+    const url = `${gitlab.API_BASE_URL}/projects/${gitlab.PROJECT_ID}/releases`
+    return fetch(url, { headers: { ...gitlab.HEADER } }).then(response => response.json())
+  },
+}
+
 export default {
   Auth,
   Course,
@@ -66,4 +74,5 @@ export default {
   Tag,
   User,
   Submission,
+  Gitlab,
 }

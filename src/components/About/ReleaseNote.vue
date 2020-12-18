@@ -6,17 +6,22 @@
 
       <div v-if="data.length > 0" class="mt-2 align-self-center">
         <div
-          v-for="{ tag, name, content, time } in isShowAll ? data : data.slice(0, 2)"
+          v-for="{ tag, name, content, time, sha } in isShowAll ? data : data.slice(0, 2)"
           :key="tag"
           class="mt-4"
         >
           <div class="d-flex flex-column">
-            <div class="text-h5">
-              <b>{{ tag }}</b>
-              <small>&nbsp;{{ name }} &nbsp;{{ time }}</small>
+            <div class="d-flex align-baseline" style="white-space: pre">
+              <div class="text-h5 font-weight-bold">{{ tag }}</div>
+              <div class="text-caption">&nbsp;({{ sha }})&nbsp;</div>
+              <div class="text-h6">{{ name }} &nbsp;{{ time }}</div>
             </div>
-            <div v-for="({ type, text }, index) in content" :key="index" class="ml-8 my-1">
-              <v-chip :color="typeColor[type]" label small>
+            <div
+              v-for="({ type, text }, index) in content"
+              :key="index"
+              class="ml-8 my-1 d-flex align-center"
+            >
+              <v-chip :color="typeColor[type]" label small class="mr-2 font-weight-bold">
                 {{ type }}
               </v-chip>
               {{ text }}
@@ -87,11 +92,13 @@ export default {
           }))
           .filter(c => c.type)
         const time = this.$dayjs(release.released_at).format('YYYY-MM-DD')
+        const sha = release.commit.id.substring(0, 8)
         return {
           name,
           tag,
           content,
           time,
+          sha,
         }
       })
     },

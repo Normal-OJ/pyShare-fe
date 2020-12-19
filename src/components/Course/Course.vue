@@ -27,6 +27,13 @@ export default {
 .wrapper {
   display: flex;
   flex-wrap: nowrap;
-  height: 100%;
+  width: 100%;
+  height: calc(100vh - 56px);
+  position: fixed;
+}
+.container {
+  flex: 1;
+  /* height: 100%; */
+  overflow: scroll;
 }
 </style>

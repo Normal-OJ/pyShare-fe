@@ -3,6 +3,7 @@
     permanent
     :mini-variant="isMinify"
     mini-variant-width="50"
+    :width="200"
     disable-resize-watcher
   >
     <v-list-item>
@@ -12,9 +13,14 @@
         </v-avatar>
       </v-list-item-avatar>
       <v-list-item-content>
-        <v-list-item-title>
-          {{ $route.params.name }}
-        </v-list-item-title>
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on, attr }">
+            <v-list-item-title v-on="on" v-bind="attr">
+              {{ $route.params.name }}
+            </v-list-item-title>
+          </template>
+          <span>{{ $route.params.name }}</span>
+        </v-tooltip>
       </v-list-item-content>
     </v-list-item>
 

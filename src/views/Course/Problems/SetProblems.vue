@@ -5,6 +5,7 @@
     :tags="courseTags"
     :isEdit="isEdit"
     @submit="handleSubmit"
+    @delete-problem="deleteProblem"
   />
   <Spinner v-else />
 </template>
@@ -136,6 +137,18 @@ export default {
       } catch (error) {
         console.log('[views/SetProblems/handleSubmit] error', error)
         alert(`${this.isEdit ? '更新' : '新增'}主題內容失敗。`)
+        throw error
+      }
+    },
+    async deleteProblem(pid) {
+      try {
+        await agent.Problem.delete(pid)
+        this.submitSuccess = true
+        alert('刪除題目成功。')
+        this.$router.push({ name: 'courseProblems' })
+      } catch (error) {
+        console.log('[view/Course/Manages/ManageProblems] error', error)
+        alert('刪除題目失敗。')
         throw error
       }
     },

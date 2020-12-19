@@ -31,22 +31,33 @@ export default {
 
   computed: {
     labelColor() {
-      const hash = this.tag.charCodeAt(0)
+      const hash = this.tag.split('').reduce((a, b) => {
+        return a + b.charCodeAt(0)
+      }, 0)
       return this.color[hash % this.color.length]
     },
   },
 
   data: () => ({
     color: [
-      { color: '#3d5a80', dark: true },
-      { color: '#293241', dark: true },
-      { color: '#797d62', dark: true },
-      { color: '#d08c60', dark: true },
-      { color: '#a6808c', dark: true },
-      { color: '#d81159', dark: true },
-      { color: '#b9375e', dark: true },
-      { color: '#f2b5d4', dark: false },
-      { color: '#7bdff2', dark: false },
+      { color: '#d32f2f', dark: true },
+      { color: '#C2185B', dark: true },
+      { color: '#7B1FA2', dark: true },
+      { color: '#512DA8', dark: true },
+      { color: '#303F9F', dark: true },
+      { color: '#1976D2', dark: true },
+      { color: '#0288D1', dark: true },
+      { color: '#0097A7', dark: true },
+      { color: '#00796B', dark: true },
+      { color: '#388E3C', dark: true },
+      { color: '#689F38', dark: true },
+      { color: '#AFB42B', dark: true },
+      { color: '#FFA000', dark: true },
+      { color: '#F57C00', dark: true },
+      { color: '#E64A19', dark: true },
+      { color: '#5D4037', dark: true },
+      { color: '#616161', dark: true },
+      { color: '#455A64', dark: true },
     ],
   }),
 }

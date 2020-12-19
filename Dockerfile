@@ -3,11 +3,10 @@ FROM node:alpine
 # make the 'app' folder the current working directory
 WORKDIR /app
 
-# copy both 'package.json' and 'package-lock.json' (if available)
-COPY package*.json ./
+# copy both 'package.json' and 'yarn.lock
+COPY ["package.json", "yarn.lock", "./"]
 
 # install project dependencies
-RUN apk add python make g++ && \
-    npm install
+RUN yarn --silent
 
-CMD [ "npm", "run", "serve" ]
+CMD [ "yarn", "run", "serve" ]

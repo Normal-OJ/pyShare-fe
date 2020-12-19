@@ -4,18 +4,20 @@
     <v-main>
       <router-view />
     </v-main>
+    <Notification />
   </v-app>
 </template>
 
 <script>
-import Header from '@/components/Header'
+import Header from '@/components/UI/Header'
+import Notification from '@/components/UI/Notification'
 import { mapActions } from 'vuex'
 import { LOGOUT } from '@/store/actions.type'
 
 export default {
   name: 'App',
 
-  components: { Header },
+  components: { Header, Notification },
 
   methods: {
     ...mapActions({

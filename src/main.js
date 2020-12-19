@@ -12,21 +12,21 @@ import '@mdi/font/css/materialdesignicons.css'
 import { apiSetup } from './api/api'
 import permission from './directive/permission'
 import VueSocketIO from 'vue-socket.io'
+import Notifications from 'vue-notification'
 
-const SocketIO = new VueSocketIO({
-  debug: true,
-  connection: '/notifier',
-  vuex: {
-    store,
-    actionPrefix: 'SOCKET_',
-    mutationPrefix: 'SOCKET_',
-  },
-  options: { path: '/my-app/' }, //Optional options
-})
+Vue.use(Notifications)
 
-Vue.use(SocketIO)
-
-console.log('socket io', SocketIO)
+Vue.use(
+  new VueSocketIO({
+    debug: true,
+    connection: '/notifier',
+    vuex: {
+      store,
+      actionPrefix: 'SOCKET_',
+      mutationPrefix: 'SOCKET_',
+    },
+  }),
+)
 
 Vue.config.productionTip = false
 

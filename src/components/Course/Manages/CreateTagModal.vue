@@ -28,7 +28,27 @@
           dense
           hint="（可輸入多個，按下 Enter 來輸入下一個分類）"
           persistent-hint
-        />
+          append-icon=""
+        >
+          <template v-slot:selection="{ parent, item }">
+            <ColorLabel :tag="item" close @close-chip="remove(item)" />
+            <!-- <v-chip
+              v-if="item === Object(item)"
+              v-bind="attrs"
+              :color="`${item.color} lighten-3`"
+              :input-value="selected"
+              label
+              small
+            >
+              <span class="pr-2">
+                {{ item.text }}
+              </span>
+              <v-icon small @click="parent.selectItem(item)">
+                close
+              </v-icon>
+            </v-chip> -->
+          </template>
+        </v-combobox>
       </v-card-text>
 
       <v-divider />
@@ -42,8 +62,12 @@
 </template>
 
 <script>
+import ColorLabel from '@/components/UI/ColorLabel'
+
 export default {
   name: 'CreateTagModal',
+
+  components: { ColorLabel },
 
   props: {
     submitNewTags: {
@@ -64,14 +88,18 @@ export default {
   },
 
   methods: {
+    remove(removedTag) {
+      this.newTags = this.newTags.filter(tag => tag !== removedTag)
+    },
     async submit() {
       try {
         await this.submitNewTags(this.newTags)
-        alert('新增分類成功！')
+        this.$alertSuccess('新增分類成功。')
         this.dialog = false
         this.newTags = []
       } catch (error) {
-        alert('新增分類失敗。')
+        console.log('[components/CreateTagModal] error', error)
+        this.$alertFail('新增分類失敗。')
       }
     },
     close() {

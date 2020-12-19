@@ -4,6 +4,7 @@
     :prob="prob"
     :tags="courseTags"
     :isEdit="isEdit"
+    :isLoading="isLoading"
     @submit="handleSubmit"
     @delete-problem="deleteProblem"
   />
@@ -66,6 +67,7 @@ export default {
 
   data: () => ({
     submitSuccess: false,
+    isLoading: false,
   }),
 
   methods: {
@@ -76,6 +78,7 @@ export default {
     }),
     async handleSubmit(body, willAddAttachments, willRemoveAttachments) {
       try {
+        this.isLoading = true
         let result
         if (this.isEdit) {
           result = await agent.Problem.update(this.pid, body)
@@ -83,7 +86,7 @@ export default {
           result = await agent.Problem.create(body)
         }
         this.submitSuccess = true
-        alert(`${this.isEdit ? '更新' : '新增'}主題內容成功。`)
+        this.$alertSuccess(`${this.isEdit ? '更新' : '新增'}主題內容成功。`)
         const pid = this.isEdit ? this.pid : result.data.data.pid
         if (willAddAttachments.length > 0) {
           try {
@@ -95,10 +98,10 @@ export default {
                 return agent.Problem.addAttachment(pid, formData)
               }),
             )
-            alert('新增主題附件成功。')
+            this.$alertSuccess('新增主題附件成功。')
           } catch (error) {
             console.log('[views/SetProblems/handleSubmit - add attachments] error', error)
-            alert('新增主題附件失敗。')
+            this.$alertFail('新增主題附件失敗。')
             this.submitSuccess = false
             throw error
           }
@@ -112,10 +115,10 @@ export default {
                 return agent.Problem.removeAttachment(pid, formData)
               }),
             )
-            alert('移除主題附件成功。')
+            this.$alertSuccess('移除主題附件成功。')
           } catch (error) {
             console.log('[views/SetProblems/handleSubmit - remove attachments] error', error)
-            alert('移除主題附件失敗。')
+            this.$alertFail('移除主題附件失敗。')
             this.submitSuccess = false
             throw error
           }
@@ -136,19 +139,20 @@ export default {
         }
       } catch (error) {
         console.log('[views/SetProblems/handleSubmit] error', error)
-        alert(`${this.isEdit ? '更新' : '新增'}主題內容失敗。`)
+        this.$alertFail(`${this.isEdit ? '更新' : '新增'}主題內容失敗。`)
         throw error
       }
+      this.isLoading = false
     },
     async deleteProblem(pid) {
       try {
         await agent.Problem.delete(pid)
         this.submitSuccess = true
-        alert('刪除題目成功。')
+        this.$alertSuccess('刪除題目成功。')
         this.$router.push({ name: 'courseProblems' })
       } catch (error) {
         console.log('[view/Course/Manages/ManageProblems] error', error)
-        alert('刪除題目失敗。')
+        this.$alertFail('刪除題目失敗。')
         throw error
       }
     },

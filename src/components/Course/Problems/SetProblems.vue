@@ -127,7 +127,13 @@
     </div>
 
     <div class="mt-8 d-flex">
-      <v-btn class="mr-3" color="success" :disabled="newProb.title === ''" @click="submit">
+      <v-btn
+        class="mr-3"
+        color="success"
+        :loading="isLoading"
+        :disabled="newProb.title === ''"
+        @click="submit"
+      >
         {{ isEdit ? '更新' : '上傳' }}主題
       </v-btn>
       <v-spacer />
@@ -174,6 +180,10 @@ export default {
       required: true,
     },
     isEdit: {
+      type: Boolean,
+      required: true,
+    },
+    isLoading: {
       type: Boolean,
       required: true,
     },

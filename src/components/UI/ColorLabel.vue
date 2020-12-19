@@ -4,7 +4,7 @@
     :small="small"
     :color="labelColor.color"
     :dark="labelColor.dark"
-    class="text-button"
+    class="text-body-1"
     :close="close"
     @click:close="$emit('close-chip')"
   >

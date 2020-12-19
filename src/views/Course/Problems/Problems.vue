@@ -16,7 +16,7 @@ import { GET_PROBLEMS, GET_COURSE_TAGS } from '@/store/actions.type'
 export default {
   // TODO: prevent maximum call stack size exceeded
   // https://github.com/vuejs/vue/issues/9081
-  // name: 'Problems',
+  name: 'ProblemsController',
 
   components: { Problems },
 
@@ -51,6 +51,26 @@ export default {
     }),
     getProblemsByTags(paramsWithTags) {
       this.getProblems({ ...paramsWithTags, course: this.courseName })
+    },
+  },
+
+  mounted() {
+    this.$socket.emit('subscribe', {
+      topic: 'PROBLEM',
+      id: this.courseName,
+    })
+  },
+
+  sockets: {
+    connect: function() {
+      console.log('socket connected')
+      // this.$socket.emit('subscribe', {
+      //   topic: 'PROBLEM',
+      //   id: this.courseName,
+      // })
+    },
+    refetch: function(data) {
+      console.log('on refetch:', data)
     },
   },
 }

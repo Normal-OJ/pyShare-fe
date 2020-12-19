@@ -1,7 +1,7 @@
 <template>
   <v-dialog v-model="dialog" persistent width="80vw">
     <template v-slot:activator="{ on, attrs }">
-      <v-btn color="success" dark v-bind="attrs" v-on="on">
+      <v-btn color="primary" outlined v-bind="attrs" v-on="on">
         <v-icon class="mr-1">mdi-eye</v-icon>
         預覽
       </v-btn>

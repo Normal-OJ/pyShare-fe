@@ -1,6 +1,6 @@
 <template>
   <v-container fluid class="pb-16">
-    <v-row class="mb-4">
+    <v-row class="mb-4" no-gutters>
       <div class="text-h5">{{ isEdit ? '編輯主題' : '新增主題' }}</div>
       <v-spacer />
       <PreviewNewProblem :prob="newProb" />
@@ -126,9 +126,24 @@
       </v-chip>
     </div>
 
-    <v-btn class="mt-8" block color="success" :disabled="newProb.title === ''" @click="submit">
-      送出
-    </v-btn>
+    <div class="mt-8 d-flex">
+      <v-btn class="mr-3" color="success" :disabled="newProb.title === ''" @click="submit">
+        {{ isEdit ? '更新' : '上傳' }}主題
+      </v-btn>
+      <v-spacer />
+      <v-btn class="mr-3" color="primary" outlined @click="goBack()">
+        取消
+      </v-btn>
+      <PreviewNewProblem :prob="newProb" />
+    </div>
+    <v-divider class="my-4" />
+    <div class="d-flex" v-if="isEdit">
+      <v-spacer />
+      <v-btn color="error" @click="deleteProblem">
+        <v-icon>mdi-trash-can</v-icon>
+        刪除
+      </v-btn>
+    </div>
   </v-container>
 </template>
 
@@ -216,6 +231,17 @@ export default {
     undoRemoveAttachmentFromProb(filename) {
       this.willRemoveAttachments = this.willRemoveAttachments.filter(file => file !== filename)
       this.prob.attachments.push(filename)
+    },
+    goBack() {
+      window.history.length > 1
+        ? this.$router.go(-1)
+        : this.$router.push({ name: 'courseProblems' })
+    },
+    deleteProblem() {
+      const result = window.confirm('確認要刪除嗎？')
+      if (result) {
+        this.$emit('delete-problem', this.prob.pid)
+      }
     },
   },
 }

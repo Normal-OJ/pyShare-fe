@@ -190,6 +190,14 @@ export default {
     isAllowMultipleComments: {
       required: null,
     },
+    subscribeRefetch: {
+      type: Function,
+      required: true,
+    },
+    unsubscribeRefetch: {
+      type: Function,
+      required: true,
+    },
   },
 
   components: { Fragment },
@@ -246,6 +254,14 @@ export default {
         this.$emit('refetchFloor')
       }
     },
+  },
+
+  mounted() {
+    this.subscribeRefetch()
+  },
+
+  destroyed() {
+    this.unsubscribeRefetch()
   },
 }
 </script>

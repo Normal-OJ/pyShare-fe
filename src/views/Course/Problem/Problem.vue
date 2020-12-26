@@ -11,6 +11,8 @@
           v-if="!floor"
           :comments="comments"
           :isAllowMultipleComments="prob && prob.allowMultipleComments"
+          :subscribeRefetch="subscribeRefetchComment"
+          :unsubscribeRefetch="unsubscribeRefetchComment"
           @refetchFloor="fetchFloor"
         />
         <NewComment
@@ -32,6 +34,8 @@
           :setIsEdit="setIsEdit"
           :submitReply="submitReply"
           :deleteReply="deleteReply"
+          :subscribeRefetch="subscribeRefetchReply"
+          :unsubscribeRefetch="unsubscribeRefetchReply"
           @refetchFloor="fetchFloor"
           @updateComment="updateComment"
           @fetchSubmission="fetchSubmission"
@@ -247,6 +251,30 @@ export default {
     setIsEdit(value) {
       this.isEdit = value
     },
+    subscribeRefetchComment() {
+      this.$socket.emit('subscribe', {
+        topic: 'COMMENT',
+        id: `problem-${this.pid}`,
+      })
+    },
+    unsubscribeRefetchComment() {
+      this.$socket.emit('unsubscribe', {
+        topic: 'COMMENT',
+        id: `problem-${this.pid}`,
+      })
+    },
+    subscribeRefetchReply(cid) {
+      this.$socket.emit('subscribe', {
+        topic: 'COMMENT',
+        id: `comment-${cid}`,
+      })
+    },
+    unsubscribeRefetchReply(cid) {
+      this.$socket.emit('unsubscribe', {
+        topic: 'COMMENT',
+        id: `comment-${cid}`,
+      })
+    },
   },
 
   beforeRouteLeave(to, from, next) {
@@ -261,6 +289,34 @@ export default {
     } else {
       next()
     }
+  },
+
+  sockets: {
+    refetch: function(data) {
+      try {
+        const target = data.id.split('-')[0]
+        if (target === 'problem') {
+          this.getProblem(this.pid)
+          this.$notify({
+            group: 'notify',
+            type: 'my-info',
+            title: '創作列表更新',
+            text: '有人新增、修改，或刪除了創作',
+          })
+        } else {
+          this.getComments(this.prob.comments)
+          this.$notify({
+            group: 'notify',
+            type: 'my-info',
+            title: '留言列表更新',
+            text: '有人新增、修改，或刪除了留言',
+          })
+        }
+      } catch (error) {
+        console.log('[views/Problem/sockets] error', error)
+        throw error
+      }
+    },
   },
 }
 </script>

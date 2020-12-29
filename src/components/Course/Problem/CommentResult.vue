@@ -126,6 +126,16 @@ export default {
         const splittedName = this.isTest ? filename.filename.split('.') : filename.split('.')
         const extension = splittedName[splittedName.length - 1]
         return this.isImageFile(extension)
+      }).sort((a, b) => {
+        if (this.isTest) {
+          if (a.filename < b.filename)  return -1
+          if (a.filename > b.filename)  return 1
+          return 0
+        } else {
+          if (a < b) return -1
+          if (a > b) return 1
+          return 0
+        }
       })
     },
     miscFiles() {
@@ -133,6 +143,16 @@ export default {
         const splittedName = this.isTest ? filename.filename.split('.') : filename.split('.')
         const extension = splittedName[splittedName.length - 1]
         return !this.isImageFile(extension)
+      }).sort((a, b) => {
+        if (this.isTest) {
+          if (a.filename < b.filename)  return -1
+          if (a.filename > b.filename)  return 1
+          return 0
+        } else {
+          if (a < b) return -1
+          if (a > b) return 1
+          return 0
+        }
       })
     },
   },

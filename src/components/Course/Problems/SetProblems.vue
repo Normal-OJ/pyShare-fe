@@ -193,7 +193,7 @@ export default {
     prob: {
       handler() {
         this.newProb = _.cloneDeep(this.prob)
-        if (this.role <= this.TEACHER) {
+        if (!this.isEdit && this.role <= this.TEACHER) {
           this.newProb.allowMultipleComments = false
         }
       },

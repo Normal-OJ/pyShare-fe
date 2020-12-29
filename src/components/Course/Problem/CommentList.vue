@@ -1,16 +1,37 @@
 <template>
   <Fragment>
-    <div class="my-2 d-flex flex-row align-center flex-wrap">
-      <v-col cols="12" md="6" class="d-flex">
+    <v-row class="my-2" align="center">
+      <v-col cols="12" lg="3" sm="6">
         <v-select
           v-model="sortby"
           class="mr-3"
           label="排序依據"
           outlined
           hide-details
+          append-icon="mdi-sort"
           :items="sortOptions"
           dense
         />
+      </v-col>
+      <v-col cols="12" lg="3" sm="6">
+        <v-select
+          v-model="statusFilter"
+          class="mr-3"
+          label="狀態篩選"
+          outlined
+          hide-details
+          multiple
+          append-icon="mdi-filter"
+          :items="SUBMISSION_STATUS"
+          dense
+        >
+          <template v-slot:selection="{ item, index }">
+            <span v-if="statusFilter.length === SUBMISSION_STATUS.length && index === 0">顯示全部</span>
+            <v-chip v-else-if="statusFilter.length !== SUBMISSION_STATUS.length" :color="SUBMISSION_COLOR[item.text]" label small>{{ item.text }}</v-chip>
+          </template>
+        </v-select>
+      </v-col>
+      <v-col cols="12" lg="3" sm="6">
         <v-text-field
           v-model="searchText"
           label="快速搜尋"
@@ -22,23 +43,25 @@
         />
       </v-col>
       <v-spacer />
-      <v-tooltip bottom :disabled="!isDisabledNewComment">
-        <template v-slot:activator="{ on, attrs }">
-          <div v-on="on" v-permission="['ALL', 'COURSE']">
-            <v-btn
-              color="success"
-              :disabled="isDisabledNewComment"
-              v-bind="attrs"
-              @click="navigate('new')"
-            >
-              <v-icon class="mr-1">mdi-pencil-plus</v-icon>
-              新增創作
-            </v-btn>
-          </div>
-        </template>
-        <span>此主題僅限一則創作，您可以在一則創作上建立新版本的程式</span>
-      </v-tooltip>
-    </div>
+      <v-col cols="12" lg="3" sm="6" align="end">
+        <v-tooltip bottom :disabled="!isDisabledNewComment">
+          <template v-slot:activator="{ on, attrs }">
+            <div v-on="on" v-permission="['ALL', 'COURSE']">
+              <v-btn
+                color="success"
+                :disabled="isDisabledNewComment"
+                v-bind="attrs"
+                @click="navigate('new')"
+              >
+                <v-icon class="mr-1">mdi-pencil-plus</v-icon>
+                新增創作
+              </v-btn>
+            </div>
+          </template>
+          <span>此主題僅限一則創作，您可以在一則創作上建立新版本的程式</span>
+        </v-tooltip>
+      </v-col>
+    </v-row>
     <div class="d-flex flex-column align-center" v-if="filteredComments.length === 0">
       <div class="text-subtitle-1 gray--text my-8">這裡還沒有任何創作，或找不到符合條件的創作</div>
       <v-img :src="require('@/assets/images/noData.svg')" max-width="600" contain />
@@ -150,7 +173,7 @@
 import { Fragment } from 'vue-fragment'
 import { mapGetters } from 'vuex'
 import { USERNAME } from '@/store/getters.type'
-import { SUBMISSION_STATE, SUBMISSION_COLOR } from '@/constants/submission'
+import { SUBMISSION_STATE, SUBMISSION_STATUS, SUBMISSION_COLOR } from '@/constants/submission'
 
 const SORT_BY = {
   TIME_DESCENDING: {
@@ -227,6 +250,9 @@ export default {
               comment.title.includes(this.searchText) ||
               comment.author.displayName.includes(this.searchText),
           )
+          .filter(
+            comment => this.statusFilter.includes(comment.submission.state)
+          )
       }
       return this.comments
         .slice()
@@ -242,9 +268,11 @@ export default {
   data: () => ({
     SORT_BY,
     SUBMISSION_STATE,
+    SUBMISSION_STATUS,
     SUBMISSION_COLOR,
     sortby: SORT_BY.SHOW_MINE.value,
     searchText: '',
+    statusFilter: SUBMISSION_STATUS.map(status => status.value),
   }),
 
   methods: {

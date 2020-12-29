@@ -384,7 +384,7 @@
 import TextEditor from '@/components/UI/TextEditor'
 import CodeEditor from '@/components/UI/CodeEditor'
 import Spinner from '@/components/UI/Spinner'
-import { SUBMISSION_STATE, SUBMISSION_STATUS, SUBMISSION_COLOR } from '@/constants/submission'
+import { SUBMISSION_STATE, SUBMISSION_COLOR } from '@/constants/submission'
 import CommentResult from './CommentResult'
 import { ROLE } from '@/constants/auth'
 import agent from '@/api/agent'
@@ -519,7 +519,6 @@ export default {
       STUDENT,
       pollingSubmission: null,
       SUBMISSION_STATE,
-      SUBMISSION_STATUS,
       SUBMISSION_COLOR,
       COMMENT_KEY,
       newComment: {},

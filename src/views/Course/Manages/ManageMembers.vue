@@ -45,10 +45,10 @@ export default {
         try {
           await agent.Auth.batchSignup({ course, csvString })
           this.getStats(course)
-          alert('新增學生成功。')
+          this.$alertSuccess('新增學生成功。')
         } catch (error) {
           console.log('[views/ManageMembers/submitAddMultipleStudents error]', error)
-          alert('新增學生失敗。')
+          this.$alertFail('新增學生失敗。')
           throw error
         }
       }
@@ -59,10 +59,10 @@ export default {
         const course = this.$route.params.name
         await agent.Auth.batchSignup({ course, csvString })
         this.getStats(course)
-        alert('新增學生成功。')
+        this.$alertSuccess('新增學生成功。')
       } catch (error) {
         console.log('[views/ManageMembers/submitAddStudent error]', error)
-        alert('新增學生失敗。')
+        this.$alertFail('新增學生失敗。')
         throw error
       }
     },

@@ -435,6 +435,14 @@ export default {
       type: Function,
       required: true,
     },
+    subscribeRefetch: {
+      type: Function,
+      required: true,
+    },
+    unsubscribeRefetch: {
+      type: Function,
+      required: true,
+    },
   },
 
   computed: {
@@ -547,7 +555,7 @@ export default {
         this.$router.replace({ query: null })
         this.$emit('refetchFloor')
       } catch (error) {
-        alert('刪除失敗。')
+        this.$alertFail('刪除失敗。')
       }
     },
     async getReplies() {
@@ -607,9 +615,17 @@ export default {
         this.newReply = ''
         this.isReply = false
       } catch (error) {
-        alert('新增留言失敗。')
+        this.$alertFail('新增留言失敗。')
       }
     },
+  },
+
+  mounted() {
+    this.subscribeRefetch(this.comment.id)
+  },
+
+  destroyed() {
+    this.unsubscribeRefetch(this.comment.id)
   },
 }
 </script>

@@ -11,8 +11,22 @@ import 'roboto-fontface/css/roboto/roboto-fontface.css'
 import '@mdi/font/css/materialdesignicons.css'
 import { apiSetup } from './api/api'
 import permission from './directive/permission'
+import VueSocketIO from 'vue-socket.io'
+import Notifications from 'vue-notification'
 
-var Rollbar = require('vue-rollbar')
+Vue.use(Notifications)
+
+Vue.use(
+  new VueSocketIO({
+    debug: true,
+    connection: '/notifier',
+    vuex: {
+      store,
+      actionPrefix: 'SOCKET_',
+      mutationPrefix: 'SOCKET_',
+    },
+  }),
+)
 
 Vue.config.productionTip = false
 
@@ -20,6 +34,9 @@ Vue.use(Fragment.Plugin)
 Vue.use(Vue2Editor)
 Vue.use(dayjsPlugin)
 Vue.use(utilsPlugin)
+
+// Rollbar for tracking vue app's error
+var Rollbar = require('vue-rollbar')
 Vue.use(Rollbar, {
   accessToken: process.env.VUE_APP_ROLLBAR_TOKEN,
   captureUncaught: true,
@@ -35,8 +52,11 @@ Vue.use(Rollbar, {
     },
   },
 })
+
+// use permission directive for handling ui display
 Vue.directive('permission', permission)
 
+// setup axios
 apiSetup()
 
 Vue.config.errorHandler = err => {

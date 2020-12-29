@@ -40,10 +40,10 @@ export default {
           this.getCourseInfo(course)
           this.submitSuccess = true
           this.submitSuccess = false
-          alert('新增學生成功。')
+          this.$alertSuccess('新增學生成功。')
         } catch (error) {
           console.log('[views/Info/submitAddMultipleStudents error]', error)
-          alert('新增學生失敗。')
+          this.$alertFail('新增學生失敗。')
           throw error
         }
       }
@@ -55,10 +55,10 @@ export default {
         await agent.Auth.batchSignup({ course, csvString })
         this.getCourseInfo(course)
         this.submitSuccess = true
-        alert('新增學生成功。')
+        this.$alertSuccess('新增學生成功。')
       } catch (error) {
         console.log('[views/Info/submitAddStudent error]', error)
-        alert('新增學生失敗。')
+        this.$alertFail('新增學生失敗。')
         throw error
       }
     },

@@ -16,7 +16,7 @@ import { GET_PROBLEMS, GET_COURSE_TAGS } from '@/store/actions.type'
 export default {
   // TODO: prevent maximum call stack size exceeded
   // https://github.com/vuejs/vue/issues/9081
-  // name: 'Problems',
+  name: 'viewsProblems',
 
   components: { Problems },
 
@@ -30,6 +30,9 @@ export default {
     courseName() {
       return this.$route.params.name
     },
+    paramsWithCourse() {
+      return { course: this.courseName }
+    },
   },
 
   data: () => ({
@@ -37,10 +40,10 @@ export default {
   }),
 
   async created() {
-    const paramsWithCourse = {
-      course: this.courseName,
-    }
-    await Promise.all([this.getProblems(paramsWithCourse), this.getTags(paramsWithCourse)])
+    await Promise.all([
+      this.getProblems(this.paramsWithCourse),
+      this.getTags(this.paramsWithCourse),
+    ])
     this.isWaiting = false
   },
 
@@ -51,6 +54,32 @@ export default {
     }),
     getProblemsByTags(paramsWithTags) {
       this.getProblems({ ...paramsWithTags, course: this.courseName })
+    },
+  },
+
+  mounted() {
+    this.$socket.emit('subscribe', {
+      topic: 'PROBLEM',
+      id: this.courseName,
+    })
+  },
+
+  destroyed() {
+    this.$socket.emit('unsubscribe', {
+      topic: 'PROBLEM',
+      id: this.courseName,
+    })
+  },
+
+  sockets: {
+    refetch: function(data) {
+      this.getProblems(this.paramsWithCourse)
+      this.$notify({
+        group: 'notify',
+        type: 'my-info',
+        title: '主題列表更新',
+        text: '有人新增、修改，或刪除了主題',
+      })
     },
   },
 }

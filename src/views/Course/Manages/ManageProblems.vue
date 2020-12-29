@@ -57,10 +57,10 @@ export default {
       try {
         await agent.Problem.delete(pid)
         this.fetchData()
-        alert('刪除題目成功。')
+        this.$alertSuccess('刪除題目成功。')
       } catch (error) {
         console.log('[view/Course/Manages/ManageProblems] error', error)
-        alert('刪除題目失敗。')
+        this.$alertFail('刪除題目失敗。')
         throw error
       }
     },

@@ -46,18 +46,18 @@
         <ColorLabel v-for="tag in prob.tags" :key="tag" :tag="tag" small class="ma-1" />
         <div class="text-h6 mt-4">附件</div>
         <v-chip
-          v-for="filename in prob.attachments"
-          :key="filename"
+          v-for="name in prob.attachments"
+          :key="name"
           class="ma-1"
           outlined
           label
           color="primary"
         >
-          {{ filename }}
-          <v-btn class="ml-1" icon small @click="setPreviewAttachment(filename)">
+          {{ name.length > 15 ? `${name.substring(0, 10)}...${name.substring(name.length-6)}` : name }}
+          <v-btn class="ml-1" icon small @click="setPreviewAttachment(name)">
             <v-icon color="primary">mdi-eye</v-icon>
           </v-btn>
-          <v-btn icon small @click="downloadAttachment(filename)">
+          <v-btn icon small @click="downloadAttachment(name)">
             <v-icon color="primary">mdi-download</v-icon>
           </v-btn>
         </v-chip>

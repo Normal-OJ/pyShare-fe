@@ -74,7 +74,7 @@
         close
         @click:close="removeAttachmentFromProb(name)"
       >
-        {{ name }}
+        {{ name.length > 15 ? `${name.substring(0, 10)}...${name.substring(name.length-6)}` : name }}
       </v-chip>
     </div>
 
@@ -98,7 +98,7 @@
         close
         @click:close="removeFromWillAddAttachments(name)"
       >
-        {{ name }}
+        {{ name.length > 15 ? `${name.substring(0, 10)}...${name.substring(name.length-6)}` : name }}
       </v-chip>
     </div>
 
@@ -122,7 +122,7 @@
         close
         @click:close="undoRemoveAttachmentFromProb(name)"
       >
-        {{ name }}
+        {{ name.length > 15 ? `${name.substring(0, 10)}...${name.substring(name.length-6)}` : name }}
       </v-chip>
     </div>
 

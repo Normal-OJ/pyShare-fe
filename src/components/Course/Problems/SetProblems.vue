@@ -33,7 +33,7 @@
       </v-col>
       <v-col cols="12" md="6">
         <v-checkbox
-          v-permission="[TEACHER]"
+          v-permission="[TEACHER, 'COURSE']"
           class="pt-0 mt-0"
           v-model="newProb.allowMultipleComments"
           label="允許主題下可以發表多個創作"
@@ -74,7 +74,9 @@
         close
         @click:close="removeAttachmentFromProb(name)"
       >
-        {{ name.length > 15 ? `${name.substring(0, 10)}...${name.substring(name.length-6)}` : name }}
+        {{
+          name.length > 15 ? `${name.substring(0, 10)}...${name.substring(name.length - 6)}` : name
+        }}
       </v-chip>
     </div>
 
@@ -98,7 +100,9 @@
         close
         @click:close="removeFromWillAddAttachments(name)"
       >
-        {{ name.length > 15 ? `${name.substring(0, 10)}...${name.substring(name.length-6)}` : name }}
+        {{
+          name.length > 15 ? `${name.substring(0, 10)}...${name.substring(name.length - 6)}` : name
+        }}
       </v-chip>
     </div>
 
@@ -122,7 +126,9 @@
         close
         @click:close="undoRemoveAttachmentFromProb(name)"
       >
-        {{ name.length > 15 ? `${name.substring(0, 10)}...${name.substring(name.length-6)}` : name }}
+        {{
+          name.length > 15 ? `${name.substring(0, 10)}...${name.substring(name.length - 6)}` : name
+        }}
       </v-chip>
     </div>
 

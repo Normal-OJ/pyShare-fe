@@ -15,7 +15,7 @@
       <v-spacer />
       <AddStudentModal
         :submitSuccess="submitSuccess"
-        v-permission="[TEACHER]"
+        v-permission="[TEACHER, 'COURSE']"
         @submitAddMultipleStudents="submitAddMultipleStudents"
         @submitAddStudent="submitAddStudent"
       />

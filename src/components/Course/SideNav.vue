@@ -80,7 +80,7 @@ const SIDE_NAVS = [
     label: '管理',
     icon: 'mdi-settings',
     routeName: 'courseManages',
-    permission: [TEACHER],
+    permission: [TEACHER, 'COURSE'],
   },
   {
     label: '總覽',

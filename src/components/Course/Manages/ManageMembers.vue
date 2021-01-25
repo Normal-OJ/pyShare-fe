@@ -19,7 +19,7 @@
         下載統計資料
       </v-btn>
       <AddStudentModal
-        v-permission="[TEACHER]"
+        v-permission="[TEACHER, 'COURSE']"
         @submitAddMultipleStudents="submitAddMultipleStudents"
         @submitAddStudent="submitAddStudent"
       />

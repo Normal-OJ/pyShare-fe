@@ -248,14 +248,14 @@
               <span>{{ $formattedTime(browsingSubmission.timestamp) }}</span>
             </v-tooltip>
             <v-chip
-              v-permission="[STUDENT, 'MAGIC']"
+              v-permission="[STUDENT, 'MAGIC', 'OUT_OF_COURSE']"
               :color="SUBMISSION_COLOR[SUBMISSION_STATE[`${browsingSubmission.state}`]]"
               class="text-subtitle-2 ml-4"
               label
             >
               {{ SUBMISSION_STATE[`${browsingSubmission.state}`] }}
             </v-chip>
-            <v-menu offset-y rounded="0" v-permission="[TEACHER]">
+            <v-menu offset-y rounded="0" v-permission="[TEACHER, 'COURSE']">
               <template v-slot:activator="{ on: menu, attrs }">
                 <v-tooltip bottom>
                   <template v-slot:activator="{ on: tooltip }">

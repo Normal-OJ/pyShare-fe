@@ -30,7 +30,8 @@ function checkPermission(el, binding) {
       const hasRolePermission = permissionRoles.includes(role) || permissionRoles.includes('ALL')
       const hasCoursePermission = !permissionRoles.includes(COURSE) || checkCoursePermission()
       const isHideElement = !isAdmin && (!hasRolePermission || !hasCoursePermission)
-      isHideElement && el.parentNode && el.parentNode.removeChild(el)
+      const isFabulous = permissionRoles.includes('OUT_OF_COURSE') && !checkCoursePermission()
+      !isFabulous && isHideElement && el.parentNode && el.parentNode.removeChild(el)
     }
   } else {
     throw new Error(`need roles! Like v-permission="['admin', 'teacher']"`)

@@ -53,7 +53,11 @@
           label
           color="primary"
         >
-          {{ name.length > 15 ? `${name.substring(0, 10)}...${name.substring(name.length-6)}` : name }}
+          {{
+            name.length > 15
+              ? `${name.substring(0, 10)}...${name.substring(name.length - 6)}`
+              : name
+          }}
           <v-btn class="ml-1" icon small @click="setPreviewAttachment(name)">
             <v-icon color="primary">mdi-eye</v-icon>
           </v-btn>

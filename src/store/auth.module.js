@@ -1,5 +1,5 @@
 import { LOGOUT } from './actions.type'
-import { SET_AUTH, CLEAR_AUTH } from './mutations.type'
+import { SET_AUTH, CLEAR_AUTH, SET_IS_SHOW_LOGOUT_MODAL } from './mutations.type'
 import { getJwt, UNAUTHENTICATED } from '@/lib/jwt'
 import { ROLE, USERNAME, USER } from './getters.type'
 import agent from '@/api/agent'
@@ -7,6 +7,7 @@ import agent from '@/api/agent'
 const initialState = {
   // TODO: 日後在 router 設定先驗證 jwt 後，每次重開應都會 SET_AUTH
   ...getJwt(),
+  isShowLogoutModal: false,
 }
 
 const state = { ...initialState }
@@ -52,6 +53,15 @@ const mutations = {
     state.displayName = displayName
     state.role = role
     state.courses = courses
+    state.isShowLogoutModal = false
+  },
+  /**
+   * change state isShowLogoutModal, trigger at JWT Expired
+   * @param {object} state auth state
+   * @param {bool} payload the target value
+   */
+  [SET_IS_SHOW_LOGOUT_MODAL](state, payload) {
+    state.isShowLogoutModal = payload
   },
 }
 

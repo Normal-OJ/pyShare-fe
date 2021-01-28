@@ -1,6 +1,7 @@
 // auth module
 export const SET_AUTH = 'setAuth'
 export const CLEAR_AUTH = 'clearAuth'
+export const SET_IS_SHOW_LOGOUT_MODAL = 'setIsShowLogoutModal'
 
 // course module
 export const SET_COURSES = 'setCourses'

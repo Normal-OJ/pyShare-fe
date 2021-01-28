@@ -76,7 +76,13 @@
                 <div class="text-body-2 mb-2">沒有其他分類了</div>
                 <v-img :src="require('@/assets/images/noData.svg')" max-height="100" contain />
               </div>
-              <v-list-item v-for="item in candidateTags" :key="item" :value="item">
+              <v-list-item
+                v-for="item in candidateTags"
+                :key="item"
+                :value="item"
+                inactive
+                :ripple="false"
+              >
                 <template v-slot:default="{ active, toggle }">
                   <v-list-item-action>
                     <v-checkbox
@@ -87,7 +93,29 @@
                     />
                   </v-list-item-action>
                   <v-list-item-content>
-                    <v-list-item-title class="py-1">{{ item }}</v-list-item-title>
+                    <div class="d-flex align-center">
+                      <v-list-item-title class="py-1">{{ item }}</v-list-item-title>
+                      <v-spacer />
+                      <v-tooltip bottom :disabled="!removables || !removables[item]">
+                        <template v-slot:activator="{ on, attrs }">
+                          <div v-on="on">
+                            <v-btn
+                              color="error"
+                              icon
+                              v-bind="attrs"
+                              :disabled="removables && removables[item]"
+                              small
+                              @click="deleteTag(item)"
+                            >
+                              <v-icon>mdi-trash-can</v-icon>
+                            </v-btn>
+                          </div>
+                        </template>
+                        <span>
+                          有其他課程使用此分類，故無法刪除
+                        </span>
+                      </v-tooltip>
+                    </div>
                   </v-list-item-content>
                 </template>
               </v-list-item>
@@ -96,11 +124,13 @@
         </v-card>
       </v-col>
     </v-row>
+    <Popup :isShow="isPopupActive && !!errorMsg" :title="errorMsg" @click="isPopupActive = false" />
   </v-container>
 </template>
 
 <script>
 import CreateTagModal from './CreateTagModal'
+import Popup from '../../UI/Popup'
 
 const PATCH_OPTION = {
   PUSH: 'push',
@@ -114,7 +144,7 @@ const initialPatchTagsBody = {
 export default {
   name: 'ManageTags',
 
-  components: { CreateTagModal },
+  components: { CreateTagModal, Popup },
 
   props: {
     courseTags: {
@@ -125,6 +155,13 @@ export default {
       type: Array,
       required: true,
     },
+    removables: {
+      type: Object,
+    },
+    errorMsg: {
+      type: String,
+      required: true,
+    },
     submitPatchTags: {
       type: Function,
       required: true,
@@ -133,11 +170,16 @@ export default {
       type: Function,
       required: true,
     },
+    deleteTags: {
+      type: Function,
+      required: true,
+    },
   },
 
   data: () => ({
     selectedTags: [],
     newTagDialog: false,
+    isPopupActive: true,
     newTagNames: '',
     PATCH_OPTION,
   }),
@@ -173,6 +215,16 @@ export default {
     async toggleAll() {
       await this.$nextTick()
       this.selectedTags = this.selectAll ? [] : this.candidateTags.slice()
+    },
+    async deleteTag(tag) {
+      try {
+        await this.deleteTags([tag])
+        this.selectedTags = this.selectedTags.filter(t => t !== tag)
+        this.$alertSuccess('刪除分類成功。')
+      } catch (error) {
+        console.log('[components/deleteTag] error', error)
+        this.$alertFail('刪除分類失敗。')
+      }
     },
   },
 }

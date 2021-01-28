@@ -72,7 +72,7 @@ export default {
   },
 
   sockets: {
-    refetch: function(data) {
+    refetch: function() {
       this.getProblems(this.paramsWithCourse)
       this.$notify({
         group: 'notify',

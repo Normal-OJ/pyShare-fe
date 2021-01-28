@@ -26,8 +26,16 @@
           dense
         >
           <template v-slot:selection="{ item, index }">
-            <span v-if="statusFilter.length === SUBMISSION_STATUS.length && index === 0">顯示全部</span>
-            <v-chip v-else-if="statusFilter.length !== SUBMISSION_STATUS.length" :color="SUBMISSION_COLOR[item.text]" label small>{{ item.text }}</v-chip>
+            <span v-if="statusFilter.length === SUBMISSION_STATUS.length && index === 0"
+              >顯示全部</span
+            >
+            <v-chip
+              v-else-if="statusFilter.length !== SUBMISSION_STATUS.length"
+              :color="SUBMISSION_COLOR[item.text]"
+              label
+              small
+              >{{ item.text }}</v-chip
+            >
           </template>
         </v-select>
       </v-col>
@@ -250,9 +258,7 @@ export default {
               comment.title.includes(this.searchText) ||
               comment.author.displayName.includes(this.searchText),
           )
-          .filter(
-            comment => this.statusFilter.includes(comment.submission.state)
-          )
+          .filter(comment => this.statusFilter.includes(comment.submission.state))
       }
       return this.comments
         .slice()

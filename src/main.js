@@ -13,6 +13,11 @@ import { apiSetup } from './api/api'
 import permission from './directive/permission'
 import VueSocketIO from 'vue-socket.io'
 import Notifications from 'vue-notification'
+import { makeServer } from './server'
+
+if (process.env.NODE_ENV === 'development' && process.env.VUE_APP_MIRAGE_ENABLED === 'true') {
+  makeServer({ environment: 'development' })
+}
 
 Vue.use(Notifications)
 

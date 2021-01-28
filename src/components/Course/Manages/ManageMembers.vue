@@ -142,10 +142,10 @@ export default {
       window.open(route.href, '_blank')
     },
     submitAddMultipleStudents(file) {
-      this.$emit('submitAddMultipleStudents', file)
+      this.$emit('submit-add-multiple-students', file)
     },
     submitAddStudent(csvString) {
-      this.$emit('submitAddStudent', csvString)
+      this.$emit('submit-add-student', csvString)
     },
     downloadStats() {
       const csvContent = 'data:text/csv;charset=utf-8,' + this.downloadData

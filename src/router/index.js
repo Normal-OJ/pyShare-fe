@@ -19,6 +19,7 @@ const routes = [
     path: '/login',
     name: 'login',
     component: () => import('@/views/Login/Login'),
+    props: true,
     meta: {
       isAllowGuest: true,
     },
@@ -124,9 +125,10 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
   if (!to.meta.isAllowGuest && !store.state.auth.isAuthenticated) {
-    next({ name: 'login', query: { redirect: to.path } })
+    next({ name: 'login', query: { redirectToPath: to.path } })
+  } else {
+    next()
   }
-  next()
 })
 
 export default router

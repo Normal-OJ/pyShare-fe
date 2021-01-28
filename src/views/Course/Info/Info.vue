@@ -2,8 +2,8 @@
   <Info
     :info="info"
     :submitSuccess="submitSuccess"
-    @submitAddMultipleStudents="submitAddMultipleStudents"
-    @submitAddStudent="submitAddStudent"
+    @submit-add-multiple-students="submitAddMultipleStudents"
+    @submit-add-student="submitAddStudent"
   />
 </template>
 

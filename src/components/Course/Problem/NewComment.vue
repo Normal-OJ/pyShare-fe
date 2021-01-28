@@ -90,7 +90,7 @@ export default {
     this.pollingSubmission = setInterval(
       that => {
         if (that.isTestSubmissionPending) {
-          this.$emit('fetchTestSubmission', 'new')
+          this.$emit('fetch-test-submission', 'new')
         }
       },
       1000,
@@ -128,13 +128,13 @@ export default {
     },
     closeNewComment() {
       this.$router.replace({ query: null })
-      this.$emit('refetchFloor')
+      this.$emit('refetch-floor')
     },
     submitTestSubmission() {
-      this.$emit('submitTestSubmission', this.newComment.code, 'new')
+      this.$emit('submit-test-submission', this.newComment.code, 'new')
     },
     submitNewComment() {
-      this.$emit('submitNewComment', this.newComment)
+      this.$emit('submit-new-comment', this.newComment)
     },
   },
 }

@@ -17,7 +17,7 @@
 import NoAccount from '@/components/Login/NoAccount'
 import LoginForm from '@/components/Login/LoginForm'
 import agent from '@/api/agent'
-import { mapMutations } from 'vuex'
+import { mapMutations, mapState } from 'vuex'
 import { SET_AUTH } from '@/store/mutations.type'
 
 export default {
@@ -31,18 +31,24 @@ export default {
     errorMsg: '',
   }),
 
+  computed: {
+    ...mapState({
+      username: state => state.auth.username,
+    }),
+  },
+
   methods: {
     async handleSubmit(body) {
       try {
         this.isWaiting = true
         await agent.Auth.login(body)
-        // TODO: give feedback for successfully login
         this.setAuth()
-        const { redirect } = this.$route.query
-        if (!redirect) {
-          this.$router.push({ name: 'courses' })
+        this.$alertSuccess('登入成功')
+        const { redirectToPath } = this.$route.query
+        if (redirectToPath === '/profile') {
+          this.$router.push({ name: 'profile', params: { username: this.username } })
         } else {
-          this.$router.push({ path: redirect })
+          this.$router.push(redirectToPath ? { path: redirectToPath } : { name: 'courses' })
         }
         this.isWaiting = false
       } catch (error) {

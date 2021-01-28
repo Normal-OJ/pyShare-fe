@@ -48,7 +48,7 @@ export default {
 
   methods: {
     submitCreateCourse(body) {
-      this.$emit('submitCreateCourse', body)
+      this.$emit('submit-create-course', body)
     },
   },
 }

@@ -44,8 +44,10 @@ const Comment = {
 const Tag = {
   getList: params => Vue.axios.get('/tag', { params }),
   create: body => Vue.axios.post('/tag', body),
+  check: body => Vue.axios.post('/tag/check', body),
   // TODO: re-define delete api
   // delete: body => Vue.axios.delete('/tag', body),
+  delete: body => Vue.axios({ method: 'delete', url: `/tag`, data: body }),
 }
 
 const User = {

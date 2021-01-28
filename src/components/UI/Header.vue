@@ -60,21 +60,42 @@
     <v-btn v-else :to="{ name: 'login' }" class="text-body-1 font-weight-bold" dark text>
       登入
     </v-btn>
+    <Popup
+      :isShow="isShowLogoutModal"
+      title="連線階段已過期，請再次登入"
+      @click="handleClosePopup"
+    />
   </v-app-bar>
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import Popup from './Popup'
 
 export default {
   name: 'Header',
 
+  props: {
+    isLogin: {
+      type: Boolean,
+      required: true,
+    },
+    username: {
+      type: String,
+      required: true,
+    },
+    displayName: {
+      type: String,
+      required: true,
+    },
+    isShowLogoutModal: {
+      type: Boolean,
+      required: true,
+    },
+  },
+
+  components: { Popup },
+
   computed: {
-    ...mapState({
-      isLogin: state => state.auth.isAuthenticated,
-      username: state => state.auth.username,
-      displayName: state => state.auth.displayName,
-    }),
     headerItems() {
       return [
         {
@@ -90,6 +111,12 @@ export default {
           route: { name: 'about' },
         },
       ]
+    },
+  },
+
+  methods: {
+    handleClosePopup() {
+      this.$emit('logout')
     },
   },
 }

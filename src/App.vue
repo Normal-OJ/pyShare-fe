@@ -1,6 +1,12 @@
 <template>
   <v-app>
-    <Header @logout="handleLogout" />
+    <Header
+      :isLogin="isLogin"
+      :username="username"
+      :displayName="displayName"
+      :isShowLogoutModal="isShowLogoutModal"
+      @logout="handleLogout"
+    />
     <v-main>
       <router-view />
     </v-main>
@@ -11,13 +17,22 @@
 <script>
 import Header from '@/components/UI/Header'
 import Notification from '@/components/UI/Notification'
-import { mapActions } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 import { LOGOUT } from '@/store/actions.type'
 
 export default {
   name: 'App',
 
   components: { Header, Notification },
+
+  computed: {
+    ...mapState({
+      isLogin: state => state.auth.isAuthenticated,
+      username: state => state.auth.username,
+      displayName: state => state.auth.displayName,
+      isShowLogoutModal: state => state.auth.isShowLogoutModal,
+    }),
+  },
 
   methods: {
     ...mapActions({

@@ -132,7 +132,7 @@ export default {
       const paramsWithTags = {
         tags: this.selectedTags.join(','),
       }
-      this.$emit('getProblemsByTags', paramsWithTags)
+      this.$emit('get-problems-by-tags', paramsWithTags)
     },
   },
 

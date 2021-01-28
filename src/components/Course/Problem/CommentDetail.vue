@@ -482,10 +482,10 @@ export default {
     this.pollingSubmission = setInterval(
       that => {
         if (that.isSubmissionPending) {
-          this.$emit('fetchSubmission')
+          this.$emit('fetch-submission')
         }
         if (that.isTestSubmissionPending) {
-          this.$emit('fetchTestSubmission', 'detail')
+          this.$emit('fetch-test-submission', 'detail')
         }
       },
       1000,
@@ -497,7 +497,7 @@ export default {
     submissions: {
       handler() {
         this.browsingSubmissionIndex = this.submissions.length - 1
-        this.$emit('getSubmissions', this.comment.id)
+        this.$emit('get-submissions', this.comment.id)
       },
       immediate: true,
     },
@@ -542,9 +542,9 @@ export default {
       this.newComment = { ...this.newComment, code: this.defaultCode }
     },
     closeSelectedComment() {
-      this.$emit('fetchSubmission')
+      this.$emit('fetch-submission')
       this.$router.replace({ query: null })
-      this.$emit('refetchFloor')
+      this.$emit('refetch-floor')
     },
     async deleteSelectedComment() {
       const result = window.confirm('確認要刪除創作嗎？')
@@ -552,7 +552,7 @@ export default {
       try {
         await this.deleteReply(this.comment.id)
         this.$router.replace({ query: null })
-        this.$emit('refetchFloor')
+        this.$emit('refetch-floor')
       } catch (error) {
         this.$alertFail('刪除失敗。')
       }
@@ -590,20 +590,20 @@ export default {
       this.cancelEditComment(key)
     },
     updateComment() {
-      this.$emit('updateComment', this.comment.id, { ...this.comment, ...this.newComment })
+      this.$emit('update-comment', this.comment.id, { ...this.comment, ...this.newComment })
     },
     submitTestSubmission() {
-      this.$emit('submitTestSubmission', this.newComment[this.COMMENT_KEY.CODE], 'detail')
+      this.$emit('submit-test-submission', this.newComment[this.COMMENT_KEY.CODE], 'detail')
     },
     submitNewSubmission() {
-      this.$emit('submitNewSubmission', this.comment.id, this.newComment[this.COMMENT_KEY.CODE])
+      this.$emit('submit-new-submission', this.comment.id, this.newComment[this.COMMENT_KEY.CODE])
       this.cancelEditComment(this.COMMENT_KEY.CODE)
     },
     checkIsDisableSubmitSubmission() {
       this.isDisableSubmitSubmission = !this.newComment[COMMENT_KEY.CODE]
     },
     gradeSubmission(value, sid) {
-      this.$emit('gradeSubmission', sid, value, this.comment.id)
+      this.$emit('grade-submission', sid, value, this.comment.id)
     },
     likeComment() {
       this.$emit('like-comment', this.comment.id)

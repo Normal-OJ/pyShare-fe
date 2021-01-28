@@ -219,7 +219,7 @@ export default {
       this.isShowConfirmModal = false
     },
     confirmSubmit() {
-      this.$emit('submitAddMultipleStudents', this.newStudentFile)
+      this.$emit('submit-add-multiple-students', this.newStudentFile)
       this.closeConfirmModal()
     },
     downloadExample() {
@@ -232,7 +232,7 @@ export default {
     submitAddStudent() {
       if (this.$refs.form.validate()) {
         this.$emit(
-          'submitAddStudent',
+          'submit-add-student',
           `${Object.keys(this.newStudent).join(',')}\n${Object.values(this.newStudent).join(',')}`,
         )
       }

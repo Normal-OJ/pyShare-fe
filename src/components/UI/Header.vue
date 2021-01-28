@@ -81,11 +81,9 @@ export default {
     },
     username: {
       type: String,
-      required: true,
     },
     displayName: {
       type: String,
-      required: true,
     },
     isShowLogoutModal: {
       type: Boolean,
@@ -100,15 +98,17 @@ export default {
       return [
         {
           label: '課程',
-          route: { name: 'courses' },
+          route: { path: '/courses' },
         },
         {
           label: '個人頁面',
-          route: { name: 'profile', params: { username: this.username } },
+          route: this.isLogin
+            ? { name: 'profile', params: { username: this.username } }
+            : { path: '/profile' },
         },
         {
           label: '關於平台',
-          route: { name: 'about' },
+          route: { path: '/about' },
         },
       ]
     },

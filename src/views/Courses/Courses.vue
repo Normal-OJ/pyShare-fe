@@ -2,7 +2,7 @@
   <Courses
     :courses="courses"
     :isWaitingCourseList="isWaitingCourseList"
-    @submitCreateCourse="submitCreateCourse"
+    @submit-create-course="submitCreateCourse"
   />
 </template>
 

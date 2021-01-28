@@ -3,7 +3,7 @@
     :problems="problems"
     :tags="tags"
     :loading="isWaiting"
-    @getProblemsByTags="getProblemsByTags"
+    @get-problems-by-tags="getProblemsByTags"
   />
 </template>
 

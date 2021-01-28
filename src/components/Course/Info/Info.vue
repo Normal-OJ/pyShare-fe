@@ -58,8 +58,8 @@
     <Members
       :members="members"
       :submitSuccess="submitSuccess"
-      @submitAddMultipleStudents="submitAddMultipleStudents"
-      @submitAddStudent="submitAddStudent"
+      @submit-add-multiple-students="submitAddMultipleStudents"
+      @submit-add-student="submitAddStudent"
     />
   </v-container>
 </template>
@@ -94,10 +94,10 @@ export default {
 
   methods: {
     submitAddMultipleStudents(file) {
-      this.$emit('submitAddMultipleStudents', file)
+      this.$emit('submit-add-multiple-students', file)
     },
     submitAddStudent(csvString) {
-      this.$emit('submitAddStudent', csvString)
+      this.$emit('submit-add-student', csvString)
     },
   },
 }

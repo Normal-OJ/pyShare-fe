@@ -4,7 +4,7 @@
       <v-card-title>
         {{ `${username} 的統計資料` }}
         <v-spacer />
-        <v-btn color="primary" outlined :to="{ name: 'profile', params: { username } }">
+        <v-btn color="primary" outlined :to="{ name: 'profile', params: { username } }" exact>
           查看個人頁面
         </v-btn>
       </v-card-title>

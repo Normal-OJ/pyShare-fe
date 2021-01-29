@@ -1,14 +1,19 @@
 <template>
-  <Course :breadcrumbs="breadcrumbs" />
+  <Course :breadcrumbs="breadcrumbs" :courseInfo="courseInfo" />
 </template>
 
 <script>
 import Course from '@/components/Course/Course'
+import { mapGetters } from 'vuex'
+import { COURSE_INFO } from '@/store/getters.type.js'
 
 export default {
   components: { Course },
 
   computed: {
+    ...mapGetters({
+      courseInfo: COURSE_INFO,
+    }),
     courseName() {
       return this.$route.params.name
     },

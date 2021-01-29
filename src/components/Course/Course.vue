@@ -1,6 +1,6 @@
 <template>
   <div class="wrapper">
-    <SideNav />
+    <SideNav :courseInfo="courseInfo" />
     <div class="container">
       <!-- <v-breadcrumbs :items="breadcrumbs" /> -->
       <router-view />
@@ -18,6 +18,9 @@ export default {
     breadcrumbs: {
       type: Array,
       required: true,
+    },
+    courseInfo: {
+      type: Object,
     },
   },
 }

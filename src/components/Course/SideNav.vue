@@ -68,7 +68,6 @@
 import { ROLE } from '@/constants/auth'
 
 const { TEACHER, STUDENT } = ROLE
-
 const SIDE_NAVS = [
   {
     label: '主題列表',
@@ -77,24 +76,39 @@ const SIDE_NAVS = [
     permission: [TEACHER, STUDENT],
   },
   {
-    label: '管理',
-    icon: 'mdi-settings',
-    routeName: 'courseManages',
-    permission: [TEACHER, 'COURSE'],
-  },
-  {
     label: '總覽',
     icon: 'mdi-view-compact',
     routeName: 'courseInfo',
     permission: [TEACHER, STUDENT],
   },
 ]
+const MANAGE = {
+  label: '管理',
+  icon: 'mdi-settings',
+  routeName: 'courseManages',
+  permission: [TEACHER, 'COURSE'],
+}
 
 export default {
   name: 'SideNav',
 
+  props: {
+    courseInfo: {
+      type: Object,
+    },
+  },
+
+  computed: {
+    items() {
+      const navs = SIDE_NAVS.slice()
+      if (this.courseInfo && this.courseInfo.name === this.$route.params.name) {
+        navs.splice(1, 0, MANAGE)
+      }
+      return navs
+    },
+  },
+
   data: () => ({
-    items: SIDE_NAVS,
     isMinify: false,
   }),
 }

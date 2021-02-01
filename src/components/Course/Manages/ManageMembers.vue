@@ -83,6 +83,10 @@ export default {
       type: Array,
       required: true,
     },
+    loading: {
+      type: Boolean,
+      required: true,
+    },
   },
 
   computed: {
@@ -128,7 +132,6 @@ export default {
   data: () => ({
     headers,
     searchText: '',
-    loading: false,
     TEACHER,
   }),
 

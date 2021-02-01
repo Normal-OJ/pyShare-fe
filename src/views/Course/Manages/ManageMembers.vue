@@ -1,6 +1,7 @@
 <template>
   <ManageMembers
     :stats="stats ? stats : []"
+    :loading="!stats"
     @submitAddMultipleStudents="submitAddMultipleStudents"
     @submitAddStudent="submitAddStudent"
   />

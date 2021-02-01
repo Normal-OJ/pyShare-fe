@@ -14,8 +14,8 @@ const Course = {
   create: body => Vue.axios.post('/course', body),
   // TODO: re-define delete api
   // delete: name => Vue.axios.delete(`/course/${name}`),
-  addStudent: (name, body) => Vue.axios.post(`/course/${name}/student`, body),
-  removeStudent: (name, body) => Vue.axios.delete(`/course/${name}/student`, body),
+  addStudent: (name, body) => Vue.axios.patch(`/course/${name}/student/insert`, body),
+  removeStudent: (name, body) => Vue.axios.patch(`/course/${name}/student/remove`, body),
   patchTags: (name, body) => Vue.axios.patch(`/course/${name}/tag`, body),
   getStats: name => Vue.axios.get(`/course/${name}/statistic`),
 }

@@ -166,13 +166,6 @@ const initNewStudent = {
 }
 
 export default {
-  props: {
-    submitSuccess: {
-      type: Boolean,
-      required: true,
-    },
-  },
-
   components: { PreviewCSV, ConfirmModal },
 
   data: () => ({
@@ -185,20 +178,6 @@ export default {
     isShowConfirmModal: false,
     previewFile: null,
   }),
-
-  watch: {
-    submitSuccess() {
-      if (this.submitSuccess) {
-        this.dialog = false
-        if (this.newStudentFile) {
-          this.newStudentFile = null
-        } else {
-          this.validForm = false
-          this.newStudent = { ...initNewStudent }
-        }
-      }
-    },
-  },
 
   computed: {
     isAddStudentDisabled() {
@@ -219,7 +198,16 @@ export default {
       this.isShowConfirmModal = false
     },
     confirmSubmit() {
-      this.$emit('submit-add-multiple-students', this.newStudentFile)
+      const resolve = function() {
+        this.dialog = false
+        this.newStudentFile = null
+        this.$alertSuccess('新增學生成功。')
+      }.bind(this)
+      const reject = function(error) {
+        // TODO: show error message
+        this.$alertFail('新增學生失敗。')
+      }.bind(this)
+      this.$emit('submit-add-multiple-students', this.newStudentFile, resolve, reject)
       this.closeConfirmModal()
     },
     downloadExample() {
@@ -231,9 +219,19 @@ export default {
     },
     submitAddStudent() {
       if (this.$refs.form.validate()) {
+        const resolve = function() {
+          this.validForm = false
+          this.newStudent = { ...initNewStudent }
+          this.$alertSuccess('新增學生成功。')
+        }.bind(this)
+        const reject = function(error) {
+          this.$alertFail('新增學生失敗。')
+        }.bind(this)
         this.$emit(
           'submit-add-student',
           `${Object.keys(this.newStudent).join(',')}\n${Object.values(this.newStudent).join(',')}`,
+          resolve,
+          reject,
         )
       }
     },

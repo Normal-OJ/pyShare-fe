@@ -14,10 +14,9 @@
       </v-col>
       <v-spacer />
       <AddStudentModal
-        :submitSuccess="submitSuccess"
         v-permission="[TEACHER, 'COURSE']"
-        @submitAddMultipleStudents="submitAddMultipleStudents"
-        @submitAddStudent="submitAddStudent"
+        @submit-add-multiple-students="submitAddMultipleStudents"
+        @submit-add-student="submitAddStudent"
       />
     </div>
 
@@ -66,10 +65,6 @@ export default {
       type: Array,
       required: true,
     },
-    submitSuccess: {
-      type: Boolean,
-      required: true,
-    },
   },
 
   data: () => ({
@@ -84,11 +79,11 @@ export default {
       const route = this.$router.resolve({ name: 'profile', params: { username: value.username } })
       window.open(route.href, '_blank')
     },
-    submitAddMultipleStudents(file) {
-      this.$emit('submit-add-multiple-students', file)
+    submitAddMultipleStudents(file, resolve, reject) {
+      this.$emit('submit-add-multiple-students', file, resolve, reject)
     },
-    submitAddStudent(csvString) {
-      this.$emit('submit-add-student', csvString)
+    submitAddStudent(csvString, resolve, reject) {
+      this.$emit('submit-add-student', csvString, resolve, reject)
     },
   },
 }

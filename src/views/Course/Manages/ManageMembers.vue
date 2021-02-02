@@ -2,8 +2,9 @@
   <ManageMembers
     :stats="stats ? stats : []"
     :loading="!stats"
-    @submitAddMultipleStudents="submitAddMultipleStudents"
-    @submitAddStudent="submitAddStudent"
+    @submit-add-multiple-students="submitAddMultipleStudents"
+    @submit-add-student="submitAddStudent"
+    @delete-student="submitDeleteStudent"
   />
 </template>
 
@@ -38,7 +39,7 @@ export default {
     ...mapActions({
       getStats: GET_COURSE_STATS,
     }),
-    submitAddMultipleStudents(file) {
+    submitAddMultipleStudents(file, resolve, reject) {
       const r = new FileReader()
       const course = this.$route.params.name
       r.onload = async e => {
@@ -46,24 +47,35 @@ export default {
         try {
           await agent.Auth.batchSignup({ course, csvString })
           this.getStats(course)
-          this.$alertSuccess('新增學生成功。')
+          resolve()
         } catch (error) {
-          console.log('[views/ManageMembers/submitAddMultipleStudents error]', error)
-          this.$alertFail('新增學生失敗。')
+          console.log('[views/ManageMembers/submitAddMultipleStudents] error', error)
+          reject(error)
           throw error
         }
       }
       r.readAsText(file)
     },
-    async submitAddStudent(csvString) {
+    async submitAddStudent(csvString, resolve, reject) {
       try {
         const course = this.$route.params.name
         await agent.Auth.batchSignup({ course, csvString })
         this.getStats(course)
-        this.$alertSuccess('新增學生成功。')
+        resolve()
       } catch (error) {
-        console.log('[views/ManageMembers/submitAddStudent error]', error)
-        this.$alertFail('新增學生失敗。')
+        console.log('[views/ManageMembers/submitAddStudent] error', error)
+        reject(error)
+        throw error
+      }
+    },
+    async submitDeleteStudent(users, resolve, reject) {
+      try {
+        await agent.Course.removeStudent(this.courseName, { users })
+        this.getStats(this.courseName)
+        resolve()
+      } catch (error) {
+        console.log('[views/ManageMembers/submitDeleteStudent] error', error)
+        reject(error)
         throw error
       }
     },

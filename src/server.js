@@ -6,7 +6,12 @@ export const makeServer = ({ environment }) =>
 
     routes() {
       this.namespace = 'api'
-      this.passthrough('/auth/session')
-      this.get('/course', () => new Response(403, {}, { message: 'Authorization Expired' }))
+      // this.get('/course', () => new Response(403, {}, { message: 'Authorization Expired' }))
+      this.patch(
+        '/course/:name/student/remove',
+        () => new Response(200, {}, { message: 'cool bro' }),
+        // () => new Response(400, {}, { message: 'fail to update students' }),
+      )
+      this.passthrough()
     },
   })

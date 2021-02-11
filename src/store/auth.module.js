@@ -1,4 +1,4 @@
-import { LOGOUT } from './actions.type'
+import { LOGIN, LOGOUT } from './actions.type'
 import { SET_AUTH, CLEAR_AUTH, SET_IS_SHOW_LOGOUT_MODAL } from './mutations.type'
 import { getJwt, UNAUTHENTICATED } from '@/lib/jwt'
 import { ROLE, USERNAME, USER } from './getters.type'
@@ -26,6 +26,18 @@ const getters = {
 }
 
 const actions = {
+  async [LOGIN]({ commit }, body) {
+    return new Promise((resolve, reject) => {
+      agent.Auth.login(body)
+        .then(() => {
+          commit(SET_AUTH)
+          resolve()
+        })
+        .catch(error => {
+          reject(error)
+        })
+    })
+  },
   async [LOGOUT]({ commit }) {
     try {
       await agent.Auth.logout()

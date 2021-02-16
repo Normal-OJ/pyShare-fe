@@ -24,9 +24,9 @@ const routes = [
       isAllowGuest: true,
     },
     beforeEnter: (to, from, next) => {
-      const { isAuthenticated, username } = store.state.auth
+      const { isAuthenticated, id } = store.state.auth
       if (isAuthenticated) {
-        next({ name: 'profile', params: { username } })
+        next({ name: 'profile', params: { id } })
       }
       next()
     },
@@ -92,7 +92,7 @@ const routes = [
     },
   },
   {
-    path: '/profile/:username',
+    path: '/profile/:id',
     component: () => import('@/views/Profile/ProfileEntry'),
     children: [
       {

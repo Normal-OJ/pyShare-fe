@@ -2,9 +2,9 @@
   <v-container fluid class="px-4">
     <v-card class="my-3 pb-6" elevation="0" v-if="statistic.problems">
       <v-card-title>
-        {{ `${username} 的統計資料` }}
+        {{ `${displayName} 的統計資料` }}
         <v-spacer />
-        <v-btn color="primary" outlined :to="{ name: 'profile', params: { username } }" exact>
+        <v-btn color="primary" outlined :to="{ name: 'profile', params: { id } }" replace exact>
           查看個人頁面
         </v-btn>
       </v-card-title>
@@ -258,6 +258,7 @@
 
 <script>
 import agent from '@/api/agent'
+import { mapState } from 'vuex'
 
 export default {
   data: () => ({
@@ -266,6 +267,9 @@ export default {
   }),
 
   computed: {
+    ...mapState({
+      displayName: state => state.auth.displayName,
+    }),
     totalLikedAmount() {
       return this.statistic.liked.reduce((a, b) => {
         return a + b.starers.length
@@ -274,8 +278,8 @@ export default {
     totalLikesAmount() {
       return this.statistic.likes.length
     },
-    username() {
-      return this.$route.params.username
+    id() {
+      return this.$route.params.id
     },
   },
 
@@ -287,7 +291,7 @@ export default {
     async getStats() {
       this.isNotFound = false
       try {
-        const { data } = await agent.User.getStats(this.username)
+        const { data } = await agent.User.getStats(this.id)
         this.statistic = data.data
       } catch (error) {
         console.log('[views/Stats/getStats] error', error)

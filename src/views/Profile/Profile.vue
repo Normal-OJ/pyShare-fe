@@ -1,11 +1,10 @@
 <template>
   <Profile
     v-if="!notFound"
+    :id="id"
     :username="username"
     :displayName="displayName"
     :stats="stats"
-    :snackbar="snackbar"
-    :loading="loading"
     @submit-new-password="submitNewPassword"
   />
   <div v-else class="d-flex flex-column align-center">
@@ -28,82 +27,60 @@ export default {
   data: () => ({
     notFound: false,
     stats: null,
-    displayName: '',
-    snackbarType: {
-      success: {
-        color: 'success',
-        text: '更改密碼成功。',
-      },
-      fail: {
-        color: 'error',
-        text: '更改密碼失敗。',
-      },
-    },
-    snackbar: {
-      value: false,
-      color: '',
-      text: '',
-    },
-    loading: false,
+    username: null,
+    displayName: null,
   }),
 
   computed: {
-    username() {
-      return this.$route.params.username
+    id() {
+      return this.$route.params.id
     },
   },
 
   watch: {
-    username: {
+    id: {
       handler() {
-        this.getUser(this.username)
-        this.getStats(this.username)
+        this.getUser(this.id)
+        this.getStats(this.id)
       },
       immediate: true,
     },
   },
 
   methods: {
-    async getUser(username) {
+    async getUser(id) {
       try {
         const { data } = await agent.User.getList()
-        const user = data.data.find(user => user.username === username)
+        const user = data.data.find(user => user.id === id)
         if (!user) {
           this.notFound = true
           return
         }
+        this.username = user.username
         this.displayName = user.displayName
       } catch (error) {
         console.log('[views/Profile/getUser] error', error)
         throw error
       }
     },
-    async getStats(username) {
+    async getStats(id) {
       try {
-        const { data } = await agent.User.getStats(username)
+        const { data } = await agent.User.getStats(id)
         this.stats = data.data
       } catch (error) {
         console.log('[views/Profile/getStats] error', error)
         throw error
       }
     },
-    async submitNewPassword(passwordInfo) {
-      this.loading = true
+    async submitNewPassword(passwordInfo, resolve, reject) {
       try {
         await agent.Auth.changePassword(passwordInfo)
-        this.snackbar = {
-          value: true,
-          ...this.snackbarType.success,
-        }
+        resolve()
       } catch (error) {
         console.log('[views/Profile/getStats] error', error)
-        this.snackbar = {
-          value: true,
-          ...this.snackbarType.fail,
-        }
+        reject(error)
         throw error
       }
-      this.loading = false
     },
   },
 }

@@ -5,6 +5,7 @@ export const ROLE = {
 }
 
 export const SCHOOLS = [
+  { alias: '', name: '無' },
   { alias: 'NTNU', name: '國立臺灣師範大學' },
   { alias: 'NTUST', name: '國立臺灣科技大學' },
   { alias: 'NCCU', name: '國立政治大學' },

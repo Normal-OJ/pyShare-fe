@@ -203,7 +203,7 @@ export default {
         this.newStudentFile = null
         this.$alertSuccess('新增學生成功。')
       }.bind(this)
-      const reject = function(error) {
+      const reject = function() {
         // TODO: show error message
         this.$alertFail('新增學生失敗。')
       }.bind(this)
@@ -224,7 +224,7 @@ export default {
           this.newStudent = { ...initNewStudent }
           this.$alertSuccess('新增學生成功。')
         }.bind(this)
-        const reject = function(error) {
+        const reject = function() {
           this.$alertFail('新增學生失敗。')
         }.bind(this)
         this.$emit(

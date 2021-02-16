@@ -1,6 +1,6 @@
 import { LOGIN, LOGOUT } from './actions.type'
 import { SET_AUTH, CLEAR_AUTH, SET_IS_SHOW_LOGOUT_MODAL } from './mutations.type'
-import { getJwt, UNAUTHENTICATED } from '@/lib/jwt'
+import { getJwt } from '@/lib/jwt'
 import { ROLE, USERNAME, USER } from './getters.type'
 import agent from '@/api/agent'
 
@@ -51,21 +51,17 @@ const actions = {
 
 const mutations = {
   [SET_AUTH](state) {
-    const { isAuthenticated, username, displayName, role, courses } = getJwt()
+    const { isAuthenticated, id, username, displayName, role, courses } = getJwt()
     state.isAuthenticated = isAuthenticated
+    state.id = id
     state.username = username
     state.displayName = displayName
     state.role = role
     state.courses = courses
   },
+  // eslint-disable-next-line no-unused-vars
   [CLEAR_AUTH](state) {
-    const { isAuthenticated, username, displayName, role, courses } = UNAUTHENTICATED
-    state.isAuthenticated = isAuthenticated
-    state.username = username
-    state.displayName = displayName
-    state.role = role
-    state.courses = courses
-    state.isShowLogoutModal = false
+    state = { ...initialState }
   },
   /**
    * change state isShowLogoutModal, trigger at JWT Expired

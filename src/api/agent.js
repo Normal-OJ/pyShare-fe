@@ -52,7 +52,7 @@ const Tag = {
 
 const User = {
   getList: () => Vue.axios.get('/user'),
-  getStats: username => Vue.axios.get(`/user/${username}/statistic`),
+  getStats: id => Vue.axios.get(`/user/${id}/statistic`),
 }
 
 const Submission = {

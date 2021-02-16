@@ -40,11 +40,13 @@
           {{ isShowAll ? '顯示部分' : '顯示全部' }}
         </v-btn>
       </div>
+      <Spinner v-else />
     </div>
   </v-container>
 </template>
 
 <script>
+import Spinner from '@/components/UI/Spinner'
 const types = [
   {
     name: 'BugFix',
@@ -72,6 +74,8 @@ export default {
       required: true,
     },
   },
+
+  components: { Spinner },
 
   data: () => ({
     currentCommit: process.env.VUE_APP_GIT_SHA,

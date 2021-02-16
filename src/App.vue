@@ -2,7 +2,7 @@
   <v-app>
     <Header
       :isLogin="isLogin"
-      :username="username"
+      :id="id"
       :displayName="displayName"
       :isShowLogoutModal="isShowLogoutModal"
       @logout="handleLogout"
@@ -28,7 +28,7 @@ export default {
   computed: {
     ...mapState({
       isLogin: state => state.auth.isAuthenticated,
-      username: state => state.auth.username,
+      id: state => state.auth.id,
       displayName: state => state.auth.displayName,
       isShowLogoutModal: state => state.auth.isShowLogoutModal,
     }),

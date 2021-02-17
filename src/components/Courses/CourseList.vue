@@ -28,7 +28,7 @@
       {{ COURSE_STATUS[`${item.status}`] }}
     </template>
     <template v-slot:[`item.teacher`]="{ item }">
-      <router-link :to="{ name: 'profile', params: { username: item.teacher.username } }">
+      <router-link :to="{ name: 'profile', params: { id: item.teacher.id } }">
         {{ item.teacher.displayName }}
       </router-link>
     </template>

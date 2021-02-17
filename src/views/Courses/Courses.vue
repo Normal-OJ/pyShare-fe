@@ -1,19 +1,26 @@
 <template>
-  <Courses
-    :courses="courses"
-    :isWaitingCourseList="isWaitingCourseList"
-    @submit-create-course="submitCreateCourse"
-  />
+  <v-container fluid class="d-flex flex-column pt-12 px-16">
+    <v-row class="mb-4">
+      <div class="text-h5">課程列表</div>
+      <v-spacer />
+      <CreateCourseModal v-permission="[TEACHER]" @submit="submitCreateCourse" />
+    </v-row>
+    <CourseList :data="courses" :loading="isWaitingCourseList" />
+  </v-container>
 </template>
 
 <script>
-import Courses from '@/components/Courses/Courses'
+import CourseList from '@/components/Courses/CourseList'
+import CreateCourseModal from '@/components/Courses/CreateCourseModal'
 import { mapActions, mapState } from 'vuex'
 import { GET_COURSES } from '@/store/actions.type'
 import agent from '@/api/agent'
+import { ROLE } from '@/constants/auth'
+
+const { TEACHER } = ROLE
 
 export default {
-  components: { Courses },
+  components: { CourseList, CreateCourseModal },
 
   computed: {
     ...mapState({
@@ -23,6 +30,7 @@ export default {
 
   data: () => ({
     isWaitingCourseList: false,
+    TEACHER,
   }),
 
   created() {
@@ -35,13 +43,14 @@ export default {
       await this.getCourse()
       this.isWaitingCourseList = false
     },
-    async submitCreateCourse(body) {
+    async submitCreateCourse(body, resolve, reject) {
       try {
         await agent.Course.create(body)
+        resolve()
         this.getCourse()
       } catch (error) {
         console.log('[views/Courses/submitCreateCourse] error', error)
-        // TODO: setError
+        reject(error)
         throw error
       }
     },

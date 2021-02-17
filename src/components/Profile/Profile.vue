@@ -2,7 +2,7 @@
   <v-container class="pb-16">
     <div class="d-flex justify-center mt-4">
       <v-avatar class="mr-2" size="120" color="primary">
-        <span class="white--text text-h3">{{ displayName.slice(0, 1) }}</span>
+        <span class="white--text text-h3" v-if="displayName">{{ displayName.slice(0, 1) }}</span>
       </v-avatar>
     </div>
     <div class="text-h5">基本資訊</div>

@@ -20,24 +20,23 @@
       </v-toolbar>
 
       <v-card-text class="mt-8 text--primary">
-        <v-text-field
-          label="課程名稱"
-          v-model="name"
-          :rules="nameRules"
-          outlined
-          dense
-          persistent-hint
-          hint="課程名稱僅能包含：A-Z、a-z、0-9、空白、底線、減號、點"
-        />
-        <v-row>
-          <v-col cols="8">
-            <v-select label="學年度" v-model="year" :items="years" outlined dense />
-          </v-col>
-          <v-col cols="4">
-            <v-select label="學期" v-model="semester" :items="semesters" outlined dense />
-          </v-col>
-        </v-row>
-        <v-text-field label="教師" :value="teacher" outlined dense readonly />
+        <div class="mb-2 text-body-1">
+          除教師無法更改外，其他資訊可在日後修改。
+        </div>
+        <v-form ref="form">
+          <v-text-field label="課程名稱" v-model="name" :rules="nameRules" outlined dense />
+          <v-row>
+            <v-col>
+              <v-select label="學年度" v-model="year" :items="years" outlined dense />
+            </v-col>
+            <v-col>
+              <v-select label="學期" v-model="semester" :items="semesters" outlined dense />
+            </v-col>
+            <v-col>
+              <v-text-field label="教師" :value="username" outlined dense :readonly="role !== 0" />
+            </v-col>
+          </v-row>
+        </v-form>
 
         <div class="text-h6">課程狀態</div>
         <v-row justify="space-between" no-gutters>
@@ -83,13 +82,13 @@ import { YEARS, SEMESTERS } from '@/constants/course'
 export default {
   data: () => ({
     dialog: false,
-    name: '',
+    name: null,
     nameRules: [
       val => !!val || '請輸入課程名稱',
-      val => RegExp(/[\w. _-]+$/).test(val) || '課程名稱包含非法字元',
+      // val => RegExp(/[\w. _-]+$/).test(val) || '課程名稱包含非法字元',
     ],
-    year: null,
-    semester: null,
+    year: 109,
+    semester: 2,
     years: YEARS,
     semesters: SEMESTERS,
     checkedOption: 1,
@@ -98,13 +97,13 @@ export default {
         status: 2,
         icon: 'mdi-earth',
         title: '開放課程',
-        subtitle: '任何使用者都可以造訪，並擁有在課程內創作的權限',
+        subtitle: '任何使用者都可以檢視，並擁有在課程內創作的權限',
       },
       {
         status: 1,
         icon: 'mdi-eye',
         title: '公開課程',
-        subtitle: '任何使用者都可以造訪，但僅供檢視，沒有創作權限',
+        subtitle: '任何使用者都可以檢視，但沒有新增主題、創作的權限',
       },
       {
         status: 0,
@@ -117,17 +116,26 @@ export default {
 
   computed: {
     ...mapState({
-      teacher: state => state.auth.username,
+      username: state => state.auth.username,
+      id: state => state.auth.id,
+      role: state => state.auth.role,
     }),
   },
 
   methods: {
     submit() {
-      // TODO: do validation
-      const { name, year, semester, teacher, checkedOption } = this
-      this.$emit('submit', { name, year, semester, teacher, status: checkedOption })
-      // TODO: getError and show feedback, conditionally close dialog
-      this.dialog = false
+      if (this.$refs.form.validate()) {
+        const { id, name, year, semester, checkedOption } = this
+        const body = { name, year, semester, teacher: id, status: checkedOption, description: '' }
+        new Promise((resolve, reject) => this.$emit('submit', body, resolve, reject))
+          .then(() => {
+            this.dialog = false
+            this.$alertSuccess('新增課程成功。')
+          })
+          .catch(() => {
+            this.$alertFail('新增課程失敗')
+          })
+      }
     },
   },
 }

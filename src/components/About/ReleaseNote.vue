@@ -40,7 +40,7 @@
           {{ isShowAll ? '顯示部分' : '顯示全部' }}
         </v-btn>
       </div>
-      <Spinner v-else />
+      <Spinner v-else class="mt-2" />
     </div>
   </v-container>
 </template>

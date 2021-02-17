@@ -133,7 +133,7 @@ export default {
           } else {
             this.$router.push({
               name: 'courseProblem',
-              params: { name: this.$route.params.name, id: pid },
+              params: { id: pid },
             })
           }
         }

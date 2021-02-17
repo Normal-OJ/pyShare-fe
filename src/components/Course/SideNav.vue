@@ -9,11 +9,13 @@
     <v-list-item>
       <v-list-item-avatar class="rounded">
         <v-avatar size="48" color="secondary" tile>
-          <span class="white--text headline">{{ courseInfo.name.slice(0, 1) }}</span>
+          <span class="white--text headline" v-if="courseInfo">
+            {{ courseInfo.name.slice(0, 1) }}
+          </span>
         </v-avatar>
       </v-list-item-avatar>
       <v-list-item-content>
-        <v-tooltip bottom>
+        <v-tooltip bottom v-if="courseInfo">
           <template v-slot:activator="{ on, attr }">
             <v-list-item-title v-on="on" v-bind="attr">
               {{ courseInfo.name }}

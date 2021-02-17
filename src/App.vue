@@ -8,7 +8,9 @@
       @logout="handleLogout"
     />
     <v-main>
-      <router-view />
+      <transition name="fade">
+        <router-view />
+      </transition>
     </v-main>
     <Notification />
   </v-app>

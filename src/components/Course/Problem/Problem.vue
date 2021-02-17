@@ -23,7 +23,7 @@
             class="align-self-end rounded"
             :to="{
               name: 'courseSetProblems',
-              params: { operation: 'edit' },
+              params: { id: prob.course, operation: 'edit' },
               query: { pid: prob.pid },
             }"
             icon

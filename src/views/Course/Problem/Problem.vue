@@ -1,57 +1,60 @@
 <template>
-  <v-container>
-    <Spinner v-if="isWaiting" />
-    <div class="px-4" v-show="!isWaiting">
-      <div>
-        <Problem v-if="prob" :prob="prob" />
+  <div class="wrapper">
+    <problem-side-bar :problems="problems" />
+    <v-fade-transition>
+      <div class="container">
+        <Spinner v-if="isWaiting" />
+        <div class="pa-4" v-else>
+          <Problem v-if="prob" :prob="prob" />
+          <v-divider />
+          <CommentList
+            v-if="!floor"
+            :comments="comments"
+            :isAllowMultipleComments="prob && prob.allowMultipleComments"
+            :subscribeRefetch="subscribeRefetchComment"
+            :unsubscribeRefetch="unsubscribeRefetchComment"
+            @refetch-floor="fetchFloor"
+          />
+          <NewComment
+            v-else-if="String(floor) === 'new'"
+            :defaultCode="prob && prob.defaultCode"
+            :testResult="testResult['new']"
+            @refetch-floor="fetchFloor"
+            @fetch-test-submission="fetchTestSubmission"
+            @submit-test-submission="submitTestSubmission"
+            @submit-new-comment="submitNewComment"
+          />
+          <CommentDetail
+            v-else-if="selectedComment"
+            :previousFloor="previousFloor"
+            :nextFloor="nextFloor"
+            :comment="selectedComment"
+            :defaultCode="prob && prob.defaultCode"
+            :testResult="testResult['detail']"
+            :username="username"
+            :historySubmissions="historySubmissions"
+            :setIsEdit="setIsEdit"
+            :submitReply="submitReply"
+            :deleteReply="deleteReply"
+            :subscribeRefetch="subscribeRefetchReply"
+            :unsubscribeRefetch="unsubscribeRefetchReply"
+            @refetch-floor="fetchFloor"
+            @update-comment="updateComment"
+            @fetch-submission="fetchSubmission"
+            @fetch-test-submission="fetchTestSubmission"
+            @submit-test-submission="submitTestSubmission"
+            @submit-new-submission="submitNewSubmission"
+            @get-submissions="getSubmissions"
+            @grade-submission="gradeSubmission"
+            @like-comment="likeComment"
+            @update-reply="updateReply"
+            @delete-reply="deleteReply"
+          />
+          <div class="spacer" />
+        </div>
       </div>
-      <v-divider />
-      <div>
-        <CommentList
-          v-if="!floor"
-          :comments="comments"
-          :isAllowMultipleComments="prob && prob.allowMultipleComments"
-          :subscribeRefetch="subscribeRefetchComment"
-          :unsubscribeRefetch="unsubscribeRefetchComment"
-          @refetch-floor="fetchFloor"
-        />
-        <NewComment
-          v-else-if="String(floor) === 'new'"
-          :defaultCode="prob && prob.defaultCode"
-          :testResult="testResult['new']"
-          @refetch-floor="fetchFloor"
-          @fetch-test-submission="fetchTestSubmission"
-          @submit-test-submission="submitTestSubmission"
-          @submit-new-comment="submitNewComment"
-        />
-        <CommentDetail
-          v-else-if="selectedComment"
-          :comment="selectedComment"
-          :defaultCode="prob && prob.defaultCode"
-          :testResult="testResult['detail']"
-          :username="username"
-          :historySubmissions="historySubmissions"
-          :setIsEdit="setIsEdit"
-          :submitReply="submitReply"
-          :deleteReply="deleteReply"
-          :subscribeRefetch="subscribeRefetchReply"
-          :unsubscribeRefetch="unsubscribeRefetchReply"
-          @refetch-floor="fetchFloor"
-          @update-comment="updateComment"
-          @fetch-submission="fetchSubmission"
-          @fetch-test-submission="fetchTestSubmission"
-          @submit-test-submission="submitTestSubmission"
-          @submit-new-submission="submitNewSubmission"
-          @get-submissions="getSubmissions"
-          @grade-submission="gradeSubmission"
-          @like-comment="likeComment"
-          @update-reply="updateReply"
-          @delete-reply="deleteReply"
-        />
-      </div>
-      <div class="spacer" />
-    </div>
-  </v-container>
+    </v-fade-transition>
+  </div>
 </template>
 
 <script>
@@ -64,11 +67,12 @@ import { mapActions, mapGetters, mapState } from 'vuex'
 import { GET_COMMENTS } from '@/store/actions.type'
 import { COMMENTS } from '@/store/getters.type'
 import Spinner from '@/components/UI/Spinner'
+import ProblemSideBar from '../../../components/Course/Problem/ProblemSideBar.vue'
 
 export default {
   name: 'CourseProblem',
 
-  components: { Problem, CommentList, CommentDetail, NewComment, Spinner },
+  components: { Problem, CommentList, CommentDetail, NewComment, Spinner, ProblemSideBar },
 
   computed: {
     ...mapState({
@@ -83,16 +87,41 @@ export default {
     selectedComment() {
       return this.comments.find(c => String(c.floor) === String(this.floor))
     },
+    selectedCommentIndex() {
+      return this.comments.findIndex(c => String(c.floor) === String(this.floor))
+    },
+    previousFloor() {
+      return this.selectedCommentIndex === 0
+        ? null
+        : this.comments[this.selectedCommentIndex - 1].floor
+    },
+    nextFloor() {
+      return this.selectedCommentIndex === this.comments.length - 1
+        ? null
+        : this.comments[this.selectedCommentIndex + 1].floor
+    },
+  },
+
+  watch: {
+    async pid() {
+      this.isWaiting = true
+      await this.getProblem(this.pid)
+      this.getProblems()
+      this.fetchFloor()
+      this.isWaiting = false
+    },
   },
 
   async created() {
     await this.getProblem(this.pid)
+    this.getProblems()
     this.fetchFloor()
     this.isWaiting = false
   },
 
   data: () => ({
     prob: null,
+    problems: null,
     isWaiting: true,
     isEdit: false,
     floor: null,
@@ -130,6 +159,14 @@ export default {
         console.log('[views/Problem/getProblem] error', error)
         throw error
       }
+    },
+    getProblems() {
+      agent.Problem.getList({ course: this.prob.course })
+        .then(resp => (this.problems = resp.data.data))
+        .catch(error => {
+          console.log('[views/Problem/getProblem] error', error)
+          throw error
+        })
     },
     fetchSubmission() {
       this.getComments(this.prob.comments)
@@ -325,5 +362,16 @@ export default {
 /* TODO: let Spacer as a component */
 .spacer {
   padding-bottom: 200px;
+}
+.wrapper {
+  display: flex;
+  flex-wrap: nowrap;
+  width: 100%;
+  height: calc(100vh - 56px);
+  position: fixed;
+}
+.container {
+  flex: 1;
+  overflow: scroll;
 }
 </style>

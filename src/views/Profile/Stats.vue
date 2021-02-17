@@ -33,7 +33,7 @@
                       target="_blank"
                       :to="{
                         name: 'courseProblem',
-                        params: { name: problem.course, id: problem.pid },
+                        params: { id: problem.pid },
                       }"
                     >
                       {{ '主題' + problem.pid }}
@@ -68,7 +68,7 @@
                       target="_blank"
                       :to="{
                         name: 'courseProblem',
-                        params: { name: comment.course, id: comment.pid },
+                        params: { id: comment.pid },
                         query: { floor: comment.floor },
                       }"
                     >
@@ -107,7 +107,7 @@
                       target="_blank"
                       :to="{
                         name: 'courseProblem',
-                        params: { name: reply.course, id: reply.pid },
+                        params: { id: reply.pid },
                         query: { floor: reply.floor },
                       }"
                     >
@@ -143,7 +143,7 @@
                       target="_blank"
                       :to="{
                         name: 'courseProblem',
-                        params: { name: liked.course, id: liked.pid },
+                        params: { id: liked.pid },
                         query: { floor: liked.floor },
                       }"
                     >
@@ -191,7 +191,7 @@
                       target="_blank"
                       :to="{
                         name: 'courseProblem',
-                        params: { name: likes.course, id: likes.pid },
+                        params: { id: likes.pid },
                         query: { floor: likes.floor },
                       }"
                     >
@@ -229,7 +229,7 @@
                       target="_blank"
                       :to="{
                         name: 'courseProblem',
-                        params: { name: info.course, id: info.pid },
+                        params: { id: info.pid },
                         query: { floor: info.floor },
                       }"
                     >

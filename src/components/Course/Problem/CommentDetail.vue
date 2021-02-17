@@ -10,6 +10,36 @@
           </template>
           <span>關閉創作，回到列表</span>
         </v-tooltip>
+        <v-tooltip bottom :disabled="!previousFloor">
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              icon
+              v-on="on"
+              v-bind="attrs"
+              class="ml-4"
+              :disabled="!previousFloor"
+              @click="gotoFloor(previousFloor)"
+            >
+              <v-icon>mdi-arrow-left</v-icon>
+            </v-btn>
+          </template>
+          <span>上一個創作</span>
+        </v-tooltip>
+        <v-tooltip bottom :disabled="!nextFloor">
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              icon
+              v-on="on"
+              v-bind="attrs"
+              class="ml-1"
+              :disabled="!nextFloor"
+              @click="gotoFloor(nextFloor)"
+            >
+              <v-icon>mdi-arrow-right</v-icon>
+            </v-btn>
+          </template>
+          <span>下一個創作</span>
+        </v-tooltip>
         <v-spacer />
         <v-tooltip bottom>
           <template v-slot:activator="{ on, attrs }">
@@ -404,6 +434,12 @@ export default {
   components: { TextEditor, CodeEditor, Spinner, CommentResult, Fragment, CommentReplies },
 
   props: {
+    previousFloor: {
+      type: Number,
+    },
+    nextFloor: {
+      type: Number,
+    },
     comment: {
       type: Object,
       required: true,
@@ -536,6 +572,10 @@ export default {
   },
 
   methods: {
+    gotoFloor(targetFloor) {
+      this.$router.push({ query: { floor: targetFloor } })
+      this.$emit('refetch-floor')
+    },
     setDefaultCode() {
       const result = window.confirm('套用預設程式碼將會覆蓋掉現有的程式碼，是否要繼續？')
       if (!result) return

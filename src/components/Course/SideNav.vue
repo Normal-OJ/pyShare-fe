@@ -9,17 +9,17 @@
     <v-list-item>
       <v-list-item-avatar class="rounded">
         <v-avatar size="48" color="secondary" tile>
-          <span class="white--text headline">{{ $route.params.name.slice(0, 1) }}</span>
+          <span class="white--text headline">{{ courseInfo.name.slice(0, 1) }}</span>
         </v-avatar>
       </v-list-item-avatar>
       <v-list-item-content>
         <v-tooltip bottom>
           <template v-slot:activator="{ on, attr }">
             <v-list-item-title v-on="on" v-bind="attr">
-              {{ $route.params.name }}
+              {{ courseInfo.name }}
             </v-list-item-title>
           </template>
-          <span>{{ $route.params.name }}</span>
+          <span>{{ courseInfo.name }}</span>
         </v-tooltip>
       </v-list-item-content>
     </v-list-item>
@@ -101,7 +101,7 @@ export default {
   computed: {
     items() {
       const navs = SIDE_NAVS.slice()
-      if (this.courseInfo && this.courseInfo.name === this.$route.params.name) {
+      if (this.courseInfo && this.courseInfo.id === this.$route.params.id) {
         navs.splice(1, 0, MANAGE)
       }
       return navs

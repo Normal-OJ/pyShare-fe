@@ -75,6 +75,7 @@
 import AddStudentModal from '@/components/Course/Info/AddStudentModal'
 import ConfirmDeleteModal from './ConfirmDeleteModal'
 import { ROLE } from '@/constants/auth'
+import { mapState } from 'vuex'
 
 const { TEACHER } = ROLE
 const statsHeaders = [
@@ -144,6 +145,9 @@ export default {
     selectedUsername() {
       return this.selected.map(s => `${s.username} (${s.displayName})`)
     },
+    ...mapState({
+      courseName: state => state.course.courseInfo.name,
+    }),
   },
 
   data: () => ({
@@ -183,7 +187,7 @@ export default {
     downloadStats() {
       const csvContent = 'data:text/csv;charset=utf-8,' + this.downloadData()
       const link = document.createElement('a')
-      link.download = `${this.$route.params.name}_statistics.csv`
+      link.download = `${this.courseName}_statistics.csv`
       link.href = csvContent
       link.click()
     },

@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid>
+  <v-container>
     <Spinner v-if="isWaiting" />
     <div class="px-4" v-show="!isWaiting">
       <div>

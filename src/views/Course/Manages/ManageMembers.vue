@@ -21,15 +21,15 @@ export default {
     ...mapState({
       stats: state => state.course.courseStats,
     }),
-    courseName() {
-      return this.$route.params.name
+    courseId() {
+      return this.$route.params.id
     },
   },
 
   watch: {
-    courseName: {
+    courseId: {
       handler() {
-        this.getStats(this.courseName)
+        this.getStats(this.courseId)
       },
       immediate: true,
     },
@@ -70,8 +70,8 @@ export default {
     },
     async submitDeleteStudent(users, resolve, reject) {
       try {
-        await agent.Course.removeStudent(this.courseName, { users })
-        this.getStats(this.courseName)
+        await agent.Course.removeStudent(this.courseId, { users })
+        this.getStats(this.courseId)
         resolve()
       } catch (error) {
         console.log('[views/ManageMembers/submitDeleteStudent] error', error)

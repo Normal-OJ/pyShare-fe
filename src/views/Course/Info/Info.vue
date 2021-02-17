@@ -27,7 +27,7 @@ export default {
     }),
     submitAddMultipleStudents(file, resolve, reject) {
       const r = new FileReader()
-      const course = this.$route.params.name
+      const course = this.$route.params.id
       r.onload = async e => {
         const csvString = e.target.result
         try {
@@ -44,7 +44,7 @@ export default {
     },
     async submitAddStudent(csvString, resolve, reject) {
       try {
-        const course = this.$route.params.name
+        const course = this.$route.params.id
         await agent.Auth.batchSignup({ course, csvString })
         this.getCourseInfo(course)
         resolve()

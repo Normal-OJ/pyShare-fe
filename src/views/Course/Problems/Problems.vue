@@ -27,11 +27,11 @@ export default {
     ...mapGetters({
       problems: PROBLEMS,
     }),
-    courseName() {
-      return this.$route.params.name
+    courseId() {
+      return this.$route.params.id
     },
     paramsWithCourse() {
-      return { course: this.courseName }
+      return { course: this.courseId }
     },
   },
 
@@ -53,34 +53,34 @@ export default {
       getTags: GET_COURSE_TAGS,
     }),
     getProblemsByTags(paramsWithTags) {
-      this.getProblems({ ...paramsWithTags, course: this.courseName })
+      this.getProblems({ ...paramsWithTags, course: this.courseId })
     },
   },
 
-  mounted() {
-    this.$socket.emit('subscribe', {
-      topic: 'PROBLEM',
-      id: this.courseName,
-    })
-  },
+  // mounted() {
+  //   this.$socket.emit('subscribe', {
+  //     topic: 'PROBLEM',
+  //     id: this.courseName,
+  //   })
+  // },
 
-  destroyed() {
-    this.$socket.emit('unsubscribe', {
-      topic: 'PROBLEM',
-      id: this.courseName,
-    })
-  },
+  // destroyed() {
+  //   this.$socket.emit('unsubscribe', {
+  //     topic: 'PROBLEM',
+  //     id: this.courseName,
+  //   })
+  // },
 
-  sockets: {
-    refetch: function() {
-      this.getProblems(this.paramsWithCourse)
-      this.$notify({
-        group: 'notify',
-        type: 'my-info',
-        title: '主題列表更新',
-        text: '有人新增、修改，或刪除了主題',
-      })
-    },
-  },
+  // sockets: {
+  //   refetch: function() {
+  //     this.getProblems(this.paramsWithCourse)
+  //     this.$notify({
+  //       group: 'notify',
+  //       type: 'my-info',
+  //       title: '主題列表更新',
+  //       text: '有人新增、修改，或刪除了主題',
+  //     })
+  //   },
+  // },
 }
 </script>

@@ -1,39 +1,39 @@
 <template>
-  <Course :breadcrumbs="breadcrumbs" :courseInfo="courseInfo" />
+  <div class="wrapper">
+    <SideNav :courseInfo="courseInfo" />
+    <div class="container">
+      <router-view />
+    </div>
+  </div>
 </template>
 
 <script>
-import Course from '@/components/Course/Course'
+import SideNav from '@/components/Course/SideNav'
 import { mapGetters } from 'vuex'
 import { COURSE_INFO } from '@/store/getters.type.js'
 
 export default {
-  components: { Course },
+  components: { SideNav },
 
   computed: {
     ...mapGetters({
       courseInfo: COURSE_INFO,
     }),
-    courseName() {
-      return this.$route.params.name
-    },
-    breadcrumbs() {
-      return [
-        {
-          text: this.courseName,
-          to: { name: 'course' },
-        },
-        {
-          text: '主題列表',
-          disabled: false,
-          to: { name: 'courseProblems' },
-        },
-        {
-          text: '增修主題',
-          disabled: true,
-        },
-      ]
-    },
   },
 }
 </script>
+
+<style>
+.wrapper {
+  display: flex;
+  flex-wrap: nowrap;
+  width: 100%;
+  height: calc(100vh - 56px);
+  position: fixed;
+}
+.container {
+  flex: 1;
+  /* height: 100%; */
+  overflow: scroll;
+}
+</style>

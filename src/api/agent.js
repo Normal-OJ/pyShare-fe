@@ -10,14 +10,14 @@ const Auth = {
 
 const Course = {
   getList: () => Vue.axios.get('/course'),
-  get: name => Vue.axios.get(`/course/${name}`),
+  get: id => Vue.axios.get(`/course/${id}`),
   create: body => Vue.axios.post('/course', body),
   // TODO: re-define delete api
   // delete: name => Vue.axios.delete(`/course/${name}`),
   addStudent: (name, body) => Vue.axios.patch(`/course/${name}/student/insert`, body),
   removeStudent: (name, body) => Vue.axios.patch(`/course/${name}/student/remove`, body),
   patchTags: (name, body) => Vue.axios.patch(`/course/${name}/tag`, body),
-  getStats: name => Vue.axios.get(`/course/${name}/statistic`),
+  getStats: id => Vue.axios.get(`/course/${id}/statistic`),
 }
 
 const Problem = {

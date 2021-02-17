@@ -48,20 +48,20 @@ export default {
     isEdit() {
       return this.$route.params.operation === OPERATION.EDIT
     },
-    courseName() {
-      return this.$route.params.name
+    courseId() {
+      return this.$route.params.id
     },
     pid() {
       return this.$route.query.pid
     },
     prob() {
       if (this.isEdit) return this.problemInfo
-      return { ...initialProb, course: this.courseName, author: this.user }
+      return { ...initialProb, course: this.courseId, author: this.user }
     },
   },
 
   async created() {
-    this.getCourseTags({ course: this.courseName })
+    this.getCourseTags({ course: this.courseId })
     if (this.isEdit) await this.getProblemInfo(this.pid)
   },
 

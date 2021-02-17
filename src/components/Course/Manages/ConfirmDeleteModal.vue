@@ -47,6 +47,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 export default {
   props: {
     isVisible: {
@@ -68,9 +69,9 @@ export default {
   },
 
   computed: {
-    courseName() {
-      return this.$route.params.name
-    },
+    ...mapState({
+      courseName: state => state.course.courseInfo.name,
+    }),
   },
 
   data: () => ({

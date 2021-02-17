@@ -74,7 +74,7 @@ export default {
 
   methods: {
     handleRowClick(value) {
-      this.$router.push({ name: 'course', params: { name: value.name } })
+      this.$router.push({ name: 'course', params: { id: value.id } })
     },
     customSort(items, index, isDesc) {
       items.sort((a, b) => {

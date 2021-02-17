@@ -31,11 +31,11 @@ const actions = {
   /**
    * get courses statistics
    * @param {Object} context
-   * @param {String} payload course name
+   * @param {String} payload course id
    */
-  async [GET_COURSE_STATS]({ commit }, name) {
+  async [GET_COURSE_STATS]({ commit }, id) {
     try {
-      const { data } = await agent.Course.getStats(name)
+      const { data } = await agent.Course.getStats(id)
       commit(SET_COURSE_STATS, data.data)
     } catch (error) {
       console.log('[vuex/course/getCourseStats] error', error)
@@ -45,12 +45,12 @@ const actions = {
   /**
    * get course information
    * @param {Object} context
-   * @param {String} payload course name
+   * @param {String} payload course id
    */
-  async [GET_COURSE_INFO]({ commit }, name) {
+  async [GET_COURSE_INFO]({ commit }, id) {
     try {
-      const { data } = await agent.Course.get(name)
-      commit(SET_COURSE_INFO, { ...data.data, name })
+      const { data } = await agent.Course.get(id)
+      commit(SET_COURSE_INFO, data.data)
     } catch (error) {
       console.log('[vuex/course/getCourseInfo] error', error)
       throw error

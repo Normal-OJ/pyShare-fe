@@ -20,7 +20,7 @@
       </v-toolbar>
 
       <v-card-text class="mt-8 text--primary">
-        <div class="mb-2 text-body-1">
+        <div class="mb-4 text-body-1">
           除教師無法更改外，其他資訊可在日後修改。
         </div>
         <v-form ref="form">
@@ -85,7 +85,7 @@ export default {
     name: null,
     nameRules: [
       val => !!val || '請輸入課程名稱',
-      // val => RegExp(/[\w. _-]+$/).test(val) || '課程名稱包含非法字元',
+      val => RegExp(/[\w. _-]+$/).test(val) || '課程名稱包含非法字元',
     ],
     year: 109,
     semester: 2,

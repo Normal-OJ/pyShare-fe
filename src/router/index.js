@@ -37,7 +37,7 @@ const routes = [
     component: () => import('@/views/Courses/Courses'),
   },
   {
-    path: '/course/:name',
+    path: '/course/:id',
     component: () => import('@/views/Course/Course'),
     children: [
       {
@@ -54,11 +54,6 @@ const routes = [
         path: 'problems/:operation',
         name: 'courseSetProblems',
         component: () => import('@/views/Course/Problems/SetProblems'),
-      },
-      {
-        path: 'problem/:id',
-        name: 'courseProblem',
-        component: () => import('@/views/Course/Problem/Problem'),
       },
       {
         path: 'manages',
@@ -87,9 +82,14 @@ const routes = [
       },
     ],
     beforeEnter: (to, from, next) => {
-      store.dispatch(GET_COURSE_INFO, to.params.name)
+      store.dispatch(GET_COURSE_INFO, to.params.id)
       next()
     },
+  },
+  {
+    path: '/problem/:id',
+    name: 'courseProblem',
+    component: () => import('@/views/Course/Problem/Problem'),
   },
   {
     path: '/profile/:id',

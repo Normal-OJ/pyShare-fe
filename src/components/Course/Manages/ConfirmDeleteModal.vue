@@ -29,6 +29,7 @@
           outlined
           dense
           width="50%"
+          :placeholder="courseName"
           :error="!!deleteStudentErrorMsg"
           :error-messages="deleteStudentErrorMsg"
         />

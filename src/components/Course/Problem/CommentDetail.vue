@@ -94,7 +94,7 @@
           </div>
           <!-- Second Row -->
           <div class="d-flex flex-row align-center text-body-2">
-            <router-link :to="{ name: 'profile', params: { username: comment.author.username } }">
+            <router-link :to="{ name: 'profile', params: { id: comment.author.id } }">
               {{ comment.author.displayName }}
             </router-link>
             <div class="text-body-2" style="white-space: pre">

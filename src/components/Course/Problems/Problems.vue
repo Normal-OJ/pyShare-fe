@@ -76,7 +76,7 @@
         {{ item.comments.length }}
       </template>
       <template v-slot:[`item.author.displayName`]="{ item }">
-        <router-link :to="{ name: 'profile', params: { username: item.author.username } }">
+        <router-link :to="{ name: 'profile', params: { id: item.author.id } }">
           {{ item.author.displayName }}
         </router-link>
       </template>
@@ -146,13 +146,13 @@ export default {
     customSort(items, index, isDesc) {
       items.sort((a, b) => {
         if (index[0] === 'creations') {
-          if (!isDesc) {
+          if (!isDesc[0]) {
             return a.comments.length - b.comments.length
           } else {
             return b.comments.length - a.comments.length
           }
         } else {
-          if (!isDesc) {
+          if (!isDesc[0]) {
             return a[index] < b[index] ? -1 : 1
           } else {
             return b[index] < a[index] ? -1 : 1

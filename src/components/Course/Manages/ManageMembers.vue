@@ -49,7 +49,7 @@
       @click:row="handleRowClick"
     >
       <template v-slot:[`item.detail`]="{ item }">
-        <v-btn icon small @click.stop="handleClickDetail(item.username)">
+        <v-btn icon small @click.stop="handleClickDetail(item.id)">
           <v-icon>mdi-format-list-bulleted</v-icon>
         </v-btn>
       </template>
@@ -63,7 +63,7 @@
     <ConfirmDeleteModal
       :isVisible="isShowConfirmDeleteModal"
       :isLoading="isWaitingDeleteStudent"
-      :willDeleteMembers="selectedUser"
+      :willDeleteMembers="selectedUsername"
       :deleteStudentErrorMsg="deleteStudentErrorMsg"
       @delete-student="deleteStudent"
       @close="closeConfirmDeleteModal"
@@ -108,7 +108,7 @@ export default {
   computed: {
     data() {
       return this.stats.map(stat => {
-        const { username, displayName } = stat.info
+        const { username, displayName, id } = stat.info
         const numOfProblems = stat.problems.length
         const numOfComments = stat.comments.length
         const numOfReplies = stat.replies.length
@@ -126,6 +126,7 @@ export default {
         return {
           username,
           displayName,
+          id,
           numOfProblems,
           numOfComments,
           numOfReplies,
@@ -138,7 +139,10 @@ export default {
       })
     },
     selectedUser() {
-      return this.selected.map(s => s.username)
+      return this.selected.map(s => s.id)
+    },
+    selectedUsername() {
+      return this.selected.map(s => `${s.username} (${s.displayName})`)
     },
   },
 
@@ -154,11 +158,11 @@ export default {
 
   methods: {
     handleRowClick(value) {
-      const route = this.$router.resolve({ name: 'profile', params: { username: value.username } })
+      const route = this.$router.resolve({ name: 'profile', params: { id: value.id } })
       window.open(route.href, '_blank')
     },
-    handleClickDetail(username) {
-      const route = this.$router.resolve({ name: 'profileStats', params: { username: username } })
+    handleClickDetail(id) {
+      const route = this.$router.resolve({ name: 'profileStats', params: { id } })
       window.open(route.href, '_blank')
     },
     submitAddMultipleStudents(file, resolve, reject) {
@@ -191,17 +195,20 @@ export default {
     },
     deleteStudent() {
       this.isWaitingDeleteStudent = true
-      const resolve = function() {
-        this.closeConfirmDeleteModal()
-        this.$alertSuccess('新增學生成功。')
-        this.isWaitingDeleteStudent = false
-      }.bind(this)
-      const reject = function(error) {
-        this.$alertFail('新增學生失敗。')
-        this.deleteStudentErrorMsg = error.message
-        this.isWaitingDeleteStudent = false
-      }.bind(this)
-      this.$emit('delete-student', this.selectedUser, resolve, reject)
+      new Promise((resolve, reject) =>
+        this.$emit('delete-student', this.selectedUser, resolve, reject),
+      )
+        .then(() => {
+          this.closeConfirmDeleteModal()
+          this.$alertSuccess('移除學生成功。')
+        })
+        .catch(error => {
+          this.$alertFail('移除學生失敗。')
+          this.deleteStudentErrorMsg = error.message
+        })
+        .finally(() => {
+          this.isWaitingDeleteStudent = false
+        })
     },
   },
 }

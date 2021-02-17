@@ -134,7 +134,7 @@
               </v-card-title>
               <!-- Second Row -->
               <v-card-subtitle class="d-flex flex-row align-center flex-wrap">
-                <router-link :to="{ name: 'profile', params: { username: author.username } }">
+                <router-link :to="{ name: 'profile', params: { id: author.id } }">
                   {{ author.displayName }}
                 </router-link>
                 <div class="text-body-2" style="white-space: pre">

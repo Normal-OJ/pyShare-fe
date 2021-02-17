@@ -109,6 +109,18 @@
           <v-card flat>
             <v-card-text class="text--primary">
               <v-form ref="form" v-model="validForm">
+                <v-select
+                  v-model="newStudent.school"
+                  :rules="[val => val !== null || '此欄位為必填']"
+                  :items="schoolOptions"
+                  :item-text="({ alias, name }) => `${alias} ${name}`"
+                  item-value="alias"
+                  label="學校"
+                  outlined
+                  dense
+                >
+                  <template v-slot:selection="{ item }">{{ item.alias || item.name }}</template>
+                </v-select>
                 <v-text-field
                   v-model="newStudent.username"
                   :rules="[
@@ -155,10 +167,12 @@
 <script>
 import PreviewCSV from '@/components/UI/PreviewCSV'
 import ConfirmModal from '@/components/UI/ConfirmModal'
+import { SCHOOLS } from '@/constants/auth'
 
 const template =
   'username,displayName,password,email\n407123000S,王大明,gB7hj31p,bigming@ntnu.edu.tw\n409456000H,陳耳東,409456000H,earEast@ntu.edu.tw\nB123456789,（若是已註冊過的帳號,其他欄位可填可不填）'
 const initNewStudent = {
+  school: '',
   username: '',
   displayName: '',
   password: '',
@@ -172,6 +186,7 @@ export default {
     dialog: false,
     tab: 0,
     newStudentFile: null,
+    schoolOptions: SCHOOLS,
     template,
     validForm: false,
     newStudent: { ...initNewStudent },
@@ -198,17 +213,21 @@ export default {
       this.isShowConfirmModal = false
     },
     confirmSubmit() {
-      const resolve = function() {
-        this.dialog = false
-        this.newStudentFile = null
-        this.$alertSuccess('新增學生成功。')
-      }.bind(this)
-      const reject = function() {
-        // TODO: show error message
-        this.$alertFail('新增學生失敗。')
-      }.bind(this)
-      this.$emit('submit-add-multiple-students', this.newStudentFile, resolve, reject)
-      this.closeConfirmModal()
+      new Promise((resolve, reject) =>
+        this.$emit('submit-add-multiple-students', this.newStudentFile, resolve, reject),
+      )
+        .then(() => {
+          this.dialog = false
+          this.newStudentFile = null
+          this.$alertSuccess('新增學生成功。')
+        })
+        .catch(() => {
+          // TODO: show error message
+          this.$alertFail('新增學生失敗。')
+        })
+        .finally(() => {
+          this.closeConfirmModal()
+        })
     },
     downloadExample() {
       const csvContent = 'data:text/csv;charset=utf-8,' + this.template
@@ -219,20 +238,24 @@ export default {
     },
     submitAddStudent() {
       if (this.$refs.form.validate()) {
-        const resolve = function() {
-          this.validForm = false
-          this.newStudent = { ...initNewStudent }
-          this.$alertSuccess('新增學生成功。')
-        }.bind(this)
-        const reject = function() {
-          this.$alertFail('新增學生失敗。')
-        }.bind(this)
-        this.$emit(
-          'submit-add-student',
-          `${Object.keys(this.newStudent).join(',')}\n${Object.values(this.newStudent).join(',')}`,
-          resolve,
-          reject,
+        new Promise((resolve, reject) =>
+          this.$emit(
+            'submit-add-student',
+            `${Object.keys(this.newStudent).join(',')}\n${Object.values(this.newStudent).join(
+              ',',
+            )}`,
+            resolve,
+            reject,
+          ),
         )
+          .then(() => {
+            this.dialog = false
+            this.newStudent = { ...initNewStudent }
+            this.$alertSuccess('新增學生成功。')
+          })
+          .catch(() => {
+            this.$alertFail('新增學生失敗。')
+          })
       }
     },
   },

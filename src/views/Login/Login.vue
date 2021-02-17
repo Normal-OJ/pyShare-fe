@@ -101,7 +101,7 @@ export default {
       password: null,
     },
     loginRules: {
-      school: [val => !!val || '請選擇您的學校'],
+      school: [val => val !== null || '請選擇您的學校'],
       email: [val => !!val || '請輸入您的電子信箱'],
       username: [val => !!val || '請輸入您的使用者名稱'],
       password: [val => !!val || '請輸入您的密碼'],

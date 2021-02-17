@@ -129,6 +129,7 @@ export default {
         const body = { name, year, semester, teacher: id, status: checkedOption, description: '' }
         new Promise((resolve, reject) => this.$emit('submit', body, resolve, reject))
           .then(() => {
+            this.name = null
             this.dialog = false
             this.$alertSuccess('新增課程成功。')
           })

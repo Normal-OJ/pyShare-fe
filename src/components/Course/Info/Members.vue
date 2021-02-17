@@ -76,7 +76,7 @@ export default {
 
   methods: {
     handleRowClick(value) {
-      const route = this.$router.resolve({ name: 'profile', params: { username: value.username } })
+      const route = this.$router.resolve({ name: 'profile', params: { id: value.id } })
       window.open(route.href, '_blank')
     },
     submitAddMultipleStudents(file, resolve, reject) {

@@ -12,10 +12,7 @@
         </v-avatar>
         <div class="d-flex flex-column">
           <v-card-title class="d-flex flex-row align-center flex-wrap text-body-2 pt-0">
-            <router-link
-              class="mr-2"
-              :to="{ name: 'profile', params: { username: author.username } }"
-            >
+            <router-link class="mr-2" :to="{ name: 'profile', params: { id: author.id } }">
               {{ author.displayName }}
             </router-link>
             <v-tooltip top>

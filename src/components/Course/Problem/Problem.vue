@@ -6,7 +6,7 @@
         <span class="white--text headline">{{ prob.author.displayName.slice(0, 1) }}</span>
       </v-avatar>
       <div class="d-flex flex-column">
-        <router-link :to="{ name: 'profile', params: { username: prob.author.username } }">
+        <router-link :to="{ name: 'profile', params: { id: prob.author.id } }">
           {{ prob.author.displayName }}
         </router-link>
         <div class="text-body-2">

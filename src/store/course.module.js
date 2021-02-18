@@ -1,12 +1,25 @@
 import agent from '@/api/agent'
 import { COURSE_INFO } from './getters.type'
-import { GET_COURSES, GET_COURSE_STATS, GET_COURSE_INFO, GET_COURSE_TAGS } from './actions.type'
-import { SET_COURSES, SET_COURSE_STATS, SET_COURSE_INFO, SET_COURSE_TAGS } from './mutations.type'
+import {
+  GET_COURSES,
+  GET_COURSE_STATS,
+  GET_COURSE_INFO,
+  GET_COURSE_TAGS,
+  GET_COURSE_PROBLEMS,
+} from './actions.type'
+import {
+  SET_COURSES,
+  SET_COURSE_STATS,
+  SET_COURSE_INFO,
+  SET_COURSE_TAGS,
+  SET_COURSE_PROBLEMS,
+} from './mutations.type'
 
 const initialState = {
   courses: [],
   courseStats: null,
   courseInfo: null,
+  courseProblems: null,
   courseTags: [],
 }
 
@@ -56,12 +69,21 @@ const actions = {
       throw error
     }
   },
-  async [GET_COURSE_TAGS]({ commit }, params) {
+  async [GET_COURSE_TAGS]({ commit }, id) {
     try {
-      const { data } = await agent.Tag.getList(params)
+      const { data } = await agent.Tag.getList({ course: id })
       commit(SET_COURSE_TAGS, data.data)
     } catch (error) {
-      console.log('[vuex/tag/getTags] error', error)
+      console.log('[vuex/course/getCourseTags] error', error)
+      throw error
+    }
+  },
+  async [GET_COURSE_PROBLEMS]({ commit }, id) {
+    try {
+      const { data } = await agent.Problem.getList({ course: id })
+      commit(SET_COURSE_PROBLEMS, data.data)
+    } catch (error) {
+      console.log('[vuex/course/getCourseProblems] error', error)
       throw error
     }
   },
@@ -79,6 +101,9 @@ const mutations = {
   },
   [SET_COURSE_TAGS](state, payload) {
     state.courseTags = payload
+  },
+  [SET_COURSE_PROBLEMS](state, payload) {
+    state.courseProblems = payload
   },
 }
 

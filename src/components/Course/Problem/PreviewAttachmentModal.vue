@@ -59,7 +59,7 @@ export default {
       if (this.isImageFile(this.filename)) {
         this.isImg = true
       } else {
-        const { data } = await agent.Problem.getAttachment(this.$route.params.id, this.filename)
+        const { data } = await agent.Problem.getAttachment(this.$route.params.pid, this.filename)
         this.displayFile = data
       }
     },

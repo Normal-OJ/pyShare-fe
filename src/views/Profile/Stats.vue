@@ -27,13 +27,13 @@
                   <td colspan="2">No data available.</td>
                 </tr>
                 <tr v-for="(problem, idx) in statistic.problems" :key="idx">
-                  <td class="subtitle-1">{{ problem.course }}</td>
+                  <td class="subtitle-1">{{ problem.course.name }}</td>
                   <td class="subtitle-1">
                     <router-link
                       target="_blank"
                       :to="{
                         name: 'courseProblem',
-                        params: { id: problem.pid },
+                        params: { id: problem.course.id, pid: problem.pid },
                       }"
                     >
                       {{ '主題' + problem.pid }}
@@ -62,13 +62,13 @@
                   <td colspan="3">No data available.</td>
                 </tr>
                 <tr v-for="(comment, idx) in statistic.comments" :key="idx">
-                  <td class="subtitle-1">{{ comment.course }}</td>
+                  <td class="subtitle-1">{{ comment.course.name }}</td>
                   <td class="subtitle-1">
                     <router-link
                       target="_blank"
                       :to="{
                         name: 'courseProblem',
-                        params: { id: comment.pid },
+                        params: { id: comment.course.id, pid: comment.pid },
                         query: { floor: comment.floor },
                       }"
                     >
@@ -101,13 +101,13 @@
                   <td colspan="2">No data available.</td>
                 </tr>
                 <tr v-for="(reply, idx) in statistic.replies" :key="idx">
-                  <td class="subtitle-1">{{ reply.course }}</td>
+                  <td class="subtitle-1">{{ reply.course.name }}</td>
                   <td class="subtitle-1">
                     <router-link
                       target="_blank"
                       :to="{
                         name: 'courseProblem',
-                        params: { id: reply.pid },
+                        params: { id: reply.course.id, pid: reply.pid },
                         query: { floor: reply.floor },
                       }"
                     >
@@ -137,13 +137,13 @@
                   <td colspan="3">No data available.</td>
                 </tr>
                 <tr v-for="(liked, idx) in statistic.liked" :key="idx">
-                  <td class="subtitle-1">{{ liked.course }}</td>
+                  <td class="subtitle-1">{{ liked.course.name }}</td>
                   <td class="subtitle-1">
                     <router-link
                       target="_blank"
                       :to="{
                         name: 'courseProblem',
-                        params: { id: liked.pid },
+                        params: { id: liked.course.id, pid: liked.pid },
                         query: { floor: liked.floor },
                       }"
                     >
@@ -185,13 +185,13 @@
                   <td colspan="3">No data available.</td>
                 </tr>
                 <tr v-for="(likes, idx) in statistic.likes" :key="idx">
-                  <td class="subtitle-1">{{ likes.course }}</td>
+                  <td class="subtitle-1">{{ likes.course.name }}</td>
                   <td class="subtitle-1">
                     <router-link
                       target="_blank"
                       :to="{
                         name: 'courseProblem',
-                        params: { id: likes.pid },
+                        params: { id: likes.course.id, pid: likes.pid },
                         query: { floor: likes.floor },
                       }"
                     >
@@ -223,13 +223,13 @@
                   <td colspan="4">No data available.</td>
                 </tr>
                 <tr v-for="(info, idx) in statistic.execInfo" :key="idx">
-                  <td class="subtitle-1">{{ info.course }}</td>
+                  <td class="subtitle-1">{{ info.course.name }}</td>
                   <td class="subtitle-1">
                     <router-link
                       target="_blank"
                       :to="{
                         name: 'courseProblem',
-                        params: { id: info.pid },
+                        params: { id: info.course.id, pid: info.pid },
                         query: { floor: info.floor },
                       }"
                     >

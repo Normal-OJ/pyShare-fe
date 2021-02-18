@@ -12,7 +12,7 @@
 import ManageProblems from '@/components/Course/Manages/ManageProblems'
 import { mapActions, mapGetters, mapState } from 'vuex'
 import { PROBLEMS_OF_MINE } from '@/store/getters.type'
-import { GET_PROBLEMS, GET_COURSE_TAGS } from '@/store/actions.type'
+import { GET_PROBLEMS } from '@/store/actions.type'
 import agent from '@/api/agent'
 
 export default {
@@ -43,12 +43,11 @@ export default {
       const paramsWithCourse = {
         course: this.courseName,
       }
-      await Promise.all([this.getProblems(paramsWithCourse), this.getTags(paramsWithCourse)])
+      await this.getProblems(paramsWithCourse)
       this.isWaiting = false
     },
     ...mapActions({
       getProblems: GET_PROBLEMS,
-      getTags: GET_COURSE_TAGS,
     }),
     getProblemsByTags(paramsWithTags) {
       this.getProblems({ ...paramsWithTags, course: this.courseName })

@@ -30,7 +30,7 @@
 
     <v-list dense :nav="!isMinify">
       <v-list-item
-        v-for="{ label, icon, routeName, permission } in items"
+        v-for="{ label, icon, routeName, permission } in items.slice(0, 1)"
         :key="label"
         :to="{ name: routeName }"
         color="primary"
@@ -39,7 +39,35 @@
         <v-list-item-icon>
           <v-icon>{{ icon }}</v-icon>
         </v-list-item-icon>
+        <v-list-item-content>
+          <v-list-item-title>{{ label }}</v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
 
+      <template v-if="$route.name === 'courseProblem'">
+        <v-list-item
+          v-for="{ pid, title } in problems"
+          :key="pid"
+          :to="{ name: 'courseProblem', params: { pid: pid } }"
+          color="primary"
+        >
+          <v-list-item-icon class="pl-2">{{ pid }}</v-list-item-icon>
+          <v-list-item-content>
+            <v-list-item-title>{{ title }}</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+      </template>
+
+      <v-list-item
+        v-for="{ label, icon, routeName, permission } in items.slice(1)"
+        :key="label"
+        :to="{ name: routeName }"
+        color="primary"
+        v-permission="permission"
+      >
+        <v-list-item-icon>
+          <v-icon>{{ icon }}</v-icon>
+        </v-list-item-icon>
         <v-list-item-content>
           <v-list-item-title>{{ label }}</v-list-item-title>
         </v-list-item-content>
@@ -68,6 +96,7 @@
 
 <script>
 import { ROLE } from '@/constants/auth'
+import { mapState } from 'vuex'
 
 const { TEACHER, STUDENT } = ROLE
 const SIDE_NAVS = [
@@ -101,6 +130,9 @@ export default {
   },
 
   computed: {
+    ...mapState({
+      problems: state => state.course.courseProblems,
+    }),
     items() {
       const navs = SIDE_NAVS.slice()
       if (this.courseInfo && this.courseInfo.id === this.$route.params.id) {

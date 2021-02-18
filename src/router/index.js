@@ -2,7 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '@/views/Home/Home'
 import store from '@/store'
-import { GET_COURSE_INFO } from '@/store/actions.type'
+import { GET_COURSE_INFO, GET_COURSE_TAGS, GET_COURSE_PROBLEMS } from '@/store/actions.type'
 
 Vue.use(VueRouter)
 // TODO: block users that no permission from the specific route
@@ -51,6 +51,11 @@ const routes = [
         component: () => import('@/views/Course/Problems/Problems'),
       },
       {
+        path: 'problem/:pid',
+        name: 'courseProblem',
+        component: () => import('@/views/Course/Problem/Problem'),
+      },
+      {
         path: 'problems/:operation',
         name: 'courseSetProblems',
         component: () => import('@/views/Course/Problems/SetProblems'),
@@ -83,13 +88,10 @@ const routes = [
     ],
     beforeEnter: (to, from, next) => {
       store.dispatch(GET_COURSE_INFO, to.params.id)
+      store.dispatch(GET_COURSE_TAGS, to.params.id)
+      store.dispatch(GET_COURSE_PROBLEMS, to.params.id)
       next()
     },
-  },
-  {
-    path: '/problem/:id',
-    name: 'courseProblem',
-    component: () => import('@/views/Course/Problem/Problem'),
   },
   {
     path: '/profile/:id',

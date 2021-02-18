@@ -40,10 +40,7 @@ export default {
   }),
 
   async created() {
-    await Promise.all([
-      this.getProblems(this.paramsWithCourse),
-      this.getTags(this.paramsWithCourse),
-    ])
+    await Promise.all([this.getProblems(this.paramsWithCourse), this.getTags(this.courseId)])
     this.isWaiting = false
   },
 

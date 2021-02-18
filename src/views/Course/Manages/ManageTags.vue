@@ -36,7 +36,7 @@ export default {
 
   created() {
     this.getAllTags()
-    this.getCourseTags({ course: this.courseId })
+    this.getCourseTags(this.courseId)
   },
 
   methods: {
@@ -61,7 +61,7 @@ export default {
     async submitPatchTags(body) {
       try {
         await agent.Course.patchTags(this.courseId, body)
-        this.getCourseTags({ course: this.courseId })
+        this.getCourseTags(this.courseId)
         this.getAllTags(this.courseId)
         this.$alertSuccess('編輯分類成功。')
       } catch (error) {

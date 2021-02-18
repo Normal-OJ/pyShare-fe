@@ -10,7 +10,8 @@ export const GET_PROBLEM_INFO = 'getProblemInfo'
 export const GET_COURSES = 'getCourses'
 export const GET_COURSE_STATS = 'getCourseStats'
 export const GET_COURSE_INFO = 'getCourseInfo'
-export const GET_COURSE_TAGS = 'getTags'
+export const GET_COURSE_TAGS = 'getCourseTags'
+export const GET_COURSE_PROBLEMS = 'getCourseProblems'
 
 // comment module
 export const GET_COMMENTS = 'getComments'

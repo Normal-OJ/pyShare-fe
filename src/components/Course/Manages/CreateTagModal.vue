@@ -32,21 +32,6 @@
         >
           <template v-slot:selection="{ parent, item }">
             <ColorLabel :tag="item" close @close-chip="remove(item)" />
-            <!-- <v-chip
-              v-if="item === Object(item)"
-              v-bind="attrs"
-              :color="`${item.color} lighten-3`"
-              :input-value="selected"
-              label
-              small
-            >
-              <span class="pr-2">
-                {{ item.text }}
-              </span>
-              <v-icon small @click="parent.selectItem(item)">
-                close
-              </v-icon>
-            </v-chip> -->
           </template>
         </v-combobox>
       </v-card-text>
@@ -69,13 +54,6 @@ export default {
 
   components: { ColorLabel },
 
-  props: {
-    submitNewTags: {
-      type: Function,
-      required: true,
-    },
-  },
-
   data: () => ({
     newTags: [],
     dialog: false,
@@ -91,16 +69,13 @@ export default {
     remove(removedTag) {
       this.newTags = this.newTags.filter(tag => tag !== removedTag)
     },
-    async submit() {
-      try {
-        await this.submitNewTags(this.newTags)
-        this.$alertSuccess('新增分類成功。')
+    submit() {
+      new Promise((resolve, reject) =>
+        this.$emit('submit-new-tags', this.newTags, resolve, reject),
+      ).then(() => {
         this.dialog = false
         this.newTags = []
-      } catch (error) {
-        console.log('[components/CreateTagModal] error', error)
-        this.$alertFail('新增分類失敗。')
-      }
+      })
     },
     close() {
       if (this.newTags.length > 0) {

@@ -59,7 +59,7 @@ import CommentDetail from '@/components/Course/Problem/CommentDetail'
 import NewComment from '@/components/Course/Problem/NewComment'
 import agent from '@/api/agent'
 import { mapActions, mapGetters, mapState } from 'vuex'
-import { GET_COMMENTS } from '@/store/actions.type'
+import { GET_COMMENTS, GET_COURSE_PROBLEMS } from '@/store/actions.type'
 import { COMMENTS } from '@/store/getters.type'
 import Spinner from '@/components/UI/Spinner'
 
@@ -107,6 +107,7 @@ export default {
 
   async created() {
     await this.getProblem(this.pid)
+    this.$store.dispatch(GET_COURSE_PROBLEMS, this.prob.course)
     this.fetchFloor()
     this.isWaiting = false
   },

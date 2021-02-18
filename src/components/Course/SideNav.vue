@@ -50,8 +50,9 @@
           :key="pid"
           :to="{ name: 'courseProblem', params: { pid: pid } }"
           color="primary"
+          :class="{ 'ml-4': !isMinify }"
         >
-          <v-list-item-icon class="pl-2">{{ pid }}</v-list-item-icon>
+          <v-list-item-icon class="pl-3 mr-3">{{ pid }}</v-list-item-icon>
           <v-list-item-content>
             <v-list-item-title>{{ title }}</v-list-item-title>
           </v-list-item-content>

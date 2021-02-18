@@ -157,7 +157,14 @@
                           liked.starers.length
                         }}</v-expansion-panel-header>
                         <v-expansion-panel-content v-if="liked.starers.length > 0">
-                          <p v-for="(starer, i) in liked.starers" :key="i">{{ starer }}</p>
+                          <router-link
+                            v-for="starer in liked.starers"
+                            :key="starer.id"
+                            target="_blank"
+                            :to="{ name: 'profile', params: { id: starer.id } }"
+                          >
+                            {{ starer.displayName }}
+                          </router-link>
                         </v-expansion-panel-content>
                       </v-expansion-panel>
                     </v-expansion-panels>
@@ -198,7 +205,14 @@
                       {{ '主題' + likes.pid + '-' + likes.floor + '樓' }}
                     </router-link>
                   </td>
-                  <td class="subtitle-1">{{ likes.staree }}</td>
+                  <td class="subtitle-1">
+                    <router-link
+                      target="_blank"
+                      :to="{ name: 'profile', params: { id: likes.staree.id } }"
+                    >
+                      {{ likes.staree.displayName }}
+                    </router-link>
+                  </td>
                 </tr>
               </tbody>
             </v-simple-table>

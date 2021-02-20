@@ -89,19 +89,12 @@
               <v-btn
                 class="mx-2"
                 color="primary"
-                tile
                 small
                 @click="confirmEditComment(COMMENT_KEY.TITLE)"
               >
                 儲存
               </v-btn>
-              <v-btn
-                color="primary"
-                outlined
-                tile
-                small
-                @click="cancelEditComment(COMMENT_KEY.TITLE)"
-              >
+              <v-btn color="primary" text small @click="cancelEditComment(COMMENT_KEY.TITLE)">
                 取消
               </v-btn>
             </div>
@@ -177,26 +170,17 @@
         <div v-if="!isEdit[COMMENT_KEY.CONTENT]" v-html="comment.content" />
         <div v-else>
           <TextEditor v-model="newComment[COMMENT_KEY.CONTENT]" />
-          <div class="d-flex mt-1">
+          <div class="d-flex mt-2">
             <v-btn
               class="mr-2"
               color="primary"
               small
-              tile
               @click="confirmEditComment(COMMENT_KEY.CONTENT)"
             >
               儲存
-              <!-- <v-icon>mdi-check</v-icon> -->
             </v-btn>
-            <v-btn
-              color="primary"
-              outlined
-              tile
-              small
-              @click="cancelEditComment(COMMENT_KEY.CONTENT)"
-            >
+            <v-btn color="primary" text small @click="cancelEditComment(COMMENT_KEY.CONTENT)">
               取消
-              <!-- <v-icon>mdi-close</v-icon> -->
             </v-btn>
           </div>
         </div>
@@ -263,6 +247,37 @@
               </v-list-item>
             </v-list>
           </v-menu>
+          <div
+            class="d-flex ml-2 align-center"
+            v-if="browsingSubmission && isEdit[COMMENT_KEY.CODE]"
+          >
+            <div class="text-body-1">新增程式版本</div>
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on, attr }">
+                <v-btn
+                  class="ml-2"
+                  color="primary"
+                  v-on="on"
+                  v-bind="attr"
+                  small
+                  icon
+                  @click="setDefaultCode"
+                >
+                  <v-icon>mdi-autorenew</v-icon>
+                </v-btn>
+              </template>
+              <span>恢復為預設程式碼</span>
+            </v-tooltip>
+            <v-btn
+              class="ml-2"
+              color="primary"
+              outlined
+              small
+              @click="cancelEditComment(COMMENT_KEY.CODE)"
+            >
+              取消
+            </v-btn>
+          </div>
           <v-spacer />
           <div class="text-body-2" v-if="browsingSubmission">
             <v-tooltip bottom>
@@ -326,16 +341,6 @@
           readOnly
         />
         <div v-else>
-          <div class="d-flex mb-2">
-            <div class="text-body-1">新增程式版本</div>
-            <v-spacer />
-            <v-btn class="mr-2" color="primary" outlined tile small @click="setDefaultCode">
-              套用預設程式碼
-            </v-btn>
-            <v-btn color="primary" outlined tile small @click="cancelEditComment(COMMENT_KEY.CODE)">
-              取消
-            </v-btn>
-          </div>
           <CodeEditor
             v-model="newComment[COMMENT_KEY.CODE]"
             @input="checkIsDisableSubmitSubmission"
@@ -390,11 +395,11 @@
     </v-card>
     <div v-show="isReply" class="mt-6">
       <TextEditor v-model="newReply" />
-      <div class="d-flex mt-1">
-        <v-btn class="mr-2" color="primary" small tile @click="handleSubmitReply">
+      <div class="d-flex mt-2">
+        <v-btn class="mr-2" color="primary" small @click="handleSubmitReply">
           送出
         </v-btn>
-        <v-btn color="primary" outlined tile small @click="isReply = false">
+        <v-btn color="primary" text small @click="isReply = false">
           取消
         </v-btn>
       </div>

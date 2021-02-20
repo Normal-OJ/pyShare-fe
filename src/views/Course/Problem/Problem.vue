@@ -4,16 +4,18 @@
     <div class="pa-4" v-else>
       <Problem v-if="prob" :prob="prob" />
       <v-divider />
-      <CommentList
-        v-if="!floor"
-        :comments="comments"
-        :isAllowMultipleComments="prob && prob.allowMultipleComments"
-        :subscribeRefetch="subscribeRefetchComment"
-        :unsubscribeRefetch="unsubscribeRefetchComment"
-        @refetch-floor="fetchFloor"
-      />
+      <div v-show="!floor">
+        <CommentList
+          :comments="comments"
+          :isAllowMultipleComments="prob && prob.allowMultipleComments"
+          :subscribeRefetch="subscribeRefetchComment"
+          :unsubscribeRefetch="unsubscribeRefetchComment"
+          @refetch-floor="fetchFloor"
+          @change-filtered-comments="comments => (filteredComments = comments)"
+        />
+      </div>
       <NewComment
-        v-else-if="String(floor) === 'new'"
+        v-if="floor && String(floor) === 'new'"
         :defaultCode="prob && prob.defaultCode"
         :testResult="testResult['new']"
         @refetch-floor="fetchFloor"
@@ -22,7 +24,7 @@
         @submit-new-comment="submitNewComment"
       />
       <CommentDetail
-        v-else-if="selectedComment"
+        v-else-if="floor && selectedComment"
         :previousFloor="previousFloor"
         :nextFloor="nextFloor"
         :comment="selectedComment"
@@ -82,17 +84,20 @@ export default {
       return this.comments.find(c => String(c.floor) === String(this.floor))
     },
     selectedCommentIndex() {
-      return this.comments.findIndex(c => String(c.floor) === String(this.floor))
+      const idx = this.filteredComments.findIndex(c => String(c.floor) === String(this.floor))
+      return idx === -1 ? null : idx
     },
     previousFloor() {
+      if (this.selectedCommentIndex === null) return null
       return this.selectedCommentIndex === 0
         ? null
-        : this.comments[this.selectedCommentIndex - 1].floor
+        : this.filteredComments[this.selectedCommentIndex - 1].floor
     },
     nextFloor() {
-      return this.selectedCommentIndex === this.comments.length - 1
+      if (this.selectedCommentIndex === null) return null
+      return this.selectedCommentIndex === this.filteredComments.length - 1
         ? null
-        : this.comments[this.selectedCommentIndex + 1].floor
+        : this.filteredComments[this.selectedCommentIndex + 1].floor
     },
   },
 
@@ -115,6 +120,7 @@ export default {
   data: () => ({
     prob: null,
     courseInfo: null,
+    filteredComments: [],
     isWaiting: true,
     isEdit: false,
     floor: null,

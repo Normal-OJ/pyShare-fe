@@ -71,7 +71,6 @@ export default {
       }
     },
     async submitNewTags(tags, resolve, reject) {
-      console.log(tags, resolve, reject)
       try {
         await agent.Tag.create({ tags })
         resolve()

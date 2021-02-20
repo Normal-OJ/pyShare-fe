@@ -2,8 +2,8 @@
   <v-container fluid class="pb-16">
     <v-row class="mb-4" no-gutters>
       <div class="text-h5">{{ isEdit ? '編輯主題' : '新增主題' }}</div>
-      <v-spacer />
-      <PreviewNewProblem :prob="newProb" />
+      <!-- <v-spacer />
+      <PreviewNewProblem :prob="newProb" /> -->
     </v-row>
 
     <v-row>

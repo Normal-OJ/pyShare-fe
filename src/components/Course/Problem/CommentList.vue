@@ -271,6 +271,12 @@ export default {
     },
   },
 
+  watch: {
+    filteredComments() {
+      this.$emit('change-filtered-comments', this.filteredComments)
+    },
+  },
+
   data: () => ({
     SORT_BY,
     SUBMISSION_STATE,

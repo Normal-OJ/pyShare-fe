@@ -35,8 +35,15 @@
                   truncate-length="50"
                   hide-details
                   dense
+                  data-test="fileInput"
                 />
-                <v-btn class="ml-2" color="success" :disabled="!newStudentFile" @click="submit">
+                <v-btn
+                  class="ml-2"
+                  color="success"
+                  :disabled="!newStudentFile"
+                  @click="submit"
+                  data-test="submitFileBtn"
+                >
                   送出
                 </v-btn>
               </div>

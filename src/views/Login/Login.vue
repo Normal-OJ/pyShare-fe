@@ -3,7 +3,7 @@
     <div class="text-h3" data-test="title">歡迎回來，請先登入</div>
     <v-radio-group v-model="loginMethod" row class="mt-8" hide-details>
       <v-radio label="透過學校和使用者名稱登入" :value="USERNAME" />
-      <v-radio label="透過電子信箱登入" :value="EMAIL" />
+      <v-radio label="透過電子信箱登入" :value="EMAIL" data-test="emailRadio" />
     </v-radio-group>
     <v-form ref="form" class="mt-4" style="width: min(460px, 80%)">
       <v-row v-if="loginMethod === USERNAME">

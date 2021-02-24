@@ -1,7 +1,7 @@
 <template>
   <v-dialog v-model="dialog" width="750" persistent>
     <template v-slot:activator="{ on, attrs }">
-      <v-btn color="success" dark v-bind="attrs" v-on="on">
+      <v-btn color="success" dark v-bind="attrs" v-on="on" data-test="newCourseBtn">
         <v-icon class="mr-1">mdi-layers-plus</v-icon>
         新增課程
       </v-btn>
@@ -24,16 +24,44 @@
           除教師無法更改外，其他資訊可在日後修改。
         </div>
         <v-form ref="form">
-          <v-text-field label="課程名稱" v-model="name" :rules="nameRules" outlined dense />
+          <v-text-field
+            label="課程名稱"
+            v-model="name"
+            :rules="nameRules"
+            outlined
+            dense
+            data-test="courseName"
+          />
           <v-row>
             <v-col>
-              <v-select label="學年度" v-model="year" :items="years" outlined dense />
+              <v-select
+                label="學年度"
+                v-model="year"
+                :items="years"
+                outlined
+                dense
+                data-test="courseYear"
+              />
             </v-col>
             <v-col>
-              <v-select label="學期" v-model="semester" :items="semesters" outlined dense />
+              <v-select
+                label="學期"
+                v-model="semester"
+                :items="semesters"
+                outlined
+                dense
+                data-test="courseSemester"
+              />
             </v-col>
             <v-col>
-              <v-text-field label="教師" :value="username" outlined dense :readonly="role !== 0" />
+              <v-text-field
+                label="教師"
+                :value="username"
+                outlined
+                dense
+                :readonly="role !== 0"
+                data-test="courseTeacher"
+              />
             </v-col>
           </v-row>
         </v-form>
@@ -51,6 +79,7 @@
             :style="{
               border: checkedOption === status ? 'solid 3px var(--v-primary-base)' : null,
             }"
+            :data-test="`courseStatus${status}`"
           >
             <div class="d-flex flex-column align-center">
               <v-icon size="54" :color="checkedOption === status ? 'primary' : null">
@@ -67,7 +96,12 @@
 
       <v-card-actions>
         <v-spacer />
-        <v-btn color="success" :disabled="!name || !year || !semester" @click="submit">
+        <v-btn
+          color="success"
+          :disabled="!name || !year || !semester"
+          @click="submit"
+          data-test="courseSubmit"
+        >
           送出
         </v-btn>
       </v-card-actions>

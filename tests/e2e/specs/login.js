@@ -1,3 +1,4 @@
+const emailRadioId = '[data-test=emailRadio]'
 const schoolId = '[data-test=school]'
 const usernameId = '[data-test=username]'
 const passwordId = '[data-test=password]'
@@ -58,16 +59,18 @@ describe('Login', () => {
 
   it('can login with tcc by school+username.', () => {
     cy.visit('/login')
+    cy.location().should(loc => expect(loc.search).to.be.empty)
     selectSchool('無')
     cy.get(usernameId).type('tcchiang')
     cy.get(passwordId).type('tcchiang')
     cy.get(loginBtnId).click()
     cy.contains('登入成功')
-    cy.location().should(loc => expect(loc.pathname).to.eq('/'))
+    cy.location().should(loc => expect(loc.pathname).to.eq('/courses'))
   })
 
   it('can login with tcc by email.', () => {
     cy.visit('/login')
+    cy.get(emailRadioId).check({ force: true })
     cy.get(emailId).type('tcchiang@ntnu.edu.tw')
     cy.get(passwordId).type('tcchiang')
     cy.get(loginBtnId).click()

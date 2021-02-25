@@ -1,7 +1,7 @@
 <template>
   <ManageMembers
-    :stats="stats ? stats : []"
-    :loading="!stats"
+    :stats="parsedStats ? parsedStats : []"
+    :loading="!parsedStats"
     @submit-add-multiple-students="submitAddMultipleStudents"
     @submit-add-student="submitAddStudent"
     @delete-student="submitDeleteStudent"
@@ -24,6 +24,39 @@ export default {
     courseId() {
       return this.$route.params.id
     },
+    parsedStats() {
+      if (!this.stats) return null
+      return this.stats.map(stat => {
+        const { username, displayName, id } = stat.info
+        const numOfProblems = stat.problems.length
+        const numOfComments = stat.comments.length
+        const numOfReplies = stat.replies.length
+        const numOfLiked = stat.liked.reduce((a, b) => {
+          return a + b.starers.length
+        }, 0)
+        const numOfLikes = stat.likes.length
+        const numOfAcceptedComments = stat.comments.filter(c => c.accepted).length
+        const [execSuccess, execFail] = stat.execInfo.reduce(
+          (a, b) => {
+            return [a[0] + b.success, a[1] + b.fail]
+          },
+          [0, 0],
+        )
+        return {
+          username,
+          displayName,
+          id,
+          numOfProblems,
+          numOfComments,
+          numOfReplies,
+          numOfLiked,
+          numOfLikes,
+          numOfAcceptedComments,
+          execSuccess,
+          execFail,
+        }
+      })
+    },
   },
 
   watch: {
@@ -41,12 +74,11 @@ export default {
     }),
     submitAddMultipleStudents(file, resolve, reject) {
       const r = new FileReader()
-      const course = this.$route.params.name
       r.onload = async e => {
         const csvString = e.target.result
         try {
-          await agent.Auth.batchSignup({ course, csvString })
-          this.getStats(course)
+          await agent.Auth.batchSignup({ course: this.courseId, csvString })
+          this.getStats(this.courseId)
           resolve()
         } catch (error) {
           console.log('[views/ManageMembers/submitAddMultipleStudents] error', error)
@@ -58,9 +90,8 @@ export default {
     },
     async submitAddStudent(csvString, resolve, reject) {
       try {
-        const course = this.$route.params.name
-        await agent.Auth.batchSignup({ course, csvString })
-        this.getStats(course)
+        await agent.Auth.batchSignup({ course: this.courseId, csvString })
+        this.getStats(this.courseId)
         resolve()
       } catch (error) {
         console.log('[views/ManageMembers/submitAddStudent] error', error)

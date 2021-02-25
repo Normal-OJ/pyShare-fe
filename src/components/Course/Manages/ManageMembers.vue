@@ -16,7 +16,13 @@
       <v-spacer />
 
       <div v-if="selected.length > 0">
-        <v-btn icon class="mr-3" color="error" @click="handleClickDelete()">
+        <v-btn
+          icon
+          class="mr-3"
+          color="error"
+          @click="handleClickDelete()"
+          data-test="removeStudentBtn"
+        >
           <v-icon>mdi-trash-can</v-icon>
         </v-btn>
         <v-btn color="primary" outlined class="mr-3" @click="downloadStats">
@@ -37,7 +43,7 @@
 
     <v-data-table
       :headers="headers"
-      :items="data"
+      :items="stats"
       :search="searchText"
       :items-per-page="Number(-1)"
       hide-default-footer
@@ -107,38 +113,6 @@ export default {
   },
 
   computed: {
-    data() {
-      return this.stats.map(stat => {
-        const { username, displayName, id } = stat.info
-        const numOfProblems = stat.problems.length
-        const numOfComments = stat.comments.length
-        const numOfReplies = stat.replies.length
-        const numOfLiked = stat.liked.reduce((a, b) => {
-          return a + b.starers.length
-        }, 0)
-        const numOfLikes = stat.likes.length
-        const numOfAcceptedComments = stat.comments.filter(c => c.accepted).length
-        const [execSuccess, execFail] = stat.execInfo.reduce(
-          (a, b) => {
-            return [a[0] + b.success, a[1] + b.fail]
-          },
-          [0, 0],
-        )
-        return {
-          username,
-          displayName,
-          id,
-          numOfProblems,
-          numOfComments,
-          numOfReplies,
-          numOfLiked,
-          numOfLikes,
-          numOfAcceptedComments,
-          execSuccess,
-          execFail,
-        }
-      })
-    },
     selectedUser() {
       return this.selected.map(s => s.id)
     },
@@ -178,7 +152,7 @@ export default {
     downloadData() {
       const header = statsHeaders.map(h => h.text).join(',')
       const headerKey = statsHeaders.map(h => h.value)
-      const body = this.data
+      const body = this.stats
         .filter(d => this.selected.length === 0 || this.selectedUser.includes(d.username))
         .map(d => headerKey.map(hk => d[hk]).join(','))
         .join('\n')

@@ -32,12 +32,14 @@
           :placeholder="courseName"
           :error="!!deleteStudentErrorMsg"
           :error-messages="deleteStudentErrorMsg"
+          data-test="confirmDeleteInput"
         />
         <v-btn
           color="error"
           @click="handleClick"
           :disabled="inputText !== courseName"
           :loading="isLoading"
+          data-test="confirmDeleteBtn"
         >
           確認刪除
         </v-btn>

@@ -12,10 +12,13 @@ const courseSubmitId = '[data-test=courseSubmit]'
 const fileInputId = '[data-test=fileInput]'
 const submitFileBtnId = '[data-test=submitFileBtn]'
 const manageMemberCardId = '[data-test=manageMemberCard]'
+const removeStudentBtnId = '[data-test=removeStudentBtn]'
+const confirmDeleteInputId = '[data-test=confirmDeleteInput]'
+const confirmDeleteBtnId = '[data-test=confirmDeleteBtn]'
 
 const courseName = `e2e_${+new Date()}`
 
-describe('Create Course', () => {
+describe('Course', () => {
   const select = (element, selectItem) => {
     cy.get(element)
       .parent()
@@ -50,7 +53,7 @@ describe('Create Course', () => {
     cy.contains('tcchiang')
   })
 
-  it('lets tcc add students by csv.', () => {
+  it('lets tcc add students by csv from Info panel.', () => {
     cy.contains(courseName)
       .parent()
       .click()
@@ -66,6 +69,52 @@ describe('Create Course', () => {
     cy.contains('新增學生成功。')
     cy.contains('管理').click()
     cy.get(manageMemberCardId).click()
+    cy.contains('tcc_stu_1')
+    cy.contains('tcc_stu_2')
+  })
+
+  it('lets tcc remove students.', () => {
+    cy.contains(courseName)
+      .parent()
+      .click()
+    cy.wait(500)
+    cy.contains('管理').click()
+    cy.get(manageMemberCardId).click()
+    cy.contains('tcc_stu_1')
+    cy.contains('tcc_stu_2')
+    cy.get('td > .v-data-table__checkbox').click({ multiple: true })
+    cy.get(removeStudentBtnId).click()
+    cy.contains('請注意以下成員創作的主題、創作、留言將會一併移除')
+    cy.contains('tcc_stu_1 (測試1)')
+    cy.contains('tcc_stu_2 (測試2)')
+    cy.contains(`在此輸入課程名稱：${courseName} 以執行刪除`)
+    cy.get(confirmDeleteBtnId).should('be.disabled')
+    cy.get(confirmDeleteInputId).type('helloworld')
+    cy.get(confirmDeleteBtnId).should('be.disabled')
+    cy.get(confirmDeleteInputId).clear()
+    cy.get(confirmDeleteInputId).type(courseName)
+    cy.get(confirmDeleteBtnId).should('not.be.disabled')
+    cy.get(confirmDeleteBtnId).click()
+    cy.contains('移除學生成功。')
+    cy.contains('這裡還沒有任何成員，或找不到符合條件的成員')
+  })
+
+  it('lets tcc add students by csv from ManageStudent panel.', () => {
+    cy.contains(courseName)
+      .parent()
+      .click()
+    cy.wait(500)
+    cy.contains('管理').click()
+    cy.get(manageMemberCardId).click()
+    cy.contains('這裡還沒有任何成員，或找不到符合條件的成員')
+    cy.contains('新增學生').click()
+    cy.contains('批量新增學生')
+    cy.get(fileInputId).attachFile('test.csv')
+    cy.get(submitFileBtnId).click()
+    cy.contains('tcc_stu_1')
+    cy.contains('tcc_stu_2')
+    cy.contains('確認').click()
+    cy.contains('新增學生成功。')
     cy.contains('tcc_stu_1')
     cy.contains('tcc_stu_2')
   })

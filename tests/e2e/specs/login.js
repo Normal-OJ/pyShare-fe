@@ -31,19 +31,22 @@ describe('Login', () => {
   it('redirects from auth needed pages and redirects back after login.', () => {
     cy.visit('/courses')
 
-    cy.location().should(loc => {
-      expect(loc.pathname).to.eq('/login')
-      expect(loc.search).to.eq('?redirectToPath=%2Fcourses')
-    })
+    cy.url().should('include', '/login')
+    cy.url().should('include', '?redirectToPath=%2Fcourses')
+    // cy.location().should(loc => {
+    //   expect(loc.pathname).to.eq('/login')
+    //   expect(loc.search).to.eq('?redirectToPath=%2Fcourses')
+    // })
 
     selectSchool('無')
     cy.get(usernameId).type('madoka')
     cy.get(passwordId).type('madoka')
     cy.get(loginBtnId).click()
 
-    cy.location().should(loc => {
-      expect(loc.pathname).to.eq('/courses')
-    })
+    cy.url().should('include', '/courses')
+    // cy.location().should(loc => {
+    //   expect(loc.pathname).to.eq('/courses')
+    // })
   })
 
   it('shows error message with wrong login info.', () => {
@@ -59,13 +62,15 @@ describe('Login', () => {
 
   it('can login with tcc by school+username.', () => {
     cy.visit('/login')
-    cy.location().should(loc => expect(loc.search).to.be.empty)
+    cy.url().should('not.include', '?')
+    // cy.location().should(loc => expect(loc.search).to.be.empty)
     selectSchool('無')
     cy.get(usernameId).type('tcchiang')
     cy.get(passwordId).type('tcchiang')
     cy.get(loginBtnId).click()
     cy.contains('登入成功')
-    cy.location().should(loc => expect(loc.pathname).to.eq('/courses'))
+    cy.url().should('include', '/courses')
+    // cy.location().should(loc => expect(loc.pathname).to.eq('/courses'))
   })
 
   it('can login with tcc by email.', () => {

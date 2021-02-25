@@ -28,12 +28,30 @@ describe('Course', () => {
       .click()
   }
 
+  const deleteCourse = async id => {
+    await cy.request({
+      url: `http://localhost:8080/api/course/${id}`,
+      method: 'DELETE',
+    })
+  }
+
   beforeEach(() => {
     cy.visit('/courses')
     select(schoolId, '無')
     cy.get(usernameId).type('tcchiang')
     cy.get(passwordId).type('tcchiang')
     cy.get(loginBtnId).click()
+  })
+
+  after(() => {
+    cy.location('pathname').then(pathname => {
+      console.log(pathname)
+      deleteCourse(pathname.split('/')[2])
+    })
+    cy.visit('/courses')
+    cy.get('tr > td')
+      .contains(courseName)
+      .should('not.exist')
   })
 
   it('lets tcc create readonly course.', () => {

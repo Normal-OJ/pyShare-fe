@@ -6,6 +6,10 @@
         <template v-slot:default>
           <tbody>
             <tr>
+              <td class="font-weight-bold">課程名稱</td>
+              <td>{{ info.name }}</td>
+            </tr>
+            <tr>
               <td class="font-weight-bold">學期</td>
               <td>{{ info ? `${info.year}-${info.semester}` : '' }}</td>
             </tr>

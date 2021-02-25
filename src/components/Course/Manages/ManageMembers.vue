@@ -69,7 +69,7 @@
     <ConfirmDeleteModal
       :isVisible="isShowConfirmDeleteModal"
       :isLoading="isWaitingDeleteStudent"
-      :willDeleteMembers="selectedUsername"
+      :willDeleteMembers="selectedUserInfo"
       :deleteStudentErrorMsg="deleteStudentErrorMsg"
       @delete-student="deleteStudent"
       @close="closeConfirmDeleteModal"
@@ -116,7 +116,7 @@ export default {
     selectedUser() {
       return this.selected.map(s => s.id)
     },
-    selectedUsername() {
+    selectedUserInfo() {
       return this.selected.map(s => `${s.username} (${s.displayName})`)
     },
     ...mapState({
@@ -153,7 +153,7 @@ export default {
       const header = statsHeaders.map(h => h.text).join(',')
       const headerKey = statsHeaders.map(h => h.value)
       const body = this.stats
-        .filter(d => this.selected.length === 0 || this.selectedUser.includes(d.username))
+        .filter(d => this.selected.length === 0 || this.selectedUser.includes(d.id))
         .map(d => headerKey.map(hk => d[hk]).join(','))
         .join('\n')
       return `${header}\n${body}`

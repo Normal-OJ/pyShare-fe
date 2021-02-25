@@ -11,6 +11,7 @@ const courseStatusReadonlyId = '[data-test=courseStatus1]'
 const courseSubmitId = '[data-test=courseSubmit]'
 const fileInputId = '[data-test=fileInput]'
 const submitFileBtnId = '[data-test=submitFileBtn]'
+const manageMemberCardId = '[data-test=manageMemberCard]'
 
 const courseName = `e2e_${+new Date()}`
 
@@ -26,13 +27,13 @@ describe('Create Course', () => {
 
   beforeEach(() => {
     cy.visit('/courses')
-  })
-
-  it('lets tcc create readonly course.', () => {
     select(schoolId, '無')
     cy.get(usernameId).type('tcchiang')
     cy.get(passwordId).type('tcchiang')
     cy.get(loginBtnId).click()
+  })
+
+  it('lets tcc create readonly course.', () => {
     cy.get(newCourseBtnId).click()
     cy.contains('除教師無法更改外，其他資訊可在日後修改。')
     cy.get(courseNameId).type(courseName)
@@ -53,21 +54,19 @@ describe('Create Course', () => {
     cy.contains(courseName)
       .parent()
       .click()
-    cy.location(loc => expect(loc.pathname).to.eq(`/course/${courseName}`))
-    cy.contains('總覽')
-      .parent()
-      .parent()
-      .click()
+    cy.wait(500)
+    cy.contains('總覽').click()
     cy.contains('新增學生').click()
-    cy.get('input[type="file"]').attachFile({
-      fileContent: studentsCSV,
-      fileName: 'test.csv',
-      mimeType: 'text/csv',
-    })
+    cy.contains('批量新增學生')
+    cy.get(fileInputId).attachFile('test.csv')
     cy.get(submitFileBtnId).click()
+    cy.contains('tcc_stu_1')
+    cy.contains('tcc_stu_2')
+    cy.contains('確認').click()
+    cy.contains('新增學生成功。')
+    cy.contains('管理').click()
+    cy.get(manageMemberCardId).click()
+    cy.contains('tcc_stu_1')
+    cy.contains('tcc_stu_2')
   })
 })
-
-const studentsCSV = `school,username,displayName,password,email
-ntnu,tcc_stu_1,測試1,tcc_stu_1,tcc_stu_1@test.com
-ntnu,tcc_stu_2,測試2,tcc_stu_2,tcc_stu_2@test.com`

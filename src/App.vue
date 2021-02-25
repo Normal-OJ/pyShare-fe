@@ -42,8 +42,8 @@ export default {
     }),
     async handleLogout() {
       try {
-        this.logout()
-        if (this.$route.name !== 'home') this.$router.push({ name: 'home' })
+        await this.logout()
+        this.$router.replace({ name: 'home' })
       } catch (error) {
         console.log('[App/logout] error', error)
         throw error

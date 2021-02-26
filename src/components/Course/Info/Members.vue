@@ -13,11 +13,15 @@
         />
       </v-col>
       <v-spacer />
-      <AddStudentModal
-        v-permission="[TEACHER, 'COURSE']"
-        @submit-add-multiple-students="submitAddMultipleStudents"
-        @submit-add-student="submitAddStudent"
-      />
+      <div v-permission="[TEACHER, 'COURSE']">
+        <v-btn color="primary" :to="{ name: 'courseManageMembers' }" class="mr-3" outlined>
+          管理課程成員
+        </v-btn>
+        <AddStudentModal
+          @submit-add-multiple-students="submitAddMultipleStudents"
+          @submit-add-student="submitAddStudent"
+        />
+      </div>
     </div>
 
     <v-data-table
@@ -50,7 +54,6 @@ import { ROLE } from '@/constants/auth'
 const { TEACHER } = ROLE
 
 const headers = [
-  { text: '使用者名稱', value: 'username' },
   { text: '顯示名稱', value: 'displayName' },
   { text: '身份', value: 'teacher' },
 ]

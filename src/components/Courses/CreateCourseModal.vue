@@ -21,7 +21,7 @@
 
       <v-card-text class="mt-8 text--primary">
         <div class="mb-4 text-body-1">
-          除教師無法更改外，其他資訊可在日後修改。
+          課程資訊可在日後修改。
         </div>
         <v-form ref="form">
           <v-text-field
@@ -31,6 +31,8 @@
             outlined
             dense
             data-test="courseName"
+            persistent-hint
+            hint="課程名稱僅能包含：A-Z、a-z、0-9、空白、底線、減號、點"
           />
           <v-row>
             <v-col>
@@ -51,16 +53,6 @@
                 outlined
                 dense
                 data-test="courseSemester"
-              />
-            </v-col>
-            <v-col>
-              <v-text-field
-                label="教師"
-                :value="username"
-                outlined
-                dense
-                :readonly="role !== 0"
-                data-test="courseTeacher"
               />
             </v-col>
           </v-row>
@@ -150,9 +142,7 @@ export default {
 
   computed: {
     ...mapState({
-      username: state => state.auth.username,
       id: state => state.auth.id,
-      role: state => state.auth.role,
     }),
   },
 

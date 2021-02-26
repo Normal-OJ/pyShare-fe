@@ -6,7 +6,6 @@ const newCourseBtnId = '[data-test=newCourseBtn]'
 const courseNameId = '[data-test=courseName]'
 const courseYearId = '[data-test=courseYear]'
 const courseSemesterId = '[data-test=courseSemester]'
-const courseTeacherId = '[data-test=courseTeacher]'
 const courseStatusReadonlyId = '[data-test=courseStatus1]'
 const courseSubmitId = '[data-test=courseSubmit]'
 const fileInputId = '[data-test=fileInput]'
@@ -56,15 +55,14 @@ describe('Course', () => {
 
   it('lets tcc create readonly course.', () => {
     cy.get(newCourseBtnId).click()
-    cy.contains('除教師無法更改外，其他資訊可在日後修改。')
+    cy.contains('課程資訊可在日後修改。')
     cy.get(courseNameId).type(courseName)
     select(courseYearId, '109')
     select(courseSemesterId, '2')
-    cy.get(courseTeacherId).should('have.value', 'tcchiang')
     cy.get(courseStatusReadonlyId).click()
     cy.get(courseSubmitId).click()
     cy.contains('新增課程成功。')
-    cy.contains('除教師無法更改外，其他資訊可在日後修改。').should('not.visible')
+    cy.contains('課程資訊可在日後修改。').should('not.visible')
     cy.contains(courseName)
     cy.contains('109-2')
     cy.contains('公開課程')

@@ -41,6 +41,7 @@ const actions = {
     try {
       await agent.Auth.logout()
       commit(APPLY_JWT)
+      commit(SET_IS_SHOW_LOGOUT_MODAL, false)
     } catch (error) {
       console.log('[vuex/auth/logout] error', error)
       throw error

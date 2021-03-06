@@ -2,15 +2,16 @@
   <v-container class="pb-16">
     <div class="d-flex justify-center mt-4">
       <v-avatar class="mr-2" size="120" color="primary">
-        <span class="white--text text-h3">{{ displayName.slice(0, 1) }}</span>
+        <span class="white--text text-h3" v-if="displayName">{{ displayName.slice(0, 1) }}</span>
       </v-avatar>
     </div>
     <div class="text-h5">基本資訊</div>
-    <div class="mt-4">
+    <Spinner v-if="!username || !displayName" />
+    <div v-else class="mt-4">
       <v-simple-table>
         <template v-slot:default>
           <tbody>
-            <tr>
+            <tr v-if="$isSelf(username)">
               <td class="font-weight-bold">使用者名稱</td>
               <td style="width: 70%">{{ username }}</td>
             </tr>
@@ -22,10 +23,10 @@
         </template>
       </v-simple-table>
     </div>
-    <div class="d-flex align-center mt-4">
+    <div class="d-flex align-center mt-8">
       <div class="text-h5">統計</div>
       <v-spacer />
-      <v-btn color="primary" outlined :to="{ name: 'profileStats', params: { username } }">
+      <v-btn color="primary" outlined :to="{ name: 'profileStats', params: { id } }" replace>
         查看詳細統計
       </v-btn>
     </div>
@@ -44,8 +45,8 @@
         <div class="font-weight-thin text-h1">{{ totalLikedAmount }}</div>
       </div>
     </div>
-    <div class="text-h5 mt-4" v-if="$isSelf(username)">更改密碼</div>
-    <v-form ref="form" v-if="$isSelf(username)">
+    <div class="text-h5 mt-8" v-if="$isSelf(username)">更改密碼</div>
+    <v-form ref="form" class="mt-4" v-if="$isSelf(username)">
       <v-row>
         <v-col cols="auto" lg="4">
           <v-text-field
@@ -83,13 +84,10 @@
           />
         </v-col>
       </v-row>
-      <v-btn color="primary" :loading="loading" @click="submitNewPassword">
+      <v-btn color="primary" :loading="isLoading" @click="submitNewPassword">
         送出
       </v-btn>
     </v-form>
-    <v-snackbar v-model="snackbar.value" :color="snackbar.color" :timeout="3500">
-      {{ snackbar.text }}
-    </v-snackbar>
   </v-container>
 </template>
 
@@ -98,30 +96,25 @@ import Spinner from '@/components/UI/Spinner'
 
 export default {
   props: {
-    username: {
+    id: {
       type: String,
       required: true,
+    },
+    username: {
+      type: String,
     },
     displayName: {
       type: String,
-      required: true,
     },
     stats: {
       type: Object,
-    },
-    snackbar: {
-      type: Object,
-      required: true,
-    },
-    loading: {
-      type: Boolean,
-      required: true,
     },
   },
 
   components: { Spinner },
 
   data: () => ({
+    isLoading: false,
     passwordInfo: {
       oldPassword: '',
       newPassword: '',
@@ -143,7 +136,19 @@ export default {
   methods: {
     submitNewPassword() {
       if (this.$refs.form.validate()) {
-        this.$emit('submit-new-password', this.passwordInfo)
+        this.isLoading = true
+        new Promise((resolve, reject) =>
+          this.$emit('submit-new-password', this.passwordInfo, resolve, reject),
+        )
+          .then(() => {
+            this.$alertSuccess('更改密碼成功。')
+          })
+          .catch(() => {
+            this.$alertFail('更改密碼失敗。')
+          })
+          .finally(() => {
+            this.isLoading = false
+          })
       }
     },
   },

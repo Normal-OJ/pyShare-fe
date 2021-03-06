@@ -14,35 +14,48 @@
         />
       </v-col>
       <v-spacer />
+
+      <div v-if="selected.length > 0">
+        <v-btn
+          icon
+          class="mr-3"
+          color="error"
+          @click="handleClickDelete()"
+          data-test="removeStudentBtn"
+        >
+          <v-icon>mdi-trash-can</v-icon>
+        </v-btn>
+        <v-btn color="primary" outlined class="mr-3" @click="downloadStats">
+          <v-icon>mdi-download</v-icon>
+          下載勾選的資料
+        </v-btn>
+      </div>
       <v-btn color="primary" outlined class="mr-3" @click="downloadStats">
         <v-icon>mdi-download</v-icon>
         下載統計資料
       </v-btn>
       <AddStudentModal
         v-permission="[TEACHER, 'COURSE']"
-        @submitAddMultipleStudents="submitAddMultipleStudents"
-        @submitAddStudent="submitAddStudent"
+        @submit-add-multiple-students="submitAddMultipleStudents"
+        @submit-add-student="submitAddStudent"
       />
     </div>
 
     <v-data-table
       :headers="headers"
-      :items="data"
+      :items="stats"
       :search="searchText"
       :items-per-page="Number(-1)"
       hide-default-footer
+      v-model="selected"
+      show-select
+      item-key="username"
       :loading="loading"
       class="table"
       @click:row="handleRowClick"
     >
-      <!-- <template v-slot:[`item.manage`]="{ item }">
-        <v-btn class="ml-3" color="error" small @click="deleteStudent(item.username)">
-          <v-icon class="mr-1" small>mdi-trash-can</v-icon>
-          移除
-        </v-btn>
-      </template> -->
       <template v-slot:[`item.detail`]="{ item }">
-        <v-btn icon @click.stop="handleClickDetail(item.username)">
+        <v-btn icon small @click.stop="handleClickDetail(item.id)">
           <v-icon>mdi-format-list-bulleted</v-icon>
         </v-btn>
       </template>
@@ -53,12 +66,22 @@
         </div>
       </template>
     </v-data-table>
+    <ConfirmDeleteModal
+      :isVisible="isShowConfirmDeleteModal"
+      :isLoading="isWaitingDeleteStudent"
+      :willDeleteMembers="selectedUserInfo"
+      :deleteStudentErrorMsg="deleteStudentErrorMsg"
+      @delete-student="deleteStudent"
+      @close="closeConfirmDeleteModal"
+    />
   </v-container>
 </template>
 
 <script>
 import AddStudentModal from '@/components/Course/Info/AddStudentModal'
+import ConfirmDeleteModal from './ConfirmDeleteModal'
 import { ROLE } from '@/constants/auth'
+import { mapState } from 'vuex'
 
 const { TEACHER } = ROLE
 const statsHeaders = [
@@ -73,94 +96,98 @@ const statsHeaders = [
   { text: '執行失敗', value: 'execFail' },
   { text: 'AC 創作數', value: 'numOfAcceptedComments' },
 ]
-const headers = [...statsHeaders, { text: '詳細', value: 'detail' }]
+const headers = [...statsHeaders, { text: '詳細', value: 'detail', sortable: false }]
 
 export default {
-  components: { AddStudentModal },
+  components: { AddStudentModal, ConfirmDeleteModal },
 
   props: {
     stats: {
       type: Array,
       required: true,
     },
+    loading: {
+      type: Boolean,
+      required: true,
+    },
   },
 
   computed: {
-    data() {
-      return this.stats.map(stat => {
-        const { username, displayName } = stat.info
-        const numOfProblems = stat.problems.length
-        const numOfComments = stat.comments.length
-        const numOfReplies = stat.replies.length
-        const numOfLiked = stat.liked.reduce((a, b) => {
-          return a + b.starers.length
-        }, 0)
-        const numOfLikes = stat.likes.length
-        const numOfAcceptedComments = stat.comments.filter(c => c.accepted).length
-        const [execSuccess, execFail] = stat.execInfo.reduce(
-          (a, b) => {
-            return [a[0] + b.success, a[1] + b.fail]
-          },
-          [0, 0],
-        )
-        return {
-          username,
-          displayName,
-          numOfProblems,
-          numOfComments,
-          numOfReplies,
-          numOfLiked,
-          numOfLikes,
-          numOfAcceptedComments,
-          execSuccess,
-          execFail,
-        }
-      })
+    selectedUser() {
+      return this.selected.map(s => s.id)
     },
-    downloadData() {
-      const header = statsHeaders.map(h => h.text).join(',')
-      const headerKey = statsHeaders.map(h => h.value)
-      const body = this.data.map(d => headerKey.map(hk => d[hk]).join(',')).join('\n')
-      return `${header}\n${body}`
+    selectedUserInfo() {
+      return this.selected.map(s => `${s.username} (${s.displayName})`)
     },
+    ...mapState({
+      courseName: state => state.course.courseInfo.name,
+    }),
   },
 
   data: () => ({
     headers,
+    selected: [],
     searchText: '',
-    loading: false,
     TEACHER,
+    isShowConfirmDeleteModal: false,
+    isWaitingDeleteStudent: false,
+    deleteStudentErrorMsg: '',
   }),
 
   methods: {
     handleRowClick(value) {
-      const route = this.$router.resolve({ name: 'profile', params: { username: value.username } })
+      const route = this.$router.resolve({ name: 'profile', params: { id: value.id } })
       window.open(route.href, '_blank')
     },
-    handleClickDetail(username) {
-      const route = this.$router.resolve({ name: 'profileStats', params: { username: username } })
+    handleClickDetail(id) {
+      const route = this.$router.resolve({ name: 'profileStats', params: { id } })
       window.open(route.href, '_blank')
     },
-    submitAddMultipleStudents(file) {
-      this.$emit('submit-add-multiple-students', file)
+    submitAddMultipleStudents(file, resolve, reject) {
+      this.$emit('submit-add-multiple-students', file, resolve, reject)
     },
-    submitAddStudent(csvString) {
-      this.$emit('submit-add-student', csvString)
+    submitAddStudent(csvString, resolve, reject) {
+      this.$emit('submit-add-student', csvString, resolve, reject)
+    },
+    downloadData() {
+      const header = statsHeaders.map(h => h.text).join(',')
+      const headerKey = statsHeaders.map(h => h.value)
+      const body = this.stats
+        .filter(d => this.selected.length === 0 || this.selectedUser.includes(d.id))
+        .map(d => headerKey.map(hk => d[hk]).join(','))
+        .join('\n')
+      return `${header}\n${body}`
     },
     downloadStats() {
-      const csvContent = 'data:text/csv;charset=utf-8,' + this.downloadData
+      const csvContent = 'data:text/csv;charset=utf-8,' + this.downloadData()
       const link = document.createElement('a')
-      link.download = `${this.$route.params.name}_statistics.csv`
+      link.download = `${this.courseName}_statistics.csv`
       link.href = csvContent
       link.click()
     },
-    // TODO: Backend has not finished yet
-    // deleteStudent(username) {
-    //   const result = window.confirm(`確認要移除 ${username} 嗎？`)
-    //   if (result) {
-    //     this.$emit('delete-student', username)
-    //   }
-    // },
+    handleClickDelete() {
+      this.isShowConfirmDeleteModal = true
+    },
+    closeConfirmDeleteModal() {
+      this.isShowConfirmDeleteModal = false
+    },
+    deleteStudent() {
+      this.isWaitingDeleteStudent = true
+      new Promise((resolve, reject) =>
+        this.$emit('delete-student', this.selectedUser, resolve, reject),
+      )
+        .then(() => {
+          this.closeConfirmDeleteModal()
+          this.$alertSuccess('移除學生成功。')
+        })
+        .catch(error => {
+          this.$alertFail('移除學生失敗。')
+          this.deleteStudentErrorMsg = error.message
+        })
+        .finally(() => {
+          this.isWaitingDeleteStudent = false
+        })
+    },
   },
 }
 </script>

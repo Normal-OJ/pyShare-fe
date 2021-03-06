@@ -13,12 +13,15 @@
         />
       </v-col>
       <v-spacer />
-      <AddStudentModal
-        :submitSuccess="submitSuccess"
-        v-permission="[TEACHER, 'COURSE']"
-        @submitAddMultipleStudents="submitAddMultipleStudents"
-        @submitAddStudent="submitAddStudent"
-      />
+      <div v-permission="[TEACHER, 'COURSE']">
+        <v-btn color="primary" :to="{ name: 'courseManageMembers' }" class="mr-3" outlined>
+          管理課程成員
+        </v-btn>
+        <AddStudentModal
+          @submit-add-multiple-students="submitAddMultipleStudents"
+          @submit-add-student="submitAddStudent"
+        />
+      </div>
     </div>
 
     <v-data-table
@@ -51,7 +54,6 @@ import { ROLE } from '@/constants/auth'
 const { TEACHER } = ROLE
 
 const headers = [
-  { text: '使用者名稱', value: 'username' },
   { text: '顯示名稱', value: 'displayName' },
   { text: '身份', value: 'teacher' },
 ]
@@ -66,10 +68,6 @@ export default {
       type: Array,
       required: true,
     },
-    submitSuccess: {
-      type: Boolean,
-      required: true,
-    },
   },
 
   data: () => ({
@@ -81,14 +79,14 @@ export default {
 
   methods: {
     handleRowClick(value) {
-      const route = this.$router.resolve({ name: 'profile', params: { username: value.username } })
+      const route = this.$router.resolve({ name: 'profile', params: { id: value.id } })
       window.open(route.href, '_blank')
     },
-    submitAddMultipleStudents(file) {
-      this.$emit('submit-add-multiple-students', file)
+    submitAddMultipleStudents(file, resolve, reject) {
+      this.$emit('submit-add-multiple-students', file, resolve, reject)
     },
-    submitAddStudent(csvString) {
-      this.$emit('submit-add-student', csvString)
+    submitAddStudent(csvString, resolve, reject) {
+      this.$emit('submit-add-student', csvString, resolve, reject)
     },
   },
 }

@@ -49,9 +49,6 @@
         </v-btn>
       </template>
       <v-list>
-        <!-- <v-list-item link :to="{ name: 'profile', params: { username: username } }">
-          <v-list-item-title class="text-center">個人頁面</v-list-item-title>
-        </v-list-item> -->
         <v-list-item link @click="$emit('logout')">
           <v-list-item-title class="text-center">登出</v-list-item-title>
         </v-list-item>
@@ -79,7 +76,7 @@ export default {
       type: Boolean,
       required: true,
     },
-    username: {
+    id: {
       type: String,
     },
     displayName: {
@@ -102,9 +99,7 @@ export default {
         },
         {
           label: '個人頁面',
-          route: this.isLogin
-            ? { name: 'profile', params: { username: this.username } }
-            : { path: '/profile' },
+          route: this.isLogin ? { name: 'profile', params: { id: this.id } } : { path: '/profile' },
         },
         {
           label: '關於平台',

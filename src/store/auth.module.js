@@ -1,11 +1,10 @@
-import { LOGOUT } from './actions.type'
-import { SET_AUTH, CLEAR_AUTH, SET_IS_SHOW_LOGOUT_MODAL } from './mutations.type'
-import { getJwt, UNAUTHENTICATED } from '@/lib/jwt'
+import { LOGIN, LOGOUT } from './actions.type'
+import { APPLY_JWT, SET_IS_SHOW_LOGOUT_MODAL } from './mutations.type'
+import { getJwt } from '@/lib/jwt'
 import { ROLE, USERNAME, USER } from './getters.type'
 import agent from '@/api/agent'
 
 const initialState = {
-  // TODO: 日後在 router 設定先驗證 jwt 後，每次重開應都會 SET_AUTH
   ...getJwt(),
   isShowLogoutModal: false,
 }
@@ -26,10 +25,23 @@ const getters = {
 }
 
 const actions = {
+  async [LOGIN]({ commit }, body) {
+    return new Promise((resolve, reject) => {
+      agent.Auth.login(body)
+        .then(() => {
+          commit(APPLY_JWT)
+          resolve()
+        })
+        .catch(error => {
+          reject(error)
+        })
+    })
+  },
   async [LOGOUT]({ commit }) {
     try {
       await agent.Auth.logout()
-      commit(CLEAR_AUTH)
+      commit(APPLY_JWT)
+      commit(SET_IS_SHOW_LOGOUT_MODAL, false)
     } catch (error) {
       console.log('[vuex/auth/logout] error', error)
       throw error
@@ -38,22 +50,14 @@ const actions = {
 }
 
 const mutations = {
-  [SET_AUTH](state) {
-    const { isAuthenticated, username, displayName, role, courses } = getJwt()
+  [APPLY_JWT](state) {
+    const { isAuthenticated, id, username, displayName, role, courses } = getJwt()
     state.isAuthenticated = isAuthenticated
+    state.id = id
     state.username = username
     state.displayName = displayName
     state.role = role
     state.courses = courses
-  },
-  [CLEAR_AUTH](state) {
-    const { isAuthenticated, username, displayName, role, courses } = UNAUTHENTICATED
-    state.isAuthenticated = isAuthenticated
-    state.username = username
-    state.displayName = displayName
-    state.role = role
-    state.courses = courses
-    state.isShowLogoutModal = false
   },
   /**
    * change state isShowLogoutModal, trigger at JWT Expired

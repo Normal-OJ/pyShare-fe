@@ -15,7 +15,7 @@
 import Spinner from '@/components/UI/Spinner'
 import SetProblems from '@/components/Course/Problems/SetProblems'
 import { mapActions, mapGetters, mapState } from 'vuex'
-import { GET_PROBLEMS, GET_PROBLEM_INFO, GET_COURSE_TAGS } from '@/store/actions.type'
+import { GET_PROBLEM_INFO } from '@/store/actions.type'
 import { USER } from '@/store/getters.type'
 import agent from '@/api/agent'
 
@@ -48,20 +48,19 @@ export default {
     isEdit() {
       return this.$route.params.operation === OPERATION.EDIT
     },
-    courseName() {
-      return this.$route.params.name
+    courseId() {
+      return this.$route.params.id
     },
     pid() {
       return this.$route.query.pid
     },
     prob() {
       if (this.isEdit) return this.problemInfo
-      return { ...initialProb, course: this.courseName, author: this.user }
+      return { ...initialProb, course: this.courseId, author: this.user }
     },
   },
 
   async created() {
-    this.getCourseTags({ course: this.courseName })
     if (this.isEdit) await this.getProblemInfo(this.pid)
   },
 
@@ -72,9 +71,7 @@ export default {
 
   methods: {
     ...mapActions({
-      getProblems: GET_PROBLEMS,
       getProblemInfo: GET_PROBLEM_INFO,
-      getCourseTags: GET_COURSE_TAGS,
     }),
     async handleSubmit(body, willAddAttachments, willRemoveAttachments) {
       try {
@@ -128,12 +125,12 @@ export default {
           if (!this.isEdit) {
             this.$router.push({
               name: 'courseProblems',
-              params: { name: this.$route.params.name },
+              params: { id: this.courseId },
             })
           } else {
             this.$router.push({
               name: 'courseProblem',
-              params: { name: this.$route.params.name, id: pid },
+              params: { pid: pid },
             })
           }
         }
@@ -149,7 +146,7 @@ export default {
         await agent.Problem.delete(pid)
         this.submitSuccess = true
         this.$alertSuccess('刪除題目成功。')
-        this.$router.push({ name: 'courseProblems' })
+        this.$router.push({ name: 'courseProblems', params: { id: this.courseId } })
       } catch (error) {
         console.log('[view/Course/Manages/ManageProblems] error', error)
         this.$alertFail('刪除題目失敗。')

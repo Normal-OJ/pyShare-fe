@@ -13,19 +13,14 @@
     <v-btn v-else class="my-7" color="secondary" width="140" :to="'login'">
       前往登入
     </v-btn>
-    <!-- <NoAccount color="white" /> -->
   </v-container>
 </template>
 
 <script>
-import NoAccount from '@/components/Login/NoAccount'
 import { mapState } from 'vuex'
 
 export default {
   name: 'Home',
-
-  // eslint-disable-next-line vue/no-unused-components
-  components: { NoAccount },
 
   computed: {
     ...mapState({

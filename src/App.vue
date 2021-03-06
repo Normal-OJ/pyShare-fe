@@ -2,13 +2,15 @@
   <v-app>
     <Header
       :isLogin="isLogin"
-      :username="username"
+      :id="id"
       :displayName="displayName"
       :isShowLogoutModal="isShowLogoutModal"
       @logout="handleLogout"
     />
     <v-main>
-      <router-view />
+      <transition name="fade">
+        <router-view />
+      </transition>
     </v-main>
     <Notification />
   </v-app>
@@ -28,7 +30,7 @@ export default {
   computed: {
     ...mapState({
       isLogin: state => state.auth.isAuthenticated,
-      username: state => state.auth.username,
+      id: state => state.auth.id,
       displayName: state => state.auth.displayName,
       isShowLogoutModal: state => state.auth.isShowLogoutModal,
     }),
@@ -40,8 +42,8 @@ export default {
     }),
     async handleLogout() {
       try {
-        this.logout()
-        if (this.$route.name !== 'home') this.$router.push({ name: 'home' })
+        await this.logout()
+        this.$router.replace({ name: 'home' })
       } catch (error) {
         console.log('[App/logout] error', error)
         throw error

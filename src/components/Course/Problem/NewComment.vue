@@ -16,14 +16,27 @@
       <TextEditor v-model="newComment.content" />
     </div>
     <div class="mt-4 d-flex flex-column">
-      <div class="d-flex pb-1">
-        <div class="text-body-1">創作程式</div>
-        <v-spacer />
-        <v-btn class="mr-2" color="primary" outlined tile small @click="setDefaultCode">
-          回復預設程式碼
-        </v-btn>
-      </div>
-      <CodeEditor v-model="newComment.code" />
+      <CodeEditor v-model="newComment.code">
+        <div class="d-flex pb-1">
+          <div class="text-body-1">創作程式</div>
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on, attr }">
+              <v-btn
+                class="ml-2"
+                color="primary"
+                v-on="on"
+                v-bind="attr"
+                small
+                icon
+                @click="setDefaultCode"
+              >
+                <v-icon>mdi-autorenew</v-icon>
+              </v-btn>
+            </template>
+            <span>恢復為預設程式碼</span>
+          </v-tooltip>
+        </div>
+      </CodeEditor>
     </div>
     <div class="mt-4 d-flex">
       <v-btn

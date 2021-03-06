@@ -64,6 +64,11 @@ Vue.directive('permission', permission)
 // setup axios
 apiSetup()
 
+// expose vuex for cypress
+if (window.Cypress) {
+  window.__store__ = store
+}
+
 Vue.config.errorHandler = err => {
   Vue.rollbar.error(err)
   throw err

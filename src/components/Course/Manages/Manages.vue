@@ -26,6 +26,7 @@
         :elevation="hover ? 6 : 2"
         max-width="500"
         @click="clickCard('courseManageMembers')"
+        data-test="manageMemberCard"
       >
         <div class="d-flex justify-start flex-wrap">
           <div class="d-flex justify-center align-center">

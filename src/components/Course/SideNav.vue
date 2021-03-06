@@ -9,17 +9,19 @@
     <v-list-item>
       <v-list-item-avatar class="rounded">
         <v-avatar size="48" color="secondary" tile>
-          <span class="white--text headline">{{ $route.params.name.slice(0, 1) }}</span>
+          <span class="white--text headline" v-if="courseInfo">
+            {{ courseInfo.name.slice(0, 1) }}
+          </span>
         </v-avatar>
       </v-list-item-avatar>
       <v-list-item-content>
-        <v-tooltip bottom>
+        <v-tooltip bottom v-if="courseInfo">
           <template v-slot:activator="{ on, attr }">
             <v-list-item-title v-on="on" v-bind="attr">
-              {{ $route.params.name }}
+              {{ courseInfo.name }}
             </v-list-item-title>
           </template>
-          <span>{{ $route.params.name }}</span>
+          <span>{{ courseInfo.name }}</span>
         </v-tooltip>
       </v-list-item-content>
     </v-list-item>
@@ -28,7 +30,7 @@
 
     <v-list dense :nav="!isMinify">
       <v-list-item
-        v-for="{ label, icon, routeName, permission } in items"
+        v-for="{ label, icon, routeName, permission } in items.slice(0, 1)"
         :key="label"
         :to="{ name: routeName }"
         color="primary"
@@ -37,7 +39,36 @@
         <v-list-item-icon>
           <v-icon>{{ icon }}</v-icon>
         </v-list-item-icon>
+        <v-list-item-content>
+          <v-list-item-title>{{ label }}</v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
 
+      <template v-if="$route.name === 'courseProblem'">
+        <v-list-item
+          v-for="{ pid, title } in problems"
+          :key="pid"
+          :to="{ name: 'courseProblem', params: { pid: pid } }"
+          color="primary"
+          :class="{ 'ml-4': !isMinify }"
+        >
+          <v-list-item-icon class="pl-3 mr-3">{{ pid }}</v-list-item-icon>
+          <v-list-item-content>
+            <v-list-item-title>{{ title }}</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+      </template>
+
+      <v-list-item
+        v-for="{ label, icon, routeName, permission } in items.slice(1)"
+        :key="label"
+        :to="{ name: routeName }"
+        color="primary"
+        v-permission="permission"
+      >
+        <v-list-item-icon>
+          <v-icon>{{ icon }}</v-icon>
+        </v-list-item-icon>
         <v-list-item-content>
           <v-list-item-title>{{ label }}</v-list-item-title>
         </v-list-item-content>
@@ -66,6 +97,7 @@
 
 <script>
 import { ROLE } from '@/constants/auth'
+import { mapState } from 'vuex'
 
 const { TEACHER, STUDENT } = ROLE
 const SIDE_NAVS = [
@@ -99,9 +131,12 @@ export default {
   },
 
   computed: {
+    ...mapState({
+      problems: state => state.course.courseProblems,
+    }),
     items() {
       const navs = SIDE_NAVS.slice()
-      if (this.courseInfo && this.courseInfo.name === this.$route.params.name) {
+      if (this.courseInfo && this.courseInfo.id === this.$route.params.id) {
         navs.splice(1, 0, MANAGE)
       }
       return navs

@@ -13,7 +13,10 @@ export function apiSetup() {
     error => {
       if (error && error.response && error.response.data) {
         // catch Authorization Expired
-        if (error.response.data.message === 'Authorization Expired') {
+        if (
+          error.response.data.message === 'Authorization Expired' ||
+          error.response.data.message === 'Invalid Token'
+        ) {
           store.commit(SET_IS_SHOW_LOGOUT_MODAL, true)
         }
         throw error.response.data

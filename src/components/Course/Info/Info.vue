@@ -6,6 +6,10 @@
         <template v-slot:default>
           <tbody>
             <tr>
+              <td class="font-weight-bold">課程名稱</td>
+              <td>{{ info.name }}</td>
+            </tr>
+            <tr>
               <td class="font-weight-bold">學期</td>
               <td>{{ info ? `${info.year}-${info.semester}` : '' }}</td>
             </tr>
@@ -57,7 +61,6 @@
     <div class="text-h5 mt-4">成員</div>
     <Members
       :members="members"
-      :submitSuccess="submitSuccess"
       @submit-add-multiple-students="submitAddMultipleStudents"
       @submit-add-student="submitAddStudent"
     />
@@ -77,10 +80,6 @@ export default {
     info: {
       type: Object,
     },
-    submitSuccess: {
-      type: Boolean,
-      required: true,
-    },
   },
 
   data: () => ({ COURSE_STATUS }),
@@ -93,11 +92,11 @@ export default {
   },
 
   methods: {
-    submitAddMultipleStudents(file) {
-      this.$emit('submit-add-multiple-students', file)
+    submitAddMultipleStudents(file, resolve, reject) {
+      this.$emit('submit-add-multiple-students', file, resolve, reject)
     },
-    submitAddStudent(csvString) {
-      this.$emit('submit-add-student', csvString)
+    submitAddStudent(csvString, resolve, reject) {
+      this.$emit('submit-add-student', csvString, resolve, reject)
     },
   },
 }

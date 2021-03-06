@@ -16,7 +16,7 @@
         <div :class="`${props.item.type} alert`" @click="props.close">
           <v-icon size="30" class="mr-2" color="white">
             {{
-              props.item.type === 'success'
+              props.item.type === 'my-success'
                 ? 'mdi-check-circle-outline'
                 : 'mdi-alert-circle-outline'
             }}

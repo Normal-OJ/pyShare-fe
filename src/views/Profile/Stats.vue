@@ -2,9 +2,9 @@
   <v-container fluid class="px-4">
     <v-card class="my-3 pb-6" elevation="0" v-if="statistic.problems">
       <v-card-title>
-        {{ `${username} 的統計資料` }}
+        {{ `${displayName} 的統計資料` }}
         <v-spacer />
-        <v-btn color="primary" outlined :to="{ name: 'profile', params: { username } }" exact>
+        <v-btn color="primary" outlined :to="{ name: 'profile', params: { id } }" replace exact>
           查看個人頁面
         </v-btn>
       </v-card-title>
@@ -27,13 +27,13 @@
                   <td colspan="2">No data available.</td>
                 </tr>
                 <tr v-for="(problem, idx) in statistic.problems" :key="idx">
-                  <td class="subtitle-1">{{ problem.course }}</td>
+                  <td class="subtitle-1">{{ problem.course.name }}</td>
                   <td class="subtitle-1">
                     <router-link
                       target="_blank"
                       :to="{
                         name: 'courseProblem',
-                        params: { name: problem.course, id: problem.pid },
+                        params: { id: problem.course.id, pid: problem.pid },
                       }"
                     >
                       {{ '主題' + problem.pid }}
@@ -62,13 +62,13 @@
                   <td colspan="3">No data available.</td>
                 </tr>
                 <tr v-for="(comment, idx) in statistic.comments" :key="idx">
-                  <td class="subtitle-1">{{ comment.course }}</td>
+                  <td class="subtitle-1">{{ comment.course.name }}</td>
                   <td class="subtitle-1">
                     <router-link
                       target="_blank"
                       :to="{
                         name: 'courseProblem',
-                        params: { name: comment.course, id: comment.pid },
+                        params: { id: comment.course.id, pid: comment.pid },
                         query: { floor: comment.floor },
                       }"
                     >
@@ -101,13 +101,13 @@
                   <td colspan="2">No data available.</td>
                 </tr>
                 <tr v-for="(reply, idx) in statistic.replies" :key="idx">
-                  <td class="subtitle-1">{{ reply.course }}</td>
+                  <td class="subtitle-1">{{ reply.course.name }}</td>
                   <td class="subtitle-1">
                     <router-link
                       target="_blank"
                       :to="{
                         name: 'courseProblem',
-                        params: { name: reply.course, id: reply.pid },
+                        params: { id: reply.course.id, pid: reply.pid },
                         query: { floor: reply.floor },
                       }"
                     >
@@ -137,13 +137,13 @@
                   <td colspan="3">No data available.</td>
                 </tr>
                 <tr v-for="(liked, idx) in statistic.liked" :key="idx">
-                  <td class="subtitle-1">{{ liked.course }}</td>
+                  <td class="subtitle-1">{{ liked.course.name }}</td>
                   <td class="subtitle-1">
                     <router-link
                       target="_blank"
                       :to="{
                         name: 'courseProblem',
-                        params: { name: liked.course, id: liked.pid },
+                        params: { id: liked.course.id, pid: liked.pid },
                         query: { floor: liked.floor },
                       }"
                     >
@@ -157,7 +157,14 @@
                           liked.starers.length
                         }}</v-expansion-panel-header>
                         <v-expansion-panel-content v-if="liked.starers.length > 0">
-                          <p v-for="(starer, i) in liked.starers" :key="i">{{ starer }}</p>
+                          <router-link
+                            v-for="starer in liked.starers"
+                            :key="starer.id"
+                            target="_blank"
+                            :to="{ name: 'profile', params: { id: starer.id } }"
+                          >
+                            {{ starer.displayName }}
+                          </router-link>
                         </v-expansion-panel-content>
                       </v-expansion-panel>
                     </v-expansion-panels>
@@ -185,20 +192,27 @@
                   <td colspan="3">No data available.</td>
                 </tr>
                 <tr v-for="(likes, idx) in statistic.likes" :key="idx">
-                  <td class="subtitle-1">{{ likes.course }}</td>
+                  <td class="subtitle-1">{{ likes.course.name }}</td>
                   <td class="subtitle-1">
                     <router-link
                       target="_blank"
                       :to="{
                         name: 'courseProblem',
-                        params: { name: likes.course, id: likes.pid },
+                        params: { id: likes.course.id, pid: likes.pid },
                         query: { floor: likes.floor },
                       }"
                     >
                       {{ '主題' + likes.pid + '-' + likes.floor + '樓' }}
                     </router-link>
                   </td>
-                  <td class="subtitle-1">{{ likes.staree }}</td>
+                  <td class="subtitle-1">
+                    <router-link
+                      target="_blank"
+                      :to="{ name: 'profile', params: { id: likes.staree.id } }"
+                    >
+                      {{ likes.staree.displayName }}
+                    </router-link>
+                  </td>
                 </tr>
               </tbody>
             </v-simple-table>
@@ -223,13 +237,13 @@
                   <td colspan="4">No data available.</td>
                 </tr>
                 <tr v-for="(info, idx) in statistic.execInfo" :key="idx">
-                  <td class="subtitle-1">{{ info.course }}</td>
+                  <td class="subtitle-1">{{ info.course.name }}</td>
                   <td class="subtitle-1">
                     <router-link
                       target="_blank"
                       :to="{
                         name: 'courseProblem',
-                        params: { name: info.course, id: info.pid },
+                        params: { id: info.course.id, pid: info.pid },
                         query: { floor: info.floor },
                       }"
                     >
@@ -258,6 +272,7 @@
 
 <script>
 import agent from '@/api/agent'
+import { mapState } from 'vuex'
 
 export default {
   data: () => ({
@@ -266,6 +281,9 @@ export default {
   }),
 
   computed: {
+    ...mapState({
+      displayName: state => state.auth.displayName,
+    }),
     totalLikedAmount() {
       return this.statistic.liked.reduce((a, b) => {
         return a + b.starers.length
@@ -274,8 +292,8 @@ export default {
     totalLikesAmount() {
       return this.statistic.likes.length
     },
-    username() {
-      return this.$route.params.username
+    id() {
+      return this.$route.params.id
     },
   },
 
@@ -287,7 +305,7 @@ export default {
     async getStats() {
       this.isNotFound = false
       try {
-        const { data } = await agent.User.getStats(this.username)
+        const { data } = await agent.User.getStats(this.id)
         this.statistic = data.data
       } catch (error) {
         console.log('[views/Stats/getStats] error', error)

@@ -9,7 +9,7 @@ const COURSE = 'COURSE'
 function checkCoursePermission() {
   const courseInfo = store.getters && store.getters[COURSE_INFO]
   // if no course info or if course is PUBLIC
-  if (!courseInfo || courseInfo.status === 2 || courseInfo.name !== router.currentRoute.params.name)
+  if (!courseInfo || courseInfo.status === 2 || courseInfo.id !== router.currentRoute.params.id)
     return true
   const username = store.getters && store.getters[USERNAME]
   const isTeacher = courseInfo.teacher.username === username

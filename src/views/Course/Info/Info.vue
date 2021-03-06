@@ -1,7 +1,6 @@
 <template>
   <Info
     :info="info"
-    :submitSuccess="submitSuccess"
     @submit-add-multiple-students="submitAddMultipleStudents"
     @submit-add-student="submitAddStudent"
   />
@@ -16,10 +15,6 @@ import agent from '@/api/agent'
 export default {
   components: { Info },
 
-  data: () => ({
-    submitSuccess: false,
-  }),
-
   computed: {
     ...mapState({
       info: state => state.course.courseInfo,
@@ -30,35 +25,32 @@ export default {
     ...mapActions({
       getCourseInfo: GET_COURSE_INFO,
     }),
-    submitAddMultipleStudents(file) {
+    submitAddMultipleStudents(file, resolve, reject) {
       const r = new FileReader()
-      const course = this.$route.params.name
+      const course = this.$route.params.id
       r.onload = async e => {
         const csvString = e.target.result
         try {
           await agent.Auth.batchSignup({ course, csvString })
           this.getCourseInfo(course)
-          this.submitSuccess = true
-          this.submitSuccess = false
-          this.$alertSuccess('新增學生成功。')
+          resolve()
         } catch (error) {
           console.log('[views/Info/submitAddMultipleStudents error]', error)
-          this.$alertFail('新增學生失敗。')
+          reject(error)
           throw error
         }
       }
       r.readAsText(file)
     },
-    async submitAddStudent(csvString) {
+    async submitAddStudent(csvString, resolve, reject) {
       try {
-        const course = this.$route.params.name
+        const course = this.$route.params.id
         await agent.Auth.batchSignup({ course, csvString })
         this.getCourseInfo(course)
-        this.submitSuccess = true
-        this.$alertSuccess('新增學生成功。')
+        resolve()
       } catch (error) {
         console.log('[views/Info/submitAddStudent error]', error)
-        this.$alertFail('新增學生失敗。')
+        reject(error)
         throw error
       }
     },

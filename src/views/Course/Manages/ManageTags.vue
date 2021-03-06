@@ -4,9 +4,9 @@
     :removables="removables"
     :errorMsg="errorMsg"
     :courseTags="courseTags || []"
-    :submitPatchTags="submitPatchTags"
-    :submitNewTags="submitNewTags"
-    :deleteTags="deleteTags"
+    @submit-patch-tags="submitPatchTags"
+    @submit-new-tags="submitNewTags"
+    @delete-tags="deleteTags"
   />
 </template>
 
@@ -23,8 +23,8 @@ export default {
     ...mapState({
       courseTags: state => state.course.courseTags,
     }),
-    courseName() {
-      return this.$route.params.name
+    courseId() {
+      return this.$route.params.id
     },
   },
 
@@ -36,7 +36,7 @@ export default {
 
   created() {
     this.getAllTags()
-    this.getCourseTags({ course: this.courseName })
+    this.getCourseTags(this.courseId)
   },
 
   methods: {
@@ -60,32 +60,39 @@ export default {
     },
     async submitPatchTags(body) {
       try {
-        await agent.Course.patchTags(this.courseName, body)
-        this.getCourseTags({ course: this.courseName })
-        this.getAllTags(this.courseName)
-        return true
+        await agent.Course.patchTags(this.courseId, body)
+        this.getCourseTags(this.courseId)
+        this.getAllTags(this.courseId)
+        this.$alertSuccess('編輯分類成功。')
       } catch (error) {
         console.log('[components/ManageTags/submitPatchTags] error', error)
+        this.$alertFail('編輯分類失敗。')
         throw error
       }
     },
-    async submitNewTags(tags) {
+    async submitNewTags(tags, resolve, reject) {
       try {
         await agent.Tag.create({ tags })
-        this.getAllTags(this.courseName)
-        return true
+        resolve()
+        this.getAllTags(this.courseId)
+        this.$alertSuccess('新增分類成功。')
       } catch (error) {
         console.log('[views/ManageTags/submitNewTags] error', error)
+        reject()
+        this.$alertFail('新增分類失敗。')
         throw error
       }
     },
-    async deleteTags(tags) {
+    async deleteTags(tags, resolve, reject) {
       try {
         await agent.Tag.delete({ tags })
-        this.getAllTags(this.courseName)
-        return true
+        this.getAllTags(this.courseId)
+        this.$alertSuccess('刪除分類成功。')
+        resolve()
       } catch (error) {
         console.log('[views/ManageTags/deleteTags] error', error)
+        this.$alertFail('刪除分類失敗。')
+        reject()
         throw error
       }
     },

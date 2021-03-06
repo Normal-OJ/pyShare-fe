@@ -1,7 +1,7 @@
 <template>
   <v-dialog v-model="dialog" width="750" persistent>
     <template v-slot:activator="{ on, attrs }">
-      <v-btn color="success" dark v-bind="attrs" v-on="on">
+      <v-btn color="success" dark v-bind="attrs" v-on="on" data-test="newCourseBtn">
         <v-icon class="mr-1">mdi-layers-plus</v-icon>
         新增課程
       </v-btn>
@@ -20,24 +20,43 @@
       </v-toolbar>
 
       <v-card-text class="mt-8 text--primary">
-        <v-text-field
-          label="課程名稱"
-          v-model="name"
-          :rules="nameRules"
-          outlined
-          dense
-          persistent-hint
-          hint="課程名稱僅能包含：A-Z、a-z、0-9、空白、底線、減號、點"
-        />
-        <v-row>
-          <v-col cols="8">
-            <v-select label="學年度" v-model="year" :items="years" outlined dense />
-          </v-col>
-          <v-col cols="4">
-            <v-select label="學期" v-model="semester" :items="semesters" outlined dense />
-          </v-col>
-        </v-row>
-        <v-text-field label="教師" :value="teacher" outlined dense readonly />
+        <div class="mb-4 text-body-1">
+          課程資訊可在日後修改。
+        </div>
+        <v-form ref="form">
+          <v-text-field
+            label="課程名稱"
+            v-model="name"
+            :rules="nameRules"
+            outlined
+            dense
+            data-test="courseName"
+            persistent-hint
+            hint="課程名稱僅能包含：A-Z、a-z、0-9、空白、底線、減號、點"
+          />
+          <v-row>
+            <v-col>
+              <v-select
+                label="學年度"
+                v-model="year"
+                :items="years"
+                outlined
+                dense
+                data-test="courseYear"
+              />
+            </v-col>
+            <v-col>
+              <v-select
+                label="學期"
+                v-model="semester"
+                :items="semesters"
+                outlined
+                dense
+                data-test="courseSemester"
+              />
+            </v-col>
+          </v-row>
+        </v-form>
 
         <div class="text-h6">課程狀態</div>
         <v-row justify="space-between" no-gutters>
@@ -52,6 +71,7 @@
             :style="{
               border: checkedOption === status ? 'solid 3px var(--v-primary-base)' : null,
             }"
+            :data-test="`courseStatus${status}`"
           >
             <div class="d-flex flex-column align-center">
               <v-icon size="54" :color="checkedOption === status ? 'primary' : null">
@@ -68,7 +88,12 @@
 
       <v-card-actions>
         <v-spacer />
-        <v-btn color="success" :disabled="!name || !year || !semester" @click="submit">
+        <v-btn
+          color="success"
+          :disabled="!name || !year || !semester"
+          @click="submit"
+          data-test="courseSubmit"
+        >
           送出
         </v-btn>
       </v-card-actions>
@@ -83,13 +108,13 @@ import { YEARS, SEMESTERS } from '@/constants/course'
 export default {
   data: () => ({
     dialog: false,
-    name: '',
+    name: null,
     nameRules: [
       val => !!val || '請輸入課程名稱',
       val => RegExp(/[\w. _-]+$/).test(val) || '課程名稱包含非法字元',
     ],
-    year: null,
-    semester: null,
+    year: 109,
+    semester: 2,
     years: YEARS,
     semesters: SEMESTERS,
     checkedOption: 1,
@@ -98,13 +123,13 @@ export default {
         status: 2,
         icon: 'mdi-earth',
         title: '開放課程',
-        subtitle: '任何使用者都可以造訪，並擁有在課程內創作的權限',
+        subtitle: '任何使用者都可以檢視，並擁有在課程內創作的權限',
       },
       {
         status: 1,
         icon: 'mdi-eye',
         title: '公開課程',
-        subtitle: '任何使用者都可以造訪，但僅供檢視，沒有創作權限',
+        subtitle: '任何使用者都可以檢視，但沒有新增主題、創作的權限',
       },
       {
         status: 0,
@@ -117,17 +142,25 @@ export default {
 
   computed: {
     ...mapState({
-      teacher: state => state.auth.username,
+      id: state => state.auth.id,
     }),
   },
 
   methods: {
     submit() {
-      // TODO: do validation
-      const { name, year, semester, teacher, checkedOption } = this
-      this.$emit('submit', { name, year, semester, teacher, status: checkedOption })
-      // TODO: getError and show feedback, conditionally close dialog
-      this.dialog = false
+      if (this.$refs.form.validate()) {
+        const { id, name, year, semester, checkedOption } = this
+        const body = { name, year, semester, teacher: id, status: checkedOption, description: '' }
+        new Promise((resolve, reject) => this.$emit('submit', body, resolve, reject))
+          .then(() => {
+            this.name = null
+            this.dialog = false
+            this.$alertSuccess('新增課程成功。')
+          })
+          .catch(() => {
+            this.$alertFail('新增課程失敗')
+          })
+      }
     },
   },
 }

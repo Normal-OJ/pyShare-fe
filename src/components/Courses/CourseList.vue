@@ -5,6 +5,7 @@
     :items-per-page="Number(-1)"
     hide-default-footer
     :loading="loading"
+    :custom-sort="customSort"
     class="table"
     @click:row="handleRowClick"
   >
@@ -28,7 +29,7 @@
       {{ COURSE_STATUS[`${item.status}`] }}
     </template>
     <template v-slot:[`item.teacher`]="{ item }">
-      <router-link :to="{ name: 'profile', params: { username: item.teacher.username } }">
+      <router-link :to="{ name: 'profile', params: { id: item.teacher.id } }">
         {{ item.teacher.displayName }}
       </router-link>
     </template>
@@ -73,7 +74,27 @@ export default {
 
   methods: {
     handleRowClick(value) {
-      this.$router.push({ name: 'course', params: { name: value.name } })
+      this.$router.push({ name: 'course', params: { id: value.id } })
+    },
+    customSort(items, index, isDesc) {
+      items.sort((a, b) => {
+        if (index[0] === 'semester') {
+          const aStr = `${a.year}-${a.semester}`
+          const bStr = `${b.year}-${b.semester}`
+          if (!isDesc[0]) {
+            return aStr < bStr ? -1 : 1
+          } else {
+            return aStr > bStr ? -1 : 1
+          }
+        } else {
+          if (!isDesc[0]) {
+            return a[index] < b[index] ? -1 : 1
+          } else {
+            return b[index] < a[index] ? -1 : 1
+          }
+        }
+      })
+      return items
     },
   },
 }

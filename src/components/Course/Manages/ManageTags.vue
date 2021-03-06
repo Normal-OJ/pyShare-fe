@@ -3,7 +3,11 @@
     <v-row no-gutters>
       <div class="text-h5">管理分類</div>
       <v-spacer />
-      <CreateTagModal :submitNewTags="submitNewTags" />
+      <CreateTagModal
+        @submit-new-tags="
+          (tags, resolve, reject) => $emit('submit-new-tags', tags, resolve, reject)
+        "
+      />
     </v-row>
 
     <v-row>
@@ -162,18 +166,18 @@ export default {
       type: String,
       required: true,
     },
-    submitPatchTags: {
-      type: Function,
-      required: true,
-    },
-    submitNewTags: {
-      type: Function,
-      required: true,
-    },
-    deleteTags: {
-      type: Function,
-      required: true,
-    },
+    // submitPatchTags: {
+    //   type: Function,
+    //   required: true,
+    // },
+    // submitNewTags: {
+    //   type: Function,
+    //   required: true,
+    // },
+    // deleteTags: {
+    //   type: Function,
+    //   required: true,
+    // },
   },
 
   data: () => ({
@@ -187,9 +191,6 @@ export default {
   computed: {
     candidateTags() {
       return this.allTags.filter(tag => !this.courseTags.includes(tag))
-    },
-    courseName() {
-      return this.$route.params.name
     },
     selectAll() {
       return this.selectedTags.length === this.candidateTags.length
@@ -208,23 +209,20 @@ export default {
   },
 
   methods: {
-    async handleSubmitPatchTags(option, tags) {
-      const body = { ...initialPatchTagsBody, [option]: tags }
-      this.submitPatchTags(body)
-    },
     async toggleAll() {
       await this.$nextTick()
       this.selectedTags = this.selectAll ? [] : this.candidateTags.slice()
     },
-    async deleteTag(tag) {
-      try {
-        await this.deleteTags([tag])
-        this.selectedTags = this.selectedTags.filter(t => t !== tag)
-        this.$alertSuccess('刪除分類成功。')
-      } catch (error) {
-        console.log('[components/deleteTag] error', error)
-        this.$alertFail('刪除分類失敗。')
-      }
+    handleSubmitPatchTags(option, tags) {
+      const body = { ...initialPatchTagsBody, [option]: tags }
+      this.$emit('submit-patch-tags', body)
+    },
+    deleteTag(tag) {
+      new Promise((resolve, reject) => this.$emit('delete-tags', [tag], resolve, reject)).then(
+        () => {
+          this.selectedTags = this.selectedTags.filter(t => t !== tag)
+        },
+      )
     },
   },
 }

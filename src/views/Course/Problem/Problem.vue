@@ -1,57 +1,57 @@
 <template>
-  <v-container fluid>
+  <v-fade-transition>
     <Spinner v-if="isWaiting" />
-    <div class="px-4" v-show="!isWaiting">
-      <div>
-        <Problem v-if="prob" :prob="prob" />
-      </div>
+    <div class="pa-4" v-else>
+      <Problem v-if="prob" :prob="prob" />
       <v-divider />
-      <div>
+      <div v-show="!floor">
         <CommentList
-          v-if="!floor"
           :comments="comments"
           :isAllowMultipleComments="prob && prob.allowMultipleComments"
           :subscribeRefetch="subscribeRefetchComment"
           :unsubscribeRefetch="unsubscribeRefetchComment"
           @refetch-floor="fetchFloor"
-        />
-        <NewComment
-          v-else-if="String(floor) === 'new'"
-          :defaultCode="prob && prob.defaultCode"
-          :testResult="testResult['new']"
-          @refetch-floor="fetchFloor"
-          @fetch-test-submission="fetchTestSubmission"
-          @submit-test-submission="submitTestSubmission"
-          @submit-new-comment="submitNewComment"
-        />
-        <CommentDetail
-          v-else-if="selectedComment"
-          :comment="selectedComment"
-          :defaultCode="prob && prob.defaultCode"
-          :testResult="testResult['detail']"
-          :username="username"
-          :historySubmissions="historySubmissions"
-          :setIsEdit="setIsEdit"
-          :submitReply="submitReply"
-          :deleteReply="deleteReply"
-          :subscribeRefetch="subscribeRefetchReply"
-          :unsubscribeRefetch="unsubscribeRefetchReply"
-          @refetch-floor="fetchFloor"
-          @update-comment="updateComment"
-          @fetch-submission="fetchSubmission"
-          @fetch-test-submission="fetchTestSubmission"
-          @submit-test-submission="submitTestSubmission"
-          @submit-new-submission="submitNewSubmission"
-          @get-submissions="getSubmissions"
-          @grade-submission="gradeSubmission"
-          @like-comment="likeComment"
-          @update-reply="updateReply"
-          @delete-reply="deleteReply"
+          @change-filtered-comments="comments => (filteredComments = comments)"
         />
       </div>
+      <NewComment
+        v-if="floor && String(floor) === 'new'"
+        :defaultCode="prob && prob.defaultCode"
+        :testResult="testResult['new']"
+        @refetch-floor="fetchFloor"
+        @fetch-test-submission="fetchTestSubmission"
+        @submit-test-submission="submitTestSubmission"
+        @submit-new-comment="submitNewComment"
+      />
+      <CommentDetail
+        v-else-if="floor && selectedComment"
+        :previousFloor="previousFloor"
+        :nextFloor="nextFloor"
+        :comment="selectedComment"
+        :defaultCode="prob && prob.defaultCode"
+        :testResult="testResult['detail']"
+        :username="username"
+        :historySubmissions="historySubmissions"
+        :setIsEdit="setIsEdit"
+        :submitReply="submitReply"
+        :deleteReply="deleteReply"
+        :subscribeRefetch="subscribeRefetchReply"
+        :unsubscribeRefetch="unsubscribeRefetchReply"
+        @refetch-floor="fetchFloor"
+        @update-comment="updateComment"
+        @fetch-submission="fetchSubmission"
+        @fetch-test-submission="fetchTestSubmission"
+        @submit-test-submission="submitTestSubmission"
+        @submit-new-submission="submitNewSubmission"
+        @get-submissions="getSubmissions"
+        @grade-submission="gradeSubmission"
+        @like-comment="likeComment"
+        @update-reply="updateReply"
+        @delete-reply="deleteReply"
+      />
       <div class="spacer" />
     </div>
-  </v-container>
+  </v-fade-transition>
 </template>
 
 <script>
@@ -61,7 +61,7 @@ import CommentDetail from '@/components/Course/Problem/CommentDetail'
 import NewComment from '@/components/Course/Problem/NewComment'
 import agent from '@/api/agent'
 import { mapActions, mapGetters, mapState } from 'vuex'
-import { GET_COMMENTS } from '@/store/actions.type'
+import { GET_COMMENTS, GET_COURSE_PROBLEMS } from '@/store/actions.type'
 import { COMMENTS } from '@/store/getters.type'
 import Spinner from '@/components/UI/Spinner'
 
@@ -78,21 +78,49 @@ export default {
       comments: COMMENTS,
     }),
     pid() {
-      return Number(this.$route.params.id)
+      return Number(this.$route.params.pid)
     },
     selectedComment() {
       return this.comments.find(c => String(c.floor) === String(this.floor))
+    },
+    selectedCommentIndex() {
+      const idx = this.filteredComments.findIndex(c => String(c.floor) === String(this.floor))
+      return idx === -1 ? null : idx
+    },
+    previousFloor() {
+      if (this.selectedCommentIndex === null) return null
+      return this.selectedCommentIndex === 0
+        ? null
+        : this.filteredComments[this.selectedCommentIndex - 1].floor
+    },
+    nextFloor() {
+      if (this.selectedCommentIndex === null) return null
+      return this.selectedCommentIndex === this.filteredComments.length - 1
+        ? null
+        : this.filteredComments[this.selectedCommentIndex + 1].floor
+    },
+  },
+
+  watch: {
+    async pid() {
+      this.isWaiting = true
+      await this.getProblem(this.pid)
+      this.fetchFloor()
+      this.isWaiting = false
     },
   },
 
   async created() {
     await this.getProblem(this.pid)
+    this.$store.dispatch(GET_COURSE_PROBLEMS, this.prob.course)
     this.fetchFloor()
     this.isWaiting = false
   },
 
   data: () => ({
     prob: null,
+    courseInfo: null,
+    filteredComments: [],
     isWaiting: true,
     isEdit: false,
     floor: null,
@@ -325,5 +353,16 @@ export default {
 /* TODO: let Spacer as a component */
 .spacer {
   padding-bottom: 200px;
+}
+.wrapper {
+  display: flex;
+  flex-wrap: nowrap;
+  width: 100%;
+  height: calc(100vh - 56px);
+  position: fixed;
+}
+.container {
+  flex: 1;
+  overflow: scroll;
 }
 </style>

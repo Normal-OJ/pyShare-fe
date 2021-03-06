@@ -2,7 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '@/views/Home/Home'
 import store from '@/store'
-import { GET_COURSE_INFO } from '@/store/actions.type'
+import { GET_COURSE_INFO, GET_COURSE_TAGS, GET_COURSE_PROBLEMS } from '@/store/actions.type'
 
 Vue.use(VueRouter)
 // TODO: block users that no permission from the specific route
@@ -24,9 +24,9 @@ const routes = [
       isAllowGuest: true,
     },
     beforeEnter: (to, from, next) => {
-      const { isAuthenticated, username } = store.state.auth
+      const { isAuthenticated, id } = store.state.auth
       if (isAuthenticated) {
-        next({ name: 'profile', params: { username } })
+        next({ name: 'profile', params: { id } })
       }
       next()
     },
@@ -37,7 +37,7 @@ const routes = [
     component: () => import('@/views/Courses/Courses'),
   },
   {
-    path: '/course/:name',
+    path: '/course/:id',
     component: () => import('@/views/Course/Course'),
     children: [
       {
@@ -51,14 +51,14 @@ const routes = [
         component: () => import('@/views/Course/Problems/Problems'),
       },
       {
+        path: 'problem/:pid',
+        name: 'courseProblem',
+        component: () => import('@/views/Course/Problem/Problem'),
+      },
+      {
         path: 'problems/:operation',
         name: 'courseSetProblems',
         component: () => import('@/views/Course/Problems/SetProblems'),
-      },
-      {
-        path: 'problem/:id',
-        name: 'courseProblem',
-        component: () => import('@/views/Course/Problem/Problem'),
       },
       {
         path: 'manages',
@@ -87,12 +87,14 @@ const routes = [
       },
     ],
     beforeEnter: (to, from, next) => {
-      store.dispatch(GET_COURSE_INFO, to.params.name)
+      store.dispatch(GET_COURSE_INFO, to.params.id)
+      store.dispatch(GET_COURSE_TAGS, to.params.id)
+      store.dispatch(GET_COURSE_PROBLEMS, to.params.id)
       next()
     },
   },
   {
-    path: '/profile/:username',
+    path: '/profile/:id',
     component: () => import('@/views/Profile/ProfileEntry'),
     children: [
       {

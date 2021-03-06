@@ -15,10 +15,6 @@ export default {
   components: { SideNav },
 
   props: {
-    breadcrumbs: {
-      type: Array,
-      required: true,
-    },
     courseInfo: {
       type: Object,
     },

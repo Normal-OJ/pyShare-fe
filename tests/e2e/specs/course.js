@@ -1,7 +1,3 @@
-const schoolId = '[data-test=school]'
-const usernameId = '[data-test=username]'
-const passwordId = '[data-test=password]'
-const loginBtnId = '[data-test=loginBtn]'
 const newCourseBtnId = '[data-test=newCourseBtn]'
 const courseNameId = '[data-test=courseName]'
 const courseYearId = '[data-test=courseYear]'
@@ -18,15 +14,6 @@ const confirmDeleteBtnId = '[data-test=confirmDeleteBtn]'
 const courseName = `e2e_${+new Date()}`
 
 describe('Course', () => {
-  const select = (element, selectItem) => {
-    cy.get(element)
-      .parent()
-      .click()
-    cy.get('.v-menu__content')
-      .contains(selectItem)
-      .click()
-  }
-
   const deleteCourse = async id => {
     await cy.request({
       url: `http://localhost:8080/api/course/${id}`,
@@ -35,16 +22,17 @@ describe('Course', () => {
   }
 
   beforeEach(() => {
+    cy.visit('/')
+    cy.login({
+      school: '',
+      username: 'tcchiang',
+      password: 'tcchiang',
+    })
     cy.visit('/courses')
-    select(schoolId, '無')
-    cy.get(usernameId).type('tcchiang')
-    cy.get(passwordId).type('tcchiang')
-    cy.get(loginBtnId).click()
   })
 
   after(() => {
     cy.location('pathname').then(pathname => {
-      console.log(pathname)
       deleteCourse(pathname.split('/')[2])
     })
     cy.visit('/courses')
@@ -57,8 +45,8 @@ describe('Course', () => {
     cy.get(newCourseBtnId).click()
     cy.contains('課程資訊可在日後修改。')
     cy.get(courseNameId).type(courseName)
-    select(courseYearId, '109')
-    select(courseSemesterId, '2')
+    cy.vuetifyMenuSelect(courseYearId, '109')
+    cy.vuetifyMenuSelect(courseSemesterId, '2')
     cy.get(courseStatusReadonlyId).click()
     cy.get(courseSubmitId).click()
     cy.contains('新增課程成功。')

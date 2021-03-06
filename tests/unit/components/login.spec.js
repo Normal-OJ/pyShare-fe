@@ -53,8 +53,8 @@ describe('Login.vue', () => {
     // set school, username and password
     await wrapper.find('[data-test="password"').setValue('madoka')
     expect(wrapper.vm.$refs.form.validate()).toBeTruthy()
-    // remove school
-    await wrapper.find('[data-test="school"').setValue('')
+    // remove username
+    await wrapper.find('[data-test="username"').setValue('')
     expect(wrapper.vm.$refs.form.validate()).toBeFalsy()
   })
 })

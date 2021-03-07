@@ -15,9 +15,3 @@ export const SUBMISSION_STATUS = {
     value: 2,
   },
 }
-
-export const SUBMISSION_COLOR = {
-  PENDING: 'primary',
-  ACCEPTED: 'success',
-  REJECTED: 'secondary',
-}

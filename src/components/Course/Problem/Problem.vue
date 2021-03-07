@@ -1,5 +1,5 @@
 <template>
-  <Fragment>
+  <div>
     <div class="text-h4 font-weight-bold text-center">{{ prob.title }}</div>
     <div class="d-flex flex-row mt-4">
       <v-avatar class="mr-2" size="48" color="primary">
@@ -73,11 +73,10 @@
       @close="isPreviewAttachment = false"
       @download="downloadAttachment(previewAttachment)"
     />
-  </Fragment>
+  </div>
 </template>
 
 <script>
-import { Fragment } from 'vue-fragment'
 import PreviewAttachmentModal from './PreviewAttachmentModal'
 import ColorLabel from '@/components/UI/ColorLabel'
 
@@ -95,7 +94,7 @@ export default {
     },
   },
 
-  components: { Fragment, PreviewAttachmentModal, ColorLabel },
+  components: { PreviewAttachmentModal, ColorLabel },
 
   data: () => ({
     isPreviewAttachment: false,

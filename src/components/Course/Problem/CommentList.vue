@@ -1,5 +1,5 @@
 <template>
-  <Fragment>
+  <div>
     <v-row class="my-2" align="center">
       <v-col cols="12" lg="3" sm="6">
         <v-select
@@ -174,11 +174,10 @@
         </v-card>
       </v-hover>
     </div>
-  </Fragment>
+  </div>
 </template>
 
 <script>
-import { Fragment } from 'vue-fragment'
 import { mapGetters } from 'vuex'
 import { USERNAME } from '@/store/getters.type'
 import { SUBMISSION_STATE, SUBMISSION_STATUS, SUBMISSION_COLOR } from '@/constants/submission'
@@ -230,8 +229,6 @@ export default {
       required: true,
     },
   },
-
-  components: { Fragment },
 
   computed: {
     ...mapGetters({

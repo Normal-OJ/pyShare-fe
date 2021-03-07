@@ -12,6 +12,7 @@ const Course = {
   getList: () => Vue.axios.get('/course'),
   get: id => Vue.axios.get(`/course/${id}`),
   create: body => Vue.axios.post('/course', body),
+  update: (id, body) => Vue.axios.put(`/course/${id}`, body),
   // TODO: re-define delete api
   // delete: id => Vue.axios.delete(`/course/${id}`),
   addStudent: (id, body) => Vue.axios.patch(`/course/${id}/student/insert`, body),

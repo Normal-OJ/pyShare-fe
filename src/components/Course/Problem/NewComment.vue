@@ -48,7 +48,7 @@
       </v-btn>
       <v-tooltip bottom>
         <template v-slot:activator="{ on, attr }">
-          <v-icon class="ml-1" color="primary" v-on="on" v-bind="attr">
+          <v-icon class="ml-3" color="primary" v-on="on" v-bind="attr">
             mdi-information
           </v-icon>
         </template>

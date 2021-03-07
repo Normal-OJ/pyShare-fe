@@ -1,5 +1,5 @@
 <template>
-  <Fragment>
+  <div>
     <v-card class="py-4 px-6 mt-4">
       <div class="d-flex">
         <v-tooltip bottom>
@@ -363,7 +363,7 @@
             </v-btn>
             <v-tooltip bottom>
               <template v-slot:activator="{ on, attr }">
-                <v-icon class="ml-1" color="primary" v-on="on" v-bind="attr">
+                <v-icon class="ml-3" color="primary" v-on="on" v-bind="attr">
                   mdi-information
                 </v-icon>
               </template>
@@ -412,7 +412,7 @@
       @update-reply="(id, index) => $emit('update-reply', id, index)"
       @delete-reply="id => $emit('delete-reply', id)"
     />
-  </Fragment>
+  </div>
 </template>
 
 <script>
@@ -423,7 +423,6 @@ import { SUBMISSION_STATE, SUBMISSION_COLOR } from '@/constants/submission'
 import CommentResult from './CommentResult'
 import { ROLE } from '@/constants/auth'
 import agent from '@/api/agent'
-import { Fragment } from 'vue-fragment'
 import CommentReplies from './CommentReplies'
 
 const { TEACHER, STUDENT } = ROLE
@@ -436,7 +435,7 @@ const COMMENT_KEY = {
 export default {
   name: 'Comment',
 
-  components: { TextEditor, CodeEditor, Spinner, CommentResult, Fragment, CommentReplies },
+  components: { TextEditor, CodeEditor, Spinner, CommentResult, CommentReplies },
 
   props: {
     previousFloor: {

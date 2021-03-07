@@ -3,7 +3,6 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import vuetify from './plugins/vuetify'
-import Fragment from 'vue-fragment'
 import Vue2Editor from 'vue2-editor'
 import { dayjsPlugin } from './lib/dayjsPlugin'
 import { utilsPlugin } from './lib/utils'
@@ -35,7 +34,6 @@ Vue.use(
 
 Vue.config.productionTip = false
 
-Vue.use(Fragment.Plugin)
 Vue.use(Vue2Editor)
 Vue.use(dayjsPlugin)
 Vue.use(utilsPlugin)

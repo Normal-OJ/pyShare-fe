@@ -1,18 +1,17 @@
 <template>
-  <Fragment>
+  <div>
     <ReleaseNote :releases="releases" />
     <MeetOurTeam />
-  </Fragment>
+  </div>
 </template>
 
 <script>
 import ReleaseNote from '@/components/About/ReleaseNote'
 import MeetOurTeam from '@/components/About/MeetOurTeam'
-import { Fragment } from 'vue-fragment'
 import agent from '@/api/agent'
 
 export default {
-  components: { Fragment, ReleaseNote, MeetOurTeam },
+  components: { ReleaseNote, MeetOurTeam },
 
   data: () => ({
     releases: [],

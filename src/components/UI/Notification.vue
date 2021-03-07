@@ -1,5 +1,5 @@
 <template>
-  <Fragment>
+  <div>
     <notifications group="notify" position="bottom left" :duration="5000">
       <template slot="body" slot-scope="props">
         <div :class="`${props.item.type} notify`" @click="props.close">
@@ -27,15 +27,8 @@
         </div>
       </template>
     </notifications>
-  </Fragment>
+  </div>
 </template>
-
-<script>
-import { Fragment } from 'vue-fragment'
-export default {
-  components: { Fragment },
-}
-</script>
 
 <style lang="scss">
 %notification {

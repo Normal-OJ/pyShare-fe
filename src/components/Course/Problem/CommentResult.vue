@@ -1,5 +1,5 @@
 <template>
-  <Fragment>
+  <div>
     <v-tabs fixed-tabs>
       <v-tab>
         <v-icon left>mdi-card-text</v-icon>
@@ -87,11 +87,10 @@
         </v-btn>
       </div>
     </v-dialog>
-  </Fragment>
+  </div>
 </template>
 
 <script>
-import { Fragment } from 'vue-fragment'
 import FsLightbox from 'fslightbox-vue'
 
 const imageFilePossibleExtension = ['png', 'jpg', 'gif', 'jpeg', 'webp', 'svg', 'bmp']
@@ -112,7 +111,7 @@ export default {
     },
   },
 
-  components: { Fragment, FsLightbox },
+  components: { FsLightbox },
 
   computed: {
     imageUrls() {

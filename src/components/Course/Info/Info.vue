@@ -1,7 +1,11 @@
 <template>
   <v-container fluid>
-    <div class="text-h5">基本資訊</div>
-    <div class="mt-4">
+    <div class="d-flex align-center">
+      <div class="text-h5">基本資訊</div>
+      <EditCourseModal :info="info" />
+    </div>
+    <Spinner v-if="!info" />
+    <div class="mt-4" v-else>
       <v-simple-table>
         <template v-slot:default>
           <tbody>
@@ -11,17 +15,17 @@
             </tr>
             <tr>
               <td class="font-weight-bold">學期</td>
-              <td>{{ info ? `${info.year}-${info.semester}` : '' }}</td>
+              <td>{{ `${info.year}-${info.semester}` }}</td>
             </tr>
             <tr>
               <td class="font-weight-bold">教師</td>
-              <td>{{ info ? info.teacher.displayName : '' }}</td>
+              <td>{{ info.teacher.displayName }}</td>
             </tr>
             <tr>
               <td class="font-weight-bold">課程狀態</td>
               <td>
-                {{ info ? COURSE_STATUS[`${info.status}`] : '' }}
-                <v-tooltip right v-if="info">
+                {{ COURSE_STATUS[`${info.status}`] }}
+                <v-tooltip right>
                   <template v-slot:activator="{ on, attrs }">
                     <v-icon class="ml-1" color="primary" small v-bind="attrs" v-on="on">
                       mdi-help-circle
@@ -39,27 +43,34 @@
                 </v-tooltip>
               </td>
             </tr>
+            <tr>
+              <td class="font-weight-bold">課程簡介</td>
+              <td style="width: 85%">{{ info.description }}</td>
+            </tr>
           </tbody>
         </template>
       </v-simple-table>
     </div>
     <div class="text-h5 mt-4">統計</div>
-    <div class="mt-4 d-flex justify-space-around flex-wrap">
+    <Spinner v-if="!info" />
+    <div class="mt-4 d-flex justify-space-around flex-wrap" v-else>
       <div class="d-flex flex-column align-center">
         <div class="text-h6">學生數</div>
-        <div class="font-weight-thin text-h1">{{ info ? info.students.length : '' }}</div>
+        <div class="font-weight-thin text-h1">{{ info.students.length }}</div>
       </div>
       <div class="d-flex flex-column align-center">
         <div class="text-h6">主題數</div>
-        <div class="font-weight-thin text-h1">{{ info ? info.numOfProblems : '' }}</div>
+        <div class="font-weight-thin text-h1">{{ info.numOfProblems }}</div>
       </div>
       <div class="d-flex flex-column align-center">
         <div class="text-h6">創作數</div>
-        <div class="font-weight-thin text-h1">{{ info ? info.numOfComments : '' }}</div>
+        <div class="font-weight-thin text-h1">{{ info.numOfComments }}</div>
       </div>
     </div>
     <div class="text-h5 mt-4">成員</div>
+    <Spinner v-if="!info" />
     <Members
+      v-else
       :members="members"
       @submit-add-multiple-students="submitAddMultipleStudents"
       @submit-add-student="submitAddStudent"
@@ -68,13 +79,15 @@
 </template>
 
 <script>
+import EditCourseModal from './EditCourseModal'
 import Members from '@/components/Course/Info/Members'
 import { COURSE_STATUS } from '@/constants/course'
+import Spinner from '@/components/UI/Spinner'
 
 export default {
   name: 'Info',
 
-  components: { Members },
+  components: { EditCourseModal, Members, Spinner },
 
   props: {
     info: {

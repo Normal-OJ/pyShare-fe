@@ -12,8 +12,8 @@
           min="200"
           max="1000"
           hide-details
-          append-icon="mdi-magnify-plus-outline"
-          prepend-icon="mdi-magnify-minus-outline"
+          append-icon="mdi-arrow-expand-vertical"
+          prepend-icon="mdi-arrow-collapse-vertical"
           @click:append="containerHeight = Math.min(1000, containerHeight + 100)"
           @click:prepend="containerHeight = Math.max(200, containerHeight - 100)"
         />

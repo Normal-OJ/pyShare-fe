@@ -235,13 +235,7 @@
               >
                 <v-list-item-title class="text-body-1">
                   {{ `版本 ${index + 1}（${$formattedTime(submission.timestamp)}）` }}
-                  <v-chip
-                    :color="SUBMISSION_COLOR[SUBMISSION_STATE[`${submission.state}`]]"
-                    label
-                    small
-                  >
-                    {{ SUBMISSION_STATE[`${submission.state}`] }}
-                  </v-chip>
+                  <SubmissionStatusLabel :status="submission.state" />
                   {{ index === browsingSubmissionIndex ? '（目前顯示）' : '' }}
                 </v-list-item-title>
               </v-list-item>
@@ -292,27 +286,25 @@
               </template>
               <span>{{ $formattedTime(browsingSubmission.timestamp) }}</span>
             </v-tooltip>
-            <v-chip
+            <SubmissionStatusLabel
               v-permission="[STUDENT, 'MAGIC', 'OUT_OF_COURSE']"
-              :color="SUBMISSION_COLOR[SUBMISSION_STATE[`${browsingSubmission.state}`]]"
+              :status="browsingSubmission.state"
+              :small="false"
               class="text-subtitle-2 ml-4"
-              label
-            >
-              {{ SUBMISSION_STATE[`${browsingSubmission.state}`] }}
-            </v-chip>
+            />
             <v-menu offset-y rounded="0" v-permission="[TEACHER, 'COURSE']">
               <template v-slot:activator="{ on: menu, attrs }">
                 <v-tooltip bottom>
                   <template v-slot:activator="{ on: tooltip }">
                     <v-btn
                       class="text-subtitle-2 ml-4"
-                      :color="SUBMISSION_COLOR[SUBMISSION_STATE[`${browsingSubmission.state}`]]"
+                      :color="SUBMISSION_STATUS[`${browsingSubmission.state}`].color"
                       v-bind="attrs"
                       v-on="{ ...tooltip, ...menu }"
                       small
                       depressed
                     >
-                      {{ SUBMISSION_STATE[`${browsingSubmission.state}`] }}
+                      {{ SUBMISSION_STATUS[`${browsingSubmission.state}`].text }}
                       <v-icon class="ml-1">mdi-chevron-down</v-icon>
                     </v-btn>
                   </template>
@@ -321,13 +313,13 @@
               </template>
               <v-list>
                 <v-list-item
-                  v-for="{ value, label } in submissionStatusOptions"
-                  :key="value"
+                  v-for="status in statusOptions"
+                  :key="status"
                   link
-                  @click="gradeSubmission(value, browsingSubmission.id)"
+                  @click="gradeSubmission(status, browsingSubmission.id)"
                 >
-                  <v-list-item-title class="text-body-2">
-                    <v-chip :color="SUBMISSION_COLOR[label]" label small>{{ label }}</v-chip>
+                  <v-list-item-title>
+                    <SubmissionStatusLabel :status="status" class="text-body-2" />
                   </v-list-item-title>
                 </v-list-item>
               </v-list>
@@ -419,7 +411,8 @@
 import TextEditor from '@/components/UI/TextEditor'
 import CodeEditor from '@/components/UI/CodeEditor'
 import Spinner from '@/components/UI/Spinner'
-import { SUBMISSION_STATE, SUBMISSION_COLOR } from '@/constants/submission'
+import SubmissionStatusLabel from '@/components/UI/SubmissionStatusLabel'
+import { SUBMISSION_STATUS } from '@/constants/submission'
 import CommentResult from './CommentResult'
 import { ROLE } from '@/constants/auth'
 import agent from '@/api/agent'
@@ -435,7 +428,14 @@ const COMMENT_KEY = {
 export default {
   name: 'Comment',
 
-  components: { TextEditor, CodeEditor, Spinner, CommentResult, CommentReplies },
+  components: {
+    TextEditor,
+    CodeEditor,
+    Spinner,
+    CommentResult,
+    CommentReplies,
+    SubmissionStatusLabel,
+  },
 
   props: {
     previousFloor: {
@@ -486,9 +486,6 @@ export default {
   },
 
   computed: {
-    submissionStatusOptions() {
-      return Object.entries(SUBMISSION_STATE).map(([value, label]) => ({ value, label }))
-    },
     isSubmissionPending() {
       if (!this.comment || !this.comment.submission) return false
       if (!this.browsingSubmission) return true
@@ -558,8 +555,8 @@ export default {
       TEACHER,
       STUDENT,
       pollingSubmission: null,
-      SUBMISSION_STATE,
-      SUBMISSION_COLOR,
+      statusOptions: Object.keys(SUBMISSION_STATUS).map(s => Number(s)),
+      SUBMISSION_STATUS,
       COMMENT_KEY,
       newComment: {},
       isEdit: {

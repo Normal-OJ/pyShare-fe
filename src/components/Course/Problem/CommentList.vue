@@ -22,20 +22,27 @@
           hide-details
           multiple
           append-icon="mdi-filter"
-          :items="SUBMISSION_STATUS"
+          :items="statusOptions"
           dense
         >
           <template v-slot:selection="{ item, index }">
-            <span v-if="statusFilter.length === SUBMISSION_STATUS.length && index === 0"
-              >顯示全部</span
-            >
-            <v-chip
-              v-else-if="statusFilter.length !== SUBMISSION_STATUS.length"
-              :color="SUBMISSION_COLOR[item.text]"
-              label
-              small
-              >{{ item.text }}</v-chip
-            >
+            <span v-if="statusFilter.length === statusOptions.length && index === 0">
+              顯示全部
+            </span>
+            <SubmissionStatusLabel
+              v-else-if="statusFilter.length !== statusOptions.length"
+              :status="item"
+            />
+          </template>
+          <template v-slot:item="{ active, item, attrs, on }">
+            <v-list-item v-on="on" v-bind="attrs" #default="{ active }">
+              <v-list-item-action>
+                <v-checkbox :input-value="active" />
+              </v-list-item-action>
+              <v-list-item-title>
+                <SubmissionStatusLabel :status="item" />
+              </v-list-item-title>
+            </v-list-item>
           </template>
         </v-select>
       </v-col>
@@ -123,13 +130,8 @@
                     `${liked.length} 個喜歡、${replies.length} 則留言、${submissions.length} 個程式版本`
                   }}</span>
                 </v-tooltip>
-                <v-btn
-                  :color="SUBMISSION_COLOR[SUBMISSION_STATE[submission.state]]"
-                  small
-                  tile
-                  depressed
-                >
-                  {{ SUBMISSION_STATE[submission.state] }}
+                <v-btn :color="SUBMISSION_STATUS[submission.state].color" small tile depressed>
+                  {{ SUBMISSION_STATUS[submission.state].text }}
                 </v-btn>
               </v-card-title>
               <!-- Second Row -->
@@ -180,7 +182,8 @@
 <script>
 import { mapGetters } from 'vuex'
 import { USERNAME } from '@/store/getters.type'
-import { SUBMISSION_STATE, SUBMISSION_STATUS, SUBMISSION_COLOR } from '@/constants/submission'
+import { SUBMISSION_STATUS } from '@/constants/submission'
+import SubmissionStatusLabel from '@/components/UI/SubmissionStatusLabel'
 
 const SORT_BY = {
   TIME_DESCENDING: {
@@ -211,7 +214,7 @@ const SORT_BY = {
 
 export default {
   name: 'CommentList',
-
+  components: { SubmissionStatusLabel },
   props: {
     comments: {
       type: Array,
@@ -229,7 +232,6 @@ export default {
       required: true,
     },
   },
-
   computed: {
     ...mapGetters({
       username: USERNAME,
@@ -267,23 +269,19 @@ export default {
         )
     },
   },
-
   watch: {
     filteredComments() {
       this.$emit('change-filtered-comments', this.filteredComments)
     },
   },
-
   data: () => ({
     SORT_BY,
-    SUBMISSION_STATE,
     SUBMISSION_STATUS,
-    SUBMISSION_COLOR,
     sortby: SORT_BY.SHOW_MINE.value,
     searchText: '',
-    statusFilter: SUBMISSION_STATUS.map(status => status.value),
+    statusOptions: Object.keys(SUBMISSION_STATUS).map(s => Number(s)),
+    statusFilter: Object.keys(SUBMISSION_STATUS).map(s => Number(s)),
   }),
-
   methods: {
     navigate(floor) {
       if (this.$route.query.floor !== floor) {
@@ -292,11 +290,9 @@ export default {
       }
     },
   },
-
   mounted() {
     this.subscribeRefetch()
   },
-
   destroyed() {
     this.unsubscribeRefetch()
   },

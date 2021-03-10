@@ -13,7 +13,7 @@
         />
       </v-col>
       <v-spacer />
-      <div v-permission="[TEACHER, 'COURSE']">
+      <template v-if="canWriteCourse">
         <v-btn color="primary" :to="{ name: 'courseManageMembers' }" class="mr-3" outlined>
           管理課程成員
         </v-btn>
@@ -21,7 +21,7 @@
           @submit-add-multiple-students="submitAddMultipleStudents"
           @submit-add-student="submitAddStudent"
         />
-      </div>
+      </template>
     </div>
 
     <v-data-table
@@ -54,6 +54,7 @@ import { ROLE } from '@/constants/auth'
 const { TEACHER } = ROLE
 
 const headers = [
+  { text: '使用者名稱', value: 'username' },
   { text: '顯示名稱', value: 'displayName' },
   { text: '身份', value: 'teacher' },
 ]
@@ -75,7 +76,18 @@ export default {
     searchText: '',
     loading: false,
     TEACHER,
+    canWriteCourse: null,
   }),
+
+  async created() {
+    this.canWriteCourse = await this.$hasPermission('course', this.courseId, ['w'])
+  },
+
+  computed: {
+    courseId() {
+      return this.$route.params.id
+    },
+  },
 
   methods: {
     handleRowClick(value) {

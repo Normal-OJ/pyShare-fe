@@ -19,6 +19,7 @@ const Course = {
   removeStudent: (id, body) => Vue.axios.patch(`/course/${id}/student/remove`, body),
   patchTags: (id, body) => Vue.axios.patch(`/course/${id}/tag`, body),
   getStats: id => Vue.axios.get(`/course/${id}/statistic`),
+  getPermission: id => Vue.axios.get(`/course/${id}/permission`),
 }
 
 const Problem = {
@@ -69,6 +70,10 @@ const Gitlab = {
   },
 }
 
+const Permission = {
+  get: (resource, id) => Vue.axios.get(`/${resource}/${id}/permission`)
+}
+
 export default {
   Auth,
   Course,
@@ -78,4 +83,5 @@ export default {
   User,
   Submission,
   Gitlab,
+  Permission,
 }

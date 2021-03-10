@@ -14,3 +14,6 @@ export const COMMENTS = 'comments' // get comments that are visible (not deleted
 
 // course module
 export const COURSE_INFO = 'courseInfo'
+
+// permission module
+export const PERMISSIONS = 'permissions'

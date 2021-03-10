@@ -15,3 +15,6 @@ export const SET_PROBLEM_INFO = 'setProblemInfo'
 
 // comment module
 export const SET_COMMENTS = 'setComments'
+
+// permission module
+export const SET_PERMISSIONS = 'setPermissions'

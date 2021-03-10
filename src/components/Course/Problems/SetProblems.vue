@@ -33,7 +33,7 @@
       </v-col>
       <v-col cols="12" md="6">
         <v-checkbox
-          v-permission="[TEACHER, 'COURSE']"
+          v-if="canWriteCourse"
           class="pt-0 mt-0"
           v-model="newProb.allowMultipleComments"
           label="允許主題下可以發表多個創作"
@@ -215,6 +215,9 @@ export default {
     ...mapGetters({
       role: ROLE,
     }),
+    courseId() {
+      return this.$route.params.id
+    },
   },
 
   data: () => ({
@@ -227,7 +230,12 @@ export default {
     willRemoveAttachments: [],
     fileUploader: [],
     TEACHER,
+    canWriteCourse: null,
   }),
+
+  async created() {
+    this.canWriteCourse = await this.$hasPermission('course', this.courseId, ['w'])
+  },
 
   methods: {
     submit() {

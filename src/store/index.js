@@ -4,6 +4,7 @@ import auth from './auth.module'
 import course from './course.module'
 import problem from './problem.module'
 import comment from './comment.module'
+import permission from './permission.module'
 
 Vue.use(Vuex)
 
@@ -16,5 +17,6 @@ export default new Vuex.Store({
     course,
     problem,
     comment,
+    permission,
   },
 })

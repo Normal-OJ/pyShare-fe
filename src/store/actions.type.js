@@ -16,3 +16,6 @@ export const GET_COURSE_PROBLEMS = 'getCourseProblems'
 // comment module
 export const GET_COMMENTS = 'getComments'
 export const GET_COMMENT = 'getComment'
+
+// permission module
+export const GET_PERMISSIONS = 'getPermissions'

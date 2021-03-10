@@ -30,11 +30,10 @@
 
     <v-list dense :nav="!isMinify">
       <v-list-item
-        v-for="{ label, icon, routeName, permission } in items.slice(0, 1)"
+        v-for="{ label, icon, routeName } in navsBeforeProblems"
         :key="label"
         :to="{ name: routeName }"
         color="primary"
-        v-permission="permission"
       >
         <v-list-item-icon>
           <v-icon>{{ icon }}</v-icon>
@@ -60,11 +59,10 @@
       </template>
 
       <v-list-item
-        v-for="{ label, icon, routeName, permission } in items.slice(1)"
+        v-for="{ label, icon, routeName } in navsAfterProblems"
         :key="label"
         :to="{ name: routeName }"
         color="primary"
-        v-permission="permission"
       >
         <v-list-item-icon>
           <v-icon>{{ icon }}</v-icon>
@@ -96,30 +94,9 @@
 </template>
 
 <script>
-import { ROLE } from '@/constants/auth'
 import { mapState } from 'vuex'
 
-const { TEACHER, STUDENT } = ROLE
-const SIDE_NAVS = [
-  {
-    label: '主題列表',
-    icon: 'mdi-view-list',
-    routeName: 'courseProblems',
-    permission: [TEACHER, STUDENT],
-  },
-  {
-    label: '總覽',
-    icon: 'mdi-view-compact',
-    routeName: 'courseInfo',
-    permission: [TEACHER, STUDENT],
-  },
-]
-const MANAGE = {
-  label: '管理',
-  icon: 'mdi-settings',
-  routeName: 'courseManages',
-  permission: [TEACHER, 'COURSE'],
-}
+// const SIDE_NAVS =
 
 export default {
   name: 'SideNav',
@@ -134,17 +111,41 @@ export default {
     ...mapState({
       problems: state => state.course.courseProblems,
     }),
-    items() {
-      const navs = SIDE_NAVS.slice()
-      if (this.courseInfo && this.courseInfo.id === this.$route.params.id) {
-        navs.splice(1, 0, MANAGE)
-      }
-      return navs
+    navsBeforeProblems() {
+      return this.items.slice(0, 1)
+    },
+    navsAfterProblems() {
+      return this.items.slice(1).filter(item => item.label !== '管理' || this.canWriteCourse)
+    },
+    courseId() {
+      return this.$route.params.id
     },
   },
 
   data: () => ({
     isMinify: false,
+    items: [
+      {
+        label: '主題列表',
+        icon: 'mdi-view-list',
+        routeName: 'courseProblems',
+      },
+      {
+        label: '管理',
+        icon: 'mdi-settings',
+        routeName: 'courseManages',
+      },
+      {
+        label: '總覽',
+        icon: 'mdi-view-compact',
+        routeName: 'courseInfo',
+      },
+    ],
+    canWriteCourse: null,
   }),
+
+  async created() {
+    this.canWriteCourse = await this.$hasPermission('course', this.courseId, ['w'])
+  },
 }
 </script>

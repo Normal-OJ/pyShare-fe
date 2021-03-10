@@ -286,13 +286,7 @@
               </template>
               <span>{{ $formattedTime(browsingSubmission.timestamp) }}</span>
             </v-tooltip>
-            <SubmissionStatusLabel
-              v-permission="[STUDENT, 'MAGIC', 'OUT_OF_COURSE']"
-              :status="browsingSubmission.state"
-              :small="false"
-              class="text-subtitle-2 ml-4"
-            />
-            <v-menu offset-y rounded="0" v-permission="[TEACHER, 'COURSE']">
+            <v-menu v-if="canWriteCourse" offset-y rounded="0">
               <template v-slot:activator="{ on: menu, attrs }">
                 <v-tooltip bottom>
                   <template v-slot:activator="{ on: tooltip }">
@@ -324,6 +318,12 @@
                 </v-list-item>
               </v-list>
             </v-menu>
+            <SubmissionStatusLabel
+              v-else
+              :status="browsingSubmission.state"
+              :small="false"
+              class="text-subtitle-2 ml-4"
+            />
           </div>
         </div>
         <Spinner v-if="!browsingSubmission" />
@@ -380,7 +380,7 @@
         </v-icon>
         愛心（{{ comment.liked && comment.liked.length }}）
       </v-btn>
-      <v-btn text width="50%" @click="isReply = true" v-permission="['ALL', 'COURSE']">
+      <v-btn v-if="canParticipateCourse" text width="50%" @click="isReply = true">
         <v-icon class="mr-1">mdi-comment-outline</v-icon>
         留言（{{ comment.replies && comment.replies.length }}）
       </v-btn>
@@ -513,9 +513,12 @@ export default {
     hasAccepted() {
       return this.historySubmissions.some(submission => submission.state === 1)
     },
+    courseId() {
+      return this.$route.params.id
+    },
   },
 
-  created() {
+  async created() {
     this.pollingSubmission = setInterval(
       that => {
         if (that.isSubmissionPending) {
@@ -528,6 +531,8 @@ export default {
       1000,
       this,
     )
+    this.canParticipateCourse = await this.$hasPermission('course', this.courseId, ['p'])
+    this.canWriteCourse = await this.$hasPermission('course', this.courseId, ['w'])
   },
 
   watch: {
@@ -569,6 +574,8 @@ export default {
       replies: null,
       isReply: false,
       newReply: '',
+      canParticipateCourse: null,
+      canWriteCourse: null,
     }
   },
 

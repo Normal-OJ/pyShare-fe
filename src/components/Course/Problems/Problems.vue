@@ -28,7 +28,7 @@
         />
       </v-col>
       <v-spacer />
-      <div v-permission="['ALL', 'COURSE']">
+      <template v-if="canParticipateCourse">
         <v-btn color="primary" :to="{ name: 'courseManageProblems' }" class="mr-3" outlined>
           管理我的主題
         </v-btn>
@@ -36,7 +36,7 @@
           <v-icon class="mr-1">mdi-playlist-plus</v-icon>
           新增主題
         </v-btn>
-      </div>
+      </template>
     </div>
 
     <v-data-table
@@ -125,7 +125,18 @@ export default {
     headers,
     searchText: '',
     selectedTags: [],
+    canParticipateCourse: null,
   }),
+
+  async created() {
+    this.canParticipateCourse = await this.$hasPermission('course', this.courseId, ['p'])
+  },
+
+  computed: {
+    courseId() {
+      return this.$route.params.id
+    },
+  },
 
   watch: {
     selectedTags() {

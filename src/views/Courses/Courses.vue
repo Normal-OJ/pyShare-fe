@@ -3,7 +3,7 @@
     <v-row class="mb-4">
       <div class="text-h5">課程列表</div>
       <v-spacer />
-      <CreateCourseModal v-permission="[TEACHER]" @submit="submitCreateCourse" />
+      <CreateCourseModal v-role="[TEACHER]" @submit="submitCreateCourse" />
     </v-row>
     <CourseList :data="courses" :loading="isWaitingCourseList" />
   </v-container>
@@ -38,10 +38,9 @@ export default {
   },
 
   methods: {
-    async getCourseList() {
+    getCourseList() {
       this.isWaitingCourseList = true
-      await this.getCourse()
-      this.isWaitingCourseList = false
+      this.getCourse().then(() => (this.isWaitingCourseList = false))
     },
     async submitCreateCourse(body, resolve, reject) {
       try {

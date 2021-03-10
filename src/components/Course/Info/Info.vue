@@ -2,7 +2,7 @@
   <v-container fluid>
     <div class="d-flex align-center">
       <div class="text-h5">基本資訊</div>
-      <EditCourseModal :info="info" />
+      <EditCourseModal v-if="canWriteCourse" :info="info" />
     </div>
     <Spinner v-if="!info" />
     <div class="mt-4" v-else>
@@ -67,14 +67,16 @@
         <div class="font-weight-thin text-h1">{{ info.numOfComments }}</div>
       </div>
     </div>
-    <div class="text-h5 mt-4">成員</div>
-    <Spinner v-if="!info" />
-    <Members
-      v-else
-      :members="members"
-      @submit-add-multiple-students="submitAddMultipleStudents"
-      @submit-add-student="submitAddStudent"
-    />
+    <template v-if="canParticipateCourse">
+      <div class="text-h5 mt-4">成員</div>
+      <Spinner v-if="!info" />
+      <Members
+        v-else
+        :members="members"
+        @submit-add-multiple-students="submitAddMultipleStudents"
+        @submit-add-student="submitAddStudent"
+      />
+    </template>
   </v-container>
 </template>
 
@@ -95,12 +97,24 @@ export default {
     },
   },
 
-  data: () => ({ COURSE_STATUS }),
+  data: () => ({
+    COURSE_STATUS,
+    canWriteCourse: null,
+    canParticipateCourse: null,
+  }),
+
+  async created() {
+    this.canWriteCourse = await this.$hasPermission('course', this.courseId, ['w'])
+    this.canParticipateCourse = await this.$hasPermission('course', this.courseId, ['p'])
+  },
 
   computed: {
     members() {
       if (!this.info) return []
       return this.info ? [{ ...this.info.teacher, teacher: true }].concat(this.info.students) : []
+    },
+    courseId() {
+      return this.$route.params.id
     },
   },
 

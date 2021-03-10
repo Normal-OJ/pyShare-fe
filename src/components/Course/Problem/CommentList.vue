@@ -61,8 +61,9 @@
       <v-col cols="12" lg="3" sm="6" align="end">
         <v-tooltip bottom :disabled="!isDisabledNewComment">
           <template v-slot:activator="{ on, attrs }">
-            <div v-on="on" v-permission="['ALL', 'COURSE']">
+            <div v-on="on">
               <v-btn
+                v-if="canParticipateCourse"
                 color="success"
                 :disabled="isDisabledNewComment"
                 v-bind="attrs"
@@ -236,6 +237,9 @@ export default {
     ...mapGetters({
       username: USERNAME,
     }),
+    courseId() {
+      return this.$route.params.id
+    },
     isDisabledNewComment() {
       if (this.isAllowMultipleComments) return false
       return this.comments.some(comment => comment.author.username === this.username)
@@ -281,6 +285,7 @@ export default {
     searchText: '',
     statusOptions: Object.keys(SUBMISSION_STATUS).map(s => Number(s)),
     statusFilter: Object.keys(SUBMISSION_STATUS).map(s => Number(s)),
+    canParticipateCourse: null,
   }),
   methods: {
     navigate(floor) {
@@ -289,6 +294,9 @@ export default {
         this.$emit('refetch-floor')
       }
     },
+  },
+  async created() {
+    this.canParticipateCourse = await this.$hasPermission('course', this.courseId, ['p'])
   },
   mounted() {
     this.subscribeRefetch()

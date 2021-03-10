@@ -35,7 +35,7 @@
         下載統計資料
       </v-btn>
       <AddStudentModal
-        v-permission="[TEACHER, 'COURSE']"
+        v-if="canWriteCourse"
         @submit-add-multiple-students="submitAddMultipleStudents"
         @submit-add-student="submitAddStudent"
       />
@@ -122,6 +122,9 @@ export default {
     ...mapState({
       courseName: state => state.course.courseInfo.name,
     }),
+    courseId() {
+      return this.$route.params.id
+    },
   },
 
   data: () => ({
@@ -132,7 +135,12 @@ export default {
     isShowConfirmDeleteModal: false,
     isWaitingDeleteStudent: false,
     deleteStudentErrorMsg: '',
+    canWriteCourse: null,
   }),
+
+  async created() {
+    this.canWriteCourse = await this.$hasPermission('course', this.courseId, ['w'])
+  },
 
   methods: {
     handleRowClick(value) {

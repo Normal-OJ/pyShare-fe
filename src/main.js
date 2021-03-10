@@ -9,7 +9,7 @@ import { utilsPlugin } from './lib/utils'
 import 'roboto-fontface/css/roboto/roboto-fontface.css'
 import '@mdi/font/css/materialdesignicons.css'
 import { apiSetup } from './api/api'
-import permission from './directive/permission'
+import role from './directive/role'
 import VueSocketIO from 'vue-socket.io'
 import Notifications from 'vue-notification'
 import { makeServer } from './server'
@@ -56,8 +56,8 @@ Vue.use(Rollbar, {
   },
 })
 
-// use permission directive for handling ui display
-Vue.directive('permission', permission)
+// use role directive for handling ui display
+Vue.directive('role', role)
 
 // setup axios
 apiSetup()

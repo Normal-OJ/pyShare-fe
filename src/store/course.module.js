@@ -1,5 +1,5 @@
 import agent from '@/api/agent'
-import { COURSE_INFO, COURSE_PERMISSION } from './getters.type'
+import { COURSE_INFO } from './getters.type'
 import {
   GET_COURSES,
   GET_COURSE_STATS,
@@ -29,9 +29,6 @@ const state = { ...initialState }
 const getters = {
   [COURSE_INFO](state) {
     return state.courseInfo
-  },
-  [COURSE_PERMISSION](state) {
-    return state.coursePermission
   },
 }
 

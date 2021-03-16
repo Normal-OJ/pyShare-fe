@@ -55,6 +55,6 @@ describe('Login', () => {
     cy.get(passwordId).type('tcchiang')
     cy.get(loginBtnId).click()
     cy.contains('登入成功')
-    cy.location().should(loc => expect(loc.pathname).to.eq('/'))
+    cy.url().should('include', '/courses')
   })
 })

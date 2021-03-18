@@ -5,7 +5,9 @@ const Auth = {
   login: body => Vue.axios.post('/auth/session', body),
   logout: () => Vue.axios.get('/auth/session'),
   batchSignup: body => Vue.axios.post('/auth/batch-signup', body),
-  changePassword: body => Vue.axios.post('/auth/change-password', body),
+  changePassword: body => Vue.axios.post('/auth/change/password', body),
+  changeEmail: body => Vue.axios.post('/auth/change/email', body),
+  validateEmail: body => Vue.axios.post('/auth/check/email', body),
 }
 
 const Course = {

@@ -1,12 +1,5 @@
 <template>
-  <Profile
-    v-if="!notFound"
-    :id="id"
-    :username="username"
-    :displayName="displayName"
-    :stats="stats"
-    @submit-new-password="submitNewPassword"
-  />
+  <Profile v-if="!notFound" :id="id" :user="user" :stats="stats" />
   <div v-else class="d-flex flex-column align-center">
     <div class="text-h2 mt-16">
       查無此人 😢
@@ -27,8 +20,12 @@ export default {
   data: () => ({
     notFound: false,
     stats: null,
-    username: null,
-    displayName: null,
+    user: {
+      username: null,
+      displayName: null,
+      school: null,
+      email: null,
+    },
   }),
 
   computed: {
@@ -56,8 +53,7 @@ export default {
           this.notFound = true
           return
         }
-        this.username = user.username
-        this.displayName = user.displayName
+        this.user = user
       } catch (error) {
         console.log('[views/Profile/getUser] error', error)
         throw error
@@ -69,16 +65,6 @@ export default {
         this.stats = data.data
       } catch (error) {
         console.log('[views/Profile/getStats] error', error)
-        throw error
-      }
-    },
-    async submitNewPassword(passwordInfo, resolve, reject) {
-      try {
-        await agent.Auth.changePassword(passwordInfo)
-        resolve()
-      } catch (error) {
-        console.log('[views/Profile/getStats] error', error)
-        reject(error)
         throw error
       }
     },

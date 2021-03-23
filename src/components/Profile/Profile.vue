@@ -2,22 +2,34 @@
   <v-container class="pb-16">
     <div class="d-flex justify-center mt-4">
       <v-avatar class="mr-2" size="120" color="primary">
-        <span class="white--text text-h3" v-if="displayName">{{ displayName.slice(0, 1) }}</span>
+        <span class="white--text text-h3" v-if="user.displayName">
+          {{ user.displayName.slice(0, 1) }}
+        </span>
       </v-avatar>
     </div>
     <div class="text-h5">基本資訊</div>
-    <Spinner v-if="!username || !displayName" />
+    <Spinner v-if="!user.username || !user.displayName" />
     <div v-else class="mt-4">
       <v-simple-table>
         <template v-slot:default>
           <tbody>
-            <tr v-if="$isSelf(username)">
-              <td class="font-weight-bold">使用者名稱</td>
-              <td style="width: 70%">{{ username }}</td>
-            </tr>
+            <template v-if="$isSelf(user.username)">
+              <tr>
+                <td class="font-weight-bold">學校</td>
+                <td style="width: 70%">{{ school }}</td>
+              </tr>
+              <tr>
+                <td class="font-weight-bold">使用者名稱</td>
+                <td style="width: 70%">{{ user.username }}</td>
+              </tr>
+              <tr>
+                <td class="font-weight-bold">Email</td>
+                <td style="width: 70%">{{ user.email }}</td>
+              </tr>
+            </template>
             <tr>
               <td class="font-weight-bold">顯示名稱</td>
-              <td style="width: 70%">{{ displayName }}</td>
+              <td style="width: 70%">{{ user.displayName }}</td>
             </tr>
           </tbody>
         </template>
@@ -45,54 +57,57 @@
         <div class="font-weight-thin text-h1">{{ totalLikedAmount }}</div>
       </div>
     </div>
-    <div class="text-h5 mt-8" v-if="$isSelf(username)">更改密碼</div>
-    <v-form ref="form" class="mt-4" v-if="$isSelf(username)">
+    <div class="text-h5 mt-8" v-if="$isSelf(user.username)">更改信箱密碼</div>
+    <v-form ref="form" class="mt-4" v-if="$isSelf(user.username)">
       <v-row>
-        <v-col cols="auto" lg="4">
+        <v-col cols="12" md="6">
           <v-text-field
             class="mx-1"
-            label="請輸入原密碼"
+            label="請輸入新信箱（不需更改則留空）"
             outlined="outlined"
-            v-model="passwordInfo.oldPassword"
-            :rules="[v => !!v || '請輸入原密碼！']"
-            :type="isShowPassword ? 'text' : 'password'"
-            :append-icon="isShowPassword ? 'mdi-eye' : 'mdi-eye-off'"
-            @click:append="isShowPassword = !isShowPassword"
+            v-model="formValues.email"
+            :rules="formRules.email"
+            @input="emailError = ''"
+            @change="validateEmail"
           />
         </v-col>
-        <v-col cols="auto" lg="4">
+        <v-col cols="12" md="6">
           <v-text-field
             class="mx-1"
-            label="請輸入新密碼"
+            label="請輸入新密碼（不需更改則留空）"
             outlined="outlined"
-            v-model="passwordInfo.newPassword"
-            :rules="[v => !!v || '請輸入欲設置的新密碼！']"
+            v-model="formValues.newPassword"
             :type="isShowNewPassword ? 'text' : 'password'"
             :append-icon="isShowNewPassword ? 'mdi-eye' : 'mdi-eye-off'"
             @click:append="isShowNewPassword = !isShowNewPassword"
           />
         </v-col>
-        <v-col cols="auto" lg="4">
+      </v-row>
+      <v-row align="baseline">
+        <v-col cols="12" md="6">
           <v-text-field
             class="mx-1"
-            label="請再次輸入新密碼"
-            :rules="[v => (!!v && v === passwordInfo.newPassword) || '確認密碼與新密碼不相符。']"
+            label="請輸入原密碼作為確認"
             outlined="outlined"
-            :type="isShowConfirmPasssword ? 'text' : 'password'"
-            :append-icon="isShowConfirmPasssword ? 'mdi-eye' : 'mdi-eye-off'"
-            @click:append="isShowConfirmPasssword = !isShowConfirmPasssword"
+            v-model="formValues.oldPassword"
+            :rules="formRules.oldPassword"
+            :type="isShowPassword ? 'text' : 'password'"
+            :append-icon="isShowPassword ? 'mdi-eye' : 'mdi-eye-off'"
+            @click:append="isShowPassword = !isShowPassword"
           />
         </v-col>
+        <v-btn color="primary" :disabled="isDisabledSubmit" :loading="isLoading" @click="submit">
+          送出
+        </v-btn>
       </v-row>
-      <v-btn color="primary" :loading="isLoading" @click="submitNewPassword">
-        送出
-      </v-btn>
     </v-form>
   </v-container>
 </template>
 
 <script>
 import Spinner from '@/components/UI/Spinner'
+import { SCHOOLS } from '@/constants/auth'
+import agent from '@/api/agent'
 
 export default {
   props: {
@@ -100,11 +115,9 @@ export default {
       type: String,
       required: true,
     },
-    username: {
-      type: String,
-    },
-    displayName: {
-      type: String,
+    user: {
+      type: Object,
+      required: true,
     },
     stats: {
       type: Object,
@@ -113,43 +126,116 @@ export default {
 
   components: { Spinner },
 
-  data: () => ({
-    isLoading: false,
-    passwordInfo: {
-      oldPassword: '',
-      newPassword: '',
-    },
-    isShowPassword: false,
-    isShowNewPassword: false,
-    isShowConfirmPasssword: false,
-  }),
+  data() {
+    return {
+      isLoading: false,
+      formValues: {
+        email: '',
+        oldPassword: '',
+        newPassword: '',
+      },
+      emailError: '',
+      emailErrorMsg: {
+        notUnique: '此 email 已被使用',
+        invalid: '錯誤的 email 格式',
+      },
+      isEmailValidating: false,
+      isShowPassword: false,
+      isShowNewPassword: false,
+    }
+  },
 
   computed: {
+    formRules() {
+      return {
+        email: [() => !this.emailError || this.emailErrorMsg[this.emailError]],
+        oldPassword: [v => !!v || '請輸入原密碼！'],
+      }
+    },
     totalLikedAmount() {
       if (!this.stats) return ''
       return this.stats.liked.reduce((a, b) => {
         return a + b.starers.length
       }, 0)
     },
+    school() {
+      if (this.user.school === null) return ''
+      const school = SCHOOLS.find(s => s.alias === this.user.school)
+      return school.name
+    },
+    isDisabledSubmit() {
+      return (
+        (!this.formValues.newPassword && !this.formValues.email) ||
+        !this.formValues.oldPassword ||
+        this.isEmailValidating
+      )
+    },
   },
 
   methods: {
-    submitNewPassword() {
+    validateEmail() {
+      this.isEmailValidating = true
+      const body = { email: this.formValues.email }
+      agent.Auth.validateEmail(body)
+        .then(() => {
+          this.emailError = ''
+        })
+        .catch(error => {
+          if (error.message === 'Invalid email') {
+            this.emailError = 'invalid'
+          } else if (error.message === 'Email has been used') {
+            this.emailError = 'notUnique'
+          } else {
+            this.emailError = '系統發生未知錯誤'
+          }
+        })
+        .finally(() => {
+          this.isEmailValidating = false
+        })
+    },
+    submit() {
       if (this.$refs.form.validate()) {
-        this.isLoading = true
-        new Promise((resolve, reject) =>
-          this.$emit('submit-new-password', this.passwordInfo, resolve, reject),
-        )
-          .then(() => {
-            this.$alertSuccess('更改密碼成功。')
-          })
-          .catch(() => {
-            this.$alertFail('更改密碼失敗。')
-          })
-          .finally(() => {
-            this.isLoading = false
-          })
+        if (this.formValues.newPassword) {
+          this.submitNewPassword()
+        }
+        if (this.formValues.email) {
+          this.submitNewEmail()
+        }
       }
+    },
+    submitNewPassword() {
+      this.isLoading = true
+      const body = {
+        oldPassword: this.formValues.oldPassword,
+        newPassword: this.formValues.newPassword,
+      }
+      agent.Auth.changePassword(body)
+        .then(() => {
+          this.$alertSuccess('更改密碼成功。')
+        })
+        .catch(() => {
+          this.$alertFail('更改密碼失敗。')
+        })
+        .finally(() => {
+          this.isLoading = false
+        })
+    },
+    submitNewEmail() {
+      this.isLoading = true
+      const body = {
+        password: this.formValues.oldPassword,
+        email: this.formValues.email,
+      }
+      agent.Auth.changeEmail(body)
+        .then(() => {
+          this.$alertSuccess('更改信箱成功。')
+        })
+        .catch(() => {
+          this.$alertFail('更改信箱失敗。')
+        })
+        .finally(() => {
+          this.isLoading = false
+        })
     },
   },
 }

@@ -41,6 +41,7 @@
                   class="ml-2"
                   color="success"
                   :disabled="!newStudentFile"
+                  :loading="isLoading"
                   @click="submit"
                   data-test="submitFileBtn"
                 >
@@ -59,17 +60,15 @@
               </div>
               <div class="text-body-2">
                 必須包含四欄，分別是：
-                <ul>
-                  <li>
-                    <pre>username（至多 16 字元）</pre>
-                  </li>
-                </ul>
-                <ul>
-                  <li>
-                    <pre>displayName（至多 32 字元）</pre>
-                  </li>
-                </ul>
-                <ul v-for="header in ['password', 'email']" :key="header">
+                <ul
+                  v-for="header in [
+                    'school（須為下方指定的其中一個）',
+                    'username（至多 16 字元）',
+                    'displayName（至多 32 字元）',
+                    'password',
+                  ]"
+                  :key="header"
+                >
                   <li>
                     <pre>{{ header }}</pre>
                   </li>
@@ -83,11 +82,31 @@
               </div>
               <div class="text-body-2">
                 第二列開始為欲加入的學生的帳號資料，系統將會判斷該
-                <code>username</code> 是否存在於系統。
+                <code>school</code> 與 <code>username</code> 的組合是否存在於系統。
                 <br />
-                若不存在，會以填寫的四個資料在系統新增這個使用者的帳號，隨後將該使用者加入此課程。
+                若不存在，會以填寫的四個資料在系統新增這個使用者，隨後將該使用者加入此課程。
                 <br />
-                反之，若已存在於系統，將會忽略其他三個欄位的資料，然後將該使用者加入此課程。
+                反之，若已存在於系統，將會忽略其他兩個欄位的資料，然後將該使用者加入此課程。
+              </div>
+
+              <div class="text-body-1 font-weight-bold mt-4 mb-1">
+                school 欄位可使用的值
+              </div>
+              <div class="text-body-2">
+                <v-menu offset-y>
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-btn color="primary" dark v-bind="attrs" v-on="on">
+                      學校對照表
+                    </v-btn>
+                  </template>
+                  <v-list>
+                    <v-list-item v-for="{ alias, name } in schoolOptions" :key="name">
+                      <v-list-item-title>
+                        {{ name }}：{{ alias ? alias : '（空字串）' }}
+                      </v-list-item-title>
+                    </v-list-item>
+                  </v-list>
+                </v-menu>
               </div>
 
               <div class="text-body-1 font-weight-bold mt-4 mb-1">
@@ -138,7 +157,7 @@
                   outlined
                   dense
                 />
-                <div class="text-body-1 mb-4">若帳號尚未創立，請填寫以下資料。</div>
+                <div class="text-body-1 mb-4">若帳號尚未創立，請設定以下資料。</div>
                 <v-text-field
                   v-model="newStudent.displayName"
                   label="displayName（顯示名稱）"
@@ -152,12 +171,12 @@
                   outlined
                   dense
                 />
-                <v-text-field v-model="newStudent.email" label="email（信箱）" outlined dense />
                 <v-btn
                   class="my-4"
                   block
                   color="success"
                   :disabled="isAddStudentDisabled"
+                  :loading="isLoading"
                   @click="submitAddStudent"
                 >
                   送出
@@ -168,6 +187,49 @@
         </v-tab-item>
       </v-tabs-items>
     </v-card>
+    <v-dialog v-model="isShowError" persistent>
+      <v-card class="py-8">
+        <div class="d-flex flex-column align-center pb-8">
+          <div>
+            <v-icon size="66" color="error">mdi-alert-circle-outline</v-icon>
+          </div>
+          <div class="text-h5 text-center mt-3">
+            以下學生新增失敗
+          </div>
+        </div>
+        <v-card-text class="text--primary">
+          <v-simple-table>
+            <template v-slot:default>
+              <thead>
+                <tr>
+                  <th>school</th>
+                  <th>username</th>
+                  <th>error message</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="{ school, username, err } in errors" :key="username">
+                  <td>{{ school }}</td>
+                  <td>{{ username }}</td>
+                  <td v-if="err">
+                    <div v-for="[key, value] in Object.entries(err)" :key="key">
+                      {{ key }}: {{ value }}
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </template>
+          </v-simple-table>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer />
+          <v-btn color="primary" class="px-16" large tile @click="isShowError = false">
+            我知道了
+          </v-btn>
+          <v-spacer />
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-dialog>
 </template>
 
@@ -177,7 +239,7 @@ import ConfirmModal from '@/components/UI/ConfirmModal'
 import { SCHOOLS } from '@/constants/auth'
 
 const template =
-  'username,displayName,password,email\n407123000S,王大明,gB7hj31p,bigming@ntnu.edu.tw\n409456000H,陳耳東,409456000H,earEast@ntu.edu.tw\nB123456789,（若是已註冊過的帳號,其他欄位可填可不填）'
+  'school,username,displayName,password\n,407123000S,王大明,gB7hj31p\nNTNU,409456000H,陳耳東,409456000H\nNTUST,B123456789,（已註冊過的帳號）,'
 const initNewStudent = {
   school: '',
   username: '',
@@ -199,6 +261,9 @@ export default {
     newStudent: { ...initNewStudent },
     isShowConfirmModal: false,
     previewFile: null,
+    isShowError: false,
+    errors: null,
+    isLoading: false,
   }),
 
   computed: {
@@ -220,19 +285,26 @@ export default {
       this.isShowConfirmModal = false
     },
     confirmSubmit() {
+      this.isLoading = true
       new Promise((resolve, reject) =>
         this.$emit('submit-add-multiple-students', this.newStudentFile, resolve, reject),
       )
         .then(() => {
           this.dialog = false
-          this.newStudentFile = null
           this.$alertSuccess('新增學生成功。')
         })
-        .catch(() => {
-          // TODO: show error message
-          this.$alertFail('新增學生失敗。')
+        .catch(error => {
+          if (error.data.fails.length > 0) {
+            this.$alertFail('新增學生失敗。')
+            this.errors = error.data.fails
+            this.isShowError = true
+          } else {
+            this.$alertSuccess('新增學生成功。')
+          }
         })
         .finally(() => {
+          this.isLoading = false
+          this.newStudentFile = null
           this.closeConfirmModal()
         })
     },
@@ -244,6 +316,7 @@ export default {
       link.click()
     },
     submitAddStudent() {
+      this.isLoading = true
       if (this.$refs.form.validate()) {
         new Promise((resolve, reject) =>
           this.$emit(
@@ -260,8 +333,17 @@ export default {
             this.newStudent = { ...initNewStudent }
             this.$alertSuccess('新增學生成功。')
           })
-          .catch(() => {
-            this.$alertFail('新增學生失敗。')
+          .catch(error => {
+            if (error.data.fails.length > 0) {
+              this.$alertFail('新增學生失敗。')
+              this.errors = error.data.fails
+              this.isShowError = true
+            } else {
+              this.$alertSuccess('新增學生成功。')
+            }
+          })
+          .finally(() => {
+            this.isLoading = false
           })
       }
     },

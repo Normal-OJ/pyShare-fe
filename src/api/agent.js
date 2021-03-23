@@ -73,7 +73,7 @@ const Gitlab = {
 }
 
 const Permission = {
-  get: (resource, id) => Vue.axios.get(`/${resource}/${id}/permission`)
+  get: (resource, id) => Vue.axios.get(`/${resource}/${id}/permission`),
 }
 
 export default {

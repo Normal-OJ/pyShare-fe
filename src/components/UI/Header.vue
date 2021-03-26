@@ -44,17 +44,25 @@
           text
           v-bind="attrs"
           v-on="on"
+          data-test="logoutMenu"
         >
           {{ displayName }}
         </v-btn>
       </template>
       <v-list>
-        <v-list-item link @click="$emit('logout')">
+        <v-list-item link @click="$emit('logout')" data-test="logoutBtn">
           <v-list-item-title class="text-center">登出</v-list-item-title>
         </v-list-item>
       </v-list>
     </v-menu>
-    <v-btn v-else :to="{ name: 'login' }" class="text-body-1 font-weight-bold" dark text>
+    <v-btn
+      v-else
+      :to="{ name: 'login' }"
+      class="text-body-1 font-weight-bold"
+      dark
+      text
+      data-test="loginBtn"
+    >
       登入
     </v-btn>
     <Popup

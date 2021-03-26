@@ -12,6 +12,10 @@ describe('Login', () => {
     cy.reload()
   })
 
+  after(() => {
+    cy.logout()
+  })
+
   it('redirects from auth needed pages and redirects back after login.', () => {
     cy.visit('/courses')
 

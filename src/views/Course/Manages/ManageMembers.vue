@@ -59,13 +59,8 @@ export default {
     },
   },
 
-  watch: {
-    courseId: {
-      handler() {
-        this.getStats(this.courseId)
-      },
-      immediate: true,
-    },
+  mounted() {
+    this.getStats(this.courseId)
   },
 
   methods: {
@@ -78,12 +73,13 @@ export default {
         const csvString = e.target.result
         try {
           await agent.Auth.batchSignup({ course: this.courseId, csvString })
-          this.getStats(this.courseId)
           resolve()
         } catch (error) {
           console.log('[views/ManageMembers/submitAddMultipleStudents] error', error)
           reject(error)
           throw error
+        } finally {
+          this.getStats(this.courseId)
         }
       }
       r.readAsText(file)
@@ -91,23 +87,25 @@ export default {
     async submitAddStudent(csvString, resolve, reject) {
       try {
         await agent.Auth.batchSignup({ course: this.courseId, csvString })
-        this.getStats(this.courseId)
         resolve()
       } catch (error) {
         console.log('[views/ManageMembers/submitAddStudent] error', error)
         reject(error)
         throw error
+      } finally {
+        this.getStats(this.courseId)
       }
     },
     async submitDeleteStudent(users, resolve, reject) {
       try {
         await agent.Course.removeStudent(this.courseId, { users })
-        this.getStats(this.courseId)
         resolve()
       } catch (error) {
         console.log('[views/ManageMembers/submitDeleteStudent] error', error)
         reject(error)
         throw error
+      } finally {
+        this.getStats(this.courseId)
       }
     },
   },

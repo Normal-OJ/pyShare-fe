@@ -50,9 +50,9 @@
               </div>
               <div class="text-body-1 font-weight-bold mt-4 mb-1">檔案格式說明</div>
               <div class="text-body-2">
-                您可以上傳一個以 <strong>utf-8</strong> 編碼的 csv 檔案（逗號分隔檔案）。
+                您可以上傳一個以 <strong>utf-8</strong> 編碼的 csv 檔案（逗號分隔檔案）來新增學生。
                 <br />
-                其中第一列為標題列，接下來每一列皆為一位學生的基本帳號資料，詳見以下說明，最下方亦有範例可以參考。
+                其中第一列為標題列，接下來每一列皆為一位學生的基本帳號資料，詳見以下說明，最下方亦有範例檔案可以參考及下載。
               </div>
 
               <div class="text-body-1 font-weight-bold mt-4 mb-1">
@@ -62,9 +62,9 @@
                 必須包含四欄，分別是：
                 <ul
                   v-for="header in [
-                    'school（須為下方指定的其中一個）',
-                    'username（至多 16 字元）',
-                    'displayName（至多 32 字元）',
+                    'school（須為下方「學校對照表」中的其中一個，值為不含引號的空字串或大寫學校縮寫）',
+                    'username（至多 16 字元，慣例上會使用學號）',
+                    'displayName（至多 32 字元，為平台內顯示的名稱）',
                     'password',
                   ]"
                   :key="header"
@@ -73,16 +73,15 @@
                     <pre>{{ header }}</pre>
                   </li>
                 </ul>
-                <code>displayName</code> 為平台內顯示的名稱，另外目前僅開放
-                <code>password</code> 支援修改。
+                日後學生登入平台可以自行修改密碼、新增電子信箱（忘記密碼時使用）。
               </div>
 
               <div class="text-body-1 font-weight-bold mt-4 mb-1">
                 學生資料列（第二列以後）
               </div>
               <div class="text-body-2">
-                第二列開始為欲加入的學生的帳號資料，系統將會判斷該
-                <code>school</code> 與 <code>username</code> 的組合是否存在於系統。
+                第二列開始為欲加入的學生的帳號資料，一列一位學生資料，系統將會判斷該
+                <code>school</code> + <code>username</code> 的組合是否存在於系統。
                 <br />
                 若不存在，會以填寫的四個資料在系統新增這個使用者，隨後將該使用者加入此課程。
                 <br />
@@ -99,13 +98,24 @@
                       學校對照表
                     </v-btn>
                   </template>
-                  <v-list>
-                    <v-list-item v-for="{ alias, name } in schoolOptions" :key="name">
-                      <v-list-item-title>
-                        {{ name }}：{{ alias ? alias : '（空字串）' }}
-                      </v-list-item-title>
-                    </v-list-item>
-                  </v-list>
+                  <v-simple-table>
+                    <template v-slot:default>
+                      <thead>
+                        <tr>
+                          <th>學校名稱</th>
+                          <th>csv 內應使用的值「不含引號」</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr v-for="{ alias, name } in schoolOptions" :key="name">
+                          <td>{{ name }}</td>
+                          <td>
+                            <code>{{ `"${alias}"` }}</code>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </template>
+                  </v-simple-table>
                 </v-menu>
               </div>
 
@@ -170,6 +180,9 @@
                   label="password（密碼）"
                   outlined
                   dense
+                  :type="isShowPassword ? 'text' : 'password'"
+                  :append-icon="isShowPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                  @click:append="isShowPassword = !isShowPassword"
                 />
                 <v-btn
                   class="my-4"
@@ -259,6 +272,7 @@ export default {
     template,
     validForm: false,
     newStudent: { ...initNewStudent },
+    isShowPassword: false,
     isShowConfirmModal: false,
     previewFile: null,
     isShowError: false,
@@ -299,6 +313,7 @@ export default {
             this.errors = error.data.fails
             this.isShowError = true
           } else {
+            this.dialog = false
             this.$alertSuccess('新增學生成功。')
           }
         })
@@ -339,6 +354,8 @@ export default {
               this.errors = error.data.fails
               this.isShowError = true
             } else {
+              this.dialog = false
+              this.newStudent = { ...initNewStudent }
               this.$alertSuccess('新增學生成功。')
             }
           })

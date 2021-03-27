@@ -21,6 +21,10 @@ export default {
     }),
   },
 
+  mounted() {
+    this.getCourseInfo(this.$route.params.id)
+  },
+
   methods: {
     ...mapActions({
       getCourseInfo: GET_COURSE_INFO,
@@ -32,26 +36,28 @@ export default {
         const csvString = e.target.result
         try {
           await agent.Auth.batchSignup({ course, csvString })
-          this.getCourseInfo(course)
           resolve()
         } catch (error) {
           console.log('[views/Info/submitAddMultipleStudents error]', error)
           reject(error)
           throw error
+        } finally {
+          this.getCourseInfo(course)
         }
       }
       r.readAsText(file)
     },
     async submitAddStudent(csvString, resolve, reject) {
+      const course = this.$route.params.id
       try {
-        const course = this.$route.params.id
         await agent.Auth.batchSignup({ course, csvString })
-        this.getCourseInfo(course)
         resolve()
       } catch (error) {
         console.log('[views/Info/submitAddStudent error]', error)
         reject(error)
         throw error
+      } finally {
+        this.getCourseInfo(course)
       }
     },
   },

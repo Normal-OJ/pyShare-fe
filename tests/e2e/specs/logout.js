@@ -11,16 +11,13 @@ describe('Logout', () => {
     })
   })
 
-  it('let user logout after click logout.', () => {
-    cy.get(logoutMenuId).click()
-    cy.get(logoutBtnId).click()
-    cy.contains('登入')
-  })
-
-  it('logout from different page.', () => {
-    cy.visit('/courses')
-    cy.get(logoutMenuId).click()
-    cy.get(logoutBtnId).click()
-    cy.contains('登入')
+  const pages = ['/', '/courses', '/about']
+  pages.forEach(page => {
+    it(`makes user loging out & redirect to home after clicking logout button from ${page}.`, () => {
+      cy.visit(page)
+      cy.get(logoutMenuId).click()
+      cy.get(logoutBtnId).click()
+      cy.contains('登入')
+    })
   })
 })

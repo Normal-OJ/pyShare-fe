@@ -6,6 +6,7 @@ Cypress.Commands.add('login', body => {
   cy.window().then(win => {
     win.__store__.dispatch(LOGIN, body)
   })
+  cy.wait(800)
 })
 
 Cypress.Commands.add('logout', () => {
@@ -13,6 +14,7 @@ Cypress.Commands.add('logout', () => {
   cy.window().then(win => {
     win.__store__.dispatch(LOGOUT)
   })
+  cy.wait(800)
 })
 
 Cypress.Commands.add('vuetifyMenuSelect', (element, selection) => {

@@ -68,7 +68,7 @@
         class="mt-4"
         :loading="isLoading"
         @click="handleSubmit"
-        data-test="loginBtn"
+        data-test="submitLoginBtn"
       >
         登入
       </v-btn>

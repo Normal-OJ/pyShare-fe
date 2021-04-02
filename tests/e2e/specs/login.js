@@ -2,7 +2,7 @@ const emailRadioId = '[data-test=emailRadio]'
 const schoolId = '[data-test=school]'
 const usernameId = '[data-test=username]'
 const passwordId = '[data-test=password]'
-const loginBtnId = '[data-test=loginBtn]'
+const loginBtnId = '[data-test=submitLoginBtn]'
 const emailId = '[data-test=email]'
 
 describe('Login', () => {

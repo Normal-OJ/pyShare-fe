@@ -2,8 +2,8 @@
   <div>
     <div class="text-h4 font-weight-bold text-center">{{ prob.title }}</div>
     <div class="d-flex flex-row mt-4">
-      <v-avatar class="mr-2" size="48" color="primary">
-        <span class="white--text headline">{{ prob.author.displayName.slice(0, 1) }}</span>
+      <v-avatar class="mr-2" size="48">
+        <v-img :src="$getGravatar(prob.author.md5)" />
       </v-avatar>
       <div class="d-flex flex-column">
         <router-link :to="{ name: 'profile', params: { id: prob.author.id } }">

@@ -7,8 +7,8 @@
       :key="id"
     >
       <div class="d-flex py-4">
-        <v-avatar class="ml-4" size="36" color="primary">
-          <span class="white--text headline">{{ author.displayName.slice(0, 1) }}</span>
+        <v-avatar class="ml-4" size="36">
+          <v-img :src="$getGravatar(author.md5)" />
         </v-avatar>
         <div class="d-flex flex-column">
           <v-card-title class="d-flex flex-row align-center flex-wrap text-body-2 pt-0">

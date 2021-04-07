@@ -1,11 +1,16 @@
 <template>
   <v-container class="pb-16">
-    <div class="d-flex justify-center mt-4">
-      <v-avatar class="mr-2" size="120" color="primary">
-        <span class="white--text text-h3" v-if="user.displayName">
-          {{ user.displayName.slice(0, 1) }}
-        </span>
+    <div class="d-flex flex-column align-center mt-4">
+      <v-avatar size="120">
+        <v-img :src="$getGravatar(user.md5)" />
       </v-avatar>
+      <div class="mt-2 text-body-2">
+        若欲更改頭像，請至
+        <span>
+          <a href="https://en.gravatar.com/" target="_blank" rel="noopener noreferrer">Gravatar</a>
+        </span>
+        網站使用與平台同樣的 email 進行設定
+      </div>
     </div>
     <div class="text-h5">基本資訊</div>
     <Spinner v-if="!user.username || !user.displayName" />

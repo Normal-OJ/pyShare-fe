@@ -58,8 +58,8 @@
       </div>
       <v-divider class="mt-1 mb-4" />
       <div class="d-flex flex-row align-center">
-        <v-avatar class="mr-4" size="48" color="primary">
-          <span class="white--text headline">{{ comment.author.displayName.slice(0, 1) }}</span>
+        <v-avatar class="mr-4" size="48">
+          <v-img :src="$getGravatar(comment.author.md5)" />
         </v-avatar>
         <div class="d-flex flex-column" style="flex: 1">
           <!-- First Row -->

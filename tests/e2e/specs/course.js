@@ -1,3 +1,4 @@
+// TODO: separate tests
 const newCourseBtnId = '[data-test=newCourseBtn]'
 const courseNameId = '[data-test=courseName]'
 const courseYearId = '[data-test=courseYear]'
@@ -9,6 +10,7 @@ const manageMemberCardId = '[data-test=manageMemberCard]'
 const removeStudentBtnId = '[data-test=removeStudentBtn]'
 const confirmDeleteInputId = '[data-test=confirmDeleteInput]'
 const confirmDeleteBtnId = '[data-test=confirmDeleteBtn]'
+// TODO: setup a DB in frontend to manage these pre-defined resourse
 const publicCourse = {
   description: 'public course',
   name: 'e2e_course_public',
@@ -26,6 +28,11 @@ const privateCourse = {
   name: 'e2e_course_private',
   status: '不公開課程',
   statusCardId: '[data-test=courseStatus0]',
+}
+const teacher = {
+  school: '',
+  username: 'tcchiang',
+  password: 'tcchiang',
 }
 
 const createCourseWithCurrentUser = name => {
@@ -102,11 +109,6 @@ describe('Create Course', () => {
 
 describe('Add Course Students', () => {
   let courseName, courseId
-  const teacher = {
-    school: '',
-    username: 'tcchiang',
-    password: 'tcchiang',
-  }
 
   beforeEach(() => {
     cy.visit('/')
@@ -179,11 +181,6 @@ describe('Add Course Students', () => {
 
 describe('Delete Course Students', () => {
   let courseName, courseId
-  const teacher = {
-    school: '',
-    username: 'tcchiang',
-    password: 'tcchiang',
-  }
 
   beforeEach(() => {
     cy.visit('/')
@@ -192,7 +189,7 @@ describe('Delete Course Students', () => {
     createCourseWithCurrentUser(courseName).then(id => (courseId = id))
     cy.visit('/courses')
 
-    // add students, should use request instead
+    // TODO: should use request instead
     cy.contains(courseName)
       .parent()
       .click()

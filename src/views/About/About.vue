@@ -1,6 +1,6 @@
 <template>
   <div>
-    <ReleaseNote :releases="releases" />
+    <ReleaseNote :releases="releases" :isLoading="isLoading" />
     <MeetOurTeam />
   </div>
 </template>
@@ -14,7 +14,8 @@ export default {
   components: { ReleaseNote, MeetOurTeam },
 
   data: () => ({
-    releases: [],
+    releases: null,
+    isLoading: true,
   }),
 
   created() {
@@ -28,6 +29,8 @@ export default {
       } catch (error) {
         console.log('[views/About/getReleases] error', error)
         throw error
+      } finally {
+        this.isLoading = false
       }
     },
   },

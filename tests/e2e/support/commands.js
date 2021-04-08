@@ -18,12 +18,18 @@ Cypress.Commands.add('logout', () => {
 })
 
 Cypress.Commands.add('createCourse', body => {
-  cy.request({
+  return cy.request({
     url: '/api/course',
     method: 'POST',
     body,
   })
-  cy.wait(800)
+})
+
+Cypress.Commands.add('deleteCourse', courseId => {
+  return cy.request({
+    url: `/api/course/${courseId}`,
+    method: 'DELETE',
+  })
 })
 
 Cypress.Commands.add('vuetifyMenuSelect', (element, selection) => {

@@ -10,50 +10,42 @@ const removeStudentBtnId = '[data-test=removeStudentBtn]'
 const confirmDeleteInputId = '[data-test=confirmDeleteInput]'
 const confirmDeleteBtnId = '[data-test=confirmDeleteBtn]'
 const publicCourse = {
+  description: 'public course',
   name: 'e2e_course_public',
   status: '開放課程',
   statusCardId: '[data-test=courseStatus2]',
 }
 const readonlyCourse = {
+  description: 'readonly course',
   name: 'e2e_course_readonly',
   status: '公開課程',
   statusCardId: '[data-test=courseStatus1]',
 }
 const privateCourse = {
+  description: 'private course',
   name: 'e2e_course_private',
   status: '不公開課程',
   statusCardId: '[data-test=courseStatus0]',
 }
 
-const deleteCourseByRequest = name => {
-  cy.request({
-    url: `/api/course`,
-    method: 'GET',
-  })
-    .then(resp => {
-      const courseList = resp.body.data
-      const id = courseList.find(c => c.name === name).id
-      return cy.request({
-        url: `/api/course/${id}`,
-        method: 'DELETE',
+const createCourseWithCurrentUser = name => {
+  return cy
+    .window()
+    .then(win => {
+      const userId = win.__store__.state.auth.id
+      return cy.createCourse({
+        teacher: userId,
+        name,
+        year: 109,
+        semester: 2,
+        status: 1,
+        description: '',
       })
     })
-    .then(() => {
-      // Assert deleted course should not exist
-      cy.visit('/courses')
-      // ensure it is not loading
-      cy.get('tr > td')
-        .contains('讀取中')
-        .should('not.exist')
-      cy.get('tr > td')
-        .contains(name)
-        .should('not.exist')
-    })
+    .then(resp => resp.body.data.id)
 }
 
 describe('Create Course', () => {
-  let courseName
-
   beforeEach(() => {
     cy.visit('/')
     cy.login({
@@ -65,7 +57,9 @@ describe('Create Course', () => {
   })
 
   afterEach(() => {
-    deleteCourseByRequest(courseName)
+    cy.location('pathname').then(pathname => {
+      cy.deleteCourse(pathname.split('/')[2])
+    })
   })
 
   const testCreateCourse = courseInfo => {
@@ -99,24 +93,15 @@ describe('Create Course', () => {
     cy.contains('tcchiang')
   }
 
-  it('can create public course', () => {
-    courseName = publicCourse.name
-    testCreateCourse(publicCourse)
-  })
-
-  it('can create readonly course', () => {
-    courseName = readonlyCourse.name
-    testCreateCourse(readonlyCourse)
-  })
-
-  it('can create private course', () => {
-    courseName = privateCourse.name
-    testCreateCourse(privateCourse)
+  ;[publicCourse, readonlyCourse, privateCourse].forEach(course => {
+    it(`can create ${course.description}`, () => {
+      testCreateCourse(course)
+    })
   })
 })
 
 describe('Add Course Students', () => {
-  let courseName
+  let courseName, courseId
   const teacher = {
     school: '',
     username: 'tcchiang',
@@ -127,28 +112,12 @@ describe('Add Course Students', () => {
     cy.visit('/')
     cy.login({ ...teacher })
     courseName = `e2e_${+new Date()}`
-    cy.request({
-      url: '/api/user',
-      method: 'GET',
-    })
-      .then(resp => resp.body.data)
-      .then(users => users.find(u => u.username === teacher.username))
-      .then(user => user.id)
-      .then(uid =>
-        cy.createCourse({
-          teacher: uid,
-          name: courseName,
-          year: 109,
-          semester: 2,
-          status: 1,
-          description: '',
-        }),
-      )
+    createCourseWithCurrentUser(courseName).then(id => (courseId = id))
     cy.visit('/courses')
   })
 
   afterEach(() => {
-    deleteCourseByRequest(courseName)
+    cy.deleteCourse(courseId)
   })
 
   it('can add students by csv from Info panel.', () => {
@@ -179,6 +148,7 @@ describe('Add Course Students', () => {
     cy.contains('tcc_stu_1')
     cy.contains('tcc_stu_2')
   })
+
   it('can add students by csv from ManageStudent panel.', () => {
     cy.contains(courseName)
       .parent()
@@ -208,7 +178,7 @@ describe('Add Course Students', () => {
 })
 
 describe('Delete Course Students', () => {
-  let courseName
+  let courseName, courseId
   const teacher = {
     school: '',
     username: 'tcchiang',
@@ -219,23 +189,7 @@ describe('Delete Course Students', () => {
     cy.visit('/')
     cy.login({ ...teacher })
     courseName = `e2e_${+new Date()}`
-    cy.request({
-      url: '/api/user',
-      method: 'GET',
-    })
-      .then(resp => resp.body.data)
-      .then(users => users.find(u => u.username === teacher.username))
-      .then(user => user.id)
-      .then(uid =>
-        cy.createCourse({
-          teacher: uid,
-          name: courseName,
-          year: 109,
-          semester: 2,
-          status: 1,
-          description: '',
-        }),
-      )
+    createCourseWithCurrentUser(courseName).then(id => (courseId = id))
     cy.visit('/courses')
 
     // add students, should use request instead
@@ -255,7 +209,7 @@ describe('Delete Course Students', () => {
   })
 
   afterEach(() => {
-    deleteCourseByRequest(courseName)
+    cy.deleteCourse(courseId)
   })
 
   it('can remove all students.', () => {

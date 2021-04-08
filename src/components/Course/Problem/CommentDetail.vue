@@ -58,9 +58,7 @@
       </div>
       <v-divider class="mt-1 mb-4" />
       <div class="d-flex flex-row align-center">
-        <v-avatar class="mr-4" size="48">
-          <v-img :src="$getGravatar(comment.author.md5)" />
-        </v-avatar>
+        <Gravatar class="mr-4" :size="48" :md5="comment.author.md5" />
         <div class="d-flex flex-column" style="flex: 1">
           <!-- First Row -->
           <div class="d-flex flex-row align-center">
@@ -411,6 +409,7 @@
 import TextEditor from '@/components/UI/TextEditor'
 import CodeEditor from '@/components/UI/CodeEditor'
 import Spinner from '@/components/UI/Spinner'
+import Gravatar from '@/components/UI/Gravatar'
 import SubmissionStatusLabel from '@/components/UI/SubmissionStatusLabel'
 import { SUBMISSION_STATUS } from '@/constants/submission'
 import CommentResult from './CommentResult'
@@ -432,6 +431,7 @@ export default {
     TextEditor,
     CodeEditor,
     Spinner,
+    Gravatar,
     CommentResult,
     CommentReplies,
     SubmissionStatusLabel,

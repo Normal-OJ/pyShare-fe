@@ -2,9 +2,7 @@
   <div>
     <div class="text-h4 font-weight-bold text-center">{{ prob.title }}</div>
     <div class="d-flex flex-row mt-4">
-      <v-avatar class="mr-2" size="48">
-        <v-img :src="$getGravatar(prob.author.md5)" />
-      </v-avatar>
+      <Gravatar class="mr-2" :size="48" :md5="prob.author.md5" />
       <div class="d-flex flex-column">
         <router-link :to="{ name: 'profile', params: { id: prob.author.id } }">
           {{ prob.author.displayName }}
@@ -79,6 +77,7 @@
 <script>
 import PreviewAttachmentModal from './PreviewAttachmentModal'
 import ColorLabel from '@/components/UI/ColorLabel'
+import Gravatar from '@/components/UI/Gravatar'
 
 export default {
   name: 'Problem',
@@ -94,7 +93,7 @@ export default {
     },
   },
 
-  components: { PreviewAttachmentModal, ColorLabel },
+  components: { PreviewAttachmentModal, ColorLabel, Gravatar },
 
   data: () => ({
     isPreviewAttachment: false,

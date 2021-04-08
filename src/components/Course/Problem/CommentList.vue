@@ -102,9 +102,7 @@
         <!-- Card item -->
         <v-card class="mb-4 comment" :elevation="hover ? 6 : 2" tile @click="navigate(floor)">
           <div class="d-flex flex-row align-center">
-            <v-avatar class="ml-4" size="48">
-              <v-img :src="$getGravatar(author.md5)" />
-            </v-avatar>
+            <Gravatar class="ml-4" :size="48" :md5="author.md5" />
             <div class="d-flex flex-column" style="flex: 1">
               <!-- First Row -->
               <v-card-title class="d-flex flex-row align-center flex-wrap">
@@ -185,6 +183,7 @@ import { mapGetters } from 'vuex'
 import { USERNAME } from '@/store/getters.type'
 import { SUBMISSION_STATUS } from '@/constants/submission'
 import SubmissionStatusLabel from '@/components/UI/SubmissionStatusLabel'
+import Gravatar from '@/components/UI/Gravatar'
 
 const SORT_BY = {
   TIME_DESCENDING: {
@@ -215,7 +214,7 @@ const SORT_BY = {
 
 export default {
   name: 'CommentList',
-  components: { SubmissionStatusLabel },
+  components: { SubmissionStatusLabel, Gravatar },
   props: {
     comments: {
       type: Array,

@@ -1,9 +1,7 @@
 <template>
   <v-container class="pb-16">
     <div class="d-flex flex-column align-center mt-4">
-      <v-avatar size="120">
-        <v-img :src="$getGravatar(user.md5)" />
-      </v-avatar>
+      <Gravatar :size="120" :md5="user.md5 || ''" />
       <div class="mt-2 text-body-2">
         若欲更改頭像，請至
         <span>
@@ -111,6 +109,7 @@
 
 <script>
 import Spinner from '@/components/UI/Spinner'
+import Gravatar from '@/components/UI/Gravatar'
 import { SCHOOLS } from '@/constants/auth'
 import agent from '@/api/agent'
 
@@ -129,7 +128,7 @@ export default {
     },
   },
 
-  components: { Spinner },
+  components: { Spinner, Gravatar },
 
   data() {
     return {

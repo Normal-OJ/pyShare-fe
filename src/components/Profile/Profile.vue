@@ -1,11 +1,14 @@
 <template>
   <v-container class="pb-16">
-    <div class="d-flex justify-center mt-4">
-      <v-avatar class="mr-2" size="120" color="primary">
-        <span class="white--text text-h3" v-if="user.displayName">
-          {{ user.displayName.slice(0, 1) }}
+    <div class="d-flex flex-column align-center mt-4">
+      <Gravatar :size="120" :md5="user.md5 || ''" />
+      <div class="mt-2 text-body-2">
+        若欲更改頭像，請至
+        <span>
+          <a href="https://en.gravatar.com/" target="_blank" rel="noopener noreferrer">Gravatar</a>
         </span>
-      </v-avatar>
+        網站使用與平台同樣的 email 進行設定
+      </div>
     </div>
     <div class="text-h5">基本資訊</div>
     <Spinner v-if="!user.username || !user.displayName" />
@@ -106,6 +109,7 @@
 
 <script>
 import Spinner from '@/components/UI/Spinner'
+import Gravatar from '@/components/UI/Gravatar'
 import { SCHOOLS } from '@/constants/auth'
 import agent from '@/api/agent'
 
@@ -124,7 +128,7 @@ export default {
     },
   },
 
-  components: { Spinner },
+  components: { Spinner, Gravatar },
 
   data() {
     return {

@@ -218,6 +218,7 @@ describe('Delete Course Students', () => {
     cy.get(manageMemberCardId).click()
     cy.contains('tcc_stu_1')
     cy.contains('tcc_stu_2')
+    // check all boxes
     cy.get('td > .v-data-table__checkbox').click({ multiple: true })
     cy.get(removeStudentBtnId).click()
     cy.contains('請注意以下成員創作的主題、創作、留言將會一併移除')
@@ -248,6 +249,7 @@ describe('Delete Course Students', () => {
     cy.get(manageMemberCardId).click()
     cy.contains('tcc_stu_1')
     cy.contains('tcc_stu_2')
+    // select first student in the table
     cy.get('tbody > tr:first-child > td > .v-data-table__checkbox').click()
     cy.get(removeStudentBtnId).click()
     cy.contains('請注意以下成員創作的主題、創作、留言將會一併移除')

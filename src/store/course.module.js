@@ -1,14 +1,12 @@
 import agent from '@/api/agent'
 import { COURSE_INFO } from './getters.type'
 import {
-  GET_COURSES,
   GET_COURSE_STATS,
   GET_COURSE_INFO,
   GET_COURSE_TAGS,
   GET_COURSE_PROBLEMS,
 } from './actions.type'
 import {
-  SET_COURSES,
   SET_COURSE_STATS,
   SET_COURSE_INFO,
   SET_COURSE_TAGS,
@@ -16,7 +14,6 @@ import {
 } from './mutations.type'
 
 const initialState = {
-  courses: [],
   courseStats: null,
   courseInfo: null,
   coursePermission: {},
@@ -33,15 +30,6 @@ const getters = {
 }
 
 const actions = {
-  async [GET_COURSES]({ commit }) {
-    try {
-      const { data } = await agent.Course.getList()
-      commit(SET_COURSES, data.data)
-    } catch (error) {
-      console.log('[vuex/course/getCourses] error', error)
-      throw error
-    }
-  },
   /**
    * get courses statistics
    * @param {Object} context
@@ -91,9 +79,6 @@ const actions = {
 }
 
 const mutations = {
-  [SET_COURSES](state, payload) {
-    state.courses = payload
-  },
   [SET_COURSE_STATS](state, payload) {
     state.courseStats = payload
   },

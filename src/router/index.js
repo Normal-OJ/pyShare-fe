@@ -94,6 +94,11 @@ const routes = [
     },
   },
   {
+    path: '/datasets',
+    name: 'datasets',
+    component: () => import('@/views/Datasets/Datasets'),
+  },
+  {
     path: '/profile/:id',
     component: () => import('@/views/Profile/ProfileEntry'),
     children: [

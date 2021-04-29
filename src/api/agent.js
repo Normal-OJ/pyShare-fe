@@ -73,7 +73,11 @@ const Gitlab = {
 }
 
 const Permission = {
-  get: (resource, id) => Vue.axios.get(`/${resource}/${id}/permission`)
+  get: (resource, id) => Vue.axios.get(`/${resource}/${id}/permission`),
+}
+
+const Dataset = {
+  getList: () => Vue.axios.get('/dataset'),
 }
 
 export default {
@@ -86,4 +90,5 @@ export default {
   Submission,
   Gitlab,
   Permission,
+  Dataset,
 }

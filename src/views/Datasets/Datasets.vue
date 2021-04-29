@@ -7,21 +7,23 @@
     </v-row>
     <Spinner v-if="!datasets" />
     <template v-else>
-      <div v-for="{ id, filename, description, author, view, download } in datasets" :key="id">
+      <div v-for="{ id, title, description, author, update, view, download } in datasets" :key="id">
         <v-hover v-slot="{ hover }">
           <v-card
             class="d-flex flex-column"
             elevation="0"
-            to="#"
+            :to="{ name: 'dataset', params: { id } }"
             :color="hover ? '#eee' : '#fff'"
             height="170"
           >
-            <v-card-title v-text="filename" />
+            <v-card-title v-text="title" />
             <v-card-text style="overflow-y: hidden" v-text="truncateDescription(description)" />
             <v-spacer />
             <v-card-text class="d-flex">
               上傳者：{{ author.displayName }}
               &nbsp;·&nbsp;
+              <v-icon class="mx-1" small>mdi-clock</v-icon>
+              {{ $timeFromNow(update) + '更新' }} &nbsp;·&nbsp;
               <v-icon class="mx-1" small>mdi-eye</v-icon>{{ view }} &nbsp;·&nbsp;
               <v-icon class="mx-1" small>mdi-download</v-icon>{{ download }}
             </v-card-text>

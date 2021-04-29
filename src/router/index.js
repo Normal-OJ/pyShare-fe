@@ -99,6 +99,11 @@ const routes = [
     component: () => import('@/views/Datasets/Datasets'),
   },
   {
+    path: '/dataset/:id',
+    name: 'dataset',
+    component: () => import('@/views/Datasets/Dataset'),
+  },
+  {
     path: '/profile/:id',
     component: () => import('@/views/Profile/ProfileEntry'),
     children: [

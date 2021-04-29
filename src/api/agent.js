@@ -78,6 +78,7 @@ const Permission = {
 
 const Dataset = {
   getList: () => Vue.axios.get('/dataset'),
+  get: id => Vue.axios.get(`/dataset/${id}`),
 }
 
 export default {

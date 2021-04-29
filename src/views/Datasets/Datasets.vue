@@ -3,7 +3,7 @@
     <v-row class="mb-4" no-gutters>
       <div class="text-h5">共享資料集</div>
       <v-spacer />
-      <div>新增資料集</div>
+      <CreateDatasetModal @submit="addNewDataset" />
     </v-row>
     <Spinner v-if="!datasets" />
     <template v-else>
@@ -37,11 +37,13 @@
 
 <script>
 import agent from '@/api/agent'
+import CreateDatasetModal from '@/components/Datasets/CreateDatasetModal'
 import Spinner from '@/components/UI/Spinner'
 
 export default {
   components: {
     Spinner,
+    CreateDatasetModal,
   },
   data: () => ({
     datasets: null,
@@ -52,6 +54,14 @@ export default {
   methods: {
     truncateDescription(description) {
       return description.length > 150 ? description.substring(0, 150) + '...' : description
+    },
+    addNewDataset(dataset, resolve, reject) {
+      try {
+        console.log(dataset)
+        resolve()
+      } catch {
+        reject()
+      }
     },
   },
 }

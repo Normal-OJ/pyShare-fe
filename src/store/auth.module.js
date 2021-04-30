@@ -26,26 +26,13 @@ const getters = {
 
 const actions = {
   async [LOGIN]({ commit }, body) {
-    return new Promise((resolve, reject) => {
-      agent.Auth.login(body)
-        .then(() => {
-          commit(APPLY_JWT)
-          resolve()
-        })
-        .catch(error => {
-          reject(error)
-        })
-    })
+    await agent.Auth.login(body)
+    commit(APPLY_JWT)
   },
   async [LOGOUT]({ commit }) {
-    try {
-      await agent.Auth.logout()
-      commit(APPLY_JWT)
-      commit(SET_IS_SHOW_LOGOUT_MODAL, false)
-    } catch (error) {
-      console.log('[vuex/auth/logout] error', error)
-      throw error
-    }
+    await agent.Auth.logout()
+    commit(APPLY_JWT)
+    commit(SET_IS_SHOW_LOGOUT_MODAL, false)
   },
 }
 

@@ -138,7 +138,7 @@ export default {
               throw error
           }
         })
-      this.isLoading = false
+        .finally(() => (this.isLoading = false))
     },
   },
 

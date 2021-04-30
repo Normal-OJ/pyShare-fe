@@ -3,7 +3,7 @@
     <v-row class="mb-4">
       <div class="text-h5">課程列表</div>
       <v-spacer />
-      <CreateCourseModal v-role="[TEACHER]" @submit="submitCreateCourse" />
+      <CreateCourseModal v-role="[TEACHER, ADMIN]" @submit="submitCreateCourse" />
     </v-row>
     <CourseList :data="courses" :loading="isWaitingCourseList" />
   </v-container>
@@ -17,7 +17,7 @@ import { GET_COURSES } from '@/store/actions.type'
 import agent from '@/api/agent'
 import { ROLE } from '@/constants/auth'
 
-const { TEACHER } = ROLE
+const { TEACHER, ADMIN } = ROLE
 
 export default {
   components: { CourseList, CreateCourseModal },
@@ -31,6 +31,7 @@ export default {
   data: () => ({
     isWaitingCourseList: false,
     TEACHER,
+    ADMIN,
   }),
 
   created() {

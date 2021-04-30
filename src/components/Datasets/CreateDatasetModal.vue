@@ -33,7 +33,7 @@
             dense
           />
           <v-textarea
-            label="資料夾說明"
+            label="資料集說明"
             v-model="dataset.description"
             rows="10"
             outlined

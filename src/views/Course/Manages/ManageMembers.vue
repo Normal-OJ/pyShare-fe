@@ -2,8 +2,6 @@
   <ManageMembers
     :stats="parsedStats ? parsedStats : []"
     :loading="!parsedStats"
-    @submit-add-multiple-students="submitAddMultipleStudents"
-    @submit-add-student="submitAddStudent"
     @delete-student="submitDeleteStudent"
   />
 </template>
@@ -62,7 +60,7 @@ export default {
   watch: {
     courseId: {
       handler() {
-        this.getStats(this.courseId)
+        this.getCourseStats(this.courseId)
       },
       immediate: true,
     },
@@ -70,39 +68,12 @@ export default {
 
   methods: {
     ...mapActions({
-      getStats: GET_COURSE_STATS,
+      getCourseStats: GET_COURSE_STATS,
     }),
-    submitAddMultipleStudents(file, resolve, reject) {
-      const r = new FileReader()
-      r.onload = async e => {
-        const csvString = e.target.result
-        try {
-          await agent.Auth.batchSignup({ course: this.courseId, csvString })
-          this.getStats(this.courseId)
-          resolve()
-        } catch (error) {
-          console.log('[views/ManageMembers/submitAddMultipleStudents] error', error)
-          reject(error)
-          throw error
-        }
-      }
-      r.readAsText(file)
-    },
-    async submitAddStudent(csvString, resolve, reject) {
-      try {
-        await agent.Auth.batchSignup({ course: this.courseId, csvString })
-        this.getStats(this.courseId)
-        resolve()
-      } catch (error) {
-        console.log('[views/ManageMembers/submitAddStudent] error', error)
-        reject(error)
-        throw error
-      }
-    },
     async submitDeleteStudent(users, resolve, reject) {
       try {
         await agent.Course.removeStudent(this.courseId, { users })
-        this.getStats(this.courseId)
+        this.getCourseStats(this.courseId)
         resolve()
       } catch (error) {
         console.log('[views/ManageMembers/submitDeleteStudent] error', error)

@@ -70,12 +70,7 @@
     <template v-if="canParticipateCourse">
       <div class="text-h5 mt-4">成員</div>
       <Spinner v-if="!info" />
-      <Members
-        v-else
-        :members="members"
-        @submit-add-multiple-students="submitAddMultipleStudents"
-        @submit-add-student="submitAddStudent"
-      />
+      <Members v-else :members="members" />
     </template>
   </v-container>
 </template>
@@ -115,15 +110,6 @@ export default {
     },
     courseId() {
       return this.$route.params.id
-    },
-  },
-
-  methods: {
-    submitAddMultipleStudents(file, resolve, reject) {
-      this.$emit('submit-add-multiple-students', file, resolve, reject)
-    },
-    submitAddStudent(csvString, resolve, reject) {
-      this.$emit('submit-add-student', csvString, resolve, reject)
     },
   },
 }

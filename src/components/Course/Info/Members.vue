@@ -17,10 +17,7 @@
         <v-btn color="primary" :to="{ name: 'courseManageMembers' }" class="mr-3" outlined>
           管理課程成員
         </v-btn>
-        <AddStudentModal
-          @submit-add-multiple-students="submitAddMultipleStudents"
-          @submit-add-student="submitAddStudent"
-        />
+        <AddStudentModal />
       </template>
     </div>
 
@@ -48,7 +45,7 @@
 </template>
 
 <script>
-import AddStudentModal from './AddStudentModal'
+import AddStudentModal from '@/components/Course/AddStudentModal'
 import { ROLE } from '@/constants/auth'
 
 const { TEACHER } = ROLE
@@ -93,12 +90,6 @@ export default {
     handleRowClick(value) {
       const route = this.$router.resolve({ name: 'profile', params: { id: value.id } })
       window.open(route.href, '_blank')
-    },
-    submitAddMultipleStudents(file, resolve, reject) {
-      this.$emit('submit-add-multiple-students', file, resolve, reject)
-    },
-    submitAddStudent(csvString, resolve, reject) {
-      this.$emit('submit-add-student', csvString, resolve, reject)
     },
   },
 }

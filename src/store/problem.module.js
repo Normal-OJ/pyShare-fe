@@ -1,4 +1,4 @@
-import { PROBLEMS, TEMPLATES, PROBLEMS_OF_MINE } from './getters.type'
+import { PROBLEMS, TEMPLATES, CHALLENGES, PROBLEMS_OF_MINE } from './getters.type'
 import { GET_PROBLEMS, GET_PROBLEM_INFO } from './actions.type'
 import { SET_PROBLEMS, SET_PROBLEM_INFO } from './mutations.type'
 import agent from '@/api/agent'
@@ -12,10 +12,13 @@ const state = { ...initialState }
 
 const getters = {
   [PROBLEMS](state) {
-    return state.problems.filter(p => !p.isTemplate)
+    return state.problems.filter(p => p.extra._cls !== 'OJProblem' && !p.isTemplate)
   },
   [TEMPLATES](state) {
-    return state.problems.filter(p => p.isTemplate)
+    return state.problems.filter(p => p.extra._cls !== 'OJProblem' && p.isTemplate)
+  },
+  [CHALLENGES](state) {
+    return state.problems.filter(p => p.extra._cls === 'OJProblem')
   },
   [PROBLEMS_OF_MINE](state, getters, rootState) {
     const { username } = rootState.auth

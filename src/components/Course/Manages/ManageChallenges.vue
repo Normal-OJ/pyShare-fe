@@ -1,6 +1,6 @@
 <template>
   <v-container fluid>
-    <div class="text-h5">主題</div>
+    <div class="text-h5">管理測驗</div>
     <div class="d-flex align-center">
       <v-col cols="10" md="6" class="d-flex">
         <v-select
@@ -12,11 +12,7 @@
           :items="tags"
           multiple
           dense
-        >
-          <template v-slot:selection="{ item }">
-            <ColorLabel :tag="item" small class="mt-2 mr-1" />
-          </template>
-        </v-select>
+        />
         <v-text-field
           v-model="searchText"
           label="快速搜尋"
@@ -28,20 +24,18 @@
         />
       </v-col>
       <v-spacer />
-      <template v-if="canParticipateCourse">
-        <v-btn color="primary" :to="{ name: 'courseManageProblems' }" class="mr-3" outlined>
-          管理我的主題
-        </v-btn>
-        <v-btn color="success" :to="{ name: 'courseSetProblems', params: { operation: 'new' } }">
-          <v-icon class="mr-1">mdi-playlist-plus</v-icon>
-          新增主題
-        </v-btn>
-      </template>
+      <v-btn color="primary" :to="{ name: 'courseChallenges' }" class="mr-3" outlined>
+        回到測驗列表
+      </v-btn>
+      <v-btn color="success" :to="{ name: 'courseSetChallenges', params: { operation: 'new' } }">
+        <v-icon class="mr-1">mdi-plus</v-icon>
+        新增測驗
+      </v-btn>
     </div>
 
     <v-data-table
       :headers="headers"
-      :items="problems"
+      :items="challenges"
       :search="searchText"
       :items-per-page="Number(-1)"
       hide-default-footer
@@ -68,17 +62,29 @@
           :tag="tag"
           small
           class="ma-1"
-          style="cursor: pointer"
           @click.native="selectTag(tag)"
         />
       </template>
       <template v-slot:[`item.creations`]="{ item }">
         {{ item.comments.length }}
       </template>
-      <template v-slot:[`item.author.displayName`]="{ item }">
-        <router-link :to="{ name: 'profile', params: { id: item.author.id } }">
-          {{ item.author.displayName }}
-        </router-link>
+      <template v-slot:[`item.manage`]="{ item }">
+        <v-btn
+          :to="{
+            name: 'courseSetChallenges',
+            params: { operation: 'edit' },
+            query: { pid: item.pid },
+          }"
+          color="primary"
+          small
+        >
+          <v-icon class="mr-1" small>mdi-pencil</v-icon>
+          編輯
+        </v-btn>
+        <v-btn class="ml-3" color="error" small @click="deleteProblem(item.pid)">
+          <v-icon class="mr-1" small>mdi-trash-can</v-icon>
+          刪除
+        </v-btn>
       </template>
       <template v-slot:[slotName] v-for="slotName in ['no-data', 'no-results']">
         <div class="d-flex flex-column align-center" :key="slotName">
@@ -98,16 +104,14 @@ const headers = [
   { text: '標題', value: 'title', sortable: false },
   { text: '分類', value: 'tags', sortable: false },
   { text: '累積創作數', value: 'creations' },
-  { text: '作者', value: 'author.displayName', sortable: false },
+  { text: '管理', value: 'manage', sortable: false },
 ]
 
 export default {
-  name: 'Problems',
-
   components: { ColorLabel },
 
   props: {
-    problems: {
+    challenges: {
       type: Array,
       required: true,
     },
@@ -125,18 +129,7 @@ export default {
     headers,
     searchText: '',
     selectedTags: [],
-    canParticipateCourse: null,
   }),
-
-  async created() {
-    this.canParticipateCourse = await this.$hasPermission('course', this.courseId, ['p'])
-  },
-
-  computed: {
-    courseId() {
-      return this.$route.params.id
-    },
-  },
 
   watch: {
     selectedTags() {
@@ -151,19 +144,16 @@ export default {
     selectTag(tag) {
       this.selectedTags = [...new Set([...this.selectedTags, tag])]
     },
-    unselectTag(tag) {
-      this.selectedTags = this.selectedTags.filter(t => t !== tag)
-    },
     customSort(items, index, isDesc) {
       items.sort((a, b) => {
         if (index[0] === 'creations') {
-          if (!isDesc[0]) {
+          if (!isDesc) {
             return a.comments.length - b.comments.length
           } else {
             return b.comments.length - a.comments.length
           }
         } else {
-          if (!isDesc[0]) {
+          if (!isDesc) {
             return a[index] < b[index] ? -1 : 1
           } else {
             return b[index] < a[index] ? -1 : 1
@@ -171,6 +161,12 @@ export default {
         }
       })
       return items
+    },
+    deleteProblem(pid) {
+      const result = window.confirm('確認要刪除嗎？')
+      if (result) {
+        this.$emit('delete-problem', pid)
+      }
     },
   },
 }

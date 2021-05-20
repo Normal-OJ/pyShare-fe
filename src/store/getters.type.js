@@ -7,6 +7,7 @@ export const USER = 'user'
 export const GET_PROBLEM_BY_ID = 'getProblemById'
 export const PROBLEMS = 'problems' // get problems that are not template
 export const TEMPLATES = 'templates'
+export const CHALLENGES = 'challenges'
 export const PROBLEMS_OF_MINE = 'problemsOfMine'
 
 // comment module

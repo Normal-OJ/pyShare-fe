@@ -61,6 +61,21 @@ const routes = [
         component: () => import('@/views/Course/Problems/SetProblems'),
       },
       {
+        path: 'challenges',
+        name: 'courseChallenges',
+        component: () => import('@/views/Course/Challenges/Challenges'),
+      },
+      {
+        path: 'challenge/:pid',
+        name: 'courseChallenge',
+        component: () => import('@/views/Course/Challenge/Challenge'),
+      },
+      {
+        path: 'challenges/:operation',
+        name: 'courseSetChallenges',
+        component: () => import('@/views/Course/Challenges/SetChallenges'),
+      },
+      {
         path: 'manages',
         name: 'courseManages',
         component: () => import('@/views/Course/Manages/Manages'),
@@ -79,6 +94,11 @@ const routes = [
         path: 'manages/problems',
         name: 'courseManageProblems',
         component: () => import('@/views/Course/Manages/ManageProblems'),
+      },
+      {
+        path: 'manages/challenges',
+        name: 'courseManageChallenges',
+        component: () => import('@/views/Course/Manages/ManageChallenges'),
       },
       {
         path: 'info',

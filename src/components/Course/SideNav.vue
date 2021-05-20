@@ -96,8 +96,6 @@
 <script>
 import { mapState } from 'vuex'
 
-// const SIDE_NAVS =
-
 export default {
   name: 'SideNav',
 
@@ -111,11 +109,16 @@ export default {
     ...mapState({
       problems: state => state.course.courseProblems,
     }),
+    indexAfterProblems() {
+      return this.items.findIndex(item => item.routeName === 'courseProblems') + 1
+    },
     navsBeforeProblems() {
-      return this.items.slice(0, 1)
+      return this.items.slice(0, this.indexAfterProblems)
     },
     navsAfterProblems() {
-      return this.items.slice(1).filter(item => item.label !== '管理' || this.canWriteCourse)
+      return this.items
+        .slice(this.indexAfterProblems)
+        .filter(item => item.label !== '管理' || this.canWriteCourse)
     },
     courseId() {
       return this.$route.params.id
@@ -126,9 +129,14 @@ export default {
     isMinify: false,
     items: [
       {
-        label: '主題列表',
+        label: '主題',
         icon: 'mdi-view-list',
         routeName: 'courseProblems',
+      },
+      {
+        label: '測驗',
+        icon: 'mdi-code-tags',
+        routeName: 'courseChallenges',
       },
       {
         label: '管理',

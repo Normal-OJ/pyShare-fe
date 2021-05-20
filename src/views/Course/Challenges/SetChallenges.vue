@@ -1,5 +1,5 @@
 <template>
-  <SetProblems
+  <SetChallenges
     v-if="prob"
     :prob="prob"
     :tags="courseTags"
@@ -13,7 +13,7 @@
 
 <script>
 import Spinner from '@/components/UI/Spinner'
-import SetProblems from '@/components/Course/Problems/SetProblems'
+import SetChallenges from '@/components/Course/Challenges/SetChallenges'
 import { mapActions, mapGetters, mapState } from 'vuex'
 import { GET_PROBLEM_INFO } from '@/store/actions.type'
 import { USER } from '@/store/getters.type'
@@ -31,11 +31,16 @@ const initialProb = {
   attachments: [],
   defaultCode: '',
   isTemplate: false,
-  allowMultipleComments: true,
+  allowMultipleComments: false,
+  extra: {
+    _cls: 'OJProblem',
+    input: '',
+    output: '',
+  },
 }
 
 export default {
-  components: { Spinner, SetProblems },
+  components: { Spinner, SetChallenges },
 
   computed: {
     ...mapState({
@@ -83,7 +88,7 @@ export default {
           result = await agent.Problem.create(body)
         }
         this.submitSuccess = true
-        this.$alertSuccess(`${this.isEdit ? '更新' : '新增'}主題內容成功。`)
+        this.$alertSuccess(`${this.isEdit ? '更新' : '新增'}測驗內容成功。`)
         const pid = this.isEdit ? this.pid : result.data.data.pid
         if (willAddAttachments.length > 0) {
           try {
@@ -95,10 +100,10 @@ export default {
                 return agent.Problem.addAttachment(pid, formData)
               }),
             )
-            this.$alertSuccess('新增主題附件成功。')
+            this.$alertSuccess('新增測驗附件成功。')
           } catch (error) {
-            console.log('[views/SetProblems/handleSubmit - add attachments] error', error)
-            this.$alertFail('新增主題附件失敗。')
+            console.log('[views/SetChallenges/handleSubmit - add attachments] error', error)
+            this.$alertFail('新增測驗附件失敗。')
             this.submitSuccess = false
             throw error
           }
@@ -112,10 +117,10 @@ export default {
                 return agent.Problem.removeAttachment(pid, formData)
               }),
             )
-            this.$alertSuccess('移除主題附件成功。')
+            this.$alertSuccess('移除測驗附件成功。')
           } catch (error) {
-            console.log('[views/SetProblems/handleSubmit - remove attachments] error', error)
-            this.$alertFail('移除主題附件失敗。')
+            console.log('[views/SetChallenges/handleSubmit - remove attachments] error', error)
+            this.$alertFail('移除測驗附件失敗。')
             this.submitSuccess = false
             throw error
           }
@@ -135,8 +140,8 @@ export default {
           }
         }
       } catch (error) {
-        console.log('[views/SetProblems/handleSubmit] error', error)
-        this.$alertFail(`${this.isEdit ? '更新' : '新增'}主題內容失敗。`)
+        console.log('[views/SetChallenges/handleSubmit] error', error)
+        this.$alertFail(`${this.isEdit ? '更新' : '新增'}測驗內容失敗。`)
         throw error
       } finally {
         this.isLoading = false

@@ -78,7 +78,7 @@ export default {
     ...mapActions({
       getProblemInfo: GET_PROBLEM_INFO,
     }),
-    async handleSubmit(body, willAddAttachments, willRemoveAttachments) {
+    async handleSubmit(body) {
       try {
         this.isLoading = true
         let result
@@ -90,54 +90,17 @@ export default {
         this.submitSuccess = true
         this.$alertSuccess(`${this.isEdit ? '更新' : '新增'}測驗內容成功。`)
         const pid = this.isEdit ? this.pid : result.data.data.pid
-        if (willAddAttachments.length > 0) {
-          try {
-            await Promise.all(
-              willAddAttachments.map(file => {
-                const formData = new FormData()
-                formData.append('attachment', file)
-                formData.append('attachmentName', file.name)
-                return agent.Problem.addAttachment(pid, formData)
-              }),
-            )
-            this.$alertSuccess('新增測驗附件成功。')
-          } catch (error) {
-            console.log('[views/SetChallenges/handleSubmit - add attachments] error', error)
-            this.$alertFail('新增測驗附件失敗。')
-            this.submitSuccess = false
-            throw error
-          }
-        }
-        if (willRemoveAttachments.length > 0) {
-          try {
-            await Promise.all(
-              willRemoveAttachments.map(filename => {
-                const formData = new FormData()
-                formData.append('attachmentName', filename)
-                return agent.Problem.removeAttachment(pid, formData)
-              }),
-            )
-            this.$alertSuccess('移除測驗附件成功。')
-          } catch (error) {
-            console.log('[views/SetChallenges/handleSubmit - remove attachments] error', error)
-            this.$alertFail('移除測驗附件失敗。')
-            this.submitSuccess = false
-            throw error
-          }
-        }
         this.getProblemInfo(pid)
-        if (this.submitSuccess) {
-          if (!this.isEdit) {
-            this.$router.push({
-              name: 'courseProblems',
-              params: { id: this.courseId },
-            })
-          } else {
-            this.$router.push({
-              name: 'courseProblem',
-              params: { pid: pid },
-            })
-          }
+        if (!this.isEdit) {
+          this.$router.push({
+            name: 'courseChallenges',
+            params: { id: this.courseId },
+          })
+        } else {
+          this.$router.push({
+            name: 'courseChallenge',
+            params: { pid: pid },
+          })
         }
       } catch (error) {
         console.log('[views/SetChallenges/handleSubmit] error', error)
@@ -152,9 +115,9 @@ export default {
         await agent.Problem.delete(pid)
         this.submitSuccess = true
         this.$alertSuccess('刪除題目成功。')
-        this.$router.push({ name: 'courseProblems', params: { id: this.courseId } })
+        this.$router.push({ name: 'courseChallenges', params: { id: this.courseId } })
       } catch (error) {
-        console.log('[view/Course/Manages/ManageProblems] error', error)
+        console.log('[view/Course/Manages/ManageChallenges] error', error)
         this.$alertFail('刪除題目失敗。')
         throw error
       }

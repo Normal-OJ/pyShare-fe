@@ -34,34 +34,54 @@
     <div class="text-body-1 mt-4">預設程式碼</div>
     <CodeEditor v-model="newProb.defaultCode" />
 
-    <div class="d-flex mt-4">
-      <div>
-        <div class="d-flex align-center">
-          <div class="text-body-1 mt-2 mr-2">上傳輸入檔</div>
-          <v-file-input
-            v-model="inputFile"
-            color="primary"
-            hide-input
-            prepend-icon="mdi-file-plus"
-          />
+    <div class="d-flex mt-4 justify-space-around">
+      <div v-if="newProb.extra.input">
+        <div class="text-body-1 mb-2">
+          <v-icon class="mr-1" color="success">mdi-check</v-icon>已上傳輸入檔
         </div>
-        <v-card outlined @drop.prevent="e => addFile(e, 'i')" @dragover.prevent height="100">
+        <v-btn color="primary" @click="downloadFile('i')" class="mr-3">
+          <v-icon class="mr-1">mdi-file-download</v-icon>下載輸入檔
+        </v-btn>
+        <v-btn color="error" text @click="newProb.extra.input = ''" small>移除</v-btn>
+      </div>
+      <div v-else>
+        <span class="text-body-1">請上傳輸入檔：</span>
+        <v-card outlined @drop.prevent="e => addFile(e, 'i')" @dragover.prevent height="150">
+          <v-card-actions>
+            <v-spacer />
+            <v-file-input
+              v-model="inputFile"
+              color="primary"
+              hide-input
+              prepend-icon="mdi-file-plus"
+            />
+          </v-card-actions>
           <v-card-text>
             點擊上方按鈕或拖曳檔案至此
           </v-card-text>
         </v-card>
       </div>
-      <div>
-        <div class="d-flex align-center">
-          <div class="text-body-1 mt-2 mr-2">上傳輸出檔</div>
-          <v-file-input
-            v-model="outputFile"
-            color="primary"
-            hide-input
-            prepend-icon="mdi-file-plus"
-          />
+      <div v-if="newProb.extra.output">
+        <div class="text-body-1 mb-2">
+          <v-icon class="mr-1" color="success">mdi-check</v-icon>已上傳輸出檔
         </div>
-        <v-card outlined @drop.prevent="e => addFile(e, 'o')" @dragover.prevent height="100">
+        <v-btn color="primary" @click="downloadFile('o')" class="mr-3">
+          <v-icon>mdi-file-download</v-icon>下載輸出檔
+        </v-btn>
+        <v-btn color="error" text @click="newProb.extra.output = ''" small>移除</v-btn>
+      </div>
+      <div v-else>
+        <span class="text-body-1">請上傳輸出檔：</span>
+        <v-card outlined @drop.prevent="e => addFile(e, 'o')" @dragover.prevent height="150">
+          <v-card-actions>
+            <v-spacer />
+            <v-file-input
+              v-model="outputFile"
+              color="primary"
+              hide-input
+              prepend-icon="mdi-file-plus"
+            />
+          </v-card-actions>
           <v-card-text>
             點擊上方按鈕或拖曳檔案至此
           </v-card-text>
@@ -83,21 +103,23 @@
       <v-btn class="mr-3" color="primary" outlined @click="goBack()">
         取消
       </v-btn>
-      <PreviewNewProblem :prob="newProb" />
+      <PreviewNewChallenge :prob="newProb" />
     </div>
-    <v-divider class="my-4" />
-    <div class="d-flex" v-if="isEdit">
-      <v-spacer />
-      <v-btn color="error" @click="deleteProblem">
-        <v-icon>mdi-trash-can</v-icon>
-        刪除
-      </v-btn>
-    </div>
+    <template v-if="isEdit">
+      <v-divider class="my-4" />
+      <div class="d-flex">
+        <v-spacer />
+        <v-btn color="error" @click="deleteProblem">
+          <v-icon>mdi-trash-can</v-icon>
+          刪除
+        </v-btn>
+      </div>
+    </template>
   </v-container>
 </template>
 
 <script>
-import PreviewNewProblem from '@/components/Course/Problems/PreviewNewProblem'
+import PreviewNewChallenge from '@/components/Course/Challenges/PreviewNewChallenge'
 import TextEditor from '@/components/UI/TextEditor'
 import CodeEditor from '@/components/UI/CodeEditor'
 import ColorLabel from '@/components/UI/ColorLabel'
@@ -109,7 +131,7 @@ import { ROLE as _ROLE } from '@/constants/auth'
 const { TEACHER } = _ROLE
 
 export default {
-  components: { PreviewNewProblem, TextEditor, CodeEditor, ColorLabel },
+  components: { PreviewNewChallenge, TextEditor, CodeEditor, ColorLabel },
 
   props: {
     prob: {
@@ -178,9 +200,13 @@ export default {
 
   mounted() {
     this.inputReader = new FileReader()
-    this.inputReader.onload = e => (this.newProb.extra.input = e.target.result)
+    this.inputReader.onload = e => {
+      this.newProb.extra.input = e.target.result
+    }
     this.outputReader = new FileReader()
-    this.outputReader.onload = e => (this.newProb.extra.output = e.target.result)
+    this.outputReader.onload = e => {
+      this.newProb.extra.output = e.target.result
+    }
   },
 
   methods: {
@@ -196,10 +222,16 @@ export default {
         this.outputFile = droppedFiles[0]
       }
     },
+    downloadFile(type) {
+      const content = type === 'i' ? this.newProb.extra.input : this.newProb.extra.output
+      const file = 'data:text/plain;charset=utf-8,' + encodeURIComponent(content)
+      const link = document.createElement('a')
+      link.download = type === 'i' ? 'input.txt' : 'output.txt'
+      link.href = file
+      link.click()
+    },
     submit() {
-      this.$emit('submit', this.newProb, this.willAddAttachments, this.willRemoveAttachments)
-      this.willAddAttachments = []
-      this.willRemoveAttachments = []
+      this.$emit('submit', this.newProb)
     },
     goBack() {
       window.history.length > 1

@@ -20,7 +20,7 @@
 import Header from '@/components/UI/Header'
 import Notification from '@/components/UI/Notification'
 import { mapState, mapActions } from 'vuex'
-import { ActionTypes } from './store/actions-type'
+import { ActionTypes } from './store/action-types'
 
 export default {
   name: 'App',

@@ -1,6 +1,16 @@
 import Vue from 'vue'
 import config from '@/constants/config'
-import { AxiosPromise } from 'axios'
+import { AxiosResponse } from 'axios'
+
+// 因為後端在每個 response 裡面的 data 又塞了一個 data，
+// 所以這裡複寫 AxiosResponse 裡面的 data，改成 data: { data: <REAL_DATA> }
+interface PyshareResponse<T = any> extends Omit<AxiosResponse<T>, 'data'> {
+  data: {
+    data: T
+  }
+}
+
+interface PysharePromise<T = any> extends Promise<PyshareResponse<T>> {}
 
 const Auth = {
   login: (body: Auth.ILoginBody) => Vue.axios.post('/auth/session', body),
@@ -19,9 +29,9 @@ const Auth = {
 }
 
 const Course = {
-  getList: (): AxiosPromise<Course.IInfo[]> => Vue.axios.get('/course'),
+  getList: (): PysharePromise<Course.IInfo[]> => Vue.axios.get('/course'),
 
-  get: (id: Course.ID): AxiosPromise<Course.IInfo> => Vue.axios.get(`/course/${id}`),
+  get: (id: Course.ID): PysharePromise<Course.IInfo> => Vue.axios.get(`/course/${id}`),
 
   create: (body: Course.ICreateBody) => Vue.axios.post('/course', body),
 
@@ -39,17 +49,18 @@ const Course = {
   patchTags: (id: Course.ID, body: Course.IPatchTagsBody) =>
     Vue.axios.patch(`/course/${id}/tag`, body),
 
-  getStats: (id: Course.ID): AxiosPromise<Course.IStudentStats[]> =>
+  getStats: (id: Course.ID): PysharePromise<Course.IStudentStats[]> =>
     Vue.axios.get(`/course/${id}/statistic`),
 
-  getPermission: (id: Course.ID): AxiosPromise<string[]> =>
+  getPermission: (id: Course.ID): PysharePromise<string[]> =>
     Vue.axios.get(`/course/${id}/permission`),
 }
 
 const Problem = {
-  getList: (params: Problem.IQueryOption) => Vue.axios.get('/problem', { params }),
+  getList: (params: Problem.IQueryOption): PysharePromise<Problem.IInfo[]> =>
+    Vue.axios.get('/problem', { params }),
 
-  get: (id: Problem.ID) => Vue.axios.get(`/problem/${id}`),
+  get: (id: Problem.ID): PysharePromise<Problem.IInfo> => Vue.axios.get(`/problem/${id}`),
 
   create: (body: Problem.ICreateBody) => Vue.axios.post('/problem', body),
 
@@ -68,7 +79,7 @@ const Problem = {
 }
 
 const Comment = {
-  get: (id: _Comment.ID) => Vue.axios.get(`/comment/${id}`),
+  get: (id: _Comment.ID): PysharePromise<_Comment.IInfo> => Vue.axios.get(`/comment/${id}`),
 
   create: (body: _Comment.ICreateBody) => Vue.axios.post('/comment', body),
 
@@ -83,12 +94,12 @@ const Comment = {
 }
 
 const Tag = {
-  getList: (params: Tag.IQueryOption): AxiosPromise<Tag.name[]> =>
+  getList: (params: Tag.IQueryOption): PysharePromise<Tag.name[]> =>
     Vue.axios.get('/tag', { params }),
 
   create: (body: Tag.ICreateBody) => Vue.axios.post('/tag', body),
 
-  check: (body: Tag.ICreateBody): AxiosPromise<Tag.ICheckResponse> =>
+  check: (body: Tag.ICreateBody): PysharePromise<Tag.ICheckResponse> =>
     Vue.axios.post('/tag/check', body),
 
   // TODO: re-define delete api
@@ -98,13 +109,13 @@ const Tag = {
 }
 
 const User = {
-  getList: (): AxiosPromise<User.IInfo[]> => Vue.axios.get('/user'),
+  getList: (): PysharePromise<User.IInfo[]> => Vue.axios.get('/user'),
 
-  getStats: (id: User.ID): AxiosPromise<User.IStats> => Vue.axios.get(`/user/${id}/statistic`),
+  getStats: (id: User.ID): PysharePromise<User.IStats> => Vue.axios.get(`/user/${id}/statistic`),
 }
 
 const Submission = {
-  get: (id: Submission.ID) => Vue.axios.get(`/submission/${id}`),
+  get: (id: Submission.ID): PysharePromise<Submission.IInfo> => Vue.axios.get(`/submission/${id}`),
 
   grade: (id: Submission.ID, state: Submission.State) =>
     Vue.axios.put(`/submission/${id}/state`, { state }),
@@ -123,7 +134,7 @@ const Permission = {
   get: (
     resource: 'course' | 'problem' | 'comment',
     id: Course.ID | Problem.ID | _Comment.ID,
-  ): AxiosPromise<string[]> => Vue.axios.get(`/${resource}/${id}/permission`),
+  ): PysharePromise<string[]> => Vue.axios.get(`/${resource}/${id}/permission`),
 }
 
 export default {

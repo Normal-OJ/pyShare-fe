@@ -77,7 +77,7 @@
 </template>
 
 <script>
-import { ActionTypes } from '@/store/actions-type'
+import { ActionTypes } from '@/store/action-types'
 import { SCHOOLS } from '@/constants/auth'
 import { mapState } from 'vuex'
 

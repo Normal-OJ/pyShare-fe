@@ -1,5 +1,5 @@
 import 'cypress-file-upload'
-import { ActionTypes } from '../../../src/store/actions-type'
+import { ActionTypes } from '../../../src/store/action-types'
 
 Cypress.Commands.add('login', body => {
   cy.window().should('have.property', '__store__')

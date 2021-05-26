@@ -1,17 +1,17 @@
 import Vue from 'vue'
 import store from '@/store'
-import { USERNAME, PERMISSIONS } from '@/store/getters.type'
-import { ActionTypes } from '@/store/actions-type'
+import { GetterTypes } from '@/store/getter-types'
+import { ActionTypes } from '@/store/action-types'
 
 const isSelf = target => {
-  const username = store.getters && store.getters[USERNAME]
+  const username = store.getters && store.getters[GetterTypes.USERNAME]
   if (!username) return false
   return target === username
 }
 
 const hasPermission = async (resource, id, requirement) => {
   try {
-    const permissions = store.getters && store.getters[PERMISSIONS]
+    const permissions = store.getters && store.getters[GetterTypes.PERMISSIONS]
     if (!permissions[resource][id]) {
       await store.dispatch(ActionTypes.GET_PERMISSIONS, { resource, id })
     }

@@ -11,13 +11,13 @@ declare namespace Problem {
   }
 
   interface IQueryOption {
-    offset: number
-    count: number
-    title: string
-    tags: Tag.name[]
-    course: Course.ID
-    is_template: boolean
-    allow_multiple_comments: boolean
+    offset?: number
+    count?: number
+    title?: string
+    tags?: Tag.name[]
+    course?: Course.ID
+    is_template?: boolean
+    allow_multiple_comments?: boolean
   }
 
   interface ICreateBody {

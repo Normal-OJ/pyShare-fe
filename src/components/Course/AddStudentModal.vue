@@ -237,7 +237,7 @@
 import PreviewCSV from '@/components/UI/PreviewCSV'
 import ConfirmModal from '@/components/UI/ConfirmModal'
 import { SCHOOLS } from '@/constants/auth'
-import { ActionTypes } from '@/store/actions-type'
+import { ActionTypes } from '@/store/action-types'
 import { mapActions } from 'vuex'
 import agent from '@/api/agent'
 

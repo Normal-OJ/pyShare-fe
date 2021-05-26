@@ -10,14 +10,14 @@
 <script>
 import SideNav from '@/components/Course/SideNav'
 import { mapGetters } from 'vuex'
-import { COURSE_INFO } from '@/store/getters.type'
+import { GetterTypes } from '@/store/getter-types'
 
 export default {
   components: { SideNav },
 
   computed: {
     ...mapGetters({
-      courseInfo: COURSE_INFO,
+      courseInfo: GetterTypes.COURSE_INFO,
     }),
   },
 }

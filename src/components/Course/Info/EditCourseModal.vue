@@ -87,7 +87,7 @@
 </template>
 
 <script>
-import { ActionTypes } from '@/store/actions-type'
+import { ActionTypes } from '@/store/action-types'
 import { YEARS, SEMESTERS, STATUS_OPTIONS } from '@/constants/course'
 import agent from '@/api/agent'
 

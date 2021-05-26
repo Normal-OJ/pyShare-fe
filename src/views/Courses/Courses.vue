@@ -13,7 +13,7 @@
 import CourseList from '@/components/Courses/CourseList'
 import CreateCourseModal from '@/components/Courses/CreateCourseModal'
 import { mapActions, mapState } from 'vuex'
-import { ActionTypes } from '@/store/actions-type'
+import { ActionTypes } from '@/store/action-types'
 import agent from '@/api/agent'
 import { ROLE } from '@/constants/auth'
 

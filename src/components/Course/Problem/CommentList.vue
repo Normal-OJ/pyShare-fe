@@ -179,8 +179,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
-import { USERNAME } from '@/store/getters.type'
+import { mapState } from 'vuex'
 import { SUBMISSION_STATUS } from '@/constants/submission'
 import SubmissionStatusLabel from '@/components/UI/SubmissionStatusLabel'
 import Gravatar from '@/components/UI/Gravatar'
@@ -215,8 +214,8 @@ export default {
     }
   },
   computed: {
-    ...mapGetters({
-      username: USERNAME,
+    ...mapState({
+      username: state => state.auth.username,
     }),
     courseId() {
       return this.$route.params.id

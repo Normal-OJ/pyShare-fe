@@ -9,7 +9,7 @@
 <script>
 import ManageMembers from '@/components/Course/Manages/ManageMembers'
 import { mapActions, mapState } from 'vuex'
-import { ActionTypes } from '@/store/actions-type'
+import { ActionTypes } from '@/store/action-types'
 import agent from '@/api/agent'
 
 export default {

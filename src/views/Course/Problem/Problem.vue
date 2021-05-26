@@ -61,8 +61,8 @@ import CommentDetail from '@/components/Course/Problem/CommentDetail'
 import NewComment from '@/components/Course/Problem/NewComment'
 import agent from '@/api/agent'
 import { mapActions, mapGetters, mapState } from 'vuex'
-import { ActionTypes } from '@/store/actions-type'
-import { COMMENTS } from '@/store/getters.type'
+import { ActionTypes } from '@/store/action-types'
+import { GetterTypes } from '@/store/getter-types'
 import Spinner from '@/components/UI/Spinner'
 
 export default {
@@ -90,7 +90,7 @@ export default {
       username: state => state.auth.username,
     }),
     ...mapGetters({
-      comments: COMMENTS,
+      comments: GetterTypes.COMMENTS,
     }),
     pid() {
       return Number(this.$route.params.pid)

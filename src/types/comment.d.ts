@@ -19,6 +19,7 @@ declare namespace _Comment {
     depth: number
     floor: number
     hasAccepted: boolean
+    id?: _Comment.ID
     liked: User.IInfo[]
     replies: _Comment.ID[]
     status: _Comment.Status

@@ -1,10 +1,10 @@
 // ref: https://github.com/PanJiaChen/vue-element-admin/tree/master/src/directive/permission
 import store from '@/store'
-import { ROLE } from '@/store/getters.type'
+import { GetterTypes } from '@/store/getter-types'
 
 function checkRole(el, binding) {
   const { value } = binding
-  const role = store.getters && store.getters[ROLE]
+  const role = store.getters && store.getters[GetterTypes.ROLE]
 
   if (value && value instanceof Array) {
     if (value.length > 0) {

@@ -14,9 +14,8 @@
 <script>
 import Spinner from '@/components/UI/Spinner'
 import SetProblems from '@/components/Course/Problems/SetProblems'
-import { mapActions, mapGetters, mapState } from 'vuex'
-import { ActionTypes } from '@/store/actions-type'
-import { USER } from '@/store/getters.type'
+import { mapActions, mapState } from 'vuex'
+import { ActionTypes } from '@/store/action-types'
 import agent from '@/api/agent'
 
 const OPERATION = {
@@ -42,9 +41,6 @@ export default {
       courseTags: state => state.course.courseTags,
       problemInfo: state => state.problem.problemInfo,
     }),
-    ...mapGetters({
-      user: USER,
-    }),
     isEdit() {
       return this.$route.params.operation === OPERATION.EDIT
     },
@@ -56,7 +52,7 @@ export default {
     },
     prob() {
       if (this.isEdit) return this.problemInfo
-      return { ...initialProb, course: this.courseId, author: this.user }
+      return { ...initialProb, course: this.courseId }
     },
   },
 

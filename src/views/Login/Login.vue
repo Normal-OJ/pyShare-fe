@@ -78,7 +78,7 @@
 
 <script>
 import { LOGIN } from '@/store/actions.type.js'
-import { SCHOOLS } from '@/constants/auth.js'
+import { SCHOOLS } from '@/constants/auth'
 import { mapState } from 'vuex'
 
 const USERNAME = 0

@@ -9,7 +9,7 @@
 <script>
 import ManageMembers from '@/components/Course/Manages/ManageMembers'
 import { mapActions, mapState } from 'vuex'
-import { GET_COURSE_STATS } from '@/store/actions.type'
+import { ActionTypes } from '@/store/actions-type'
 import agent from '@/api/agent'
 
 export default {
@@ -68,7 +68,7 @@ export default {
 
   methods: {
     ...mapActions({
-      getCourseStats: GET_COURSE_STATS,
+      getCourseStats: ActionTypes.GET_COURSE_STATS,
     }),
     async submitDeleteStudent(users, resolve, reject) {
       try {

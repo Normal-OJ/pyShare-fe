@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import auth from './auth.module'
+import auth from './auth'
 import course from './course.module'
 import problem from './problem.module'
 import comment from './comment.module'

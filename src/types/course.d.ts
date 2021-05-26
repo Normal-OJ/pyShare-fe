@@ -15,7 +15,7 @@ declare namespace Course {
     numOfProblems: number
     semester: number
     status: Course.Status
-    students: UserInfo[]
+    students: User.IInfo[]
     teacher: User.IInfo
     year: number
   }

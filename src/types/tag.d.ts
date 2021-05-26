@@ -10,6 +10,6 @@ declare namespace Tag {
   }
 
   interface ICheckResponse {
-    [propName: Tag.name]: number
+    [propName: string]: number
   }
 }

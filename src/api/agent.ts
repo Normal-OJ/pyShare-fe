@@ -7,6 +7,8 @@ const Auth = {
 
   logout: () => Vue.axios.get('/auth/session'),
 
+  checkToken: () => Vue.axios.post('/auth/check/token'),
+
   batchSignup: (body: Auth.IBatchSignupBody) => Vue.axios.post('/auth/batch-signup', body),
 
   changePassword: (body: Auth.IChangePasswordBody) => Vue.axios.post('/auth/change/password', body),

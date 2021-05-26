@@ -10,7 +10,7 @@ declare namespace User {
   interface IInfo {
     displayName: string
     email: string
-    id: UserId
+    id: User.ID
     md5: string
     role: User.Role
     school: string
@@ -18,7 +18,7 @@ declare namespace User {
   }
 
   type CommonStats = {
-    course: Pick<User, 'id' | 'name'>
+    course: Pick<Course.IInfo, 'id' | 'name'>
     floor: number
     pid: Problem.ID
   }

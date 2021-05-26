@@ -12,7 +12,7 @@
 import ManageProblems from '@/components/Course/Manages/ManageProblems'
 import { mapActions, mapGetters, mapState } from 'vuex'
 import { PROBLEMS_OF_MINE } from '@/store/getters.type'
-import { GET_PROBLEMS } from '@/store/actions.type'
+import { ActionTypes } from '@/store/actions-type'
 import agent from '@/api/agent'
 
 export default {
@@ -47,7 +47,7 @@ export default {
       this.isWaiting = false
     },
     ...mapActions({
-      getProblems: GET_PROBLEMS,
+      getProblems: ActionTypes.GET_PROBLEMS,
     }),
     getProblemsByTags(paramsWithTags) {
       this.getProblems({ ...paramsWithTags, course: this.courseName })

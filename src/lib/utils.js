@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import store from '@/store'
 import { USERNAME, PERMISSIONS } from '@/store/getters.type'
-import { GET_PERMISSIONS } from '@/store/actions.type'
+import { ActionTypes } from '@/store/actions-type'
 
 const isSelf = target => {
   const username = store.getters && store.getters[USERNAME]
@@ -13,7 +13,7 @@ const hasPermission = async (resource, id, requirement) => {
   try {
     const permissions = store.getters && store.getters[PERMISSIONS]
     if (!permissions[resource][id]) {
-      await store.dispatch(GET_PERMISSIONS, { resource, id })
+      await store.dispatch(ActionTypes.GET_PERMISSIONS, { resource, id })
     }
     // 物件 copy by sharing，這裡會吃到新的
     return requirement.every(req => permissions[resource][id].includes(req))

@@ -237,7 +237,7 @@
 import PreviewCSV from '@/components/UI/PreviewCSV'
 import ConfirmModal from '@/components/UI/ConfirmModal'
 import { SCHOOLS } from '@/constants/auth'
-import { GET_COURSE_STATS, GET_COURSE_INFO } from '@/store/actions.type'
+import { ActionTypes } from '@/store/actions-type'
 import { mapActions } from 'vuex'
 import agent from '@/api/agent'
 
@@ -345,8 +345,8 @@ export default {
       link.click()
     },
     ...mapActions({
-      getCourseStats: GET_COURSE_STATS,
-      getCourseInfo: GET_COURSE_INFO,
+      getCourseStats: ActionTypes.GET_COURSE_STATS,
+      getCourseInfo: ActionTypes.GET_COURSE_INFO,
     }),
   },
 }

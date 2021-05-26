@@ -1,6 +1,6 @@
 import { COMMENTS } from './getters.type'
-import { GET_COMMENTS, GET_COMMENT } from './actions.type'
 import { SET_COMMENTS } from './mutations.type'
+import { ActionTypes } from './actions-type'
 import agent from '@/api/agent'
 
 const initialState = {
@@ -21,12 +21,12 @@ const actions = {
    * @param {*} param0
    * @param {Array} commentIds array of commentId of a problem
    */
-  async [GET_COMMENTS]({ commit, dispatch }, commentIds) {
+  async [ActionTypes.GET_COMMENTS]({ commit, dispatch }, commentIds) {
     try {
       const comments = commentIds.slice()
       await Promise.all(
         comments.map((cid, index, arr) => {
-          return dispatch(GET_COMMENT, { cid, index, arr })
+          return dispatch(ActionTypes.GET_COMMENT, { cid, index, arr })
         }),
       )
       commit(SET_COMMENTS, comments)
@@ -35,7 +35,7 @@ const actions = {
       throw error
     }
   },
-  async [GET_COMMENT](_, { cid, index, arr }) {
+  async [ActionTypes.GET_COMMENT](_, { cid, index, arr }) {
     try {
       const result = await agent.Comment.get(cid)
       arr[index] = result.data.data

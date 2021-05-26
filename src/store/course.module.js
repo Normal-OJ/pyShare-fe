@@ -1,12 +1,6 @@
 import agent from '@/api/agent'
 import { COURSE_INFO } from './getters.type'
-import {
-  GET_COURSES,
-  GET_COURSE_STATS,
-  GET_COURSE_INFO,
-  GET_COURSE_TAGS,
-  GET_COURSE_PROBLEMS,
-} from './actions.type'
+import { ActionTypes } from './actions-type'
 import {
   SET_COURSES,
   SET_COURSE_STATS,
@@ -33,7 +27,7 @@ const getters = {
 }
 
 const actions = {
-  async [GET_COURSES]({ commit }) {
+  async [ActionTypes.GET_COURSES]({ commit }) {
     try {
       const { data } = await agent.Course.getList()
       commit(SET_COURSES, data.data)
@@ -47,7 +41,7 @@ const actions = {
    * @param {Object} context
    * @param {String} payload course id
    */
-  async [GET_COURSE_STATS]({ commit }, id) {
+  async [ActionTypes.GET_COURSE_STATS]({ commit }, id) {
     try {
       const { data } = await agent.Course.getStats(id)
       commit(SET_COURSE_STATS, data.data)
@@ -61,7 +55,7 @@ const actions = {
    * @param {Object} context
    * @param {String} payload course id
    */
-  async [GET_COURSE_INFO]({ commit }, id) {
+  async [ActionTypes.GET_COURSE_INFO]({ commit }, id) {
     try {
       const { data } = await agent.Course.get(id)
       commit(SET_COURSE_INFO, data.data)
@@ -70,7 +64,7 @@ const actions = {
       throw error
     }
   },
-  async [GET_COURSE_TAGS]({ commit }, id) {
+  async [ActionTypes.GET_COURSE_TAGS]({ commit }, id) {
     try {
       const { data } = await agent.Tag.getList({ course: id })
       commit(SET_COURSE_TAGS, data.data)
@@ -79,7 +73,7 @@ const actions = {
       throw error
     }
   },
-  async [GET_COURSE_PROBLEMS]({ commit }, id) {
+  async [ActionTypes.GET_COURSE_PROBLEMS]({ commit }, id) {
     try {
       const { data } = await agent.Problem.getList({ course: id })
       commit(SET_COURSE_PROBLEMS, data.data)

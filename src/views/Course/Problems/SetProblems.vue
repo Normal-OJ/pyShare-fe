@@ -15,7 +15,7 @@
 import Spinner from '@/components/UI/Spinner'
 import SetProblems from '@/components/Course/Problems/SetProblems'
 import { mapActions, mapGetters, mapState } from 'vuex'
-import { GET_PROBLEM_INFO } from '@/store/actions.type'
+import { ActionTypes } from '@/store/actions-type'
 import { USER } from '@/store/getters.type'
 import agent from '@/api/agent'
 
@@ -71,7 +71,7 @@ export default {
 
   methods: {
     ...mapActions({
-      getProblemInfo: GET_PROBLEM_INFO,
+      getProblemInfo: ActionTypes.GET_PROBLEM_INFO,
     }),
     async handleSubmit(body, willAddAttachments, willRemoveAttachments) {
       try {

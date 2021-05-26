@@ -10,7 +10,7 @@
 <script>
 import SideNav from '@/components/Course/SideNav'
 import { mapGetters } from 'vuex'
-import { COURSE_INFO } from '@/store/getters.type.js'
+import { COURSE_INFO } from '@/store/getters.type'
 
 export default {
   components: { SideNav },

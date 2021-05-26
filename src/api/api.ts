@@ -3,7 +3,7 @@ import axios from 'axios'
 import VueAxios from 'vue-axios'
 import config from '@/constants/config'
 import store from '@/store'
-import { SET_IS_SHOW_LOGOUT_MODAL } from '@/store/mutations.type.js'
+import { SET_IS_SHOW_LOGOUT_MODAL } from '@/store/mutations.type'
 
 export function apiSetup() {
   Vue.use(VueAxios, axios)

@@ -77,7 +77,7 @@
 </template>
 
 <script>
-import { LOGIN } from '@/store/actions.type.js'
+import { ActionTypes } from '@/store/actions-type'
 import { SCHOOLS } from '@/constants/auth'
 import { mapState } from 'vuex'
 
@@ -117,7 +117,7 @@ export default {
       const body =
         this.loginMethod === this.USERNAME ? { school, username, password } : { email, password }
       this.$store
-        .dispatch(LOGIN, body)
+        .dispatch(ActionTypes.LOGIN, body)
         .then(async () => {
           this.$alertSuccess('登入成功')
           await this.$nextTick()

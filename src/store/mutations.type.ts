@@ -1,5 +1,5 @@
 // auth module
-export const APPLY_JWT = 'applyJwt'
+export const SET_JWT = 'setJwt'
 export const SET_IS_SHOW_LOGOUT_MODAL = 'setIsShowLogoutModal'
 
 // course module

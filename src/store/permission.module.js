@@ -1,5 +1,5 @@
 import { PERMISSIONS } from './getters.type'
-import { GET_PERMISSIONS } from './actions.type'
+import { ActionTypes } from './actions-type'
 import { SET_PERMISSIONS } from './mutations.type'
 import agent from '@/api/agent'
 
@@ -20,7 +20,7 @@ const getters = {
 }
 
 const actions = {
-  async [GET_PERMISSIONS]({ commit }, { resource, id }) {
+  async [ActionTypes.GET_PERMISSIONS]({ commit }, { resource, id }) {
     try {
       const { data } = await agent.Permission.get(resource, id)
       commit(SET_PERMISSIONS, { resource, id, value: data.data })

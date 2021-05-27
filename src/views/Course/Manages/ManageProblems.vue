@@ -25,8 +25,8 @@ export default {
     ...mapGetters({
       problems: PROBLEMS_OF_MINE,
     }),
-    courseName() {
-      return this.$route.params.name
+    courseId() {
+      return this.$route.params.id
     },
   },
 
@@ -41,7 +41,7 @@ export default {
   methods: {
     async fetchData() {
       const paramsWithCourse = {
-        course: this.courseName,
+        course: this.courseId,
       }
       await this.getProblems(paramsWithCourse)
       this.isWaiting = false
@@ -50,7 +50,7 @@ export default {
       getProblems: GET_PROBLEMS,
     }),
     getProblemsByTags(paramsWithTags) {
-      this.getProblems({ ...paramsWithTags, course: this.courseName })
+      this.getProblems({ ...paramsWithTags, course: this.courseId })
     },
     async deleteProblem(pid) {
       try {

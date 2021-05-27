@@ -32,7 +32,7 @@
             dense
             data-test="courseName"
             persistent-hint
-            hint="課程名稱僅能包含：A-Z、a-z、0-9、底線、減號、點"
+            hint="課程名稱僅能包含：中文、英文、數字、底線、減號、點"
           />
           <v-row>
             <v-col>
@@ -118,7 +118,7 @@ export default {
     },
     nameRules: [
       val => !!val || '請輸入課程名稱',
-      val => RegExp(/[\w. _-]+$/).test(val) || '課程名稱包含非法字元',
+      val => RegExp(/^[\u4E00-\u9FCCA-Za-z0-9_.-]+$/).test(val) || '課程名稱包含非法字元',
     ],
     years: YEARS,
     semesters: SEMESTERS,

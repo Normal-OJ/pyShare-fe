@@ -94,22 +94,18 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
-
-// const SIDE_NAVS =
+import { GetterTypes } from '@/store/getter-types'
+import { mapState, mapGetters } from 'vuex'
 
 export default {
   name: 'SideNav',
 
-  props: {
-    courseInfo: {
-      type: Object,
-    },
-  },
-
   computed: {
     ...mapState({
-      problems: state => state.course.courseProblems,
+      courseInfo: state => state.course.courseInfo,
+    }),
+    ...mapGetters({
+      problems: GetterTypes.PROBLEMS,
     }),
     navsBeforeProblems() {
       return this.items.slice(0, 1)

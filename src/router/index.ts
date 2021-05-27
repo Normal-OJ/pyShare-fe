@@ -56,6 +56,10 @@ const routes = [
         path: 'problem/:pid',
         name: 'courseProblem',
         component: () => import('@/views/Course/Problem/Problem'),
+        beforeEnter: (to, from, next) => {
+          store.dispatch(ActionTypes.GET_PROBLEMS, { course: to.params.id })
+          next()
+        },
       },
       {
         path: 'problems/:operation',
@@ -90,8 +94,6 @@ const routes = [
     ],
     beforeEnter: (to, from, next) => {
       store.dispatch(ActionTypes.GET_COURSE_INFO, to.params.id)
-      store.dispatch(ActionTypes.GET_COURSE_TAGS, to.params.id)
-      store.dispatch(ActionTypes.GET_COURSE_PROBLEMS, to.params.id)
       next()
     },
   },

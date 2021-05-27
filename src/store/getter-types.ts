@@ -12,9 +12,6 @@ export enum GetterTypes {
   // comment module
   COMMENTS = 'comments', // get comments that are visible (not deleted)
 
-  // course module
-  COURSE_INFO = 'courseInfo',
-
   // permission module
   PERMISSIONS = 'permissions',
 }

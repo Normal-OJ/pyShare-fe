@@ -28,6 +28,9 @@ export default {
     courseId() {
       return this.$route.params.id
     },
+    paramsWithCourse() {
+      return { course: this.courseId }
+    },
   },
 
   data: () => ({
@@ -40,10 +43,7 @@ export default {
 
   methods: {
     async fetchData() {
-      const paramsWithCourse = {
-        course: this.courseId,
-      }
-      await this.getProblems(paramsWithCourse)
+      await Promise.all([this.getProblems(this.paramsWithCourse), this.getTags(this.courseId)])
       this.isWaiting = false
     },
     ...mapActions({

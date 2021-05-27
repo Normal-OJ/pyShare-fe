@@ -4,7 +4,8 @@
 
 <script>
 import Info from '@/components/Course/Info/Info'
-import { mapState } from 'vuex'
+import { mapActions, mapState } from 'vuex'
+import { ActionTypes } from '@/store/action-types'
 
 export default {
   components: { Info },
@@ -12,6 +13,16 @@ export default {
   computed: {
     ...mapState({
       info: state => state.course.courseInfo,
+    }),
+  },
+
+  created() {
+    this.getCourseInfo(this.$route.params.id)
+  },
+
+  methods: {
+    ...mapActions({
+      getCourseInfo: ActionTypes.GET_COURSE_INFO,
     }),
   },
 }

@@ -23,9 +23,12 @@ const getters = <GetterTree<State, RootState>>{
 
 const actions = <ActionTree<State, RootState>>{
   async [ActionTypes.GET_PROBLEMS](
-    { commit },
+    { commit, state },
     params: Omit<Problem.IQueryOption, 'offset' | 'count'>,
   ) {
+    if (state.problems.length > 0 && state.problems[0].course !== params.course) {
+      commit(MutationTypes.SET_PROBLEMS, [])
+    }
     const paramsWithGetAll = {
       offset: 0,
       count: -1,
@@ -38,23 +41,11 @@ const actions = <ActionTree<State, RootState>>{
       throw error
     }
   },
-  async [ActionTypes.GET_PROBLEM_INFO]({ commit }, id: Problem.ID) {
-    try {
-      const { data } = await agent.Problem.get(id)
-      commit(MutationTypes.SET_PROBLEM_INFO, data.data)
-    } catch (error) {
-      console.log('[vuex/problem/getProblemInfo] error', error)
-      throw error
-    }
-  },
 }
 
 const mutations = <MutationTree<State>>{
   [MutationTypes.SET_PROBLEMS](state, payload) {
     state.problems = payload
-  },
-  [MutationTypes.SET_PROBLEM_INFO](state, payload) {
-    state.problemInfo = payload
   },
 }
 

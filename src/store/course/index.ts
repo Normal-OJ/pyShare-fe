@@ -1,18 +1,13 @@
 import { GetterTree, MutationTree, ActionTree } from 'vuex'
 import { initialState, State } from './state'
 import { RootState } from '../types'
-import { GetterTypes } from '../getter-types'
 import { ActionTypes } from '../action-types'
 import { MutationTypes } from '../mutation-types'
 import agent from '@/api/agent'
 
 const state = { ...initialState }
 
-const getters = <GetterTree<State, RootState>>{
-  [GetterTypes.COURSE_INFO](state) {
-    return state.courseInfo
-  },
-}
+const getters = <GetterTree<State, RootState>>{}
 
 const actions = <ActionTree<State, RootState>>{
   async [ActionTypes.GET_COURSES]({ commit }) {
@@ -57,15 +52,6 @@ const actions = <ActionTree<State, RootState>>{
       throw error
     }
   },
-  async [ActionTypes.GET_COURSE_PROBLEMS]({ commit }, id) {
-    try {
-      const { data } = await agent.Problem.getList({ course: id })
-      commit(MutationTypes.SET_COURSE_PROBLEMS, data.data)
-    } catch (error) {
-      console.log('[vuex/course/getCourseProblems] error', error)
-      throw error
-    }
-  },
 }
 
 const mutations = <MutationTree<State>>{
@@ -80,9 +66,6 @@ const mutations = <MutationTree<State>>{
   },
   [MutationTypes.SET_COURSE_TAGS](state, payload) {
     state.courseTags = payload
-  },
-  [MutationTypes.SET_COURSE_PROBLEMS](state, payload) {
-    state.courseProblems = payload
   },
 }
 

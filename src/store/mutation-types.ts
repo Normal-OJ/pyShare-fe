@@ -8,11 +8,9 @@ export enum MutationTypes {
   SET_COURSE_STATS = 'setCourseStats',
   SET_COURSE_INFO = 'setCourseInfo',
   SET_COURSE_TAGS = 'setCourseTags',
-  SET_COURSE_PROBLEMS = 'setCourseProblems',
 
   // problem module
   SET_PROBLEMS = 'setProblems',
-  SET_PROBLEM_INFO = 'setProblemInfo',
 
   // comment module
   SET_COMMENTS = 'setComments',

@@ -127,7 +127,6 @@ export default {
 
   async created() {
     await this.getProblem(this.pid)
-    this.$store.dispatch(ActionTypes.GET_COURSE_PROBLEMS, this.prob.course)
     this.fetchFloor()
     this.isWaiting = false
   },

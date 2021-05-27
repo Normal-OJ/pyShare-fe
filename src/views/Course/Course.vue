@@ -1,6 +1,6 @@
 <template>
   <div class="wrapper">
-    <SideNav :courseInfo="courseInfo" />
+    <SideNav />
     <div class="container">
       <router-view />
     </div>
@@ -9,17 +9,9 @@
 
 <script>
 import SideNav from '@/components/Course/SideNav'
-import { mapGetters } from 'vuex'
-import { GetterTypes } from '@/store/getter-types'
 
 export default {
   components: { SideNav },
-
-  computed: {
-    ...mapGetters({
-      courseInfo: GetterTypes.COURSE_INFO,
-    }),
-  },
 }
 </script>
 

@@ -14,8 +14,7 @@
 <script>
 import Spinner from '@/components/UI/Spinner'
 import SetProblems from '@/components/Course/Problems/SetProblems'
-import { mapActions, mapState } from 'vuex'
-import { ActionTypes } from '@/store/action-types'
+import { mapState } from 'vuex'
 import agent from '@/api/agent'
 
 const OPERATION = {
@@ -39,7 +38,6 @@ export default {
   computed: {
     ...mapState({
       courseTags: state => state.course.courseTags,
-      problemInfo: state => state.problem.problemInfo,
     }),
     isEdit() {
       return this.$route.params.operation === OPERATION.EDIT
@@ -51,24 +49,31 @@ export default {
       return this.$route.query.pid
     },
     prob() {
-      if (this.isEdit) return this.problemInfo
+      if (this.isEdit) return this.prob
       return { ...initialProb, course: this.courseId }
     },
   },
 
   async created() {
-    if (this.isEdit) await this.getProblemInfo(this.pid)
+    if (this.isEdit) await this.getProblem(this.pid)
   },
 
   data: () => ({
     submitSuccess: false,
     isLoading: false,
+    prob: null,
   }),
 
   methods: {
-    ...mapActions({
-      getProblemInfo: ActionTypes.GET_PROBLEM_INFO,
-    }),
+    async getProblem(pid) {
+      try {
+        const { data } = await agent.Problem.get(pid)
+        this.prob = data.data
+      } catch (error) {
+        console.log('[views/SetProblems/getProblem] error', error)
+        throw error
+      }
+    },
     async handleSubmit(body, willAddAttachments, willRemoveAttachments) {
       try {
         this.isLoading = true
@@ -116,7 +121,7 @@ export default {
             throw error
           }
         }
-        this.getProblemInfo(pid)
+        this.getProblem(pid)
         if (this.submitSuccess) {
           if (!this.isEdit) {
             this.$router.push({

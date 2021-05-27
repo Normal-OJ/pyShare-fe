@@ -1,16 +1,15 @@
 import dayjs from 'dayjs'
+import relativeTime from 'dayjs/plugin/relativeTime'
 import 'dayjs/locale/zh-tw'
 
 dayjs.locale('zh-tw')
-
-var relativeTime = require('dayjs/plugin/relativeTime')
 dayjs.extend(relativeTime)
 
-const timeFromNow = timestamp => {
+const timeFromNow = (timestamp: number) => {
   return dayjs(timestamp * 1000).fromNow()
 }
 
-const formattedTime = timestamp => {
+const formattedTime = (timestamp: number) => {
   return dayjs(timestamp * 1000).format('YYYY-MM-DD HH:mm')
 }
 

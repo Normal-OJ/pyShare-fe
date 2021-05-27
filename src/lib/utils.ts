@@ -1,19 +1,23 @@
 import Vue from 'vue'
 import store from '@/store'
-import { USERNAME, PERMISSIONS } from '@/store/getters.type'
-import { GET_PERMISSIONS } from '@/store/actions.type'
+import { GetterTypes } from '@/store/getter-types'
+import { ActionTypes } from '@/store/action-types'
 
-const isSelf = target => {
-  const username = store.getters && store.getters[USERNAME]
+const isSelf = (name: string) => {
+  const username = store.getters && store.getters[GetterTypes.USERNAME]
   if (!username) return false
-  return target === username
+  return name === username
 }
 
-const hasPermission = async (resource, id, requirement) => {
+const hasPermission = async (
+  resource: 'course' | 'problem' | 'comment',
+  id: Course.ID | Problem.ID | _Comment.ID,
+  requirement: string[],
+) => {
   try {
-    const permissions = store.getters && store.getters[PERMISSIONS]
+    const permissions = store.getters && store.getters[GetterTypes.PERMISSIONS]
     if (!permissions[resource][id]) {
-      await store.dispatch(GET_PERMISSIONS, { resource, id })
+      await store.dispatch(ActionTypes.GET_PERMISSIONS, { resource, id })
     }
     // 物件 copy by sharing，這裡會吃到新的
     return requirement.every(req => permissions[resource][id].includes(req))
@@ -23,7 +27,7 @@ const hasPermission = async (resource, id, requirement) => {
   }
 }
 
-const alertSuccess = text => {
+const alertSuccess = (text: string) => {
   Vue.notify({
     group: 'alert',
     type: 'my-success',
@@ -31,7 +35,7 @@ const alertSuccess = text => {
   })
 }
 
-const alertFail = text => {
+const alertFail = (text: string) => {
   Vue.notify({
     group: 'alert',
     type: 'my-error',

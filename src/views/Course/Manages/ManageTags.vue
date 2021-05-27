@@ -13,7 +13,7 @@
 <script>
 import ManageTags from '@/components/Course/Manages/ManageTags'
 import { mapActions, mapState } from 'vuex'
-import { GET_COURSE_TAGS } from '@/store/actions.type'
+import { ActionTypes } from '@/store/action-types'
 import agent from '@/api/agent'
 
 export default {
@@ -41,7 +41,7 @@ export default {
 
   methods: {
     ...mapActions({
-      getCourseTags: GET_COURSE_TAGS,
+      getCourseTags: ActionTypes.GET_COURSE_TAGS,
     }),
     getAllTags() {
       agent.Tag.getList()

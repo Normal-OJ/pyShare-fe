@@ -34,11 +34,7 @@
         <v-icon>mdi-download</v-icon>
         下載統計資料
       </v-btn>
-      <AddStudentModal
-        v-if="canWriteCourse"
-        @submit-add-multiple-students="submitAddMultipleStudents"
-        @submit-add-student="submitAddStudent"
-      />
+      <AddStudentModal v-if="canWriteCourse" />
     </div>
 
     <v-data-table
@@ -78,7 +74,7 @@
 </template>
 
 <script>
-import AddStudentModal from '@/components/Course/Info/AddStudentModal'
+import AddStudentModal from '@/components/Course/AddStudentModal'
 import ConfirmDeleteModal from './ConfirmDeleteModal'
 import { ROLE } from '@/constants/auth'
 import { mapState } from 'vuex'
@@ -150,12 +146,6 @@ export default {
     handleClickDetail(id) {
       const route = this.$router.resolve({ name: 'profileStats', params: { id } })
       window.open(route.href, '_blank')
-    },
-    submitAddMultipleStudents(file, resolve, reject) {
-      this.$emit('submit-add-multiple-students', file, resolve, reject)
-    },
-    submitAddStudent(csvString, resolve, reject) {
-      this.$emit('submit-add-student', csvString, resolve, reject)
     },
     downloadData() {
       const header = statsHeaders.map(h => h.text).join(',')

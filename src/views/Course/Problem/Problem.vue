@@ -61,8 +61,8 @@ import CommentDetail from '@/components/Course/Problem/CommentDetail'
 import NewComment from '@/components/Course/Problem/NewComment'
 import agent from '@/api/agent'
 import { mapActions, mapGetters, mapState } from 'vuex'
-import { GET_COMMENTS, GET_COURSE_PROBLEMS } from '@/store/actions.type'
-import { COMMENTS } from '@/store/getters.type'
+import { ActionTypes } from '@/store/action-types'
+import { GetterTypes } from '@/store/getter-types'
 import Spinner from '@/components/UI/Spinner'
 
 export default {
@@ -70,12 +70,27 @@ export default {
 
   components: { Problem, CommentList, CommentDetail, NewComment, Spinner },
 
+  data: () => ({
+    prob: null,
+    courseInfo: null,
+    filteredComments: [],
+    isWaiting: true,
+    isEdit: false,
+    floor: null,
+    testResult: {
+      new: null,
+      detail: null,
+    },
+    testResultSubmissionId: null,
+    historySubmissions: [],
+  }),
+
   computed: {
     ...mapState({
       username: state => state.auth.username,
     }),
     ...mapGetters({
-      comments: COMMENTS,
+      comments: GetterTypes.COMMENTS,
     }),
     pid() {
       return Number(this.$route.params.pid)
@@ -112,29 +127,13 @@ export default {
 
   async created() {
     await this.getProblem(this.pid)
-    this.$store.dispatch(GET_COURSE_PROBLEMS, this.prob.course)
     this.fetchFloor()
     this.isWaiting = false
   },
 
-  data: () => ({
-    prob: null,
-    courseInfo: null,
-    filteredComments: [],
-    isWaiting: true,
-    isEdit: false,
-    floor: null,
-    testResult: {
-      new: null,
-      detail: null,
-    },
-    testResultSubmissionId: null,
-    historySubmissions: [],
-  }),
-
   methods: {
     ...mapActions({
-      getComments: GET_COMMENTS,
+      getComments: ActionTypes.GET_COMMENTS,
     }),
     fetchFloor() {
       const { floor } = this.$route.query

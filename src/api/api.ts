@@ -3,7 +3,7 @@ import axios from 'axios'
 import VueAxios from 'vue-axios'
 import config from '@/constants/config'
 import store from '@/store'
-import { SET_IS_SHOW_LOGOUT_MODAL } from '@/store/mutations.type.js'
+import { MutationTypes } from '@/store/mutation-types'
 
 export function apiSetup() {
   Vue.use(VueAxios, axios)
@@ -17,7 +17,7 @@ export function apiSetup() {
           error.response.data.message === 'Authorization Expired' ||
           error.response.data.message === 'Invalid Token'
         ) {
-          store.commit(SET_IS_SHOW_LOGOUT_MODAL, true)
+          store.commit(MutationTypes.SET_IS_SHOW_LOGOUT_MODAL, true)
         }
         throw error.response.data
       }

@@ -10,8 +10,8 @@
 <script>
 import Problems from '@/components/Course/Problems/Problems'
 import { mapActions, mapGetters, mapState } from 'vuex'
-import { PROBLEMS } from '@/store/getters.type'
-import { GET_PROBLEMS, GET_COURSE_TAGS } from '@/store/actions.type'
+import { GetterTypes } from '@/store/getter-types'
+import { ActionTypes } from '@/store/action-types'
 
 export default {
   // TODO: prevent maximum call stack size exceeded
@@ -25,7 +25,7 @@ export default {
       tags: state => state.course.courseTags,
     }),
     ...mapGetters({
-      problems: PROBLEMS,
+      problems: GetterTypes.PROBLEMS,
     }),
     courseId() {
       return this.$route.params.id
@@ -46,8 +46,8 @@ export default {
 
   methods: {
     ...mapActions({
-      getProblems: GET_PROBLEMS,
-      getTags: GET_COURSE_TAGS,
+      getProblems: ActionTypes.GET_PROBLEMS,
+      getTags: ActionTypes.GET_COURSE_TAGS,
     }),
     getProblemsByTags(paramsWithTags) {
       this.getProblems({ ...paramsWithTags, course: this.courseId })

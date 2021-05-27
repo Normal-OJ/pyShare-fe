@@ -119,7 +119,7 @@
               <ConfirmModal
                 v-if="isShowConfirmModal"
                 @close="closeConfirmModal"
-                @confirm="confirmSubmit"
+                @confirm="submitAddMultipleStudents"
               >
                 <template v-slor:title>
                   確認是否送出
@@ -237,6 +237,9 @@
 import PreviewCSV from '@/components/UI/PreviewCSV'
 import ConfirmModal from '@/components/UI/ConfirmModal'
 import { SCHOOLS } from '@/constants/auth'
+import { ActionTypes } from '@/store/action-types'
+import { mapActions } from 'vuex'
+import agent from '@/api/agent'
 
 const template =
   'school,username,displayName,password\n,407123000S,王大明,gB7hj31p\nNTNU,409456000H,陳耳東,409456000H\nNTUST,B123456789,（已註冊過的帳號）,'
@@ -273,40 +276,66 @@ export default {
   },
 
   methods: {
-    async submit() {
+    submit() {
       const r = new FileReader()
       r.onload = async e => {
-        this.previewFile = await e.target.result
+        this.previewFile = e.target.result
       }
-      await r.readAsText(this.newStudentFile)
+      r.readAsText(this.newStudentFile)
       this.isShowConfirmModal = true
     },
     closeConfirmModal() {
       this.isShowConfirmModal = false
     },
-    confirmSubmit() {
+    async signup(course, csvString, resolve) {
+      try {
+        await agent.Auth.batchSignup({ course, csvString })
+        resolve()
+      } catch (error) {
+        if (error.data.fails.length > 0) {
+          this.$alertFail('新增學生失敗。')
+          this.errors = error.data.fails
+          this.isShowError = true
+          console.log('[components/Course/signup] error', error)
+          throw error
+        }
+        resolve()
+      }
+    },
+    submitAddMultipleStudents() {
       this.isLoading = true
-      new Promise((resolve, reject) =>
-        this.$emit('submit-add-multiple-students', this.newStudentFile, resolve, reject),
-      )
-        .then(() => {
+      const r = new FileReader()
+      r.onload = async e => {
+        const course = this.$route.params.id
+        const csvString = e.target.result
+        this.signup(course, csvString, () => {
           this.dialog = false
           this.$alertSuccess('新增學生成功。')
+          if (this.$route.name === 'courseManageMembers') this.getCourseStats(course)
+          else if (this.$route.name === 'courseInfo') this.getCourseInfo(course)
         })
-        .catch(error => {
-          if (error.data.fails.length > 0) {
-            this.$alertFail('新增學生失敗。')
-            this.errors = error.data.fails
-            this.isShowError = true
-          } else {
-            this.$alertSuccess('新增學生成功。')
-          }
+        this.isLoading = false
+        this.newStudentFile = null
+        this.closeConfirmModal()
+      }
+      r.readAsText(this.newStudentFile)
+    },
+    async submitAddStudent() {
+      this.isLoading = true
+      if (this.$refs.form.validate()) {
+        const course = this.$route.params.id
+        const csvHeader = Object.keys(this.newStudent).join(',')
+        const csvBody = Object.values(this.newStudent).join(',')
+        const csvString = `${csvHeader}\n${csvBody}`
+        this.signup(course, csvString, () => {
+          this.dialog = false
+          this.newStudent = { ...initNewStudent }
+          this.$alertSuccess('新增學生成功。')
+          if (this.$route.name === 'courseManageMembers') this.getCourseStats(course)
+          else if (this.$route.name === 'courseInfo') this.getCourseInfo(course)
         })
-        .finally(() => {
-          this.isLoading = false
-          this.newStudentFile = null
-          this.closeConfirmModal()
-        })
+        this.isLoading = false
+      }
     },
     downloadExample() {
       const csvContent = 'data:text/csv;charset=utf-8,' + this.template
@@ -315,38 +344,10 @@ export default {
       link.href = csvContent
       link.click()
     },
-    submitAddStudent() {
-      this.isLoading = true
-      if (this.$refs.form.validate()) {
-        new Promise((resolve, reject) =>
-          this.$emit(
-            'submit-add-student',
-            `${Object.keys(this.newStudent).join(',')}\n${Object.values(this.newStudent).join(
-              ',',
-            )}`,
-            resolve,
-            reject,
-          ),
-        )
-          .then(() => {
-            this.dialog = false
-            this.newStudent = { ...initNewStudent }
-            this.$alertSuccess('新增學生成功。')
-          })
-          .catch(error => {
-            if (error.data.fails.length > 0) {
-              this.$alertFail('新增學生失敗。')
-              this.errors = error.data.fails
-              this.isShowError = true
-            } else {
-              this.$alertSuccess('新增學生成功。')
-            }
-          })
-          .finally(() => {
-            this.isLoading = false
-          })
-      }
-    },
+    ...mapActions({
+      getCourseStats: ActionTypes.GET_COURSE_STATS,
+      getCourseInfo: ActionTypes.GET_COURSE_INFO,
+    }),
   },
 }
 </script>

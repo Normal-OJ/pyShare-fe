@@ -37,7 +37,7 @@ describe('Login.vue', () => {
   })
 
   it('should have a submit button.', () => {
-    const btn = wrapper.find('[data-test="loginBtn"]')
+    const btn = wrapper.find('[data-test="submitLoginBtn"]')
     expect(btn.text()).toMatch('登入')
   })
 

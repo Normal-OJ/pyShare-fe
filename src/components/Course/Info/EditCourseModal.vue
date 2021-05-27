@@ -87,7 +87,7 @@
 </template>
 
 <script>
-import { GET_COURSE_INFO } from '@/store/actions.type.js'
+import { ActionTypes } from '@/store/action-types'
 import { YEARS, SEMESTERS, STATUS_OPTIONS } from '@/constants/course'
 import agent from '@/api/agent'
 
@@ -143,7 +143,7 @@ export default {
         const body = { name, year, semester, teacher, status: checkedOption, description }
         agent.Course.update(this.courseId, body)
           .then(() => {
-            this.$store.dispatch(GET_COURSE_INFO, this.courseId)
+            this.$store.dispatch(ActionTypes.GET_COURSE_INFO, this.courseId)
             this.dialog = false
             this.$alertSuccess('編輯課程資訊成功。')
           })

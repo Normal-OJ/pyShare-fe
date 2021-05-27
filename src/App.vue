@@ -20,12 +20,16 @@
 import Header from '@/components/UI/Header'
 import Notification from '@/components/UI/Notification'
 import { mapState, mapActions } from 'vuex'
-import { LOGOUT } from '@/store/actions.type'
+import { ActionTypes } from './store/action-types'
 
 export default {
   name: 'App',
 
   components: { Header, Notification },
+
+  created() {
+    this.getJwt()
+  },
 
   computed: {
     ...mapState({
@@ -38,7 +42,8 @@ export default {
 
   methods: {
     ...mapActions({
-      logout: LOGOUT,
+      getJwt: ActionTypes.GET_JWT,
+      logout: ActionTypes.LOGOUT,
     }),
     async handleLogout() {
       try {

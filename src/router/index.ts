@@ -2,7 +2,8 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '@/views/Home/Home'
 import store from '@/store'
-import { GET_COURSE_INFO, GET_COURSE_TAGS, GET_COURSE_PROBLEMS } from '@/store/actions.type'
+import { ActionTypes } from '@/store/action-types'
+import { getJwt } from '@/lib/jwt'
 
 Vue.use(VueRouter)
 // TODO: block users that no permission from the specific route
@@ -24,11 +25,12 @@ const routes = [
       isAllowGuest: true,
     },
     beforeEnter: (to, from, next) => {
-      const { isAuthenticated, id } = store.state.auth
-      if (isAuthenticated) {
-        next({ name: 'profile', params: { id } })
+      const jwt = getJwt()
+      if (jwt && jwt.isAuthenticated && jwt.id) {
+        next({ name: 'profile', params: { id: jwt.id } })
+      } else {
+        next()
       }
-      next()
     },
   },
   {
@@ -54,6 +56,10 @@ const routes = [
         path: 'problem/:pid',
         name: 'courseProblem',
         component: () => import('@/views/Course/Problem/Problem'),
+        beforeEnter: (to, from, next) => {
+          store.dispatch(ActionTypes.GET_PROBLEMS, { course: to.params.id })
+          next()
+        },
       },
       {
         path: 'problems/:operation',
@@ -87,9 +93,7 @@ const routes = [
       },
     ],
     beforeEnter: (to, from, next) => {
-      store.dispatch(GET_COURSE_INFO, to.params.id)
-      store.dispatch(GET_COURSE_TAGS, to.params.id)
-      store.dispatch(GET_COURSE_PROBLEMS, to.params.id)
+      store.dispatch(ActionTypes.GET_COURSE_INFO, to.params.id)
       next()
     },
   },
@@ -126,7 +130,8 @@ const router = new VueRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  if (!to.meta.isAllowGuest && !store.state.auth.isAuthenticated) {
+  const jwt = getJwt()
+  if (!to.meta.isAllowGuest && (!jwt || !jwt.isAuthenticated)) {
     next({ name: 'login', query: { redirectToPath: to.path } })
   } else {
     next()

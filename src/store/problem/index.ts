@@ -1,4 +1,4 @@
-import { GetterTree, MutationTree, ActionTree, ActionContext } from 'vuex'
+import { GetterTree, MutationTree, ActionTree } from 'vuex'
 import { initialState, State } from './state'
 import { RootState } from '../types'
 import { GetterTypes } from '../getter-types'

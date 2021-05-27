@@ -1,8 +1,10 @@
 // ref: https://github.com/PanJiaChen/vue-element-admin/tree/master/src/directive/permission
+import { DirectiveOptions } from 'vue'
 import store from '@/store'
 import { GetterTypes } from '@/store/getter-types'
+import { DirectiveBinding } from 'vue/types/options'
 
-function checkRole(el, binding) {
+function checkRole(el: HTMLElement, binding: DirectiveBinding) {
   const { value } = binding
   const role = store.getters && store.getters[GetterTypes.ROLE]
 
@@ -19,7 +21,7 @@ function checkRole(el, binding) {
   }
 }
 
-export default {
+const directive: DirectiveOptions = {
   inserted(el, binding) {
     checkRole(el, binding)
   },
@@ -27,3 +29,5 @@ export default {
     checkRole(el, binding)
   },
 }
+
+export default directive

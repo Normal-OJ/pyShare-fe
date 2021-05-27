@@ -1,6 +1,7 @@
 import { createServer } from 'miragejs'
 
-export const makeServer = ({ environment }) =>
+// TODO: how to get the type of serverconfig in mirage?
+export const makeServer = ({ environment }: { environment?: string }) =>
   createServer({
     environment,
 

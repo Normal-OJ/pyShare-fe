@@ -3,13 +3,17 @@ import store from '@/store'
 import { GetterTypes } from '@/store/getter-types'
 import { ActionTypes } from '@/store/action-types'
 
-const isSelf = target => {
+const isSelf = (name: string) => {
   const username = store.getters && store.getters[GetterTypes.USERNAME]
   if (!username) return false
-  return target === username
+  return name === username
 }
 
-const hasPermission = async (resource, id, requirement) => {
+const hasPermission = async (
+  resource: 'course' | 'problem' | 'comment',
+  id: Course.ID | Problem.ID | _Comment.ID,
+  requirement: string[],
+) => {
   try {
     const permissions = store.getters && store.getters[GetterTypes.PERMISSIONS]
     if (!permissions[resource][id]) {
@@ -23,7 +27,7 @@ const hasPermission = async (resource, id, requirement) => {
   }
 }
 
-const alertSuccess = text => {
+const alertSuccess = (text: string) => {
   Vue.notify({
     group: 'alert',
     type: 'my-success',
@@ -31,7 +35,7 @@ const alertSuccess = text => {
   })
 }
 
-const alertFail = text => {
+const alertFail = (text: string) => {
   Vue.notify({
     group: 'alert',
     type: 'my-error',

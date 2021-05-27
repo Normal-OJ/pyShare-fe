@@ -68,7 +68,7 @@ const Problem = {
 
   delete: (id: Problem.ID) => Vue.axios.delete(`/problem/${id}`),
 
-  getAttachment: (id: Problem.ID, name: string) =>
+  getAttachment: (id: Problem.ID, name: string): PysharePromise<File> =>
     Vue.axios.get(`/problem/${id}/attachment/${name}`),
 
   addAttachment: (id: Problem.ID, body: FormData) =>

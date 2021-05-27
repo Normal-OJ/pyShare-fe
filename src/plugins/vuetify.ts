@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify/lib'
-import zhHant from 'vuetify/es5/locale/zh-Hant'
+import zhHant from 'vuetify/src/locale/zh-Hant'
 
 import colors from 'vuetify/lib/util/colors'
 

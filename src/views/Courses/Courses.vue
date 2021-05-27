@@ -1,11 +1,16 @@
 <template>
   <v-container fluid class="d-flex flex-column pt-12 px-16">
-    <v-row class="mb-4">
+    <v-row>
       <div class="text-h5">課程列表</div>
       <v-spacer />
       <CreateCourseModal v-role="[TEACHER, ADMIN]" @submit="submitCreateCourse" />
     </v-row>
-    <CourseList :data="courses" :loading="isWaitingCourseList" />
+
+    <div class="text-h6 mt-8">已加入的課程</div>
+    <CourseList :data="joinedCourses" :loading="isWaitingCourseList" permissionHeader="角色" />
+
+    <div class="text-h6 mt-8">其他公開的課程</div>
+    <CourseList :data="notJoinedCourses" :loading="isWaitingCourseList" permissionHeader="權限" />
   </v-container>
 </template>
 
@@ -16,6 +21,7 @@ import { mapActions, mapState } from 'vuex'
 import { ActionTypes } from '@/store/action-types'
 import agent from '@/api/agent'
 import { ROLE } from '@/constants/auth'
+import { COURSE_STATE } from '@/constants/course'
 
 const { TEACHER, ADMIN } = ROLE
 
@@ -25,7 +31,25 @@ export default {
   computed: {
     ...mapState({
       courses: state => state.course.courses,
+      userId: state => state.auth.id,
+      myCourses: state => state.auth.courses,
     }),
+    joinedCourses() {
+      const isInMyCourses = course => this.myCourses.indexOf(course.id) !== -1
+      const courses = this.courses.filter(isInMyCourses).map(course => ({
+        ...course,
+        permission: this.userID === course.teacher.id ? 'teacher' : 'student',
+      }))
+      return courses
+    },
+    notJoinedCourses() {
+      const isNotInMyCourses = course => this.myCourses.indexOf(course.id) === -1
+      const courses = this.courses.filter(isNotInMyCourses).map(course => ({
+        ...course,
+        permission: course.status === COURSE_STATE.READONLY ? 'read' : 'participate',
+      }))
+      return courses
+    },
   },
 
   data: () => ({

@@ -10,9 +10,6 @@ import permission from './permission'
 Vue.use(Vuex)
 
 export default new Vuex.Store<RootState>({
-  state: {},
-  mutations: {},
-  actions: {},
   modules: {
     auth,
     course,

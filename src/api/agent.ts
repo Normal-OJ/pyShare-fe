@@ -29,7 +29,7 @@ const Auth = {
 }
 
 const Course = {
-  getList: (): PysharePromise<Course.IInfo[]> => Vue.axios.get('/course'),
+  getList: (): PysharePromise<Partial<Course.IInfo>[]> => Vue.axios.get('/course'),
 
   get: (id: Course.ID): PysharePromise<Course.IInfo> => Vue.axios.get(`/course/${id}`),
 

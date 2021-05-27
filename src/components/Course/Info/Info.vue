@@ -24,7 +24,7 @@
             <tr>
               <td class="font-weight-bold">課程狀態</td>
               <td>
-                {{ COURSE_STATUS[`${info.status}`] }}
+                {{ COURSE_STATUS_LABEL[`${info.status}`] }}
                 <v-tooltip right>
                   <template v-slot:activator="{ on, attrs }">
                     <v-icon class="ml-1" color="primary" small v-bind="attrs" v-on="on">
@@ -78,7 +78,7 @@
 <script>
 import EditCourseModal from './EditCourseModal'
 import Members from '@/components/Course/Info/Members'
-import { COURSE_STATUS } from '@/constants/course'
+import { COURSE_STATUS_LABEL } from '@/constants/course'
 import Spinner from '@/components/UI/Spinner'
 
 export default {
@@ -93,7 +93,7 @@ export default {
   },
 
   data: () => ({
-    COURSE_STATUS,
+    COURSE_STATUS_LABEL,
     canWriteCourse: null,
     canParticipateCourse: null,
   }),

@@ -20,5 +20,3 @@ export const dayjsPlugin = {
     Vue.prototype.$formattedTime = formattedTime
   },
 }
-
-export default new dayjs()

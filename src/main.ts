@@ -3,7 +3,7 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import vuetify from './plugins/vuetify'
-import Vue2Editor from 'vue2-editor'
+import Rollbar from 'rollbar'
 import { dayjsPlugin } from './lib/dayjsPlugin'
 import { utilsPlugin } from './lib/utils'
 import 'roboto-fontface/css/roboto/roboto-fontface.css'
@@ -34,18 +34,16 @@ Vue.use(
 
 Vue.config.productionTip = false
 
-Vue.use(Vue2Editor)
 Vue.use(dayjsPlugin)
 Vue.use(utilsPlugin)
 
 // Rollbar for tracking vue app's error
-var Rollbar = require('vue-rollbar')
-Vue.use(Rollbar, {
+Vue.prototype.$rollbar = new Rollbar({
   accessToken: process.env.VUE_APP_ROLLBAR_TOKEN,
   captureUncaught: true,
   captureUnhandledRejections: true,
   enabled: process.env.VUE_APP_ROLLBAR_ENABLED === 'false' ? false : true,
-  source_map_enabled: true,
+  nodeSourceMaps: true,
   environment: process.env.NODE_ENV,
   payload: {
     client: {
@@ -67,8 +65,8 @@ if (window.Cypress) {
   window.__store__ = store
 }
 
-Vue.config.errorHandler = err => {
-  Vue.rollbar.error(err)
+Vue.config.errorHandler = (err, vm) => {
+  vm.$rollbar.error(err)
   throw err
 }
 

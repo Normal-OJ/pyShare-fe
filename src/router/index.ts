@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Home from '@/views/Home/Home'
+import Home from '@/views/Home/Home.vue'
 import store from '@/store'
 import { ActionTypes } from '@/store/action-types'
 import { getJwt } from '@/lib/jwt'
@@ -19,7 +19,7 @@ const routes = [
   {
     path: '/login',
     name: 'login',
-    component: () => import('@/views/Login/Login'),
+    component: () => import('@/views/Login/Login.vue'),
     props: true,
     meta: {
       isAllowGuest: true,
@@ -36,11 +36,11 @@ const routes = [
   {
     path: '/courses',
     name: 'courses',
-    component: () => import('@/views/Courses/Courses'),
+    component: () => import('@/views/Courses/Courses.vue'),
   },
   {
     path: '/course/:id',
-    component: () => import('@/views/Course/Course'),
+    component: () => import('@/views/Course/Course.vue'),
     children: [
       {
         path: '',
@@ -50,12 +50,12 @@ const routes = [
       {
         path: 'problems',
         name: 'courseProblems',
-        component: () => import('@/views/Course/Problems/Problems'),
+        component: () => import('@/views/Course/Problems/Problems.vue'),
       },
       {
         path: 'problem/:pid',
         name: 'courseProblem',
-        component: () => import('@/views/Course/Problem/Problem'),
+        component: () => import('@/views/Course/Problem/Problem.vue'),
         beforeEnter: (to, from, next) => {
           store.dispatch(ActionTypes.GET_PROBLEMS, { course: to.params.id })
           next()
@@ -64,32 +64,32 @@ const routes = [
       {
         path: 'problems/:operation',
         name: 'courseSetProblems',
-        component: () => import('@/views/Course/Problems/SetProblems'),
+        component: () => import('@/views/Course/Problems/SetProblems.vue'),
       },
       {
         path: 'manages',
         name: 'courseManages',
-        component: () => import('@/views/Course/Manages/Manages'),
+        component: () => import('@/views/Course/Manages/Manages.vue'),
       },
       {
         path: 'manages/tags',
         name: 'courseManageTags',
-        component: () => import('@/views/Course/Manages/ManageTags'),
+        component: () => import('@/views/Course/Manages/ManageTags.vue'),
       },
       {
         path: 'manages/members',
         name: 'courseManageMembers',
-        component: () => import('@/views/Course/Manages/ManageMembers'),
+        component: () => import('@/views/Course/Manages/ManageMembers.vue'),
       },
       {
         path: 'manages/problems',
         name: 'courseManageProblems',
-        component: () => import('@/views/Course/Manages/ManageProblems'),
+        component: () => import('@/views/Course/Manages/ManageProblems.vue'),
       },
       {
         path: 'info',
         name: 'courseInfo',
-        component: () => import('@/views/Course/Info/Info'),
+        component: () => import('@/views/Course/Info/Info.vue'),
       },
     ],
     beforeEnter: (to, from, next) => {
@@ -99,24 +99,24 @@ const routes = [
   },
   {
     path: '/profile/:id',
-    component: () => import('@/views/Profile/ProfileEntry'),
+    component: () => import('@/views/Profile/ProfileEntry.vue'),
     children: [
       {
         path: '',
         name: 'profile',
-        component: () => import('@/views/Profile/Profile'),
+        component: () => import('@/views/Profile/Profile.vue'),
       },
       {
         path: 'stats',
         name: 'profileStats',
-        component: () => import('@/views/Profile/Stats'),
+        component: () => import('@/views/Profile/Stats.vue'),
       },
     ],
   },
   {
     path: '/about',
     name: 'about',
-    component: () => import('@/views/About/About'),
+    component: () => import('@/views/About/About.vue'),
     meta: {
       isAllowGuest: true,
     },

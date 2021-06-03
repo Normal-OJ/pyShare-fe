@@ -42,7 +42,7 @@ const actions = <ActionTree<State, RootState>>{
     }: {
       id: _Comment.ID
       index: number
-      arr: _Comment.IInfo[]
+      arr: _Comment.IInfo[] | { status: number; id: string }
     },
   ) {
     try {

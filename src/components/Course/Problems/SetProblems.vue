@@ -165,8 +165,7 @@ import TextEditor from '@/components/UI/TextEditor'
 import CodeEditor from '@/components/UI/CodeEditor'
 import ColorLabel from '@/components/UI/ColorLabel'
 import _ from 'lodash'
-import { mapGetters } from 'vuex'
-import { ROLE } from '@/store/getters.type'
+import { mapState } from 'vuex'
 import { ROLE as _ROLE } from '@/constants/auth'
 
 const { TEACHER } = _ROLE
@@ -212,8 +211,8 @@ export default {
   },
 
   computed: {
-    ...mapGetters({
-      role: ROLE,
+    ...mapState({
+      role: state => state.auth.role,
     }),
     courseId() {
       return this.$route.params.id

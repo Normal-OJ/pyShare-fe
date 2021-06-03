@@ -11,8 +11,8 @@
 <script>
 import ManageProblems from '@/components/Course/Manages/ManageProblems'
 import { mapActions, mapGetters, mapState } from 'vuex'
-import { PROBLEMS_OF_MINE } from '@/store/getters.type'
-import { GET_PROBLEMS } from '@/store/actions.type'
+import { GetterTypes } from '@/store/getter-types'
+import { ActionTypes } from '@/store/action-types'
 import agent from '@/api/agent'
 
 export default {
@@ -23,10 +23,13 @@ export default {
       tags: state => state.course.courseTags,
     }),
     ...mapGetters({
-      problems: PROBLEMS_OF_MINE,
+      problems: GetterTypes.PROBLEMS_OF_MINE,
     }),
-    courseName() {
-      return this.$route.params.name
+    courseId() {
+      return this.$route.params.id
+    },
+    paramsWithCourse() {
+      return { course: this.courseId }
     },
   },
 
@@ -40,17 +43,15 @@ export default {
 
   methods: {
     async fetchData() {
-      const paramsWithCourse = {
-        course: this.courseName,
-      }
-      await this.getProblems(paramsWithCourse)
+      await Promise.all([this.getProblems(this.paramsWithCourse), this.getTags(this.courseId)])
       this.isWaiting = false
     },
     ...mapActions({
-      getProblems: GET_PROBLEMS,
+      getProblems: ActionTypes.GET_PROBLEMS,
+      getTags: ActionTypes.GET_COURSE_TAGS,
     }),
     getProblemsByTags(paramsWithTags) {
-      this.getProblems({ ...paramsWithTags, course: this.courseName })
+      this.getProblems({ ...paramsWithTags, course: this.courseId })
     },
     async deleteProblem(pid) {
       try {

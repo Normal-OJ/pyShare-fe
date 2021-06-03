@@ -2,8 +2,6 @@
   <ManageMembers
     :stats="parsedStats ? parsedStats : []"
     :loading="!parsedStats"
-    @submit-add-multiple-students="submitAddMultipleStudents"
-    @submit-add-student="submitAddStudent"
     @delete-student="submitDeleteStudent"
   />
 </template>
@@ -11,7 +9,7 @@
 <script>
 import ManageMembers from '@/components/Course/Manages/ManageMembers'
 import { mapActions, mapState } from 'vuex'
-import { GET_COURSE_STATS } from '@/store/actions.type'
+import { ActionTypes } from '@/store/action-types'
 import agent from '@/api/agent'
 
 export default {
@@ -62,7 +60,7 @@ export default {
   watch: {
     courseId: {
       handler() {
-        this.getStats(this.courseId)
+        this.getCourseStats(this.courseId)
       },
       immediate: true,
     },
@@ -70,39 +68,12 @@ export default {
 
   methods: {
     ...mapActions({
-      getStats: GET_COURSE_STATS,
+      getCourseStats: ActionTypes.GET_COURSE_STATS,
     }),
-    submitAddMultipleStudents(file, resolve, reject) {
-      const r = new FileReader()
-      r.onload = async e => {
-        const csvString = e.target.result
-        try {
-          await agent.Auth.batchSignup({ course: this.courseId, csvString })
-          this.getStats(this.courseId)
-          resolve()
-        } catch (error) {
-          console.log('[views/ManageMembers/submitAddMultipleStudents] error', error)
-          reject(error)
-          throw error
-        }
-      }
-      r.readAsText(file)
-    },
-    async submitAddStudent(csvString, resolve, reject) {
-      try {
-        await agent.Auth.batchSignup({ course: this.courseId, csvString })
-        this.getStats(this.courseId)
-        resolve()
-      } catch (error) {
-        console.log('[views/ManageMembers/submitAddStudent] error', error)
-        reject(error)
-        throw error
-      }
-    },
     async submitDeleteStudent(users, resolve, reject) {
       try {
         await agent.Course.removeStudent(this.courseId, { users })
-        this.getStats(this.courseId)
+        this.getCourseStats(this.courseId)
         resolve()
       } catch (error) {
         console.log('[views/ManageMembers/submitDeleteStudent] error', error)

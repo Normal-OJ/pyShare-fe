@@ -111,20 +111,18 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { GetterTypes } from '@/store/getter-types'
+import { mapState, mapGetters } from 'vuex'
 
 export default {
   name: 'SideNav',
 
-  props: {
-    courseInfo: {
-      type: Object,
-    },
-  },
-
   computed: {
     ...mapState({
-      problems: state => state.course.courseProblems,
+      courseInfo: state => state.course.courseInfo,
+    }),
+    ...mapGetters({
+      problems: GetterTypes.PROBLEMS,
     }),
     normalProblems() {
       return this.problems.filter(p => p.extra._cls !== 'OJProblem' && !p.isTemplate)

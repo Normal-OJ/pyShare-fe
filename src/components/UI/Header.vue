@@ -81,6 +81,8 @@ import { ROLE } from '@/constants/auth'
 export default {
   name: 'Header',
 
+  components: { Popup },
+
   props: {
     isLogin: {
       type: Boolean,
@@ -97,8 +99,6 @@ export default {
       required: true,
     },
   },
-
-  components: { Popup },
 
   computed: {
     headerItems() {

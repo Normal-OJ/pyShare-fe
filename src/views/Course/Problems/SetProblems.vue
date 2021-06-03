@@ -14,9 +14,7 @@
 <script>
 import Spinner from '@/components/UI/Spinner'
 import SetProblems from '@/components/Course/Problems/SetProblems'
-import { mapActions, mapGetters, mapState } from 'vuex'
-import { GET_PROBLEM_INFO } from '@/store/actions.type'
-import { USER } from '@/store/getters.type'
+import { mapState } from 'vuex'
 import agent from '@/api/agent'
 
 const OPERATION = {
@@ -40,10 +38,6 @@ export default {
   computed: {
     ...mapState({
       courseTags: state => state.course.courseTags,
-      problemInfo: state => state.problem.problemInfo,
-    }),
-    ...mapGetters({
-      user: USER,
     }),
     isEdit() {
       return this.$route.params.operation === OPERATION.EDIT
@@ -54,25 +48,31 @@ export default {
     pid() {
       return this.$route.query.pid
     },
-    prob() {
-      if (this.isEdit) return this.problemInfo
-      return { ...initialProb, course: this.courseId, author: this.user }
-    },
   },
 
   async created() {
-    if (this.isEdit) await this.getProblemInfo(this.pid)
+    if (this.isEdit) await this.getProblem(this.pid)
+    else {
+      this.prob = { ...initialProb, course: this.courseId }
+    }
   },
 
   data: () => ({
     submitSuccess: false,
     isLoading: false,
+    prob: null,
   }),
 
   methods: {
-    ...mapActions({
-      getProblemInfo: GET_PROBLEM_INFO,
-    }),
+    async getProblem(pid) {
+      try {
+        const { data } = await agent.Problem.get(pid)
+        this.prob = data.data
+      } catch (error) {
+        console.log('[views/SetProblems/getProblem] error', error)
+        throw error
+      }
+    },
     async handleSubmit(body, willAddAttachments, willRemoveAttachments) {
       try {
         this.isLoading = true
@@ -120,7 +120,7 @@ export default {
             throw error
           }
         }
-        this.getProblemInfo(pid)
+        this.getProblem(pid)
         if (this.submitSuccess) {
           if (!this.isEdit) {
             this.$router.push({

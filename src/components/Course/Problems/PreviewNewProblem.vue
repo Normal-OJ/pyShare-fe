@@ -19,7 +19,7 @@
       </v-toolbar>
 
       <v-card-text class="mt-8 text--primary">
-        <Problem :prob="prob" isPreview />
+        <Problem :prob="previewProb" isPreview />
       </v-card-text>
     </v-card>
   </v-dialog>
@@ -27,6 +27,8 @@
 
 <script>
 import Problem from '@/components/Course/Problem/Problem'
+import { mapGetters } from 'vuex'
+import { GetterTypes } from '@/store/getter-types'
 
 export default {
   components: { Problem },
@@ -35,6 +37,18 @@ export default {
     prob: {
       type: Object,
       required: true,
+    },
+  },
+
+  computed: {
+    ...mapGetters({
+      userInfo: GetterTypes.USER_INFO,
+    }),
+    previewProb() {
+      return {
+        author: this.userInfo,
+        ...this.prob,
+      }
     },
   },
 

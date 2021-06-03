@@ -179,38 +179,10 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
-import { USERNAME } from '@/store/getters.type'
+import { mapState } from 'vuex'
 import { SUBMISSION_STATUS } from '@/constants/submission'
 import SubmissionStatusLabel from '@/components/UI/SubmissionStatusLabel'
 import Gravatar from '@/components/UI/Gravatar'
-
-const SORT_BY = {
-  TIME_DESCENDING: {
-    value: 'TIME_DESCENDING',
-    text: '發布時間（新到舊）',
-    method: (a, b) => b.created - a.created,
-  },
-  TIME_ASCENDING: {
-    value: 'TIME_ASCENDING',
-    text: '發布時間（舊到新）',
-    method: (a, b) => a.created - b.created,
-  },
-  LIKES_DESCENDING: {
-    value: 'LIKES_DESCENDING',
-    text: '愛心數（多到少）',
-    method: (a, b) => b.liked.length - a.liked.length,
-  },
-  LIKES_ASCENDING: {
-    value: 'LIKES_ASCENDING',
-    text: '愛心數（少到多）',
-    method: (a, b) => a.liked.length - b.liked.length,
-  },
-  SHOW_MINE: {
-    value: 'SHOW_MINE',
-    text: '優先顯示我的創作',
-  },
-}
 
 export default {
   name: 'CommentList',
@@ -232,12 +204,24 @@ export default {
       required: true,
     },
   },
+  data() {
+    return {
+      SUBMISSION_STATUS,
+      searchText: '',
+      statusOptions: Object.keys(SUBMISSION_STATUS).map(s => Number(s)),
+      statusFilter: Object.keys(SUBMISSION_STATUS).map(s => Number(s)),
+      canParticipateCourse: null,
+    }
+  },
   computed: {
-    ...mapGetters({
-      username: USERNAME,
+    ...mapState({
+      username: state => state.auth.username,
     }),
     courseId() {
       return this.$route.params.id
+    },
+    sortby() {
+      return this.SORT_BY.SHOW_MINE.value
     },
     isDisabledNewComment() {
       if (this.isAllowMultipleComments) return false
@@ -247,21 +231,6 @@ export default {
       return Object.values(this.SORT_BY)
     },
     filteredComments() {
-      if (this.sortby === SORT_BY.SHOW_MINE.value) {
-        return this.comments
-          .slice()
-          .sort((a, b) => {
-            if (a.author.username === this.username) return -1
-            if (b.author.username === this.username) return 1
-            return 0
-          })
-          .filter(
-            comment =>
-              comment.title.includes(this.searchText) ||
-              comment.author.displayName.includes(this.searchText),
-          )
-          .filter(comment => this.statusFilter.includes(comment.submission.state))
-      }
       return this.comments
         .slice()
         .sort(this.SORT_BY[this.sortby].method)
@@ -271,27 +240,43 @@ export default {
             comment.author.displayName.includes(this.searchText),
         )
     },
+    SORT_BY() {
+      return {
+        TIME_DESCENDING: {
+          value: 'TIME_DESCENDING',
+          text: '發布時間（新到舊）',
+          method: (a, b) => b.created - a.created,
+        },
+        TIME_ASCENDING: {
+          value: 'TIME_ASCENDING',
+          text: '發布時間（舊到新）',
+          method: (a, b) => a.created - b.created,
+        },
+        LIKES_DESCENDING: {
+          value: 'LIKES_DESCENDING',
+          text: '愛心數（多到少）',
+          method: (a, b) => b.liked.length - a.liked.length,
+        },
+        LIKES_ASCENDING: {
+          value: 'LIKES_ASCENDING',
+          text: '愛心數（少到多）',
+          method: (a, b) => a.liked.length - b.liked.length,
+        },
+        SHOW_MINE: {
+          value: 'SHOW_MINE',
+          text: '優先顯示我的創作',
+          method: (a, b) => {
+            if (a.author.username === this.username) return -1
+            if (b.author.username === this.username) return 1
+            return 0
+          },
+        },
+      }
+    },
   },
   watch: {
     filteredComments() {
       this.$emit('change-filtered-comments', this.filteredComments)
-    },
-  },
-  data: () => ({
-    SORT_BY,
-    SUBMISSION_STATUS,
-    sortby: SORT_BY.SHOW_MINE.value,
-    searchText: '',
-    statusOptions: Object.keys(SUBMISSION_STATUS).map(s => Number(s)),
-    statusFilter: Object.keys(SUBMISSION_STATUS).map(s => Number(s)),
-    canParticipateCourse: null,
-  }),
-  methods: {
-    navigate(floor) {
-      if (this.$route.query.floor !== floor) {
-        this.$router.replace({ query: { floor } })
-        this.$emit('refetch-floor')
-      }
     },
   },
   async created() {
@@ -302,6 +287,14 @@ export default {
   },
   destroyed() {
     this.unsubscribeRefetch()
+  },
+  methods: {
+    navigate(floor) {
+      if (this.$route.query.floor !== floor) {
+        this.$router.replace({ query: { floor } })
+        this.$emit('refetch-floor')
+      }
+    },
   },
 }
 </script>

@@ -1,10 +1,10 @@
 import 'cypress-file-upload'
-import { LOGIN, LOGOUT } from '../../../src/store/actions.type.js'
+import { ActionTypes } from '../../../src/store/action-types'
 
 Cypress.Commands.add('login', body => {
   cy.window().should('have.property', '__store__')
   cy.window().then(win => {
-    win.__store__.dispatch(LOGIN, body)
+    win.__store__.dispatch(ActionTypes.LOGIN, body)
   })
   cy.wait(800)
 })
@@ -12,7 +12,7 @@ Cypress.Commands.add('login', body => {
 Cypress.Commands.add('logout', () => {
   cy.window().should('have.property', '__store__')
   cy.window().then(win => {
-    win.__store__.dispatch(LOGOUT)
+    win.__store__.dispatch(ActionTypes.LOGOUT)
   })
   cy.wait(800)
 })

@@ -22,12 +22,12 @@
         <v-form ref="form">
           <v-text-field
             label="課程名稱"
-            v-model="name"
+            v-model.trim="name"
             :rules="nameRules"
             outlined
             dense
             persistent-hint
-            hint="課程名稱僅能包含：中文、英文、數字、底線、減號、點"
+            hint="課程名稱僅能包含：中英文、數字、空格、底線、減號、點"
           />
           <v-row>
             <v-col>
@@ -118,7 +118,8 @@ export default {
     teacher: null,
     nameRules: [
       val => !!val || '請輸入課程名稱',
-      val => RegExp(/^[\u4E00-\u9FCCA-Za-z0-9_.-]+$/).test(val) || '課程名稱包含非法字元',
+      val => RegExp(/^[\u4E00-\u9FCCA-Za-z0-9_.-\s]+$/).test(val) || '課程名稱包含非法字元',
+      val => val.length >= 3 || '長度至少三個字元',
     ],
     year: 109,
     semester: 2,

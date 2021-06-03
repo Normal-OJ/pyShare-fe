@@ -48,14 +48,13 @@ export default {
     pid() {
       return this.$route.query.pid
     },
-    prob() {
-      if (this.isEdit) return this.prob
-      return { ...initialProb, course: this.courseId }
-    },
   },
 
   async created() {
     if (this.isEdit) await this.getProblem(this.pid)
+    else {
+      this.prob = { ...initialProb, course: this.courseId }
+    }
   },
 
   data: () => ({

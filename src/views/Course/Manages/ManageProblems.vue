@@ -48,6 +48,7 @@ export default {
     },
     ...mapActions({
       getProblems: ActionTypes.GET_PROBLEMS,
+      getTags: ActionTypes.GET_COURSE_TAGS,
     }),
     getProblemsByTags(paramsWithTags) {
       this.getProblems({ ...paramsWithTags, course: this.courseId })

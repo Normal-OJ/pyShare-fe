@@ -4,6 +4,7 @@ export const initialState: State = {
   username: null,
   displayName: null,
   role: null,
+  md5: null,
   courses: [],
   isShowLogoutModal: false,
 }
@@ -14,6 +15,7 @@ export type State = {
   username: string | null
   displayName: string | null
   role: User.Role | null
+  md5: string | null
   courses: Course.ID[]
   isShowLogoutModal: boolean
 }

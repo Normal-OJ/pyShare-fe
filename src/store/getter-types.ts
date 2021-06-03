@@ -2,6 +2,7 @@ export enum GetterTypes {
   // auth module
   ROLE = 'role',
   USERNAME = 'username',
+  USER_INFO = 'userInfo',
 
   // problem module
   GET_PROBLEM_BY_ID = 'getProblemById',

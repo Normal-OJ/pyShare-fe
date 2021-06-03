@@ -17,6 +17,15 @@ const getters = <GetterTree<State, RootState>>{
   [GetterTypes.USERNAME](state: State) {
     return state.username
   },
+  [GetterTypes.USER_INFO](state: State) {
+    return {
+      id: state.id,
+      username: state.username,
+      displayName: state.displayName,
+      role: state.role,
+      md5: state.md5,
+    }
+  },
 }
 
 const actions = <ActionTree<State, RootState>>{

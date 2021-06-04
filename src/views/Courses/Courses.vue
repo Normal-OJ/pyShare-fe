@@ -3,7 +3,7 @@
     <v-row>
       <div class="text-h5">課程列表</div>
       <v-spacer />
-      <CreateCourseModal v-role="[ROLE.ADMIN, ROLE.TEACHER]" @submit="submitCreateCourse" />
+      <CreateCourseModal v-role="[TEACHER, ADMIN]" @submit="submitCreateCourse" />
     </v-row>
 
     <div class="text-h6 mt-8">已加入的課程</div>
@@ -22,6 +22,8 @@ import { ActionTypes } from '@/store/action-types'
 import agent from '@/api/agent'
 import { ROLE } from '@/constants/auth'
 import { COURSE_STATE } from '@/constants/course'
+
+const { TEACHER, ADMIN } = ROLE
 
 export default {
   components: { CourseList, CreateCourseModal },
@@ -52,17 +54,19 @@ export default {
 
   data: () => ({
     isWaitingCourseList: true,
-    courses: [],
-    ROLE,
+    TEACHER,
+    ADMIN,
   }),
 
-  mounted() {
-    agent.Course.getList()
-      .then(resp => (this.courses = resp.data.data))
-      .finally(() => (this.isWaitingCourseList = false))
+  created() {
+    this.getCourseList()
   },
 
   methods: {
+    getCourseList() {
+      this.isWaitingCourseList = true
+      this.getCourse().then(() => (this.isWaitingCourseList = false))
+    },
     async submitCreateCourse(body, resolve, reject) {
       try {
         await agent.Course.create(body)

@@ -13,6 +13,7 @@ export enum GetterTypes {
 
   // comment module
   COMMENTS = 'comments', // get comments that are visible (not deleted)
+  COMMENT_OF_MINE = 'commentOfMine',
 
   // permission module
   PERMISSIONS = 'permissions',

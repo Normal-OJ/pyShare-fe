@@ -10,8 +10,8 @@
 <script>
 import Challenges from '@/components/Course/Challenges/Challenges'
 import { mapActions, mapGetters, mapState } from 'vuex'
-import { CHALLENGES } from '@/store/getters.type'
-import { GET_PROBLEMS, GET_COURSE_TAGS } from '@/store/actions.type'
+import { GetterTypes } from '@/store/getter-types'
+import { ActionTypes } from '@/store/action-types'
 
 export default {
   components: { Challenges },
@@ -20,7 +20,7 @@ export default {
       tags: state => state.course.courseTags,
     }),
     ...mapGetters({
-      challenges: CHALLENGES,
+      challenges: GetterTypes.CHALLENGES,
     }),
     courseId() {
       return this.$route.params.id
@@ -42,8 +42,8 @@ export default {
 
   methods: {
     ...mapActions({
-      getProblems: GET_PROBLEMS,
-      getTags: GET_COURSE_TAGS,
+      getProblems: ActionTypes.GET_PROBLEMS,
+      getTags: ActionTypes.GET_COURSE_TAGS,
     }),
     getProblemsByTags(paramsWithTags) {
       this.getProblems({ ...paramsWithTags, course: this.courseId })

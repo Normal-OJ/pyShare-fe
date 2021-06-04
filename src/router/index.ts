@@ -69,17 +69,17 @@ const routes = [
       {
         path: 'challenges',
         name: 'courseChallenges',
-        component: () => import('@/views/Course/Challenges/Challenges'),
+        component: () => import('@/views/Course/Challenges/Challenges.vue'),
       },
       {
         path: 'challenge/:pid',
         name: 'courseChallenge',
-        component: () => import('@/views/Course/Challenge/Challenge'),
+        component: () => import('@/views/Course/Challenge/Challenge.vue'),
       },
       {
         path: 'challenges/:operation',
         name: 'courseSetChallenges',
-        component: () => import('@/views/Course/Challenges/SetChallenges'),
+        component: () => import('@/views/Course/Challenges/SetChallenges.vue'),
       },
       {
         path: 'manages',
@@ -104,7 +104,7 @@ const routes = [
       {
         path: 'manages/challenges',
         name: 'courseManageChallenges',
-        component: () => import('@/views/Course/Manages/ManageChallenges'),
+        component: () => import('@/views/Course/Manages/ManageChallenges.vue'),
       },
       {
         path: 'info',
@@ -120,12 +120,12 @@ const routes = [
   {
     path: '/datasets',
     name: 'datasets',
-    component: () => import('@/views/Datasets/Datasets'),
+    component: () => import('@/views/Datasets/Datasets.vue'),
   },
   {
     path: '/dataset/:id',
     name: 'dataset',
-    component: () => import('@/views/Datasets/Dataset'),
+    component: () => import('@/views/Datasets/Dataset.vue'),
   },
   {
     path: '/profile/:id',

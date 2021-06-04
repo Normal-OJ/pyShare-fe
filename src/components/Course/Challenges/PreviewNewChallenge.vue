@@ -19,7 +19,7 @@
       </v-toolbar>
 
       <v-card-text class="mt-8 text--primary">
-        <Challenge :prob="prob" isPreview />
+        <Challenge :prob="previewProb" isPreview />
       </v-card-text>
     </v-card>
   </v-dialog>
@@ -27,6 +27,8 @@
 
 <script>
 import Challenge from '@/components/Course/Challenge/Challenge'
+import { mapGetters } from 'vuex'
+import { GetterTypes } from '@/store/getter-types'
 
 export default {
   components: { Challenge },
@@ -41,5 +43,17 @@ export default {
   data: () => ({
     dialog: false,
   }),
+
+  computed: {
+    ...mapGetters({
+      userInfo: GetterTypes.USER_INFO,
+    }),
+    previewProb() {
+      return {
+        author: this.userInfo,
+        ...this.prob,
+      }
+    },
+  },
 }
 </script>

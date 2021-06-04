@@ -40,6 +40,10 @@ export default {
     },
   },
 
+  data: () => ({
+    dialog: false,
+  }),
+
   computed: {
     ...mapGetters({
       userInfo: GetterTypes.USER_INFO,
@@ -51,9 +55,5 @@ export default {
       }
     },
   },
-
-  data: () => ({
-    dialog: false,
-  }),
 }
 </script>

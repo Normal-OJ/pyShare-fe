@@ -11,9 +11,9 @@
 <script>
 import ManageChallenges from '@/components/Course/Manages/ManageChallenges'
 import { mapActions, mapGetters, mapState } from 'vuex'
-import { CHALLENGES } from '@/store/getters.type'
-import { GET_PROBLEMS } from '@/store/actions.type'
 import agent from '@/api/agent'
+import { GetterTypes } from '@/store/getter-types'
+import { ActionTypes } from '@/store/action-types'
 
 export default {
   components: { ManageChallenges },
@@ -23,10 +23,10 @@ export default {
       tags: state => state.course.courseTags,
     }),
     ...mapGetters({
-      challenges: CHALLENGES,
+      challenges: GetterTypes.CHALLENGES,
     }),
-    courseName() {
-      return this.$route.params.name
+    paramsWithCourse() {
+      return { course: this.$route.params.id }
     },
   },
 
@@ -40,17 +40,14 @@ export default {
 
   methods: {
     async fetchData() {
-      const paramsWithCourse = {
-        course: this.courseName,
-      }
-      await this.getProblems(paramsWithCourse)
+      await this.getProblems(this.paramsWithCourse)
       this.isWaiting = false
     },
     ...mapActions({
-      getProblems: GET_PROBLEMS,
+      getProblems: ActionTypes.GET_PROBLEMS,
     }),
     getProblemsByTags(paramsWithTags) {
-      this.getProblems({ ...paramsWithTags, course: this.courseName })
+      this.getProblems({ ...paramsWithTags, ...this.paramsWithCourse })
     },
     async deleteProblem(pid) {
       try {

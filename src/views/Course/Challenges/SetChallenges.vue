@@ -14,9 +14,7 @@
 <script>
 import Spinner from '@/components/UI/Spinner'
 import SetChallenges from '@/components/Course/Challenges/SetChallenges'
-import { mapActions, mapGetters, mapState } from 'vuex'
-import { GET_PROBLEM_INFO } from '@/store/actions.type'
-import { USER } from '@/store/getters.type'
+import { mapState } from 'vuex'
 import agent from '@/api/agent'
 
 const OPERATION = {
@@ -42,13 +40,15 @@ const initialProb = {
 export default {
   components: { Spinner, SetChallenges },
 
+  data: () => ({
+    submitSuccess: false,
+    isLoading: false,
+    prob: null,
+  }),
+
   computed: {
     ...mapState({
       courseTags: state => state.course.courseTags,
-      problemInfo: state => state.problem.problemInfo,
-    }),
-    ...mapGetters({
-      user: USER,
     }),
     isEdit() {
       return this.$route.params.operation === OPERATION.EDIT
@@ -59,25 +59,30 @@ export default {
     pid() {
       return this.$route.query.pid
     },
-    prob() {
-      if (this.isEdit) return this.problemInfo
-      return { ...initialProb, course: this.courseId, author: this.user }
-    },
   },
 
   async created() {
-    if (this.isEdit) await this.getProblemInfo(this.pid)
+    if (this.isEdit) await this.getProblem(this.pid)
+    else {
+      this.prob = { ...initialProb, course: this.courseId }
+    }
   },
 
-  data: () => ({
-    submitSuccess: false,
-    isLoading: false,
-  }),
-
   methods: {
-    ...mapActions({
-      getProblemInfo: GET_PROBLEM_INFO,
-    }),
+    async getProblem(pid) {
+      try {
+        const { data } = await agent.Problem.get(pid)
+        this.prob = data.data
+        if (this.prob.extra._cls !== 'OJProblem') {
+          throw new Error()
+        }
+      } catch (error) {
+        console.log('[views/SetChallenges/getProblem] error', error)
+        alert('題目不存在')
+        this.$router.push({ name: 'courseManageChallenges' })
+        throw error
+      }
+    },
     async handleSubmit(body) {
       try {
         this.isLoading = true
@@ -90,7 +95,7 @@ export default {
         this.submitSuccess = true
         this.$alertSuccess(`${this.isEdit ? '更新' : '新增'}測驗內容成功。`)
         const pid = this.isEdit ? this.pid : result.data.data.pid
-        this.getProblemInfo(pid)
+        this.getProblem(pid)
         if (!this.isEdit) {
           this.$router.push({
             name: 'courseChallenges',

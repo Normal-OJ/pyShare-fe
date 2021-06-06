@@ -73,8 +73,9 @@ export default {
     async submitCreateCourse(body, resolve, reject) {
       try {
         await agent.Course.create(body)
+        // since the course of user is stored in jwt, we have to refresh jwt
+        await this.getJwt()
         resolve()
-        this.getCourse()
       } catch (error) {
         console.log('[views/Courses/submitCreateCourse] error', error)
         reject(error)
@@ -83,6 +84,7 @@ export default {
     },
     ...mapActions({
       getCourse: ActionTypes.GET_COURSES,
+      getJwt: ActionTypes.GET_JWT,
     }),
   },
 }

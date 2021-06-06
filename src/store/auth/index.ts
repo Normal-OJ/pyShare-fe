@@ -50,9 +50,9 @@ const actions = <ActionTree<State, RootState>>{
    */
   async [ActionTypes.GET_JWT]({ commit }) {
     if (!getJwt()) return
-    commit(MutationTypes.SET_JWT)
     try {
       await agent.Auth.checkToken()
+      commit(MutationTypes.SET_JWT)
     } catch (error) {
       console.log('[vuex/auth/getJwt] error', error)
       commit(MutationTypes.SET_IS_SHOW_LOGOUT_MODAL, true)

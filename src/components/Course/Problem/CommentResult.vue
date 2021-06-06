@@ -22,7 +22,7 @@
         </v-card>
       </v-tab-item>
       <v-tab-item class="pt-4">
-        <div v-show="result.files.length > 0">
+        <v-card outlined v-show="result.files.length > 0" min-height="200">
           <v-menu offset-y>
             <template v-slot:activator="{ on }">
               <v-btn outlined v-on="on" small class="text-none">
@@ -32,7 +32,7 @@
             </template>
             <v-list v-if="isTest">
               <v-list-item
-                v-for="file in [...miscFiles, ...imageFiles]"
+                v-for="file in [...miscFiles, ...images]"
                 :key="file.filename"
                 @click="browsing = file"
               >
@@ -41,7 +41,7 @@
             </v-list>
             <v-list v-else>
               <v-list-item
-                v-for="file in [...miscFiles, ...imageFiles]"
+                v-for="file in [...miscFiles, ...images]"
                 :key="file"
                 @click="browsing = file"
               >
@@ -60,8 +60,8 @@
             下載
           </v-btn>
           <v-row>
-            <v-col cols="12" md="3" v-for="(imageUrl, index) in imageUrls" :key="imageUrl">
-              <v-img max-height="200" contain :src="imageUrl" @click="openLightbox(index)" />
+            <v-col cols="12" md="3" v-for="(image, index) in imagesWithUrl" :key="image.filename">
+              <v-img max-height="200" contain :src="image.url" @click="openLightbox(index)" />
             </v-col>
           </v-row>
           <FsLightbox
@@ -69,7 +69,7 @@
             :sourceIndex="lightboxIndex"
             :sources="imageUrls"
           />
-        </div>
+        </v-card>
       </v-tab-item>
       <v-tab-item class="pt-4">
         <v-card outlined>
@@ -116,11 +116,23 @@ export default {
   computed: {
     imageUrls() {
       if (this.isTest) {
-        return this.imageFiles.map(file => `data:image/png;base64,${file.content}`)
+        return this.images.map(file => `data:image/png;base64,${file.content}`)
       }
-      return this.imageFiles.map(filename => `/api/submission/${this.sid}/file/${filename}`)
+      return this.images.map(filename => `/api/submission/${this.sid}/file/${filename}`)
     },
-    imageFiles() {
+    imagesWithUrl() {
+      if (this.isTest) {
+        return this.images.map(file => ({
+          url: `data:image/png;base64,${file.content}`,
+          filename: file.filename,
+        }))
+      }
+      return this.images.map(filename => ({
+        url: `/api/submission/${this.sid}/file/${filename}`,
+        filename,
+      }))
+    },
+    images() {
       return this.result.files
         .filter(filename => {
           const splittedName = this.isTest ? filename.filename.split('.') : filename.split('.')

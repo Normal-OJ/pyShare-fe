@@ -11,13 +11,13 @@ const state = { ...initialState }
 
 const getters = <GetterTree<State, RootState>>{
   // state is only allow to be accessed by getter in pure .js logic
-  [GetterTypes.ROLE](state: State) {
+  [GetterTypes.ROLE](state) {
     return state.role
   },
-  [GetterTypes.USERNAME](state: State) {
+  [GetterTypes.USERNAME](state) {
     return state.username
   },
-  [GetterTypes.USER_INFO](state: State) {
+  [GetterTypes.USER_INFO](state) {
     return {
       id: state.id,
       username: state.username,

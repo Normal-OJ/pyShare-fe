@@ -6,7 +6,7 @@ export const initialState: State = {
 }
 
 export type State = {
-  courses: Course.ID[]
+  courses: Course.IInfo[]
   courseStats: Course.IStudentStats[] | null
   courseInfo: Course.IInfo | null
   courseTags: Tag.name[]

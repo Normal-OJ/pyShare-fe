@@ -17,11 +17,12 @@
 <script>
 import CourseList from '@/components/Courses/CourseList'
 import CreateCourseModal from '@/components/Courses/CreateCourseModal'
-import { mapActions, mapState } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 import { ActionTypes } from '@/store/action-types'
 import agent from '@/api/agent'
 import { ROLE } from '@/constants/auth'
 import { COURSE_STATE } from '@/constants/course'
+import { GetterTypes } from '@/store/getter-types'
 
 const { TEACHER, ADMIN } = ROLE
 
@@ -29,26 +30,28 @@ export default {
   components: { CourseList, CreateCourseModal },
 
   computed: {
-    ...mapState({
-      courses: state => state.course.courses,
-      userId: state => state.auth.id,
-      myCourses: state => state.auth.courses,
+    ...mapGetters({
+      teachingCourses: GetterTypes.TEACHING_COURSES,
+      enrolledCourses: GetterTypes.ENROLLED_COURSES,
+      otherCourses: GetterTypes.OTHER_COURSES,
     }),
     joinedCourses() {
-      const isInMyCourses = course => this.myCourses.indexOf(course.id) !== -1
-      const courses = this.courses.filter(isInMyCourses).map(course => ({
-        ...course,
-        permission: this.userID === course.teacher.id ? 'teacher' : 'student',
-      }))
-      return courses
+      return [
+        ...this.teachingCourses.map(course => ({
+          ...course,
+          permission: 'teacher',
+        })),
+        ...this.enrolledCourses.map(course => ({
+          ...course,
+          permission: 'student',
+        })),
+      ]
     },
     notJoinedCourses() {
-      const isNotInMyCourses = course => this.myCourses.indexOf(course.id) === -1
-      const courses = this.courses.filter(isNotInMyCourses).map(course => ({
+      return this.otherCourses.map(course => ({
         ...course,
         permission: course.status === COURSE_STATE.READONLY ? 'read' : 'participate',
       }))
-      return courses
     },
   },
 

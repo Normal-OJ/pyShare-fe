@@ -4,10 +4,29 @@ import { RootState } from '../types'
 import { ActionTypes } from '../action-types'
 import { MutationTypes } from '../mutation-types'
 import agent from '@/api/agent'
+import { GetterTypes } from '../getter-types'
 
 const state = { ...initialState }
 
-const getters = <GetterTree<State, RootState>>{}
+const getters = <GetterTree<State, RootState>>{
+  [GetterTypes.TEACHING_COURSES](state, getters, RootState) {
+    const myCourses = RootState.auth.courses
+    const isMyCourses = (course: Course.IInfo) => myCourses.indexOf(course.id) !== -1
+    const isTeachedByMe = (course: Course.IInfo) => course.teacher.id === RootState.auth.id
+    return state.courses.filter(course => isMyCourses(course) && isTeachedByMe(course))
+  },
+  [GetterTypes.ENROLLED_COURSES](state, getters, RootState) {
+    const myCourses = RootState.auth.courses
+    const isMyCourses = (course: Course.IInfo) => myCourses.indexOf(course.id) !== -1
+    const notTeachedByMe = (course: Course.IInfo) => course.teacher.id !== RootState.auth.id
+    return state.courses.filter(course => isMyCourses(course) && notTeachedByMe(course))
+  },
+  [GetterTypes.OTHER_COURSES](state, getters, RootState) {
+    const myCourses = RootState.auth.courses
+    const notMyCourses = (course: Course.IInfo) => myCourses.indexOf(course.id) === -1
+    return state.courses.filter(notMyCourses)
+  },
+}
 
 const actions = <ActionTree<State, RootState>>{
   async [ActionTypes.GET_COURSES]({ commit }) {
@@ -55,16 +74,16 @@ const actions = <ActionTree<State, RootState>>{
 }
 
 const mutations = <MutationTree<State>>{
-  [MutationTypes.SET_COURSES](state, payload) {
+  [MutationTypes.SET_COURSES](state, payload: Course.IInfo[]) {
     state.courses = payload
   },
-  [MutationTypes.SET_COURSE_STATS](state, payload) {
+  [MutationTypes.SET_COURSE_STATS](state, payload: Course.IStudentStats[]) {
     state.courseStats = payload
   },
-  [MutationTypes.SET_COURSE_INFO](state, payload) {
+  [MutationTypes.SET_COURSE_INFO](state, payload: Course.IInfo) {
     state.courseInfo = payload
   },
-  [MutationTypes.SET_COURSE_TAGS](state, payload) {
+  [MutationTypes.SET_COURSE_TAGS](state, payload: Tag.name[]) {
     state.courseTags = payload
   },
 }

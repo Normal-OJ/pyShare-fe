@@ -60,7 +60,7 @@
         <div class="font-weight-thin text-h1">{{ totalLikedAmount }}</div>
       </div>
     </div>
-    <div class="text-h5 mt-8" v-if="$isSelf(user.username)">更改信箱密碼</div>
+    <div class="text-h5 mt-8" v-if="$isSelf(user.username)">更改信箱或密碼</div>
     <v-form ref="form" class="mt-4" v-if="$isSelf(user.username)">
       <v-row>
         <v-col cols="12" md="6">

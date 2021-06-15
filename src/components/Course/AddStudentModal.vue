@@ -171,6 +171,9 @@
                   label="password（密碼）"
                   outlined
                   dense
+                  :type="isShowPassword ? 'text' : 'password'"
+                  :append-icon="isShowPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                  @click:append="isShowPassword = !isShowPassword"
                 />
                 <v-btn
                   class="my-4"
@@ -269,6 +272,7 @@ export default {
     errors: null,
     isLoading: false,
     isSchoolLoading: true,
+    isShowPassword: false,
   }),
 
   computed: {

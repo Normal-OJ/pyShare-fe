@@ -5,12 +5,12 @@ export const ROLE = {
 }
 
 export const SCHOOLS = [
-  { alias: '', name: '無' },
-  { alias: 'NCCU', name: '國立政治大學' },
-  { alias: 'NCUE', name: '國立彰化師範大學' },
-  { alias: 'NTNU', name: '國立臺灣師範大學' },
-  { alias: 'NTUST', name: '國立臺灣科技大學' },
-  { alias: 'PCCU', name: '中國文化大學' },
-  { alias: 'TAJEN', name: '大仁科技大學' },
-  { alias: 'TKU', name: '淡江大學' },
+  { abbr: '', name: '無' },
+  { abbr: 'NCCU', name: '國立政治大學' },
+  { abbr: 'NCUE', name: '國立彰化師範大學' },
+  { abbr: 'NTNU', name: '國立臺灣師範大學' },
+  { abbr: 'NTUST', name: '國立臺灣科技大學' },
+  { abbr: 'PCCU', name: '中國文化大學' },
+  { abbr: 'TAJEN', name: '大仁科技大學' },
+  { abbr: 'TKU', name: '淡江大學' },
 ]

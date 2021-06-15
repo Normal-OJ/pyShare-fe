@@ -17,7 +17,7 @@ function checkRole(el: HTMLElement, binding: DirectiveBinding) {
       isHideElement && el.parentNode && el.parentNode.removeChild(el)
     }
   } else {
-    throw new Error(`need roles! Like v-role="['admin', 'teacher']"`)
+    throw new Error(`need roles! Like v-role="[0, 1]"`)
   }
 }
 

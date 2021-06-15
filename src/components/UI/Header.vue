@@ -9,9 +9,10 @@
 
     <v-toolbar-items>
       <v-btn
-        v-for="{ label, route } in headerItems"
+        v-for="{ label, route, role } in headerItems"
         :key="label"
         :to="route"
+        v-role="role"
         class="text-body-1 font-weight-bold"
         color="white"
         text
@@ -104,14 +105,22 @@ export default {
         {
           label: '課程',
           route: { path: '/courses' },
+          role: [0, 1, 2],
         },
         {
           label: '個人頁面',
           route: this.isLogin ? { name: 'profile', params: { id: this.id } } : { path: '/profile' },
+          role: [0, 1, 2],
+        },
+        {
+          label: '管理員介面',
+          route: { path: '/admin' },
+          role: [0],
         },
         {
           label: '關於平台',
           route: { path: '/about' },
+          role: [0, 1, 2],
         },
       ]
     },

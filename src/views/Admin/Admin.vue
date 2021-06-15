@@ -119,6 +119,33 @@
         </v-btn>
       </v-row>
     </v-form>
+    <div class="mt-8 text-h6">學校列表</div>
+    <v-simple-table>
+      <template v-slot:default>
+        <thead>
+          <tr>
+            <th>縮寫 abbr</th>
+            <th>顯示名稱 name</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="{ abbr, name } in schoolOptions" :key="abbr">
+            <td>{{ abbr }}</td>
+            <td>{{ name }}</td>
+          </tr>
+        </tbody>
+      </template>
+    </v-simple-table>
+    <div class="mt-8 text-h6">使用者列表</div>
+    <v-data-table
+      v-if="users"
+      :headers="headers"
+      :items="users"
+      :search="searchText"
+      :items-per-page="Number(-1)"
+      hide-default-footer
+    />
+    <p v-else>error</p>
   </v-container>
 </template>
 
@@ -168,6 +195,15 @@ export default {
       },
       isLoading: false,
     },
+    users: [],
+    headers: [
+      { text: '學校', value: 'school' },
+      { text: '使用者名稱', value: 'username' },
+      { text: '顯示名稱', value: 'displayName' },
+      { text: '角色', value: 'role' },
+      { text: '電子信箱', value: 'email' },
+    ],
+    searchText: '',
   }),
 
   watch: {
@@ -194,6 +230,12 @@ export default {
         throw error
       })
       .finally(() => (this.isSchoolLoading = false))
+    agent.User.getList()
+      .then(resp => (this.users = resp.data.data))
+      .catch(error => {
+        this.users = null
+        throw error
+      })
   },
 
   methods: {

@@ -110,7 +110,6 @@
 <script>
 import Spinner from '@/components/UI/Spinner'
 import Gravatar from '@/components/UI/Gravatar'
-import { SCHOOLS } from '@/constants/auth'
 import agent from '@/api/agent'
 
 export default {
@@ -133,6 +132,7 @@ export default {
   data() {
     return {
       isLoading: false,
+      school: '',
       formValues: {
         email: '',
         oldPassword: '',
@@ -162,11 +162,6 @@ export default {
         return a + b.starers.length
       }, 0)
     },
-    school() {
-      if (this.user.school === null) return ''
-      const school = SCHOOLS.find(s => s.alias === this.user.school)
-      return school.name
-    },
     isDisabledSubmit() {
       return (
         (!this.formValues.newPassword && !this.formValues.email) ||
@@ -176,7 +171,23 @@ export default {
     },
   },
 
+  watch: {
+    user: {
+      handler() {
+        if (!this.user.school) {
+          this.school = '無'
+          return
+        }
+        this.getSchool()
+      },
+      deep: true,
+    },
+  },
+
   methods: {
+    getSchool() {
+      agent.School.get(this.user.school).then(resp => (this.school = resp.data.data.abbr))
+    },
     validateEmail() {
       this.isEmailValidating = true
       const body = { email: this.formValues.email }

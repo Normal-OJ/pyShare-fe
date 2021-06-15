@@ -12,15 +12,16 @@
             v-model="loginForm.school"
             :rules="loginRules.school"
             :items="schoolOptions"
-            :item-text="({ alias, name }) => `${alias} ${name}`"
-            item-value="alias"
+            :item-text="({ abbr, name }) => `${abbr} ${name}`"
+            item-value="abbr"
             label="學校"
             outlined
+            :loading="isSchoolLoading"
             :error="!!errorMsg"
             @input="() => (errorMsg = '')"
             data-test="school"
           >
-            <template v-slot:selection="{ item }">{{ item.alias || item.name }}</template>
+            <template v-slot:selection="{ item }">{{ item.abbr || item.name }}</template>
           </v-select>
         </v-col>
         <v-col cols="8">
@@ -78,8 +79,9 @@
 
 <script>
 import { ActionTypes } from '@/store/action-types'
-import { SCHOOLS } from '@/constants/auth'
 import { mapState } from 'vuex'
+import agent from '@/api/agent'
+import { SCHOOLS } from '@/constants/auth'
 
 const USERNAME = 0
 const EMAIL = 1
@@ -89,11 +91,12 @@ export default {
 
   data: () => ({
     isLoading: false,
+    isSchoolLoading: true,
     errorMsg: '',
     USERNAME,
     EMAIL,
     loginMethod: USERNAME,
-    schoolOptions: SCHOOLS,
+    schoolOptions: [],
     loginForm: {
       school: null,
       username: null,
@@ -108,6 +111,17 @@ export default {
     },
     isShowPassword: false,
   }),
+
+  created() {
+    agent.School.getList()
+      .then(resp => (this.schoolOptions = resp.data.data))
+      .catch(error => {
+        // 備援
+        this.schoolOptions = SCHOOLS
+        throw error
+      })
+      .finally(() => (this.isSchoolLoading = false))
+  },
 
   methods: {
     async handleSubmit() {

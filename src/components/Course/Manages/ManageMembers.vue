@@ -1,6 +1,11 @@
 <template>
   <v-container fluid>
     <div class="text-h5">管理成員</div>
+    <div class="text-body-1">
+      以下統計資料尚無包含「測驗題型」的相關數據，在
+      <router-link :to="{ name: 'courseManageChallenges' }">「管理測驗」</router-link>
+      頁面可以看到各題學生作答情況
+    </div>
     <div class="d-flex align-center mt-4">
       <v-col cols="10" md="6" class="d-flex">
         <v-text-field

@@ -9,9 +9,10 @@
 
     <v-toolbar-items>
       <v-btn
-        v-for="{ label, route } in headerItems"
+        v-for="{ label, route, role } in headerItems"
         :key="label"
         :to="route"
+        v-role="role || []"
         class="text-body-1 font-weight-bold"
         color="white"
         text
@@ -75,6 +76,7 @@
 
 <script>
 import Popup from './Popup'
+import { ROLE } from '@/constants/auth'
 
 export default {
   name: 'Header',
@@ -105,9 +107,19 @@ export default {
           label: '課程',
           route: { path: '/courses' },
         },
+        // {
+        //   label: '共享資料集',
+        //   route: { path: '/datasets' },
+        //   role: [ROLE.ADMIN, ROLE.TEACHER],
+        // },
         {
           label: '個人頁面',
           route: this.isLogin ? { name: 'profile', params: { id: this.id } } : { path: '/profile' },
+        },
+        {
+          label: '管理員介面',
+          route: { path: '/admin' },
+          role: [ROLE.ADMIN],
         },
         {
           label: '關於平台',

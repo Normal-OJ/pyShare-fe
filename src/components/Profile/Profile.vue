@@ -16,7 +16,7 @@
       <v-simple-table>
         <template v-slot:default>
           <tbody>
-            <template v-if="$isSelf(user.username)">
+            <template v-if="$isSelf(user.username) || role === 0">
               <tr>
                 <td class="font-weight-bold">學校</td>
                 <td style="width: 70%">{{ school }}</td>
@@ -60,7 +60,7 @@
         <div class="font-weight-thin text-h1">{{ totalLikedAmount }}</div>
       </div>
     </div>
-    <div class="text-h5 mt-8" v-if="$isSelf(user.username)">更改信箱密碼</div>
+    <div class="text-h5 mt-8" v-if="$isSelf(user.username)">更改信箱或密碼</div>
     <v-form ref="form" class="mt-4" v-if="$isSelf(user.username)">
       <v-row>
         <v-col cols="12" md="6">
@@ -110,8 +110,9 @@
 <script>
 import Spinner from '@/components/UI/Spinner'
 import Gravatar from '@/components/UI/Gravatar'
-import { SCHOOLS } from '@/constants/auth'
 import agent from '@/api/agent'
+import { mapGetters } from 'vuex'
+import { GetterTypes } from '@/store/getter-types'
 
 export default {
   props: {
@@ -133,6 +134,7 @@ export default {
   data() {
     return {
       isLoading: false,
+      school: '',
       formValues: {
         email: '',
         oldPassword: '',
@@ -162,11 +164,6 @@ export default {
         return a + b.starers.length
       }, 0)
     },
-    school() {
-      if (this.user.school === null) return ''
-      const school = SCHOOLS.find(s => s.alias === this.user.school)
-      return school.name
-    },
     isDisabledSubmit() {
       return (
         (!this.formValues.newPassword && !this.formValues.email) ||
@@ -174,9 +171,28 @@ export default {
         this.isEmailValidating
       )
     },
+    ...mapGetters({
+      role: GetterTypes.ROLE,
+    }),
+  },
+
+  watch: {
+    user: {
+      handler() {
+        if (!this.user.school) {
+          this.school = '無'
+          return
+        }
+        this.getSchool()
+      },
+      deep: true,
+    },
   },
 
   methods: {
+    getSchool() {
+      agent.School.get(this.user.school).then(resp => (this.school = resp.data.data.abbr))
+    },
     validateEmail() {
       this.isEmailValidating = true
       const body = { email: this.formValues.email }

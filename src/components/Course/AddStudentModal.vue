@@ -100,9 +100,9 @@
                     </v-btn>
                   </template>
                   <v-list>
-                    <v-list-item v-for="{ alias, name } in schoolOptions" :key="name">
+                    <v-list-item v-for="{ abbr, name } in schoolOptions" :key="name">
                       <v-list-item-title>
-                        {{ name }}：{{ alias ? alias : '（空字串）' }}
+                        {{ name }}：{{ abbr ? abbr : '（空字串）' }}
                       </v-list-item-title>
                     </v-list-item>
                   </v-list>
@@ -139,13 +139,14 @@
                   v-model="newStudent.school"
                   :rules="[val => val !== null || '此欄位為必填']"
                   :items="schoolOptions"
-                  :item-text="({ alias, name }) => `${alias} ${name}`"
-                  item-value="alias"
+                  :item-text="({ abbr, name }) => `${abbr} ${name}`"
+                  item-value="abbr"
                   label="學校"
+                  :loading="isSchoolLoading"
                   outlined
                   dense
                 >
-                  <template v-slot:selection="{ item }">{{ item.alias || item.name }}</template>
+                  <template v-slot:selection="{ item }">{{ item.abbr || item.name }}</template>
                 </v-select>
                 <v-text-field
                   v-model="newStudent.username"
@@ -170,6 +171,9 @@
                   label="password（密碼）"
                   outlined
                   dense
+                  :type="isShowPassword ? 'text' : 'password'"
+                  :append-icon="isShowPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                  @click:append="isShowPassword = !isShowPassword"
                 />
                 <v-btn
                   class="my-4"
@@ -258,7 +262,7 @@ export default {
     dialog: false,
     tab: 0,
     newStudentFile: null,
-    schoolOptions: SCHOOLS,
+    schoolOptions: [],
     template,
     validForm: false,
     newStudent: { ...initNewStudent },
@@ -267,12 +271,25 @@ export default {
     isShowError: false,
     errors: null,
     isLoading: false,
+    isSchoolLoading: true,
+    isShowPassword: false,
   }),
 
   computed: {
     isAddStudentDisabled() {
       return !this.newStudent.username || !this.validForm
     },
+  },
+
+  created() {
+    agent.School.getList()
+      .then(resp => (this.schoolOptions = resp.data.data))
+      .catch(error => {
+        // 備援
+        this.schoolOptions = SCHOOLS
+        throw error
+      })
+      .finally(() => (this.isSchoolLoading = false))
   },
 
   methods: {

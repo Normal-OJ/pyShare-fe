@@ -69,6 +69,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    height: {
+      type: Number,
+      default: null,
+    },
   },
 
   computed: {
@@ -101,6 +105,10 @@ export default {
     handleResize() {
       this.editor.layout()
     },
+  },
+
+  mounted() {
+    if (this.height) this.containerHeight = this.height
   },
 
   destroyed() {

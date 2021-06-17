@@ -1,6 +1,7 @@
 <template>
   <div>
     <ReleaseNote :releases="releases" :isLoading="isLoading" />
+    <v-divider class="mt-4" />
     <MeetOurTeam />
   </div>
 </template>

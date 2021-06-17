@@ -19,19 +19,19 @@
       </v-toolbar>
 
       <v-card-text class="mt-8 text--primary">
-        <Problem :prob="previewProb" isPreview />
+        <Challenge :prob="previewProb" isPreview />
       </v-card-text>
     </v-card>
   </v-dialog>
 </template>
 
 <script>
-import Problem from '@/components/Course/Problem/Problem'
+import Challenge from '@/components/Course/Challenge/Challenge'
 import { mapGetters } from 'vuex'
 import { GetterTypes } from '@/store/getter-types'
 
 export default {
-  components: { Problem },
+  components: { Challenge },
 
   props: {
     prob: {

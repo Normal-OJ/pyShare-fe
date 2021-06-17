@@ -25,7 +25,7 @@
           label="顯示狀態"
           v-model="newProb.status"
           :items="status"
-          hint="隱藏僅老師和創題者可見"
+          hint="設為隱藏時，僅老師和創題者可見"
           persistent-hint
           outlined
           dense

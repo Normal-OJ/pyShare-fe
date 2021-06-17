@@ -138,8 +138,9 @@ export default {
         console.log('[views/SetProblems/handleSubmit] error', error)
         this.$alertFail(`${this.isEdit ? '更新' : '新增'}主題內容失敗。`)
         throw error
+      } finally {
+        this.isLoading = false
       }
-      this.isLoading = false
     },
     async deleteProblem(pid) {
       try {

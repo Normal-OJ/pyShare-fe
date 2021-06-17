@@ -18,7 +18,10 @@
         <v-tab-item class="pt-4">
           <v-card outlined>
             <v-card-text class="text--primary text-body-2">
-              <pre :style="{ color: COLOR[judgeResult + 1] }">{{ STATUS[judgeResult + 1] }}</pre>
+              <pre v-if="judgeResult !== undefined" :style="{ color: COLOR[judgeResult + 1] }">{{
+                STATUS[judgeResult + 1]
+              }}</pre>
+              <Spinner v-else />
             </v-card-text>
           </v-card>
         </v-tab-item>
@@ -42,6 +45,8 @@
 </template>
 
 <script>
+import Spinner from '@/components/UI/Spinner'
+
 export default {
   props: {
     judgeResult: Number,
@@ -49,6 +54,7 @@ export default {
     stderr: String,
     stdout: String,
   },
+  components: { Spinner },
   data: () => ({
     STATUS: [
       'Pending',

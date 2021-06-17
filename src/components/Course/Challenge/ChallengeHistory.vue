@@ -11,7 +11,7 @@
         </thead>
         <tbody>
           <tr
-            v-for="{ timestamp, judge_result, code, stderr, stdout } in submissions"
+            v-for="({ timestamp, judge_result, code, stderr, stdout }, index) in submissions"
             :key="timestamp"
           >
             <td>{{ $formattedTime(timestamp) }}</td>
@@ -22,7 +22,7 @@
               <Spinner v-else />
             </td>
             <td>
-              <v-dialog v-model="dialog">
+              <v-dialog v-model="dialog[index]">
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn color="primary" text v-bind="attrs" v-on="on">
                     檢視
@@ -32,7 +32,7 @@
                   <v-card-title>
                     {{ $formattedTime(timestamp) }}
                     <v-spacer />
-                    <v-btn icon @click="dialog = false"><v-icon>mdi-close</v-icon></v-btn>
+                    <v-btn icon @click="dialog[index] = false"><v-icon>mdi-close</v-icon></v-btn>
                   </v-card-title>
                   <CodeEditor :value="code" readOnly />
                   <ChallengeResult
@@ -67,7 +67,7 @@ export default {
   },
 
   data: () => ({
-    dialog: false,
+    dialog: [],
     isLoading: true,
     submissions: [],
     STATUS: [
@@ -108,6 +108,7 @@ export default {
             this.isSubmissionPending = this.submissions.some(s => s.judge_result === undefined)
             this.isLoading = false
           })
+          this.dialog = new Array(this.comment.submissions.length).fill(false)
         }
       },
       immediate: true,

@@ -197,7 +197,7 @@ export default {
         let that = this
         this.$nextTick(() => {
           const { floor } = that.comments.find(comment => comment.id === data.data.id)
-          that.$router.push({ query: { floor } })
+          that.$router.push({ query: { floor }, params: { submit: true } })
           that.fetchFloor()
         })
       } catch (error) {
@@ -307,20 +307,26 @@ export default {
         id: `comment-${cid}`,
       })
     },
-  },
-
-  beforeRouteLeave(to, from, next) {
-    if (!this.floor) next()
-    if (this.floor === 'new' || this.isEdit) {
-      const answer = window.confirm('確定要離開嗎？未完成的編輯將不會儲存。')
-      if (!answer) {
-        next(false)
+    confirmLeave(to, from, next) {
+      if (!this.floor) next()
+      if ((this.floor === 'new' || this.isEdit) && !to.params.submit) {
+        const answer = window.confirm('確定要離開嗎？未完成的編輯將不會儲存。')
+        if (!answer) {
+          next(false)
+        } else {
+          next()
+        }
       } else {
         next()
       }
-    } else {
-      next()
-    }
+    },
+  },
+
+  beforeRouteUpdate(to, from, next) {
+    this.confirmLeave(to, from, next)
+  },
+  beforeRouteLeave(to, from, next) {
+    this.confirmLeave(to, from, next)
   },
 
   sockets: {

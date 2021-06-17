@@ -76,7 +76,7 @@
 
 <script>
 import Popup from './Popup'
-// import { ROLE } from '@/constants/auth'
+import { ROLE } from '@/constants/auth'
 
 export default {
   name: 'Header',
@@ -115,6 +115,11 @@ export default {
         {
           label: '個人頁面',
           route: this.isLogin ? { name: 'profile', params: { id: this.id } } : { path: '/profile' },
+        },
+        {
+          label: '管理員介面',
+          route: { path: '/admin' },
+          role: [ROLE.ADMIN],
         },
         {
           label: '關於平台',

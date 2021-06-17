@@ -142,6 +142,13 @@ const Dataset = {
   get: (id: Dataset.ID): PysharePromise<Dataset.IInfo> => Vue.axios.get(`/dataset/${id}`),
 }
 
+const School = {
+  getList: (): PysharePromise<School.Info[]> => Vue.axios.get('/school'),
+  get: (abbr: Pick<School.Info, 'abbr'>): PysharePromise<School.Info> =>
+    Vue.axios.get(`/school/${abbr}`),
+  createSchool: (body: School.Info) => Vue.axios.post('/school', body),
+}
+
 export default {
   Auth,
   Course,
@@ -149,6 +156,7 @@ export default {
   Comment,
   Tag,
   User,
+  School,
   Submission,
   Gitlab,
   Permission,

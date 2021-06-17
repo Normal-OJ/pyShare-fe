@@ -1,6 +1,6 @@
 <template>
   <v-fade-transition>
-    <Spinner v-if="isWaiting" />
+    <Spinner v-if="isLoading" />
     <div class="pa-4" v-else>
       <Problem v-if="prob" :prob="prob" />
       <v-divider />
@@ -118,17 +118,17 @@ export default {
 
   watch: {
     async pid() {
-      this.isWaiting = true
+      this.isLoading = true
       await this.getProblem(this.pid)
       this.fetchFloor()
-      this.isWaiting = false
+      this.isLoading = false
     },
   },
 
   async created() {
     await this.getProblem(this.pid)
     this.fetchFloor()
-    this.isWaiting = false
+    this.isLoading = false
   },
 
   methods: {
@@ -152,9 +152,14 @@ export default {
       try {
         const { data } = await agent.Problem.get(pid)
         this.prob = data.data
+        if (this.prob.extra._cls === 'OJProblem') {
+          throw new Error()
+        }
         await this.getComments(data.data.comments)
       } catch (error) {
         console.log('[views/Problem/getProblem] error', error)
+        alert('主題不存在')
+        this.$router.push({ name: 'courseProblems' })
         throw error
       }
     },

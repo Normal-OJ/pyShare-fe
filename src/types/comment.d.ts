@@ -7,6 +7,8 @@ declare namespace _Comment {
   }
 
   interface ICreateBody {
+    target: string
+    id: string
     title: string
     content: string
     code: string

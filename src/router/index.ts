@@ -67,6 +67,21 @@ const routes = [
         component: () => import('@/views/Course/Problems/SetProblems.vue'),
       },
       {
+        path: 'challenges',
+        name: 'courseChallenges',
+        component: () => import('@/views/Course/Challenges/Challenges.vue'),
+      },
+      {
+        path: 'challenge/:pid',
+        name: 'courseChallenge',
+        component: () => import('@/views/Course/Challenge/Challenge.vue'),
+      },
+      {
+        path: 'challenges/:operation',
+        name: 'courseSetChallenges',
+        component: () => import('@/views/Course/Challenges/SetChallenges.vue'),
+      },
+      {
         path: 'manages',
         name: 'courseManages',
         component: () => import('@/views/Course/Manages/Manages.vue'),
@@ -87,6 +102,11 @@ const routes = [
         component: () => import('@/views/Course/Manages/ManageProblems.vue'),
       },
       {
+        path: 'manages/challenges',
+        name: 'courseManageChallenges',
+        component: () => import('@/views/Course/Manages/ManageChallenges.vue'),
+      },
+      {
         path: 'info',
         name: 'courseInfo',
         component: () => import('@/views/Course/Info/Info.vue'),
@@ -96,6 +116,16 @@ const routes = [
       store.dispatch(ActionTypes.GET_COURSE_INFO, to.params.id)
       next()
     },
+  },
+  {
+    path: '/datasets',
+    name: 'datasets',
+    component: () => import('@/views/Datasets/Datasets.vue'),
+  },
+  {
+    path: '/dataset/:id',
+    name: 'dataset',
+    component: () => import('@/views/Datasets/Dataset.vue'),
   },
   {
     path: '/profile/:id',

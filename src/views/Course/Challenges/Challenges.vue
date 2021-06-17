@@ -1,6 +1,6 @@
 <template>
-  <Problems
-    :problems="problems"
+  <Challenges
+    :challenges="challenges"
     :tags="tags"
     :loading="isLoading"
     @get-problems-by-tags="getProblemsByTags"
@@ -8,24 +8,19 @@
 </template>
 
 <script>
-import Problems from '@/components/Course/Problems/Problems'
+import Challenges from '@/components/Course/Challenges/Challenges'
 import { mapActions, mapGetters, mapState } from 'vuex'
 import { GetterTypes } from '@/store/getter-types'
 import { ActionTypes } from '@/store/action-types'
 
 export default {
-  // TODO: prevent maximum call stack size exceeded
-  // https://github.com/vuejs/vue/issues/9081
-  name: 'viewsProblems',
-
-  components: { Problems },
-
+  components: { Challenges },
   computed: {
     ...mapState({
       tags: state => state.course.courseTags,
     }),
     ...mapGetters({
-      problems: GetterTypes.PROBLEMS,
+      challenges: GetterTypes.CHALLENGES,
     }),
     courseId() {
       return this.$route.params.id
@@ -54,31 +49,5 @@ export default {
       this.getProblems({ ...paramsWithTags, course: this.courseId })
     },
   },
-
-  // mounted() {
-  //   this.$socket.emit('subscribe', {
-  //     topic: 'PROBLEM',
-  //     id: this.courseName,
-  //   })
-  // },
-
-  // destroyed() {
-  //   this.$socket.emit('unsubscribe', {
-  //     topic: 'PROBLEM',
-  //     id: this.courseName,
-  //   })
-  // },
-
-  // sockets: {
-  //   refetch: function() {
-  //     this.getProblems(this.paramsWithCourse)
-  //     this.$notify({
-  //       group: 'notify',
-  //       type: 'my-info',
-  //       title: '主題列表更新',
-  //       text: '有人新增、修改，或刪除了主題',
-  //     })
-  //   },
-  // },
 }
 </script>

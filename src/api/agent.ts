@@ -137,6 +137,11 @@ const Permission = {
   ): PysharePromise<string[]> => Vue.axios.get(`/${resource}/${id}/permission`),
 }
 
+const Dataset = {
+  getList: (): PysharePromise<Dataset.IInfo[]> => Vue.axios.get('/dataset'),
+  get: (id: Dataset.ID): PysharePromise<Dataset.IInfo> => Vue.axios.get(`/dataset/${id}`),
+}
+
 const School = {
   getList: (): PysharePromise<School.Info[]> => Vue.axios.get('/school'),
   get: (abbr: Pick<School.Info, 'abbr'>): PysharePromise<School.Info> =>
@@ -155,4 +160,5 @@ export default {
   Submission,
   Gitlab,
   Permission,
+  Dataset,
 }

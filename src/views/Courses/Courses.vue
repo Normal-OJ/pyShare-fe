@@ -53,7 +53,7 @@ export default {
   },
 
   data: () => ({
-    isWaitingCourseList: false,
+    isWaitingCourseList: true,
     TEACHER,
     ADMIN,
   }),

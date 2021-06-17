@@ -1,6 +1,6 @@
 <template>
   <v-container fluid>
-    <div class="text-h5">主題</div>
+    <div class="text-h5">測驗</div>
     <div class="d-flex align-center">
       <v-col cols="10" md="6" class="d-flex">
         <v-select
@@ -29,27 +29,26 @@
       </v-col>
       <v-spacer />
       <template v-if="canParticipateCourse">
-        <v-btn color="primary" :to="{ name: 'courseManageProblems' }" class="mr-3" outlined>
-          管理我的主題
+        <v-btn color="primary" :to="{ name: 'courseManageChallenges' }" class="mr-3" outlined>
+          管理我的測驗
         </v-btn>
-        <v-btn color="success" :to="{ name: 'courseSetProblems', params: { operation: 'new' } }">
-          <v-icon class="mr-1">mdi-playlist-plus</v-icon>
-          新增主題
+        <v-btn color="success" :to="{ name: 'courseSetChallenges', params: { operation: 'new' } }">
+          <v-icon class="mr-1">mdi-plus</v-icon>
+          新增測驗
         </v-btn>
       </template>
     </div>
 
     <v-data-table
       :headers="headers"
-      :items="problems"
+      :items="challenges"
       :search="searchText"
       :items-per-page="Number(-1)"
       hide-default-footer
       :loading="loading"
-      :custom-sort="customSort"
     >
       <template v-slot:[`item.title`]="{ item }">
-        <router-link :to="{ name: 'courseProblem', params: { pid: item.pid } }">
+        <router-link :to="{ name: 'courseChallenge', params: { pid: item.pid } }">
           {{ item.title }}
         </router-link>
         <v-tooltip bottom>
@@ -58,7 +57,7 @@
               mdi-minus-circle
             </v-icon>
           </template>
-          <span>隱藏的主題</span>
+          <span>隱藏的測驗</span>
         </v-tooltip>
       </template>
       <template v-slot:[`item.tags`]="{ item }">
@@ -82,7 +81,7 @@
       </template>
       <template v-slot:[slotName] v-for="slotName in ['no-data', 'no-results']">
         <div class="d-flex flex-column align-center" :key="slotName">
-          <div class="text-subtitle-1 my-8">這裡還沒有任何主題，或找不到符合條件的主題</div>
+          <div class="text-subtitle-1 my-8">這裡還沒有任何測驗，或找不到符合條件的測驗</div>
           <v-img :src="require('@/assets/images/noData.svg')" max-width="600" contain />
         </div>
       </template>
@@ -97,8 +96,6 @@ const headers = [
   { text: '題號', value: 'pid' },
   { text: '標題', value: 'title', sortable: false },
   { text: '分類', value: 'tags', sortable: false },
-  { text: '累積創作數', value: 'creations' },
-  { text: '作者', value: 'author.displayName', sortable: false },
 ]
 
 export default {
@@ -107,7 +104,7 @@ export default {
   components: { ColorLabel },
 
   props: {
-    problems: {
+    challenges: {
       type: Array,
       required: true,
     },
@@ -153,24 +150,6 @@ export default {
     },
     unselectTag(tag) {
       this.selectedTags = this.selectedTags.filter(t => t !== tag)
-    },
-    customSort(items, index, isDesc) {
-      items.sort((a, b) => {
-        if (index[0] === 'creations') {
-          if (!isDesc[0]) {
-            return a.comments.length - b.comments.length
-          } else {
-            return b.comments.length - a.comments.length
-          }
-        } else {
-          if (!isDesc[0]) {
-            return a[index] < b[index] ? -1 : 1
-          } else {
-            return b[index] < a[index] ? -1 : 1
-          }
-        }
-      })
-      return items
     },
   },
 }

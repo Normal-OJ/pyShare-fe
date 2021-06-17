@@ -20,7 +20,7 @@ export default {
     icon() {
       switch (this.errorType) {
         case NETWORK_ERROR:
-          return 'mdi-wiri-alert'
+          return 'mdi-wifi-alert'
         default:
           return 'mdi-question'
       }

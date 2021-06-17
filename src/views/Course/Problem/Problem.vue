@@ -72,9 +72,8 @@ export default {
 
   data: () => ({
     prob: null,
-    courseInfo: null,
     filteredComments: [],
-    isWaiting: true,
+    isLoading: true,
     isEdit: false,
     floor: null,
     testResult: {

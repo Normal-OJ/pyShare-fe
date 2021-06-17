@@ -77,6 +77,11 @@ const routes = [
         component: () => import('@/views/Course/Challenge/Challenge.vue'),
       },
       {
+        path: 'challenge/:pid/stats',
+        name: 'courseChallengeStats',
+        component: () => import('@/views/Course/Challenge/ChallengeStats.vue'),
+      },
+      {
         path: 'challenges/:operation',
         name: 'courseSetChallenges',
         component: () => import('@/views/Course/Challenges/SetChallenges.vue'),

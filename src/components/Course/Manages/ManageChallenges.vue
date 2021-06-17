@@ -103,7 +103,7 @@ const headers = [
   { text: '題號', value: 'pid' },
   { text: '標題', value: 'title', sortable: false },
   { text: '分類', value: 'tags', sortable: false },
-  { text: '累積創作數', value: 'creations' },
+  { text: '作答人數', value: 'creations' },
   { text: '管理', value: 'manage', sortable: false },
 ]
 

@@ -66,10 +66,12 @@ export default {
     },
   },
 
-  data: () => ({
-    isPending: false,
-    code: '',
-  }),
+  data() {
+    return {
+      isPending: false,
+      code: this.defaultCode,
+    }
+  },
 
   watch: {
     comment: {

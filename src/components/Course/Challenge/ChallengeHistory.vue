@@ -15,15 +15,16 @@
             :key="timestamp"
           >
             <td>{{ $formattedTime(timestamp) }}</td>
-            <td>
-              <pre :style="{ color: COLOR[judge_result + 1] }">
-                {{ STATUS[judge_result + 1] }}
-              </pre>
+            <td class="text-body-2">
+              <pre v-if="judge_result !== undefined" :style="{ color: COLOR[judge_result + 1] }">{{
+                STATUS[judge_result + 1]
+              }}</pre>
+              <Spinner v-else />
             </td>
             <td>
               <v-dialog v-model="dialog">
                 <template v-slot:activator="{ on, attrs }">
-                  <v-btn color="primary" dark v-bind="attrs" v-on="on">
+                  <v-btn color="primary" text v-bind="attrs" v-on="on">
                     檢視
                   </v-btn>
                 </template>
@@ -34,7 +35,12 @@
                     <v-btn icon @click="dialog = false"><v-icon>mdi-close</v-icon></v-btn>
                   </v-card-title>
                   <CodeEditor :value="code" readOnly />
-                  <ChallengeResult :code="code" :stderr="stderr" :stdout="stdout" />
+                  <ChallengeResult
+                    :judgeResult="judge_result"
+                    :code="code"
+                    :stderr="stderr"
+                    :stdout="stdout"
+                  />
                 </v-card>
               </v-dialog>
             </td>
@@ -49,9 +55,10 @@
 import CodeEditor from '@/components/UI/CodeEditor'
 import ChallengeResult from './ChallengeResult'
 import agent from '@/api/agent'
+import Spinner from '@/components/UI/Spinner.vue'
 
 export default {
-  components: { CodeEditor, ChallengeResult },
+  components: { CodeEditor, ChallengeResult, Spinner },
 
   props: {
     comment: {
@@ -76,7 +83,7 @@ export default {
     ],
     COLOR: [
       '#4E342E',
-      '#00C853',
+      '#009624',
       '#F44336',
       '#DD2C00',
       '#9C27B0',
@@ -85,6 +92,8 @@ export default {
       '#93282C',
       '#BF360C',
     ],
+    pollingSubmission: null,
+    isSubmissionPending: false,
   }),
 
   watch: {
@@ -92,13 +101,45 @@ export default {
       handler() {
         if (this.comment && this.comment.submissions && this.comment.submissions.length > 0) {
           Promise.all(this.comment.submissions.map(sid => agent.Submission.get(sid))).then(resp => {
-            this.submissions = resp.map(r => r.data.data)
+            this.submissions = resp.map((r, idx) => ({
+              ...r.data.data,
+              id: this.comment.submissions[idx],
+            }))
+            this.isSubmissionPending = this.submissions.some(s => s.judge_result === undefined)
             this.isLoading = false
           })
         }
       },
       immediate: true,
       deep: true,
+    },
+  },
+
+  created() {
+    this.pollingSubmission = setInterval(
+      that => {
+        if (that.isSubmissionPending) {
+          that.fetchSubmission()
+        }
+      },
+      2000,
+      this,
+    )
+  },
+
+  methods: {
+    fetchSubmission() {
+      const fetchIds = this.submissions.filter(s => s.judge_result === undefined).map(s => s.id)
+      if (!fetchIds || fetchIds.length === 0) {
+        this.isSubmissionPending = false
+        return
+      }
+      Promise.all(fetchIds.map(sid => agent.Submission.get(sid))).then(resp => {
+        resp.forEach((r, idx) => {
+          const pos = this.submissions.findIndex(s => s.id === fetchIds[idx])
+          this.$set(this.submissions, pos, { ...r.data.data, id: fetchIds[idx] })
+        })
+      })
     },
   },
 }

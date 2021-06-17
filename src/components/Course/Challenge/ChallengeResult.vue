@@ -17,24 +17,21 @@
 
         <v-tab-item class="pt-4">
           <v-card outlined>
-            <v-card-text class="text--primary text-body-1">
-              <pre :style="{ color: COLOR[judgeResult + 1] }">
-                  {{ STATUS[judgeResult + 1] }}
-                </pre
-              >
+            <v-card-text class="text--primary text-body-2">
+              <pre :style="{ color: COLOR[judgeResult + 1] }">{{ STATUS[judgeResult + 1] }}</pre>
             </v-card-text>
           </v-card>
         </v-tab-item>
         <v-tab-item class="pt-4" style="overflow: scroll">
           <v-card outlined>
-            <v-card-text class="text--primary text-body-1">
+            <v-card-text class="text--primary text-body-2">
               <pre style="white-space: pre-wrap">{{ stdout }}</pre>
             </v-card-text>
           </v-card>
         </v-tab-item>
         <v-tab-item class="pt-4">
           <v-card outlined>
-            <v-card-text class="text--primary text-body-1">
+            <v-card-text class="text--primary text-body-2">
               <pre style="white-space: pre-wrap">{{ stderr }}</pre>
             </v-card-text>
           </v-card>
@@ -66,7 +63,7 @@ export default {
     ],
     COLOR: [
       '#4E342E',
-      '#00C853',
+      '#009624',
       '#F44336',
       '#DD2C00',
       '#9C27B0',

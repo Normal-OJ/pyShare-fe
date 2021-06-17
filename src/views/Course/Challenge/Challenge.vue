@@ -12,7 +12,7 @@
         @submit-test-submission="submitTestSubmission"
         @submit-new-submission="submitNewSubmission"
       />
-      <div class="mt-4 mb-14">
+      <div class="mt-8 mb-14">
         <h4>歷史紀錄</h4>
         <ChallengeHistory :comment="comment" />
       </div>
@@ -48,13 +48,9 @@ export default {
     pid() {
       return Number(this.$route.params.pid)
     },
-    isSubmissionPending() {
-      if (!this.comment || !this.comment.submission) return false
-      return this.comment.submission.judge_result === -1
-    },
     isTestSubmissionPending() {
       if (!this.testResult) return false
-      return this.testResult.judge_result === -1
+      return this.testResult.judge_result === undefined || this.testResult.judge_result === -1
     },
   },
   watch: {
@@ -70,14 +66,11 @@ export default {
 
     this.pollingSubmission = setInterval(
       that => {
-        if (that.isSubmissionPending) {
-          that.fetchSubmission()
-        }
         if (that.isTestSubmissionPending) {
           that.fetchTestSubmission()
         }
       },
-      1000,
+      2000,
       this,
     )
   },
@@ -103,9 +96,6 @@ export default {
     ...mapActions({
       getComments: ActionTypes.GET_COMMENTS,
     }),
-    fetchSubmission() {
-      this.getComments(this.prob.comments)
-    },
     fetchTestSubmission() {
       agent.Submission.get(this.testSubmissionId).then(res => {
         this.testResult = res.data.data
@@ -154,5 +144,3 @@ export default {
   },
 }
 </script>
-
-<style></style>

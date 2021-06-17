@@ -76,7 +76,7 @@
 
 <script>
 import Popup from './Popup'
-import { ROLE } from '@/constants/auth'
+// import { ROLE } from '@/constants/auth'
 
 export default {
   name: 'Header',
@@ -107,11 +107,11 @@ export default {
           label: '課程',
           route: { path: '/courses' },
         },
-        {
-          label: '共享資料集',
-          route: { path: '/datasets' },
-          role: [ROLE.ADMIN, ROLE.TEACHER],
-        },
+        // {
+        //   label: '共享資料集',
+        //   route: { path: '/datasets' },
+        //   role: [ROLE.ADMIN, ROLE.TEACHER],
+        // },
         {
           label: '個人頁面',
           route: this.isLogin ? { name: 'profile', params: { id: this.id } } : { path: '/profile' },

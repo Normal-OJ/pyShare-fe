@@ -43,7 +43,7 @@
       :custom-sort="customSort"
     >
       <template v-slot:[`item.title`]="{ item }">
-        <router-link :to="{ name: 'courseProblem', params: { pid: item.pid } }">
+        <router-link :to="{ name: 'courseChallenge', params: { pid: item.pid } }">
           {{ item.title }}
         </router-link>
         <v-tooltip bottom>

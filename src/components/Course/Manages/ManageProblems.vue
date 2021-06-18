@@ -81,6 +81,53 @@
           <v-icon class="mr-1" small>mdi-pencil</v-icon>
           編輯
         </v-btn>
+        <v-dialog v-model="dialog" width="750">
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn class="ml-3" color="primary" small v-bind="attrs" v-on="on">
+              <v-icon class="mr-1" small>mdi-content-copy</v-icon>
+              複製
+            </v-btn>
+          </template>
+          <v-card>
+            <v-toolbar dark color="primary" dense>
+              <v-toolbar-title>複製主題</v-toolbar-title>
+              <v-spacer />
+              <v-toolbar-items>
+                <v-btn icon dark @click="dialog = false">
+                  <v-icon>mdi-close</v-icon>
+                </v-btn>
+              </v-toolbar-items>
+            </v-toolbar>
+            <v-card-text class="mt-8 text--primary">
+              <v-form ref="form">
+                <v-select
+                  label="複製至課程"
+                  v-model="target"
+                  :items="teachingCourses"
+                  item-text="name"
+                  item-value="id"
+                  outlined
+                  dense
+                />
+                <v-radio-group v-model="isTemplate">
+                  <v-radio label="複製為主題" :value="false" />
+                  <v-radio label="複製為範本" :value="true" />
+                </v-radio-group>
+              </v-form>
+            </v-card-text>
+            <v-card-actions>
+              <v-spacer />
+              <v-btn
+                color="success"
+                :loading="isLoading"
+                :disabled="!target"
+                @click="cloneProblem(item.pid)"
+              >
+                送出
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
         <v-btn class="ml-3" color="error" small @click="deleteProblem(item.pid)">
           <v-icon class="mr-1" small>mdi-trash-can</v-icon>
           刪除
@@ -98,6 +145,10 @@
 
 <script>
 import ColorLabel from '@/components/UI/ColorLabel'
+import { mapActions, mapGetters } from 'vuex'
+import { GetterTypes } from '@/store/getter-types'
+import { ActionTypes } from '@/store/action-types'
+import agent from '@/api/agent'
 
 const headers = [
   { text: '題號', value: 'pid' },
@@ -125,11 +176,27 @@ export default {
     },
   },
 
-  data: () => ({
-    headers,
-    searchText: '',
-    selectedTags: [],
-  }),
+  data() {
+    return {
+      searchText: '',
+      selectedTags: [],
+      dialog: false,
+      target: this.$route.params.id,
+      isTemplate: false,
+      isLoading: false,
+      headers: headers,
+    }
+  },
+
+  computed: {
+    ...mapGetters({
+      teachingCourses: GetterTypes.TEACHING_COURSES,
+    }),
+  },
+
+  created() {
+    this.getCourses()
+  },
 
   watch: {
     selectedTags() {
@@ -162,12 +229,25 @@ export default {
       })
       return items
     },
+    cloneProblem(pid) {
+      this.isLoading = true
+      console.log(pid, this.target)
+      agent.Problem.clone(pid, this.target)
+        .then(resp => {
+          console.log(resp.data.data)
+        })
+        .catch(() => this.$alertFail('複製主題失敗'))
+        .finally(() => (this.isLoading = false))
+    },
     deleteProblem(pid) {
       const result = window.confirm('確認要刪除嗎？')
       if (result) {
         this.$emit('delete-problem', pid)
       }
     },
+    ...mapActions({
+      getCourses: ActionTypes.GET_COURSES,
+    }),
   },
 }
 </script>

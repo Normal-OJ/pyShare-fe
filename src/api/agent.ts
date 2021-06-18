@@ -76,6 +76,8 @@ const Problem = {
 
   removeAttachment: (id: Problem.ID, body: FormData) =>
     Vue.axios({ method: 'delete', url: `/problem/${id}/attachment`, data: body }),
+
+  clone: (pid: Problem.ID, cid: Course.ID) => Vue.axios.get(`/problem/${pid}/clone/${cid}`),
 }
 
 const Comment = {

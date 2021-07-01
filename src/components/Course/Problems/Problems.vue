@@ -28,6 +28,11 @@
         />
       </v-col>
       <v-spacer />
+      <template v-if="canWriteCourse">
+        <v-btn color="primary" :to="{ name: 'courseProblemsStats' }" class="mr-3" outlined>
+          檢視主題統計
+        </v-btn>
+      </template>
       <template v-if="canParticipateCourse">
         <v-btn color="primary" :to="{ name: 'courseManageProblems' }" class="mr-3" outlined>
           管理我的主題
@@ -126,10 +131,12 @@ export default {
     searchText: '',
     selectedTags: [],
     canParticipateCourse: null,
+    canWriteCourse: null,
   }),
 
   async created() {
     this.canParticipateCourse = await this.$hasPermission('course', this.courseId, ['p'])
+    this.canWriteCourse = await this.$hasPermission('course', this.courseId, ['w'])
   },
 
   computed: {

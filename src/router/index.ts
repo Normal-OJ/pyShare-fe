@@ -128,8 +128,7 @@ const routes = [
       },
     ],
     beforeEnter: (to, from, next) => {
-      store.dispatch(ActionTypes.GET_COURSE_INFO, to.params.id)
-      next()
+      store.dispatch(ActionTypes.GET_COURSE_INFO, to.params.id).then(next)
     },
   },
   {

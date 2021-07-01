@@ -29,6 +29,9 @@
       </v-col>
       <v-spacer />
       <template v-if="canWriteCourse">
+        <v-btn color="primary" :to="{ name: 'courseChallengesStats' }" class="mr-3" outlined>
+          檢視測驗統計
+        </v-btn>
         <v-btn color="primary" :to="{ name: 'courseManageChallenges' }" class="mr-3" outlined>
           管理我的測驗
         </v-btn>

@@ -272,7 +272,6 @@
 
 <script>
 import agent from '@/api/agent'
-import { mapState } from 'vuex'
 
 export default {
   data: () => ({

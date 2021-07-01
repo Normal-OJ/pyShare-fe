@@ -1,9 +1,5 @@
 <template>
-  <ManageMembers
-    :stats="parsedStats ? parsedStats : []"
-    :loading="!parsedStats"
-    @delete-student="submitDeleteStudent"
-  />
+  <ManageMembers :members="members" :loading="!info" @delete-student="submitDeleteStudent" />
 </template>
 
 <script>
@@ -17,50 +13,27 @@ export default {
 
   computed: {
     ...mapState({
-      stats: state => state.course.courseStats,
+      info: state => state.course.courseInfo,
     }),
     courseId() {
       return this.$route.params.id
     },
-    parsedStats() {
-      if (!this.stats) return null
-      return this.stats.map(stat => {
-        const { username, displayName, id } = stat.info
-        const numOfProblems = stat.problems.length
-        const numOfComments = stat.comments.length
-        const numOfReplies = stat.replies.length
-        const numOfLiked = stat.liked.reduce((a, b) => {
-          return a + b.starers.length
-        }, 0)
-        const numOfLikes = stat.likes.length
-        const numOfAcceptedComments = stat.comments.filter(c => c.accepted).length
-        const [execSuccess, execFail] = stat.execInfo.reduce(
-          (a, b) => {
-            return [a[0] + b.success, a[1] + b.fail]
-          },
-          [0, 0],
-        )
-        return {
-          username,
-          displayName,
-          id,
-          numOfProblems,
-          numOfComments,
-          numOfReplies,
-          numOfLiked,
-          numOfLikes,
-          numOfAcceptedComments,
-          execSuccess,
-          execFail,
-        }
-      })
+    members() {
+      if (!this.info) return []
+      const items = [{ ...this.info.teacher, role: '教師' }].concat(
+        this.info.students.map(s => ({
+          ...s,
+          role: '學生',
+        })),
+      )
+      return items
     },
   },
 
   watch: {
     courseId: {
       handler() {
-        this.getCourseStats(this.courseId)
+        this.getCourseInfo(this.courseId)
       },
       immediate: true,
     },
@@ -68,7 +41,7 @@ export default {
 
   methods: {
     ...mapActions({
-      getCourseStats: ActionTypes.GET_COURSE_STATS,
+      getCourseInfo: ActionTypes.GET_COURSE_INFO,
     }),
     async submitDeleteStudent(users, resolve, reject) {
       try {

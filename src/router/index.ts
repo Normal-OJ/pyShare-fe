@@ -6,7 +6,7 @@ import { ActionTypes } from '@/store/action-types'
 import { getJwt } from '@/lib/jwt'
 
 Vue.use(VueRouter)
-// TODO: block users that no permission from the specific route
+
 const routes = [
   {
     path: '/',
@@ -112,14 +112,23 @@ const routes = [
         component: () => import('@/views/Course/Manages/ManageChallenges.vue'),
       },
       {
+        path: 'manages/problems_stats',
+        name: 'courseProblemsStats',
+        component: () => import('@/views/Course/Manages/ProblemsStats.vue'),
+      },
+      {
+        path: 'manages/challenges_stats',
+        name: 'courseChallengesStats',
+        component: () => import('@/views/Course/Manages/ChallengesStats.vue'),
+      },
+      {
         path: 'info',
         name: 'courseInfo',
         component: () => import('@/views/Course/Info/Info.vue'),
       },
     ],
     beforeEnter: (to, from, next) => {
-      store.dispatch(ActionTypes.GET_COURSE_INFO, to.params.id)
-      next()
+      store.dispatch(ActionTypes.GET_COURSE_INFO, to.params.id).then(next)
     },
   },
   {

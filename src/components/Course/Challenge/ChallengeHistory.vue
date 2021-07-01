@@ -32,7 +32,9 @@
                   <v-card-title>
                     {{ $formattedTime(timestamp) }}
                     <v-spacer />
-                    <v-btn icon @click="dialog[index] = false"><v-icon>mdi-close</v-icon></v-btn>
+                    <v-btn icon @click="$set(dialog, index, false)"
+                      ><v-icon>mdi-close</v-icon></v-btn
+                    >
                   </v-card-title>
                   <CodeEditor :value="code" readOnly />
                   <ChallengeResult

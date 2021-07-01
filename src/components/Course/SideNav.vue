@@ -39,7 +39,7 @@
       </v-list-item>
       <template v-if="$route.name === 'courseProblem'">
         <v-list-item
-          v-for="{ pid, title } in normalProblems"
+          v-for="{ pid, title } in problems"
           :key="pid"
           :to="{ name: 'courseProblem', params: { pid: pid } }"
           color="primary"
@@ -62,7 +62,7 @@
       </v-list-item>
       <template v-if="$route.name === 'courseChallenge'">
         <v-list-item
-          v-for="{ pid, title } in ojProblems"
+          v-for="{ pid, title } in challenges"
           :key="pid"
           :to="{ name: 'courseChallenge', params: { pid: pid } }"
           color="primary"
@@ -123,18 +123,13 @@ export default {
     }),
     ...mapGetters({
       problems: GetterTypes.PROBLEMS,
+      challenges: GetterTypes.CHALLENGES,
     }),
-    normalProblems() {
-      return this.problems.filter(p => p.extra._cls !== 'OJProblem' && !p.isTemplate)
-    },
-    ojProblems() {
-      return this.problems.filter(p => p.extra._cls === 'OJProblem')
-    },
     courseId() {
       return this.$route.params.id
     },
     items() {
-      return this.links.slice(this.canWriteCourse ? 0 : 1)
+      return this.links.slice(0, this.canWriteCourse ? 2 : 1)
     },
   },
 
@@ -142,14 +137,14 @@ export default {
     isMinify: false,
     links: [
       {
-        label: '管理',
-        icon: 'mdi-settings',
-        routeName: 'courseManages',
-      },
-      {
         label: '總覽',
         icon: 'mdi-view-compact',
         routeName: 'courseInfo',
+      },
+      {
+        label: '管理',
+        icon: 'mdi-settings',
+        routeName: 'courseManages',
       },
     ],
     canWriteCourse: null,

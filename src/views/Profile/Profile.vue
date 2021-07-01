@@ -47,13 +47,8 @@ export default {
   methods: {
     async getUser(id) {
       try {
-        const { data } = await agent.User.getList()
-        const user = data.data.find(user => user.id === id)
-        if (!user) {
-          this.notFound = true
-          return
-        }
-        this.user = user
+        const { data } = await agent.User.get(id)
+        this.user = data.data
       } catch (error) {
         console.log('[views/Profile/getUser] error', error)
         throw error

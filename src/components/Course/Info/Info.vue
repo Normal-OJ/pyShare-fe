@@ -106,7 +106,13 @@ export default {
   computed: {
     members() {
       if (!this.info) return []
-      return this.info ? [{ ...this.info.teacher, teacher: true }].concat(this.info.students) : []
+      const items = [{ ...this.info.teacher, role: '教師' }].concat(
+        this.info.students.map(s => ({
+          ...s,
+          role: '學生',
+        })),
+      )
+      return items
     },
     courseId() {
       return this.$route.params.id

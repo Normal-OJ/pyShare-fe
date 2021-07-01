@@ -112,6 +112,8 @@ const Tag = {
 }
 
 const User = {
+  get: (id: User.ID): PysharePromise<User.IInfo> => Vue.axios.get(`/user/${id}`),
+
   getList: (): PysharePromise<User.IInfo[]> => Vue.axios.get('/user'),
 
   getStats: (id: User.ID): PysharePromise<User.IStats> => Vue.axios.get(`/user/${id}/statistic`),

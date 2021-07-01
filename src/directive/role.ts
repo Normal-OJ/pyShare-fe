@@ -9,7 +9,7 @@ function checkRole(el: HTMLElement, binding: DirectiveBinding) {
   const role = store.getters && store.getters[GetterTypes.ROLE]
 
   if (value && value instanceof Array) {
-    if (value.length > 0 && role !== null) {
+    if (value.length > 0) {
       const permissionRoles = value
       // Check if the permission includes my role level or not
       const hasRolePermission = permissionRoles.includes(role)

@@ -5,25 +5,38 @@
     </v-row>
 
     <v-row>
-      <v-col cols="12" md="4">
+      <v-col cols="12" md="6">
         <v-text-field label="測驗名稱（必填）" v-model="newProb.title" outlined dense />
       </v-col>
-      <v-col cols="12" md="4">
+      <v-col cols="12" md="6">
         <v-select label="測驗分類" v-model="newProb.tags" :items="tags" multiple outlined dense>
           <template v-slot:selection="{ item }">
             <ColorLabel :tag="item" small class="mt-2 mr-1" />
           </template>
         </v-select>
       </v-col>
-      <v-col cols="12" md="4">
+    </v-row>
+
+    <v-row>
+      <v-col cols="12" md="6">
         <v-select
           label="顯示狀態"
           v-model="newProb.status"
           :items="status"
-          hint="設為隱藏時，僅老師可見"
+          hint="當主題為「範本」，或顯示狀態設為「隱藏」時，僅教師可見"
           persistent-hint
           outlined
           dense
+          :disabled="newProb.isTemplate"
+        />
+      </v-col>
+      <v-col cols="12" md="6">
+        <v-checkbox
+          v-if="canWriteCourse"
+          class="pt-0 mt-0"
+          v-model="newProb.isTemplate"
+          label="設為範本"
+          hide-details
         />
       </v-col>
     </v-row>

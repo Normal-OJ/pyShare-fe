@@ -49,7 +49,7 @@ const headers = [
   { text: '教師', value: 'teacher', width: '20%', sortable: false },
 ]
 const permissionText = {
-  teacher: '老師',
+  teacher: '教師',
   student: '學生',
   read: '可檢視',
   participate: '可參與',

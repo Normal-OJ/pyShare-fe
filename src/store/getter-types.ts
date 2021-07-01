@@ -14,6 +14,7 @@ export enum GetterTypes {
   PROBLEMS = 'problems', // get problems that are not template
   TEMPLATES = 'templates',
   CHALLENGES = 'challenges',
+  CHALLENGES_TEMPLATES = 'challengesTemplates',
   PROBLEMS_OF_MINE = 'problemsOfMine',
 
   // comment module

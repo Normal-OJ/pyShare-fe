@@ -35,7 +35,7 @@
 
     <v-data-table
       :headers="headers"
-      :items="problems"
+      :items="problems.concat(templates)"
       :search="searchText"
       :items-per-page="Number(-1)"
       hide-default-footer
@@ -54,6 +54,9 @@
           </template>
           <span>隱藏的主題</span>
         </v-tooltip>
+        <v-chip v-if="item.isTemplate" class="ml-2" small color="success" dark>
+          範本
+        </v-chip>
       </template>
       <template v-slot:[`item.tags`]="{ item }">
         <ColorLabel
@@ -75,62 +78,20 @@
             params: { operation: 'edit' },
             query: { pid: item.pid },
           }"
+          class="mx-1"
           color="primary"
           small
         >
           <v-icon class="mr-1" small>mdi-pencil</v-icon>
-          編輯
+          <span class="hidden-md-and-down">編輯</span>
         </v-btn>
-        <v-dialog v-model="dialog" width="750">
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn class="ml-3" color="primary" small v-bind="attrs" v-on="on">
-              <v-icon class="mr-1" small>mdi-content-copy</v-icon>
-              複製
-            </v-btn>
-          </template>
-          <v-card>
-            <v-toolbar dark color="primary" dense>
-              <v-toolbar-title>複製主題</v-toolbar-title>
-              <v-spacer />
-              <v-toolbar-items>
-                <v-btn icon dark @click="dialog = false">
-                  <v-icon>mdi-close</v-icon>
-                </v-btn>
-              </v-toolbar-items>
-            </v-toolbar>
-            <v-card-text class="mt-8 text--primary">
-              <v-form ref="form">
-                <v-select
-                  label="複製至課程"
-                  v-model="target"
-                  :items="teachingCourses"
-                  item-text="name"
-                  item-value="id"
-                  outlined
-                  dense
-                />
-                <v-radio-group v-model="isTemplate">
-                  <v-radio label="複製為主題" :value="false" />
-                  <v-radio label="複製為範本" :value="true" />
-                </v-radio-group>
-              </v-form>
-            </v-card-text>
-            <v-card-actions>
-              <v-spacer />
-              <v-btn
-                color="success"
-                :loading="isLoading"
-                :disabled="!target"
-                @click="cloneProblem(item.pid)"
-              >
-                送出
-              </v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
-        <v-btn class="ml-3" color="error" small @click="deleteProblem(item.pid)">
+        <v-btn class="mx-1" color="primary" small @click="openCloneDialog(item.pid)">
+          <v-icon class="mr-1" small>mdi-content-copy</v-icon>
+          <span class="hidden-md-and-down">複製</span>
+        </v-btn>
+        <v-btn class="mx-1" color="error" small @click="deleteProblem(item.pid)">
           <v-icon class="mr-1" small>mdi-trash-can</v-icon>
-          刪除
+          <span class="hidden-md-and-down">刪除</span>
         </v-btn>
       </template>
       <template v-slot:[slotName] v-for="slotName in ['no-data', 'no-results']">
@@ -140,15 +101,20 @@
         </div>
       </template>
     </v-data-table>
+    <CloneProblemModal
+      :isOpen="dialog"
+      :clonePid="clonePid"
+      :defaultCourseId="$route.params.id"
+      label="主題"
+      @success="handleCloneSuccess"
+      @close="dialog = false"
+    />
   </v-container>
 </template>
 
 <script>
 import ColorLabel from '@/components/UI/ColorLabel'
-import { mapActions, mapGetters } from 'vuex'
-import { GetterTypes } from '@/store/getter-types'
-import { ActionTypes } from '@/store/action-types'
-import agent from '@/api/agent'
+import CloneProblemModal from '../Problem/CloneProblemModal.vue'
 
 const headers = [
   { text: '題號', value: 'pid' },
@@ -159,10 +125,14 @@ const headers = [
 ]
 
 export default {
-  components: { ColorLabel },
+  components: { ColorLabel, CloneProblemModal },
 
   props: {
     problems: {
+      type: Array,
+      required: true,
+    },
+    templates: {
       type: Array,
       required: true,
     },
@@ -181,21 +151,10 @@ export default {
       searchText: '',
       selectedTags: [],
       dialog: false,
-      target: this.$route.params.id,
+      clonePid: 0,
       isTemplate: false,
-      isLoading: false,
       headers: headers,
     }
-  },
-
-  computed: {
-    ...mapGetters({
-      teachingCourses: GetterTypes.TEACHING_COURSES,
-    }),
-  },
-
-  created() {
-    this.getCourses()
   },
 
   watch: {
@@ -229,15 +188,13 @@ export default {
       })
       return items
     },
-    cloneProblem(pid) {
-      this.isLoading = true
-      console.log(pid, this.target)
-      agent.Problem.clone(pid, this.target)
-        .then(resp => {
-          console.log(resp.data.data)
-        })
-        .catch(() => this.$alertFail('複製主題失敗'))
-        .finally(() => (this.isLoading = false))
+    openCloneDialog(pid) {
+      this.clonePid = pid
+      this.dialog = true
+    },
+    handleCloneSuccess() {
+      this.$emit('refetch-data')
+      this.dialog = false
     },
     deleteProblem(pid) {
       const result = window.confirm('確認要刪除嗎？')
@@ -245,9 +202,6 @@ export default {
         this.$emit('delete-problem', pid)
       }
     },
-    ...mapActions({
-      getCourses: ActionTypes.GET_COURSES,
-    }),
   },
 }
 </script>

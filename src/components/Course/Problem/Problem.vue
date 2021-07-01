@@ -15,10 +15,28 @@
       <v-tooltip bottom>
         <template v-slot:activator="{ on, attrs }">
           <v-btn
+            v-show="!isPreview"
+            v-role="[0, 1]"
+            outlined
+            color="primary darken-2"
+            class="rounded mr-2"
+            icon
+            v-on="on"
+            v-bind="attrs"
+            @click="dialog = true"
+          >
+            <v-icon>mdi-content-copy</v-icon>
+          </v-btn>
+        </template>
+        <span>複製主題</span>
+      </v-tooltip>
+      <v-tooltip bottom>
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn
             v-show="!isPreview && $isSelf(prob.author.username)"
             outlined
             color="primary darken-2"
-            class="align-self-end rounded"
+            class="rounded"
             :to="{
               name: 'courseSetProblems',
               params: { id: prob.course, operation: 'edit' },
@@ -71,6 +89,13 @@
       @close="isPreviewAttachment = false"
       @download="downloadAttachment(previewAttachment)"
     />
+    <CloneProblemModal
+      :isOpen="dialog"
+      :clonePid="prob.pid"
+      label="主題"
+      @success="dialog = false"
+      @close="dialog = false"
+    />
   </div>
 </template>
 
@@ -78,6 +103,7 @@
 import PreviewAttachmentModal from './PreviewAttachmentModal'
 import ColorLabel from '@/components/UI/ColorLabel'
 import Gravatar from '@/components/UI/Gravatar'
+import CloneProblemModal from './CloneProblemModal.vue'
 
 export default {
   name: 'Problem',
@@ -93,11 +119,12 @@ export default {
     },
   },
 
-  components: { PreviewAttachmentModal, ColorLabel, Gravatar },
+  components: { PreviewAttachmentModal, ColorLabel, Gravatar, CloneProblemModal },
 
   data: () => ({
     isPreviewAttachment: false,
     previewAttachment: '',
+    dialog: false,
   }),
 
   methods: {

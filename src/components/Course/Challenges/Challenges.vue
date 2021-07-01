@@ -28,7 +28,7 @@
         />
       </v-col>
       <v-spacer />
-      <template v-if="canParticipateCourse">
+      <template v-if="canWriteCourse">
         <v-btn color="primary" :to="{ name: 'courseManageChallenges' }" class="mr-3" outlined>
           管理我的測驗
         </v-btn>
@@ -122,11 +122,11 @@ export default {
     headers,
     searchText: '',
     selectedTags: [],
-    canParticipateCourse: null,
+    canWriteCourse: null,
   }),
 
   async created() {
-    this.canParticipateCourse = await this.$hasPermission('course', this.courseId, ['p'])
+    this.canWriteCourse = await this.$hasPermission('course', this.courseId, ['w'])
   },
 
   computed: {

@@ -15,10 +15,28 @@
       <v-tooltip bottom>
         <template v-slot:activator="{ on, attrs }">
           <v-btn
+            v-show="!isPreview"
+            v-role="[0, 1]"
+            outlined
+            color="primary darken-2"
+            class="rounded mr-2"
+            icon
+            v-on="on"
+            v-bind="attrs"
+            @click="dialog = true"
+          >
+            <v-icon>mdi-content-copy</v-icon>
+          </v-btn>
+        </template>
+        <span>複製測驗</span>
+      </v-tooltip>
+      <v-tooltip bottom>
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn
             v-show="!isPreview && $isSelf(prob.author.username)"
             outlined
             color="primary darken-2"
-            class="align-self-end rounded"
+            class="rounded"
             :to="{
               name: 'courseSetChallenges',
               params: { id: prob.course, operation: 'edit' },
@@ -31,7 +49,7 @@
             <v-icon>mdi-pencil-outline</v-icon>
           </v-btn>
         </template>
-        <span>編輯主題</span>
+        <span>編輯測驗</span>
       </v-tooltip>
       <!-- <v-tooltip bottom>
         <template v-slot:activator="{ on, attrs }">
@@ -61,12 +79,21 @@
         <ColorLabel v-for="tag in prob.tags" :key="tag" :tag="tag" small class="ma-1" />
       </v-col>
     </v-row>
+
+    <CloneProblemModal
+      :isOpen="dialog"
+      :clonePid="prob.pid"
+      label="測驗"
+      @success="dialog = false"
+      @close="dialog = false"
+    />
   </div>
 </template>
 
 <script>
 import ColorLabel from '@/components/UI/ColorLabel'
 import Gravatar from '@/components/UI/Gravatar'
+import CloneProblemModal from '../Problem/CloneProblemModal.vue'
 
 export default {
   props: {
@@ -79,6 +106,10 @@ export default {
       default: false,
     },
   },
-  components: { ColorLabel, Gravatar },
+  components: { ColorLabel, Gravatar, CloneProblemModal },
+
+  data: () => ({
+    dialog: false,
+  }),
 }
 </script>

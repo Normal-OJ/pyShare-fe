@@ -134,7 +134,7 @@ export default {
       return this.$route.params.id
     },
     items() {
-      return this.links.slice(this.canWriteCourse ? 0 : 1)
+      return this.links.slice(0, this.canWriteCourse ? 2 : 1)
     },
   },
 
@@ -142,14 +142,14 @@ export default {
     isMinify: false,
     links: [
       {
-        label: '管理',
-        icon: 'mdi-settings',
-        routeName: 'courseManages',
-      },
-      {
         label: '總覽',
         icon: 'mdi-view-compact',
         routeName: 'courseInfo',
+      },
+      {
+        label: '管理',
+        icon: 'mdi-settings',
+        routeName: 'courseManages',
       },
     ],
     canWriteCourse: null,

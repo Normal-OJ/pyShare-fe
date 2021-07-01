@@ -31,9 +31,6 @@
       class="table"
       @click:row="handleRowClick"
     >
-      <template v-slot:[`item.teacher`]="{ item }">
-        {{ item.teacher ? '教師' : '學生' }}
-      </template>
       <template v-slot:[slotName] v-for="slotName in ['no-data', 'no-results']">
         <div class="d-flex flex-column align-center" :key="slotName">
           <div class="text-subtitle-1 my-8">這裡還沒有任何成員，或找不到符合條件的成員</div>
@@ -53,7 +50,7 @@ const { TEACHER } = ROLE
 const headers = [
   { text: '使用者名稱', value: 'username' },
   { text: '顯示名稱', value: 'displayName' },
-  { text: '身份', value: 'teacher' },
+  { text: '身份', value: 'role' },
 ]
 
 export default {

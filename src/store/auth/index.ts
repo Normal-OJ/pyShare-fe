@@ -11,13 +11,13 @@ const state = { ...initialState }
 
 const getters = <GetterTree<State, RootState>>{
   // state is only allow to be accessed by getter in pure .js logic
-  [GetterTypes.ROLE](state: State) {
+  [GetterTypes.ROLE](state) {
     return state.role
   },
-  [GetterTypes.USERNAME](state: State) {
+  [GetterTypes.USERNAME](state) {
     return state.username
   },
-  [GetterTypes.USER_INFO](state: State) {
+  [GetterTypes.USER_INFO](state) {
     return {
       id: state.id,
       username: state.username,
@@ -50,9 +50,9 @@ const actions = <ActionTree<State, RootState>>{
    */
   async [ActionTypes.GET_JWT]({ commit }) {
     if (!getJwt()) return
-    commit(MutationTypes.SET_JWT)
     try {
       await agent.Auth.checkToken()
+      commit(MutationTypes.SET_JWT)
     } catch (error) {
       console.log('[vuex/auth/getJwt] error', error)
       commit(MutationTypes.SET_IS_SHOW_LOGOUT_MODAL, true)

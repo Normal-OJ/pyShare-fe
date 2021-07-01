@@ -1,9 +1,11 @@
 <template>
   <ManageChallenges
     :challenges="challenges"
+    :templates="canWriteCourse ? templates : []"
     :tags="tags"
     :loading="isWaiting"
     @get-problems-by-tags="getProblemsByTags"
+    @refetch-data="fetchData"
     @delete-problem="deleteProblem"
   />
 </template>
@@ -24,22 +26,29 @@ export default {
     }),
     ...mapGetters({
       challenges: GetterTypes.CHALLENGES,
+      templates: GetterTypes.CHALLENGES_TEMPLATES,
     }),
+    courseId() {
+      return this.$route.params.id
+    },
     paramsWithCourse() {
-      return { course: this.$route.params.id }
+      return { course: this.courseId }
     },
   },
 
   data: () => ({
     isWaiting: true,
+    canWriteCourse: null,
   }),
 
-  created() {
+  async created() {
     this.fetchData()
+    this.canWriteCourse = await this.$hasPermission('course', this.courseId, ['w'])
   },
 
   methods: {
     async fetchData() {
+      this.isWaiting = true
       await this.getProblems(this.paramsWithCourse)
       this.isWaiting = false
     },

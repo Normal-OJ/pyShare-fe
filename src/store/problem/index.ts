@@ -16,7 +16,10 @@ const getters = <GetterTree<State, RootState>>{
     return state.problems.filter(p => p.extra._cls !== 'OJProblem' && p.isTemplate)
   },
   [GetterTypes.CHALLENGES](state): Problem.IInfo[] {
-    return state.problems.filter(p => p.extra._cls === 'OJProblem')
+    return state.problems.filter(p => p.extra._cls === 'OJProblem' && !p.isTemplate)
+  },
+  [GetterTypes.CHALLENGES_TEMPLATES](state): Problem.IInfo[] {
+    return state.problems.filter(p => p.extra._cls === 'OJProblem' && p.isTemplate)
   },
   [GetterTypes.PROBLEMS_OF_MINE](state, getters, rootState): Problem.IInfo[] {
     const { username } = rootState.auth

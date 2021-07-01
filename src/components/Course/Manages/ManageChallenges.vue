@@ -35,7 +35,7 @@
 
     <v-data-table
       :headers="headers"
-      :items="challenges"
+      :items="challenges.concat(templates)"
       :search="searchText"
       :items-per-page="Number(-1)"
       hide-default-footer
@@ -54,6 +54,9 @@
           </template>
           <span>隱藏的主題</span>
         </v-tooltip>
+        <v-chip v-if="item.isTemplate" class="ml-2" small color="success" dark>
+          範本
+        </v-chip>
       </template>
       <template v-slot:[`item.tags`]="{ item }">
         <ColorLabel
@@ -76,14 +79,19 @@
             query: { pid: item.pid },
           }"
           color="primary"
+          class="mx-1"
           small
         >
           <v-icon class="mr-1" small>mdi-pencil</v-icon>
-          編輯
+          <span class="hidden-md-and-down">編輯</span>
         </v-btn>
-        <v-btn class="ml-3" color="error" small @click="deleteProblem(item.pid)">
+        <v-btn class="mx-1" color="primary" small @click="openCloneDialog(item.pid)">
+          <v-icon class="mr-1" small>mdi-content-copy</v-icon>
+          <span class="hidden-md-and-down">複製</span>
+        </v-btn>
+        <v-btn class="mx-1" color="error" small @click="deleteProblem(item.pid)">
           <v-icon class="mr-1" small>mdi-trash-can</v-icon>
-          刪除
+          <span class="hidden-md-and-down">刪除</span>
         </v-btn>
       </template>
       <template v-slot:[slotName] v-for="slotName in ['no-data', 'no-results']">
@@ -93,11 +101,20 @@
         </div>
       </template>
     </v-data-table>
+    <CloneProblemModal
+      :isOpen="dialog"
+      :clonePid="clonePid"
+      label="測驗"
+      :defaultCourseId="$route.params.id"
+      @success="handleCloneSuccess"
+      @close="dialog = false"
+    />
   </v-container>
 </template>
 
 <script>
 import ColorLabel from '@/components/UI/ColorLabel'
+import CloneProblemModal from '../Problem/CloneProblemModal.vue'
 
 const headers = [
   { text: '題號', value: 'pid' },
@@ -108,10 +125,14 @@ const headers = [
 ]
 
 export default {
-  components: { ColorLabel },
+  components: { ColorLabel, CloneProblemModal },
 
   props: {
     challenges: {
+      type: Array,
+      required: true,
+    },
+    templates: {
       type: Array,
       required: true,
     },
@@ -128,6 +149,8 @@ export default {
   data: () => ({
     headers,
     searchText: '',
+    dialog: false,
+    clonePid: 0,
     selectedTags: [],
   }),
 
@@ -161,6 +184,14 @@ export default {
         }
       })
       return items
+    },
+    openCloneDialog(pid) {
+      this.clonePid = pid
+      this.dialog = true
+    },
+    handleCloneSuccess() {
+      this.$emit('refetch-data')
+      this.dialog = false
     },
     deleteProblem(pid) {
       const result = window.confirm('確認要刪除嗎？')

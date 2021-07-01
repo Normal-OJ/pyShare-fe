@@ -133,11 +133,14 @@ export default {
     courseId() {
       return this.$route.params.id
     },
+    items() {
+      return this.links.slice(this.canWriteCourse ? 0 : 1)
+    },
   },
 
   data: () => ({
     isMinify: false,
-    items: [
+    links: [
       {
         label: '管理',
         icon: 'mdi-settings',

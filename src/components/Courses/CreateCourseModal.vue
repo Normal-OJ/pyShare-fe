@@ -119,7 +119,7 @@ export default {
     nameRules: [
       val => !!val || '請輸入課程名稱',
       val => RegExp(/^[\u4E00-\u9FCCA-Za-z0-9_.-\s]+$/).test(val) || '課程名稱包含非法字元',
-      val => val.length >= 3 || '長度至少三個字元',
+      val => (!!val && val.length >= 3) || '長度至少三個字元',
     ],
     years: YEARS,
     semesters: SEMESTERS,
@@ -146,6 +146,7 @@ export default {
             this.courseInfo.name = null
             this.dialog = false
             this.$alertSuccess('新增課程成功。')
+            this.$router.go(0)
           })
           .catch(() => {
             this.$alertFail('新增課程失敗')

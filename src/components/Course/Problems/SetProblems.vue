@@ -25,18 +25,28 @@
           label="顯示狀態"
           v-model="newProb.status"
           :items="status"
-          hint="設為隱藏時，僅老師和創題者可見"
+          hint="當主題為「範本」，或顯示狀態設為「隱藏」時，僅教師和創題者可見"
           persistent-hint
           outlined
           dense
+          :disabled="newProb.isTemplate"
         />
       </v-col>
-      <v-col cols="12" md="6">
+      <v-col cols="6" md="3">
         <v-checkbox
           v-if="canWriteCourse"
           class="pt-0 mt-0"
           v-model="newProb.allowMultipleComments"
-          label="允許主題下可以發表多個創作"
+          label="允許主題下每人可發表多個創作"
+          hide-details
+        />
+      </v-col>
+      <v-col cols="6" md="3">
+        <v-checkbox
+          v-if="canWriteCourse"
+          class="pt-0 mt-0"
+          v-model="newProb.isTemplate"
+          label="設為範本"
           hide-details
         />
       </v-col>

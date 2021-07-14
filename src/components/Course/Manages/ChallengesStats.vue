@@ -5,7 +5,7 @@
         v-on="on"
         v-bind="attrs"
         class="d-flex justify-center align-center"
-        :style="{ width: '30px', height: '30px', backgroundColor: cellColor }"
+        :style="{ height: '100%', backgroundColor: cellColor }"
       >
         <pre v-if="data">{{ data.submissions.length }}</pre>
       </div>

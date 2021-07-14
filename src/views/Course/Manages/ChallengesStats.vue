@@ -1,28 +1,71 @@
 <template>
-  <div>
-    <v-simple-table>
-      <template v-slot:default>
-        <thead>
-          <tr>
-            <th>
-              成員 \ 題號
-            </th>
-            <th v-for="chal in challenges" :key="chal.pid">
-              {{ chal.pid }}
-            </th>
-          </tr>
-        </thead>
-        <tbody v-if="data">
-          <tr v-for="member in members" :key="member.id">
-            <td>{{ member.displayName }}</td>
-            <td v-for="pid in pids" :key="pid">
-              <ChallengesStats :data="data[member.id][pid]" />
-            </td>
-          </tr>
-        </tbody>
+  <v-container fluid>
+    <div class="text-h5">測驗統計</div>
+    <v-data-table
+      :headers="headers"
+      :items="items"
+      :items-per-page="Number(-1)"
+      hide-default-footer
+    >
+      <template v-slot:item="{ item }">
+        <tr :data-id="item.id">
+          <v-tooltip left>
+            <template v-slot:activator="{ on, attr }">
+              <td v-on="on" v-bind="attr">
+                <router-link :to="{ name: 'profile', params: { id: item.id } }">
+                  {{ item.displayName }}
+                </router-link>
+              </td>
+            </template>
+            <span>{{ item.username }}</span>
+          </v-tooltip>
+
+          <td v-for="pid in pids" :key="pid" class="pa-0">
+            <ChallengesStats :data="data[item.id] && data[item.id][pid]" />
+          </td>
+        </tr>
       </template>
-    </v-simple-table>
-  </div>
+    </v-data-table>
+
+    <table class="mt-4">
+      <thead>
+        <tr>
+          <th>
+            成員 \ 題號
+          </th>
+          <template v-for="chal in challenges">
+            <v-tooltip top :key="chal.pid">
+              <template v-slot:activator="{ on, attr }">
+                <th v-on="on" v-bind="attr">
+                  <router-link :to="{ name: 'courseChallenge', params: { pid: chal.pid } }">
+                    {{ chal.pid }}
+                  </router-link>
+                </th>
+              </template>
+              <span>{{ chal.title }}</span>
+            </v-tooltip>
+          </template>
+        </tr>
+      </thead>
+      <tbody v-if="data">
+        <tr v-for="member in members" :key="member.id">
+          <v-tooltip left>
+            <template v-slot:activator="{ on, attr }">
+              <td v-on="on" v-bind="attr">
+                <router-link :to="{ name: 'profile', params: { id: member.id } }">
+                  {{ member.displayName }}
+                </router-link>
+              </td>
+            </template>
+            <span>{{ member.username }}</span>
+          </v-tooltip>
+          <td v-for="pid in pids" :key="pid" style="height: 20px">
+            <ChallengesStats :data="data[member.id] && data[member.id][pid]" />
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </v-container>
 </template>
 
 <script>
@@ -53,6 +96,21 @@ export default {
     paramsWithCourse() {
       return { course: this.$route.params.id }
     },
+    headers() {
+      return [
+        { text: '成員 \\ 題號', value: 'username' },
+        ...this.pids.map(pid => ({ text: pid, value: pid })),
+      ]
+    },
+    items() {
+      if (!this.data) return []
+      return this.members.map(member => ({
+        ...member,
+        ...Object.fromEntries(
+          this.pids.map(pid => [pid, this.data[member.id] ? this.data[member.id][pid] : null]),
+        ),
+      }))
+    },
   },
   async created() {
     await this.$store.dispatch(ActionTypes.GET_PROBLEMS, this.paramsWithCourse)
@@ -81,3 +139,5 @@ export default {
   },
 }
 </script>
+
+<style scoped></style>

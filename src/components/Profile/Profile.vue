@@ -111,7 +111,7 @@
 import Spinner from '@/components/UI/Spinner'
 import Gravatar from '@/components/UI/Gravatar'
 import agent from '@/api/agent'
-import { mapGetters } from 'vuex'
+import { mapState } from 'vuex'
 import { GetterTypes } from '@/store/getter-types'
 
 export default {
@@ -171,8 +171,8 @@ export default {
         this.isEmailValidating
       )
     },
-    ...mapGetters({
-      role: GetterTypes.ROLE,
+    ...mapState({
+      role: state => state.auth.role,
     }),
   },
 

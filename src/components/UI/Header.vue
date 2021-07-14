@@ -8,17 +8,18 @@
     </v-btn>
 
     <v-toolbar-items>
-      <v-btn
-        v-for="{ label, route, role } in headerItems"
-        :key="label"
-        :to="route"
-        v-role="role || []"
-        class="text-body-1 font-weight-bold"
-        color="white"
-        text
-      >
-        {{ label }}
-      </v-btn>
+      <template v-for="{ label, route, show } in headerItems">
+        <v-btn
+          :key="label"
+          :to="route"
+          v-if="show"
+          class="text-body-1 font-weight-bold"
+          color="white"
+          text
+        >
+          {{ label }}
+        </v-btn>
+      </template>
     </v-toolbar-items>
 
     <v-spacer />
@@ -77,53 +78,47 @@
 <script>
 import Popup from './Popup'
 import { ROLE } from '@/constants/auth'
+import { mapState } from 'vuex'
 
 export default {
   name: 'Header',
 
   components: { Popup },
 
-  props: {
-    isLogin: {
-      type: Boolean,
-      required: true,
-    },
-    id: {
-      type: String,
-    },
-    displayName: {
-      type: String,
-    },
-    isShowLogoutModal: {
-      type: Boolean,
-      required: true,
-    },
-  },
-
   computed: {
+    ...mapState({
+      isLogin: state => state.auth.isAuthenticated,
+      id: state => state.auth.id,
+      role: state => state.auth.role,
+      displayName: state => state.auth.displayName,
+      isShowLogoutModal: state => state.auth.isShowLogoutModal,
+    }),
     headerItems() {
       return [
         {
           label: '課程',
           route: { path: '/courses' },
+          show: true,
         },
-        // {
-        //   label: '共享資料集',
-        //   route: { path: '/datasets' },
-        //   role: [ROLE.ADMIN, ROLE.TEACHER],
-        // },
+        {
+          label: '共享資料',
+          route: { path: '/datasets' },
+          show: [ROLE.ADMIN, ROLE.TEACHER, ROLE.STUDENT].includes(this.role),
+        },
         {
           label: '個人頁面',
           route: this.isLogin ? { name: 'profile', params: { id: this.id } } : { path: '/profile' },
+          show: true,
         },
         {
           label: '管理員介面',
           route: { path: '/admin' },
-          role: [ROLE.ADMIN],
+          show: [ROLE.ADMIN].includes(this.role),
         },
         {
           label: '關於平台',
           route: { path: '/about' },
+          show: true,
         },
       ]
     },

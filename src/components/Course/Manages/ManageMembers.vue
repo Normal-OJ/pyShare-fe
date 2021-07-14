@@ -45,7 +45,7 @@
       class="table"
       @click:row="handleRowClick"
     >
-      <template v-slot:item.data-table-select="{ item, isSelected, select }">
+      <template v-slot:item="{ item, isSelected, select }">
         <v-simple-checkbox
           v-if="item.role !== '教師'"
           :value="isSelected"
@@ -76,11 +76,14 @@ import AddStudentModal from '@/components/Course/AddStudentModal'
 import ConfirmDeleteModal from './ConfirmDeleteModal'
 import { ROLE } from '@/constants/auth'
 import { mapState } from 'vuex'
+import { canWriteCourseMixin } from '@/lib/permissionMixin'
 
 const { TEACHER } = ROLE
 
 export default {
   components: { AddStudentModal, ConfirmDeleteModal },
+
+  mixins: [canWriteCourseMixin],
 
   props: {
     members: {
@@ -106,7 +109,6 @@ export default {
     isShowConfirmDeleteModal: false,
     isWaitingDeleteStudent: false,
     deleteStudentErrorMsg: '',
-    canWriteCourse: null,
   }),
 
   computed: {
@@ -119,13 +121,6 @@ export default {
     ...mapState({
       courseName: state => state.course.courseInfo.name,
     }),
-    courseId() {
-      return this.$route.params.id
-    },
-  },
-
-  async created() {
-    this.canWriteCourse = await this.$hasPermission('course', this.courseId, ['w'])
   },
 
   methods: {

@@ -94,6 +94,7 @@
 
 <script>
 import ColorLabel from '@/components/UI/ColorLabel'
+import { canWriteCourseMixin } from '@/lib/permissionMixin'
 
 const headers = [
   { text: '題號', value: 'pid' },
@@ -103,6 +104,8 @@ const headers = [
 
 export default {
   name: 'Problems',
+
+  mixins: [canWriteCourseMixin],
 
   components: { ColorLabel },
 
@@ -125,18 +128,7 @@ export default {
     headers,
     searchText: '',
     selectedTags: [],
-    canWriteCourse: null,
   }),
-
-  async created() {
-    this.canWriteCourse = await this.$hasPermission('course', this.courseId, ['w'])
-  },
-
-  computed: {
-    courseId() {
-      return this.$route.params.id
-    },
-  },
 
   watch: {
     selectedTags() {

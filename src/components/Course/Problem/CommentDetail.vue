@@ -416,6 +416,7 @@ import CommentResult from './CommentResult'
 import { ROLE } from '@/constants/auth'
 import agent from '@/api/agent'
 import CommentReplies from './CommentReplies'
+import { canWriteCourseMixin, canParticipateCourseMixin } from '@/lib/permissionMixin'
 
 const { TEACHER, STUDENT } = ROLE
 const COMMENT_KEY = {
@@ -426,6 +427,8 @@ const COMMENT_KEY = {
 
 export default {
   name: 'Comment',
+
+  mixins: [canWriteCourseMixin, canParticipateCourseMixin],
 
   components: {
     TextEditor,
@@ -485,6 +488,28 @@ export default {
     },
   },
 
+  data() {
+    return {
+      TEACHER,
+      STUDENT,
+      pollingSubmission: null,
+      statusOptions: Object.keys(SUBMISSION_STATUS).map(s => Number(s)),
+      SUBMISSION_STATUS,
+      COMMENT_KEY,
+      newComment: {},
+      isEdit: {
+        [COMMENT_KEY.TITLE]: false,
+        [COMMENT_KEY.CONTENT]: false,
+        [COMMENT_KEY.CODE]: false,
+      },
+      isDisableSubmitSubmission: false,
+      browsingSubmissionIndex: this.comment.submissions.length - 1,
+      replies: null,
+      isReply: false,
+      newReply: '',
+    }
+  },
+
   computed: {
     isSubmissionPending() {
       if (!this.comment || !this.comment.submission) return false
@@ -513,9 +538,6 @@ export default {
     hasAccepted() {
       return this.historySubmissions.some(submission => submission.state === 1)
     },
-    courseId() {
-      return this.$route.params.id
-    },
   },
 
   async created() {
@@ -531,8 +553,6 @@ export default {
       1000,
       this,
     )
-    this.canParticipateCourse = await this.$hasPermission('course', this.courseId, ['p'])
-    this.canWriteCourse = await this.$hasPermission('course', this.courseId, ['w'])
   },
 
   watch: {
@@ -553,30 +573,6 @@ export default {
 
   beforeDestroy() {
     clearInterval(this.pollingSubmission)
-  },
-
-  data() {
-    return {
-      TEACHER,
-      STUDENT,
-      pollingSubmission: null,
-      statusOptions: Object.keys(SUBMISSION_STATUS).map(s => Number(s)),
-      SUBMISSION_STATUS,
-      COMMENT_KEY,
-      newComment: {},
-      isEdit: {
-        [COMMENT_KEY.TITLE]: false,
-        [COMMENT_KEY.CONTENT]: false,
-        [COMMENT_KEY.CODE]: false,
-      },
-      isDisableSubmitSubmission: false,
-      browsingSubmissionIndex: this.comment.submissions.length - 1,
-      replies: null,
-      isReply: false,
-      newReply: '',
-      canParticipateCourse: null,
-      canWriteCourse: null,
-    }
   },
 
   methods: {

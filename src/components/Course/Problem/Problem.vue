@@ -15,8 +15,7 @@
       <v-tooltip bottom>
         <template v-slot:activator="{ on, attrs }">
           <v-btn
-            v-show="!isPreview"
-            v-role="[0, 1]"
+            v-if="!isPreview && canCopyProblem"
             outlined
             color="primary darken-2"
             class="rounded mr-2"
@@ -125,7 +124,12 @@ export default {
     isPreviewAttachment: false,
     previewAttachment: '',
     dialog: false,
+    canCopyProblem: null,
   }),
+
+  async created() {
+    this.canCopyProblem = await this.$hasPermission('problem', this.prob.pid, ['c'])
+  },
 
   methods: {
     setPreviewAttachment(filename) {

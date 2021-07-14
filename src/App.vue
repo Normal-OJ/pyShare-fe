@@ -1,12 +1,6 @@
 <template>
   <v-app>
-    <Header
-      :isLogin="isLogin"
-      :id="id"
-      :displayName="displayName"
-      :isShowLogoutModal="isShowLogoutModal"
-      @logout="handleLogout"
-    />
+    <Header @logout="handleLogout" />
     <v-main>
       <transition name="fade">
         <router-view />
@@ -19,7 +13,7 @@
 <script>
 import Header from '@/components/UI/Header'
 import Notification from '@/components/UI/Notification'
-import { mapState, mapActions } from 'vuex'
+import { mapActions } from 'vuex'
 import { ActionTypes } from './store/action-types'
 
 export default {
@@ -27,17 +21,8 @@ export default {
 
   components: { Header, Notification },
 
-  created() {
-    this.getJwt()
-  },
-
-  computed: {
-    ...mapState({
-      isLogin: state => state.auth.isAuthenticated,
-      id: state => state.auth.id,
-      displayName: state => state.auth.displayName,
-      isShowLogoutModal: state => state.auth.isShowLogoutModal,
-    }),
+  async created() {
+    await this.getJwt()
   },
 
   methods: {
@@ -48,7 +33,11 @@ export default {
     async handleLogout() {
       try {
         await this.logout()
-        this.$router.replace({ name: 'home' })
+        if (this.$route.name === 'home') {
+          this.$router.go(0)
+        } else {
+          this.$router.replace({ name: 'home' })
+        }
       } catch (error) {
         console.log('[App/logout] error', error)
         throw error

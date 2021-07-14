@@ -1,6 +1,5 @@
 export enum GetterTypes {
   // auth module
-  ROLE = 'role',
   USERNAME = 'username',
   USER_INFO = 'userInfo',
 

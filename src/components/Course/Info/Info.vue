@@ -80,9 +80,12 @@ import EditCourseModal from './EditCourseModal'
 import Members from '@/components/Course/Info/Members'
 import { COURSE_STATUS_LABEL } from '@/constants/course'
 import Spinner from '@/components/UI/Spinner'
+import { canWriteCourseMixin, canParticipateCourseMixin } from '@/lib/permissionMixin'
 
 export default {
   name: 'Info',
+
+  mixins: [canWriteCourseMixin, canParticipateCourseMixin],
 
   components: { EditCourseModal, Members, Spinner },
 
@@ -94,14 +97,7 @@ export default {
 
   data: () => ({
     COURSE_STATUS_LABEL,
-    canWriteCourse: null,
-    canParticipateCourse: null,
   }),
-
-  async created() {
-    this.canWriteCourse = await this.$hasPermission('course', this.courseId, ['w'])
-    this.canParticipateCourse = await this.$hasPermission('course', this.courseId, ['p'])
-  },
 
   computed: {
     members() {
@@ -113,9 +109,6 @@ export default {
         })),
       )
       return items
-    },
-    courseId() {
-      return this.$route.params.id
     },
   },
 }

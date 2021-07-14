@@ -44,6 +44,7 @@
 <script>
 import AddStudentModal from '@/components/Course/AddStudentModal'
 import { ROLE } from '@/constants/auth'
+import { canWriteCourseMixin } from '@/lib/permissionMixin'
 
 const { TEACHER } = ROLE
 
@@ -55,6 +56,8 @@ const headers = [
 
 export default {
   name: 'MemberList',
+
+  mixins: [canWriteCourseMixin],
 
   components: { AddStudentModal },
 
@@ -70,18 +73,7 @@ export default {
     searchText: '',
     loading: false,
     TEACHER,
-    canWriteCourse: null,
   }),
-
-  async created() {
-    this.canWriteCourse = await this.$hasPermission('course', this.courseId, ['w'])
-  },
-
-  computed: {
-    courseId() {
-      return this.$route.params.id
-    },
-  },
 
   methods: {
     handleRowClick(value) {

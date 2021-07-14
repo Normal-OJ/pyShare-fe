@@ -113,9 +113,12 @@
 <script>
 import { GetterTypes } from '@/store/getter-types'
 import { mapState, mapGetters } from 'vuex'
+import { canWriteCourseMixin } from '@/lib/permissionMixin'
 
 export default {
   name: 'SideNav',
+
+  mixins: [canWriteCourseMixin],
 
   computed: {
     ...mapState({
@@ -125,9 +128,6 @@ export default {
       problems: GetterTypes.PROBLEMS,
       challenges: GetterTypes.CHALLENGES,
     }),
-    courseId() {
-      return this.$route.params.id
-    },
     items() {
       return this.links.slice(0, this.canWriteCourse ? 2 : 1)
     },
@@ -147,11 +147,6 @@ export default {
         routeName: 'courseManages',
       },
     ],
-    canWriteCourse: null,
   }),
-
-  async created() {
-    this.canWriteCourse = await this.$hasPermission('course', this.courseId, ['w'])
-  },
 }
 </script>

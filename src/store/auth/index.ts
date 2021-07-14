@@ -10,10 +10,6 @@ import agent from '@/api/agent'
 const state = { ...initialState }
 
 const getters = <GetterTree<State, RootState>>{
-  // state is only allow to be accessed by getter in pure .js logic
-  [GetterTypes.ROLE](state) {
-    return state.role
-  },
   [GetterTypes.USERNAME](state) {
     return state.username
   },

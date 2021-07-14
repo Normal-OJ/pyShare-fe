@@ -2,6 +2,7 @@ export enum MutationTypes {
   // auth module
   SET_JWT = 'setJwt',
   SET_IS_SHOW_LOGOUT_MODAL = 'setIsShowLogoutModal',
+  SET_IS_VISITOR = 'SET_IS_VISITOR',
 
   // course module
   SET_COURSES = 'setCourses',

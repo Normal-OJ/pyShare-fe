@@ -8,6 +8,8 @@ function checkRole(el: HTMLElement, binding: DirectiveBinding) {
   const { value } = binding
   const role = store.getters && store.getters[GetterTypes.ROLE]
 
+  if (typeof role !== 'number') return
+
   if (value && value instanceof Array) {
     if (value.length > 0) {
       const permissionRoles = value

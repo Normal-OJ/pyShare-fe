@@ -7,7 +7,7 @@ export const canWriteCourseMixin = Vue.extend({
     }
   },
   async created() {
-    this.canWriteCourse = await this.$hasPermission('course', this.$route.params.name, ['w'])
+    this.canWriteCourse = await this.$hasPermission('course', this.$route.params.id, ['w'])
   },
 })
 
@@ -18,6 +18,6 @@ export const canParticipateCourseMixin = Vue.extend({
     }
   },
   async created() {
-    this.canParticipateCourse = await this.$hasPermission('course', this.$route.params.name, ['p'])
+    this.canParticipateCourse = await this.$hasPermission('course', this.$route.params.id, ['p'])
   },
 })

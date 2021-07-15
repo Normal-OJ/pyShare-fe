@@ -1,9 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@100;300;400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400&display=swap');
 
-// Override font family
 $body-font-family: 'Noto Sans TC', sans-serif;
 
-// Import Vuetify SASS Variables to override data-table's variable based on $headings
-@import '~vuetify/src/styles/styles.sass';
-
-$data-table-regular-header-font-size: map-deep-get($headings, 'subtitle-2', 'size') !default;
+$data-table-regular-header-font-size: 0.875rem !default;

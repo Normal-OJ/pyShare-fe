@@ -75,6 +75,132 @@ export const makeServer = ({ environment }: { environment?: string }) =>
 
     routes() {
       this.namespace = 'api'
+      // this.get('/course/:id/statistic/oj-problem', () => {
+      //   return new Response(
+      //     200,
+      //     {},
+      //     {
+      //       data: {
+      //         overview: {
+      //           '210': {
+      //             acCount: 16,
+      //             acUser: 0,
+      //             tryCount: 1,
+      //             tryUser: 1,
+      //           },
+      //           '212': {
+      //             acCount: 1,
+      //             acUser: 0,
+      //             tryCount: 0,
+      //             tryUser: 0,
+      //           },
+      //         },
+      //         users: [
+      //           {
+      //             '210': {
+      //               commentId: '60caecab01fd1c6e4c68bb50',
+      //               result: 1,
+      //               tryCount: 1,
+      //             },
+      //             '212': {
+      //               commentId: null,
+      //               result: 2,
+      //               tryCount: 0,
+      //             },
+      //             info: {
+      //               displayName: '測試帳號001',
+      //               email: 'test001@test.com',
+      //               id: '6048e99665d64e90c904e3b2',
+      //               md5: 'ec8c7e61be690fa89efc380ea00be559',
+      //               role: 2,
+      //               school: '',
+      //               username: 'test001',
+      //             },
+      //             overview: {
+      //               acCount: 0,
+      //               tryCount: 1,
+      //             },
+      //           },
+      //           {
+      //             '210': {
+      //               commentId: null,
+      //               result: 2,
+      //               tryCount: 0,
+      //             },
+      //             '212': {
+      //               commentId: null,
+      //               result: 2,
+      //               tryCount: 0,
+      //             },
+      //             info: {
+      //               displayName: '測試帳號002',
+      //               email: 'test002@test.com',
+      //               id: '6048e99665d64e90c904e3b3',
+      //               md5: 'bf6b54bbcd23c6fc428327962b4b3297',
+      //               role: 2,
+      //               school: '',
+      //               username: 'test002',
+      //             },
+      //             overview: {
+      //               acCount: 0,
+      //               tryCount: 0,
+      //             },
+      //           },
+      //           {
+      //             '210': {
+      //               commentId: null,
+      //               result: 2,
+      //               tryCount: 0,
+      //             },
+      //             '212': {
+      //               commentId: null,
+      //               result: 2,
+      //               tryCount: 0,
+      //             },
+      //             info: {
+      //               displayName: '測試帳號003',
+      //               email: 'test003@test.com',
+      //               id: '6048e99665d64e90c904e3b4',
+      //               md5: 'b483edefc19a249040a63a5bf8bf6587',
+      //               role: 2,
+      //               school: '',
+      //               username: 'test003',
+      //             },
+      //             overview: {
+      //               acCount: 0,
+      //               tryCount: 0,
+      //             },
+      //           },
+      //           {
+      //             '210': {
+      //               commentId: null,
+      //               result: 2,
+      //               tryCount: 0,
+      //             },
+      //             '212': {
+      //               commentId: null,
+      //               result: 2,
+      //               tryCount: 0,
+      //             },
+      //             info: {
+      //               displayName: '測試帳號004',
+      //               email: 'test004@test.com',
+      //               id: '6048e99665d64e90c904e3b5',
+      //               md5: 'e36005b7afa0885e67a7256965fe161d',
+      //               role: 2,
+      //               school: '',
+      //               username: 'test004',
+      //             },
+      //             overview: {
+      //               acCount: 0,
+      //               tryCount: 0,
+      //             },
+      //           },
+      //         ],
+      //       },
+      //     },
+      //   )
+      // })
       this.get('/dataset', () => new Response(200, {}, { data: mockDatasets }))
       this.get('/dataset/:id', (schema, request) => {
         const id = request.params.id

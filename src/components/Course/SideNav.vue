@@ -75,19 +75,39 @@
         </v-list-item>
       </template>
 
-      <v-list-item
-        v-for="{ label, icon, routeName } in items"
-        :key="label"
-        :to="{ name: routeName }"
-        color="primary"
-      >
+      <v-list-item :to="{ name: 'courseInfo' }" color="primary">
         <v-list-item-icon>
-          <v-icon>{{ icon }}</v-icon>
+          <v-icon>mdi-view-compact</v-icon>
         </v-list-item-icon>
         <v-list-item-content>
-          <v-list-item-title>{{ label }}</v-list-item-title>
+          <v-list-item-title>總覽</v-list-item-title>
         </v-list-item-content>
       </v-list-item>
+
+      <v-list-item :to="{ name: 'courseManages' }" color="primary">
+        <v-list-item-icon>
+          <v-icon>mdi-settings</v-icon>
+        </v-list-item-icon>
+        <v-list-item-content>
+          <v-list-item-title>管理</v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
+      <template v-if="$route.meta.detailedSideNav">
+        <v-list-item
+          v-for="{ title, icon, routeName } in manageItems"
+          :key="routeName"
+          :to="{ name: routeName }"
+          color="primary"
+          :class="{ 'ml-4': !isMinify }"
+        >
+          <v-list-item-icon class="pl-3 mr-3">
+            <v-icon size="18px">{{ icon }}</v-icon>
+          </v-list-item-icon>
+          <v-list-item-content>
+            <v-list-item-title>{{ title }}</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+      </template>
     </v-list>
 
     <template v-slot:append>
@@ -135,16 +155,36 @@ export default {
 
   data: () => ({
     isMinify: false,
-    links: [
+    manageItems: [
       {
-        label: '總覽',
-        icon: 'mdi-view-compact',
-        routeName: 'courseInfo',
+        title: '管理分類',
+        icon: 'mdi-tag-multiple',
+        routeName: 'courseManageTags',
       },
       {
-        label: '管理',
-        icon: 'mdi-settings',
-        routeName: 'courseManages',
+        title: '管理成員',
+        icon: 'mdi-account-multiple',
+        routeName: 'courseManageMembers',
+      },
+      {
+        title: '管理主題',
+        icon: 'mdi-view-list',
+        routeName: 'courseManageProblems',
+      },
+      {
+        title: '管理測驗',
+        icon: 'mdi-code-tags',
+        routeName: 'courseManageChallenges',
+      },
+      {
+        title: '主題統計',
+        icon: 'mdi-format-list-checks',
+        routeName: 'courseProblemsStats',
+      },
+      {
+        title: '測驗統計',
+        icon: 'mdi-code-tags-check',
+        routeName: 'courseChallengesStats',
       },
     ],
     canWriteCourse: null,

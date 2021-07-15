@@ -9,6 +9,9 @@ import { GetterTypes } from '../getter-types'
 const state = { ...initialState }
 
 const getters = <GetterTree<State, RootState>>{
+  [GetterTypes.COURSE_NAME](state) {
+    return state.courseInfo ? state.courseInfo.name : ''
+  },
   [GetterTypes.TEACHING_COURSES](state, getters, RootState) {
     const myCourses = RootState.auth.courses
     const isMyCourses = (course: Course.IInfo) => myCourses.indexOf(course.id) !== -1

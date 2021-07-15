@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-if="data" v-model="dialog">
+  <v-dialog v-if="data.commentId" v-model="dialog">
     <template v-slot:activator="{ on, attrs }">
       <div
         v-on="on"
@@ -7,11 +7,19 @@
         class="d-flex justify-center align-center"
         :style="{ height: '100%', backgroundColor: cellColor }"
       >
-        <pre v-if="data">{{ data.submissions.length }}</pre>
+        <pre>{{ data.tryCount }}</pre>
       </div>
     </template>
-    <v-card class="pa-8">
-      <ChallengeHistory :comment="data" />
+    <v-card class="px-8 pb-4">
+      <v-card-title>
+        <div>{{ user.username }}{{ `(${user.displayName})` }} - {{ pid }}</div>
+        <v-spacer />
+        <v-btn icon @click="dialog = false">
+          <v-icon>mdi-close</v-icon>
+        </v-btn>
+      </v-card-title>
+      <ChallengeHistory v-if="comment" :comment="comment" />
+      <Spinner v-else />
     </v-card>
   </v-dialog>
 </template>
@@ -19,26 +27,42 @@
 <script>
 import agent from '@/api/agent'
 import ChallengeHistory from '../Challenge/ChallengeHistory.vue'
-
-const AC = 0
+import Spinner from '@/components/UI/Spinner.vue'
 
 export default {
-  props: ['data'],
-  components: { ChallengeHistory },
+  /**
+   * data: {
+   *   commentId: null | Comment.ID
+   *   result: 0 | 1 | 2 (PASS | FAIL | NOT TRY)
+   *   tryCount: number
+   * }
+   */
+  props: ['user', 'pid', 'data'],
+  components: { ChallengeHistory, Spinner },
   data: () => ({
+    isLoading: true,
     dialog: false,
-    cellColor: '#fff',
+    comment: null,
   }),
-  async created() {
-    if (!this.data) return
-    const submissions = (
-      await Promise.all(this.data.submissions.map(sid => agent.Submission.get(sid)))
-    ).map(resp => resp.data.data)
-    if (submissions.some(submission => submission.judge_result === AC)) {
-      this.cellColor = '#86EFAC'
-    } else if (submissions.length > 0) {
-      this.cellColor = '#FECACA'
-    }
+  computed: {
+    cellColor() {
+      return this.data.commentId ? (this.data.result === 0 ? '#86EFAC' : '#FECACA') : '#fff'
+    },
+  },
+  watch: {
+    dialog() {
+      if (this.dialog && this.comment === null && this.data.commentId) {
+        this.getComment()
+      }
+    },
+  },
+  methods: {
+    async getComment() {
+      if (!this.data.commentId) return
+      agent.Comment.get(this.data.commentId)
+        .then(resp => (this.comment = resp.data.data))
+        .finally(() => (this.isLoading = false))
+    },
   },
 }
 </script>

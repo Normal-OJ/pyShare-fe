@@ -5,6 +5,7 @@ export enum GetterTypes {
   USER_INFO = 'userInfo',
 
   // course module
+  COURSE_NAME = 'courseName',
   TEACHING_COURSES = 'teachingCourses', // all courses whose teacher is me
   ENROLLED_COURSES = 'enrolledCourses', // all courses that i'm enrolled (as student)
   OTHER_COURSES = 'otherCourses', // all courses that i'm not in but visible.

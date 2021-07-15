@@ -41,4 +41,28 @@ declare namespace Course {
   interface IStudentStats extends User.IStats {
     info: User.IInfo
   }
+
+  interface IOJStats {
+    overview: {
+      [propName: string]: {
+        acCount: number
+        acUser: number
+        tryCount: number
+        tryUser: number
+      }
+    }
+    users: {
+      overview: {
+        acCount: number
+        tryCount: number
+      }
+      info: User.IInfo
+      [propName: string]: {
+        commentId: Comment.ID
+        // PASS | FAIL | NOT TRY
+        result: 0 | 1 | 2
+        tryCount: number
+      }
+    }[]
+  }
 }

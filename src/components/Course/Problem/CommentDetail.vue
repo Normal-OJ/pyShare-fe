@@ -145,7 +145,7 @@
       </div>
       <div class="mt-4">
         <!-- Creation Content -->
-        <div class="text-body-1 font-weight-bold d-flex align-center my-4">
+        <div class="text-body-1 font-weight-medium d-flex align-center my-4">
           創作說明
           <v-tooltip right>
             <template v-slot:activator="{ on, attrs }">
@@ -183,7 +183,7 @@
           </div>
         </div>
         <!-- Creation Code -->
-        <div class="text-body-1 font-weight-bold d-flex align-center my-4">
+        <div class="text-body-1 font-weight-medium d-flex align-center my-4">
           創作程式
           <v-btn
             v-show="$isSelf(comment.author.username) && !isEdit[COMMENT_KEY.CODE]"
@@ -338,7 +338,7 @@
         </div>
         <!-- Creation Result -->
         <div v-if="!isEdit[COMMENT_KEY.CODE]">
-          <div class="text-body-1 font-weight-bold my-4">執行結果</div>
+          <div class="text-body-1 font-weight-medium my-4">執行結果</div>
           <Spinner v-if="(isSubmissionPending && !isBrowsingHistory) || !browsingSubmission" />
           <CommentResult v-else :sid="browsingSubmission.id" :result="browsingSubmission" />
         </div>
@@ -365,7 +365,7 @@
             </v-btn>
           </div>
           <div v-if="testResult">
-            <div class="text-body-1 font-weight-bold my-4">測試執行結果</div>
+            <div class="text-body-1 font-weight-medium my-4">測試執行結果</div>
             <Spinner v-if="isTestSubmissionPending" />
             <CommentResult v-else :sid="''" :result="testResult" isTest />
           </div>

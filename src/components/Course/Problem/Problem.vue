@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="text-h4 font-weight-bold text-center">{{ prob.title }}</div>
+    <div class="text-h4 font-weight-medium text-center">{{ prob.title }}</div>
     <div class="d-flex flex-row mt-4">
       <Gravatar class="mr-2" :size="48" :md5="prob.author.md5" />
       <div class="d-flex flex-column">

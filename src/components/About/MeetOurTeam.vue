@@ -4,7 +4,7 @@
       <div class="text-h3">Meet The Team</div>
       <div class="text-subtitle-1 mt-4">此平台由國立臺灣師範大學建置與維護</div>
       <!-- Chair -->
-      <div class="text-h5 font-weight-bold mt-8">計畫主持人</div>
+      <div class="text-h5 font-weight-medium mt-8">計畫主持人</div>
       <div class="d-flex flex-column align-center mt-4">
         <v-avatar size="120">
           <v-img :src="require('@/assets/images/chair.jpg')" width="120" />
@@ -13,7 +13,7 @@
         <div class="text-body-1">tcchiang@ntnu.edu.tw</div>
       </div>
       <!-- Developer -->
-      <div class="text-h5 font-weight-bold mt-8">開發團隊</div>
+      <div class="text-h5 font-weight-medium mt-8">開發團隊</div>
       <div class="text-body-1">pyshare@noj.tw</div>
       <div class="d-flex justify-space-around flex-wrap mt-4">
         <div class="d-flex flex-column align-center mx-4">

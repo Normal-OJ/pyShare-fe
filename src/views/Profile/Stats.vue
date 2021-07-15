@@ -11,7 +11,7 @@
       <v-divider />
       <v-expansion-panels flat="flat" multiple="multiple">
         <v-expansion-panel>
-          <v-expansion-panel-header class="title font-weight-bold">
+          <v-expansion-panel-header class="title font-weight-medium">
             發布的主題: {{ statistic.problems.length }}
           </v-expansion-panel-header>
           <v-expansion-panel-content>
@@ -45,7 +45,7 @@
           </v-expansion-panel-content>
         </v-expansion-panel>
         <v-expansion-panel>
-          <v-expansion-panel-header class="title font-weight-bold">
+          <v-expansion-panel-header class="title font-weight-medium">
             發布的創作: {{ statistic.comments.length }}
           </v-expansion-panel-header>
           <v-expansion-panel-content>
@@ -85,7 +85,7 @@
           </v-expansion-panel-content>
         </v-expansion-panel>
         <v-expansion-panel>
-          <v-expansion-panel-header class="title font-weight-bold">
+          <v-expansion-panel-header class="title font-weight-medium">
             發布的留言: {{ statistic.replies.length }}
           </v-expansion-panel-header>
           <v-expansion-panel-content>
@@ -120,7 +120,7 @@
           </v-expansion-panel-content>
         </v-expansion-panel>
         <v-expansion-panel>
-          <v-expansion-panel-header class="title font-weight-bold">
+          <v-expansion-panel-header class="title font-weight-medium">
             獲得愛心: {{ totalLikedAmount }}
           </v-expansion-panel-header>
           <v-expansion-panel-content>
@@ -175,7 +175,7 @@
           </v-expansion-panel-content>
         </v-expansion-panel>
         <v-expansion-panel>
-          <v-expansion-panel-header class="title font-weight-bold">
+          <v-expansion-panel-header class="title font-weight-medium">
             給予愛心: {{ totalLikesAmount }}
           </v-expansion-panel-header>
           <v-expansion-panel-content>
@@ -219,7 +219,7 @@
           </v-expansion-panel-content>
         </v-expansion-panel>
         <v-expansion-panel>
-          <v-expansion-panel-header class="title font-weight-bold">
+          <v-expansion-panel-header class="title font-weight-medium">
             創作執行結果: {{ statistic.execInfo.length }}
           </v-expansion-panel-header>
           <v-expansion-panel-content>

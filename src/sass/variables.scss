@@ -1,20 +1,7 @@
-// Import Lato for numeric & alphabets
-@font-face {
-  font-family: 'pyShare';
-  src: url('https://fonts.googleapis.com/css2?family=Lato:wght@100;300;400;700;900&display=swap');
-  unicode-range: U+00-024F;
-}
-
-// Import Noto Sans TC for Chinese
-@font-face {
-  font-family: 'pyShare';
-  src: url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@100;300;400;700;900&display=swap');
-  unicode-range: U+4E00-9FFF;
-}
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@100;300;400;500;700&display=swap');
 
 // Override font family
-$body-font-family: 'pyShare', sans-serif;
-$heading-font-family: $body-font-family;
+$body-font-family: 'Noto Sans TC', sans-serif;
 
 // TODO: resolve Failed to decode downloaded fonts
 

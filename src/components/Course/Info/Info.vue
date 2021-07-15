@@ -10,19 +10,19 @@
         <template v-slot:default>
           <tbody>
             <tr>
-              <td class="font-weight-bold">課程名稱</td>
+              <td class="font-weight-medium">課程名稱</td>
               <td>{{ info.name }}</td>
             </tr>
             <tr>
-              <td class="font-weight-bold">學期</td>
+              <td class="font-weight-medium">學期</td>
               <td>{{ `${info.year}-${info.semester}` }}</td>
             </tr>
             <tr>
-              <td class="font-weight-bold">教師</td>
+              <td class="font-weight-medium">教師</td>
               <td>{{ info.teacher.displayName }}</td>
             </tr>
             <tr>
-              <td class="font-weight-bold">課程狀態</td>
+              <td class="font-weight-medium">課程狀態</td>
               <td>
                 {{ COURSE_STATUS_LABEL[`${info.status}`] }}
                 <v-tooltip right>
@@ -44,7 +44,7 @@
               </td>
             </tr>
             <tr>
-              <td class="font-weight-bold">課程簡介</td>
+              <td class="font-weight-medium">課程簡介</td>
               <td style="width: 85%">{{ info.description }}</td>
             </tr>
           </tbody>
@@ -56,15 +56,15 @@
     <div class="mt-4 d-flex justify-space-around flex-wrap" v-else>
       <div class="d-flex flex-column align-center">
         <div class="text-h6">學生數</div>
-        <div class="font-weight-thin text-h1">{{ info.students.length }}</div>
+        <div class="display-amount">{{ info.students.length }}</div>
       </div>
       <div class="d-flex flex-column align-center">
         <div class="text-h6">主題數</div>
-        <div class="font-weight-thin text-h1">{{ info.numOfProblems }}</div>
+        <div class="display-amount">{{ info.numOfProblems }}</div>
       </div>
       <div class="d-flex flex-column align-center">
         <div class="text-h6">創作數</div>
-        <div class="font-weight-thin text-h1">{{ info.numOfComments }}</div>
+        <div class="display-amount">{{ info.numOfComments }}</div>
       </div>
     </div>
     <template v-if="canParticipateCourse">
@@ -80,9 +80,12 @@ import EditCourseModal from './EditCourseModal'
 import Members from '@/components/Course/Info/Members'
 import { COURSE_STATUS_LABEL } from '@/constants/course'
 import Spinner from '@/components/UI/Spinner'
+import { canWriteCourseMixin, canParticipateCourseMixin } from '@/lib/permissionMixin'
 
 export default {
   name: 'Info',
+
+  mixins: [canWriteCourseMixin, canParticipateCourseMixin],
 
   components: { EditCourseModal, Members, Spinner },
 
@@ -94,14 +97,7 @@ export default {
 
   data: () => ({
     COURSE_STATUS_LABEL,
-    canWriteCourse: null,
-    canParticipateCourse: null,
   }),
-
-  async created() {
-    this.canWriteCourse = await this.$hasPermission('course', this.courseId, ['w'])
-    this.canParticipateCourse = await this.$hasPermission('course', this.courseId, ['p'])
-  },
 
   computed: {
     members() {
@@ -113,9 +109,6 @@ export default {
         })),
       )
       return items
-    },
-    courseId() {
-      return this.$route.params.id
     },
   },
 }

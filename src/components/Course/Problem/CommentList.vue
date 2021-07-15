@@ -183,9 +183,11 @@ import { mapState } from 'vuex'
 import { SUBMISSION_STATUS } from '@/constants/submission'
 import SubmissionStatusLabel from '@/components/UI/SubmissionStatusLabel'
 import Gravatar from '@/components/UI/Gravatar'
+import { canParticipateCourseMixin } from '@/lib/permissionMixin'
 
 export default {
   name: 'CommentList',
+  mixins: [canParticipateCourseMixin],
   components: { SubmissionStatusLabel, Gravatar },
   props: {
     comments: {
@@ -210,16 +212,12 @@ export default {
       searchText: '',
       statusOptions: Object.keys(SUBMISSION_STATUS).map(s => Number(s)),
       statusFilter: Object.keys(SUBMISSION_STATUS).map(s => Number(s)),
-      canParticipateCourse: null,
     }
   },
   computed: {
     ...mapState({
       username: state => state.auth.username,
     }),
-    courseId() {
-      return this.$route.params.id
-    },
     sortby() {
       return this.SORT_BY.SHOW_MINE.value
     },
@@ -278,9 +276,6 @@ export default {
     filteredComments() {
       this.$emit('change-filtered-comments', this.filteredComments)
     },
-  },
-  async created() {
-    this.canParticipateCourse = await this.$hasPermission('course', this.courseId, ['p'])
   },
   mounted() {
     this.subscribeRefetch()

@@ -177,11 +177,14 @@ import ColorLabel from '@/components/UI/ColorLabel'
 import _ from 'lodash'
 import { mapState } from 'vuex'
 import { ROLE as _ROLE } from '@/constants/auth'
+import { canWriteCourseMixin } from '@/lib/permissionMixin'
 
 const { TEACHER } = _ROLE
 
 export default {
   name: 'SetProblems',
+
+  mixins: [canWriteCourseMixin],
 
   components: { PreviewNewProblem, TextEditor, CodeEditor, ColorLabel },
 
@@ -224,9 +227,6 @@ export default {
     ...mapState({
       role: state => state.auth.role,
     }),
-    courseId() {
-      return this.$route.params.id
-    },
   },
 
   data: () => ({
@@ -239,12 +239,7 @@ export default {
     willRemoveAttachments: [],
     fileUploader: [],
     TEACHER,
-    canWriteCourse: null,
   }),
-
-  async created() {
-    this.canWriteCourse = await this.$hasPermission('course', this.courseId, ['w'])
-  },
 
   methods: {
     submit() {

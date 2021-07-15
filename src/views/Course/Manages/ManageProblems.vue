@@ -16,9 +16,12 @@ import { mapActions, mapGetters, mapState } from 'vuex'
 import { GetterTypes } from '@/store/getter-types'
 import { ActionTypes } from '@/store/action-types'
 import agent from '@/api/agent'
+import { canWriteCourseMixin } from '@/lib/permissionMixin'
 
 export default {
   components: { ManageProblems },
+
+  mixins: [canWriteCourseMixin],
 
   computed: {
     ...mapState({
@@ -38,12 +41,10 @@ export default {
 
   data: () => ({
     isWaiting: true,
-    canWriteCourse: null,
   }),
 
   async created() {
     this.fetchData()
-    this.canWriteCourse = await this.$hasPermission('course', this.courseId, ['w'])
   },
 
   methods: {

@@ -18,20 +18,20 @@
           <tbody>
             <template v-if="$isSelf(user.username) || role === 0">
               <tr>
-                <td class="font-weight-bold">學校</td>
+                <td class="font-weight-medium">學校</td>
                 <td style="width: 70%">{{ school }}</td>
               </tr>
               <tr>
-                <td class="font-weight-bold">使用者名稱</td>
+                <td class="font-weight-medium">使用者名稱</td>
                 <td style="width: 70%">{{ user.username }}</td>
               </tr>
               <tr>
-                <td class="font-weight-bold">Email</td>
+                <td class="font-weight-medium">Email</td>
                 <td style="width: 70%">{{ user.email }}</td>
               </tr>
             </template>
             <tr>
-              <td class="font-weight-bold">顯示名稱</td>
+              <td class="font-weight-medium">顯示名稱</td>
               <td style="width: 70%">{{ user.displayName }}</td>
             </tr>
           </tbody>
@@ -49,15 +49,15 @@
     <div v-else class="mt-4 d-flex justify-space-around flex-wrap">
       <div class="d-flex flex-column align-center">
         <div class="text-h6">累積主題</div>
-        <div class="font-weight-thin text-h1">{{ stats.problems.length }}</div>
+        <div class="display-amount">{{ stats.problems.length }}</div>
       </div>
       <div class="d-flex flex-column align-center">
         <div class="text-h6">累積創作</div>
-        <div class="font-weight-thin text-h1">{{ stats.comments.length }}</div>
+        <div class="display-amount">{{ stats.comments.length }}</div>
       </div>
       <div class="d-flex flex-column align-center">
         <div class="text-h6">獲得愛心</div>
-        <div class="font-weight-thin text-h1">{{ totalLikedAmount }}</div>
+        <div class="display-amount">{{ totalLikedAmount }}</div>
       </div>
     </div>
     <div class="text-h5 mt-8" v-if="$isSelf(user.username)">更改信箱或密碼</div>
@@ -111,8 +111,7 @@
 import Spinner from '@/components/UI/Spinner'
 import Gravatar from '@/components/UI/Gravatar'
 import agent from '@/api/agent'
-import { mapGetters } from 'vuex'
-import { GetterTypes } from '@/store/getter-types'
+import { mapState } from 'vuex'
 
 export default {
   props: {
@@ -171,8 +170,8 @@ export default {
         this.isEmailValidating
       )
     },
-    ...mapGetters({
-      role: GetterTypes.ROLE,
+    ...mapState({
+      role: state => state.auth.role,
     }),
   },
 

@@ -10,10 +10,6 @@ import agent from '@/api/agent'
 const state = { ...initialState }
 
 const getters = <GetterTree<State, RootState>>{
-  // state is only allow to be accessed by getter in pure .js logic
-  [GetterTypes.ROLE](state) {
-    return state.role
-  },
   [GetterTypes.USERNAME](state) {
     return state.username
   },
@@ -49,7 +45,10 @@ const actions = <ActionTree<State, RootState>>{
    * get jwt with checking whether token is valid or not
    */
   async [ActionTypes.GET_JWT]({ commit }) {
-    if (!getJwt()) return
+    if (!getJwt()) {
+      commit(MutationTypes.SET_IS_VISITOR)
+      return
+    }
     try {
       await agent.Auth.checkToken()
       commit(MutationTypes.SET_JWT)
@@ -78,6 +77,9 @@ const mutations = <MutationTree<State>>{
    */
   [MutationTypes.SET_IS_SHOW_LOGOUT_MODAL](state, payload: boolean) {
     state.isShowLogoutModal = payload
+  },
+  [MutationTypes.SET_IS_VISITOR](state) {
+    state.role = 3
   },
 }
 

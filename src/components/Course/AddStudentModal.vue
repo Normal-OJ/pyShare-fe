@@ -48,14 +48,14 @@
                   送出
                 </v-btn>
               </div>
-              <div class="text-body-1 font-weight-bold mt-4 mb-1">檔案格式說明</div>
+              <div class="text-body-1 font-weight-medium mt-4 mb-1">檔案格式說明</div>
               <div class="text-body-2">
                 您可以上傳一個以 <strong>utf-8</strong> 編碼的 csv 檔案（逗號分隔檔案）。
                 <br />
                 其中第一列為標題列，接下來每一列皆為一位學生的基本帳號資料，詳見以下說明，最下方亦有範例可以參考。
               </div>
 
-              <div class="text-body-1 font-weight-bold mt-4 mb-1">
+              <div class="text-body-1 font-weight-medium mt-4 mb-1">
                 標題列（第一列）
               </div>
               <div class="text-body-2">
@@ -77,7 +77,7 @@
                 <code>password</code> 支援修改。
               </div>
 
-              <div class="text-body-1 font-weight-bold mt-4 mb-1">
+              <div class="text-body-1 font-weight-medium mt-4 mb-1">
                 學生資料列（第二列以後）
               </div>
               <div class="text-body-2">
@@ -89,7 +89,7 @@
                 反之，若已存在於系統，將會忽略其他兩個欄位的資料，然後將該使用者加入此課程。
               </div>
 
-              <div class="text-body-1 font-weight-bold mt-4 mb-1">
+              <div class="text-body-1 font-weight-medium mt-4 mb-1">
                 school 欄位可使用的值
               </div>
               <div class="text-body-2">
@@ -109,7 +109,7 @@
                 </v-menu>
               </div>
 
-              <div class="text-body-1 font-weight-bold mt-4 mb-1">
+              <div class="text-body-1 font-weight-medium mt-4 mb-1">
                 範例
               </div>
               <PreviewCSV :data="template" />

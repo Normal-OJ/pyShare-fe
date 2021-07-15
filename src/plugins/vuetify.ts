@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import Vuetify from 'vuetify/lib'
+import Vuetify from 'vuetify/lib/framework'
 import zhHant from 'vuetify/src/locale/zh-Hant'
 
 import colors from 'vuetify/lib/util/colors'

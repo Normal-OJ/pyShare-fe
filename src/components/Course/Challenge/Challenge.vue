@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="text-h4 font-weight-bold text-center">{{ prob.title }}</div>
+    <div class="text-h4 font-weight-medium text-center">{{ prob.title }}</div>
     <div class="d-flex flex-row mt-4">
       <Gravatar class="mr-2" :size="48" :md5="prob.author.md5" />
       <div class="d-flex flex-column">
@@ -15,8 +15,7 @@
       <v-tooltip bottom>
         <template v-slot:activator="{ on, attrs }">
           <v-btn
-            v-show="!isPreview"
-            v-role="[0, 1]"
+            v-if="!isPreview && canCopyProblem"
             outlined
             color="primary darken-2"
             class="rounded mr-2"
@@ -111,6 +110,11 @@ export default {
 
   data: () => ({
     dialog: false,
+    canCopyProblem: null,
   }),
+
+  async created() {
+    this.canCopyProblem = await this.$hasPermission('problem', this.prob.pid, ['c'])
+  },
 }
 </script>

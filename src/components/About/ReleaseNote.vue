@@ -13,7 +13,7 @@
         <div v-for="{ tag, name, content, time, sha } in data" :key="tag" class="mt-4">
           <div class="d-flex flex-column">
             <div class="d-flex align-baseline" style="white-space: pre">
-              <div class="text-h5 font-weight-bold">{{ tag }}</div>
+              <div class="text-h5 font-weight-medium">{{ tag }}</div>
               <div class="text-caption">&nbsp;({{ sha }})&nbsp;</div>
               <div class="text-h6">{{ name }} &nbsp;{{ time }}</div>
             </div>
@@ -22,7 +22,7 @@
               :key="index"
               class="ml-8 my-1 d-flex align-center"
             >
-              <v-chip :color="typeColor[type]" label small class="mr-2 font-weight-bold">
+              <v-chip :color="typeColor[type]" label small class="mr-2 font-weight-medium">
                 {{ type }}
               </v-chip>
               {{ text }}

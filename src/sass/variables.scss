@@ -1,24 +1,6 @@
-// Import Lato for numeric & alphabets
-@font-face {
-  font-family: 'pyShare';
-  src: url('https://fonts.googleapis.com/css2?family=Lato:wght@100;300;400;700;900&display=swap');
-  unicode-range: U+00-024F;
-}
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@100;300;400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400&display=swap');
 
-// Import Noto Sans TC for Chinese
-@font-face {
-  font-family: 'pyShare';
-  src: url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@100;300;400;700;900&display=swap');
-  unicode-range: U+4E00-9FFF;
-}
+$body-font-family: 'Noto Sans TC', sans-serif;
 
-// Override font family
-$body-font-family: 'pyShare', sans-serif;
-$heading-font-family: $body-font-family;
-
-// TODO: resolve Failed to decode downloaded fonts
-
-// Import Vuetify SASS Variables to override data-table's variable based on $headings
-@import '~vuetify/src/styles/styles.sass';
-
-$data-table-regular-header-font-size: map-deep-get($headings, 'subtitle-2', 'size') !default;
+$data-table-regular-header-font-size: 0.875rem !default;

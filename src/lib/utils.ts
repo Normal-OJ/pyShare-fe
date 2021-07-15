@@ -2,6 +2,7 @@ import Vue from 'vue'
 import store from '@/store'
 import { GetterTypes } from '@/store/getter-types'
 import { ActionTypes } from '@/store/action-types'
+import { VueConstructor } from 'vue/types/umd'
 
 const isSelf = (name: string) => {
   const username = store.getters && store.getters[GetterTypes.USERNAME]
@@ -9,7 +10,7 @@ const isSelf = (name: string) => {
   return name === username
 }
 
-const hasPermission = async (
+export const hasPermission = async (
   resource: 'course' | 'problem' | 'comment',
   id: Course.ID | Problem.ID | _Comment.ID,
   requirement: string[],
@@ -27,7 +28,7 @@ const hasPermission = async (
   }
 }
 
-const alertSuccess = (text: string) => {
+export const alertSuccess = (text: string) => {
   Vue.notify({
     group: 'alert',
     type: 'my-success',
@@ -35,7 +36,7 @@ const alertSuccess = (text: string) => {
   })
 }
 
-const alertFail = (text: string) => {
+export const alertFail = (text: string) => {
   Vue.notify({
     group: 'alert',
     type: 'my-error',
@@ -44,7 +45,7 @@ const alertFail = (text: string) => {
 }
 
 export const utilsPlugin = {
-  install(Vue) {
+  install(Vue: VueConstructor) {
     Vue.prototype.$isSelf = isSelf
     Vue.prototype.$hasPermission = hasPermission
     Vue.prototype.$alertSuccess = alertSuccess

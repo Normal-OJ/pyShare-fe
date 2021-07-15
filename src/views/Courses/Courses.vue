@@ -3,7 +3,7 @@
     <v-row>
       <div class="text-h5">課程列表</div>
       <v-spacer />
-      <CreateCourseModal v-role="[TEACHER, ADMIN]" @submit="submitCreateCourse" />
+      <CreateCourseModal v-if="canCreateCourse" @submit="submitCreateCourse" />
     </v-row>
 
     <div class="text-h6 mt-8">已加入的課程</div>
@@ -17,24 +17,28 @@
 <script>
 import CourseList from '@/components/Courses/CourseList'
 import CreateCourseModal from '@/components/Courses/CreateCourseModal'
-import { mapActions, mapGetters } from 'vuex'
+import { mapActions, mapGetters, mapState } from 'vuex'
 import { ActionTypes } from '@/store/action-types'
 import agent from '@/api/agent'
 import { ROLE } from '@/constants/auth'
 import { COURSE_STATE } from '@/constants/course'
 import { GetterTypes } from '@/store/getter-types'
 
-const { TEACHER, ADMIN } = ROLE
-
 export default {
   components: { CourseList, CreateCourseModal },
 
   computed: {
+    ...mapState({
+      role: state => state.auth.role,
+    }),
     ...mapGetters({
       teachingCourses: GetterTypes.TEACHING_COURSES,
       enrolledCourses: GetterTypes.ENROLLED_COURSES,
       otherCourses: GetterTypes.OTHER_COURSES,
     }),
+    canCreateCourse() {
+      return [ROLE.TEACHER, ROLE.ADMIN].includes(this.role)
+    },
     joinedCourses() {
       return [
         ...this.teachingCourses.map(course => ({
@@ -57,8 +61,6 @@ export default {
 
   data: () => ({
     isWaitingCourseList: true,
-    TEACHER,
-    ADMIN,
   }),
 
   created() {

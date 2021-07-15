@@ -3,8 +3,6 @@
 // Override font family
 $body-font-family: 'Noto Sans TC', sans-serif;
 
-// TODO: resolve Failed to decode downloaded fonts
-
 // Import Vuetify SASS Variables to override data-table's variable based on $headings
 @import '~vuetify/src/styles/styles.sass';
 

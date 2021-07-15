@@ -5,7 +5,7 @@
     </v-row>
     <Spinner v-if="!dataset" />
     <template v-else>
-      <div class="text-h4 font-weight-bold text-center" v-text="dataset.title" />
+      <div class="text-h4 font-weight-medium text-center" v-text="dataset.title" />
       <v-row class="mt-6">
         <v-col cols="12" md="8">
           <div class="text-h6">資料集說明</div>

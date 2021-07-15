@@ -18,20 +18,20 @@
           <tbody>
             <template v-if="$isSelf(user.username) || role === 0">
               <tr>
-                <td class="font-weight-bold">學校</td>
+                <td class="font-weight-medium">學校</td>
                 <td style="width: 70%">{{ school }}</td>
               </tr>
               <tr>
-                <td class="font-weight-bold">使用者名稱</td>
+                <td class="font-weight-medium">使用者名稱</td>
                 <td style="width: 70%">{{ user.username }}</td>
               </tr>
               <tr>
-                <td class="font-weight-bold">Email</td>
+                <td class="font-weight-medium">Email</td>
                 <td style="width: 70%">{{ user.email }}</td>
               </tr>
             </template>
             <tr>
-              <td class="font-weight-bold">顯示名稱</td>
+              <td class="font-weight-medium">顯示名稱</td>
               <td style="width: 70%">{{ user.displayName }}</td>
             </tr>
           </tbody>
@@ -112,7 +112,6 @@ import Spinner from '@/components/UI/Spinner'
 import Gravatar from '@/components/UI/Gravatar'
 import agent from '@/api/agent'
 import { mapState } from 'vuex'
-import { GetterTypes } from '@/store/getter-types'
 
 export default {
   props: {

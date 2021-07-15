@@ -10,19 +10,19 @@
         <template v-slot:default>
           <tbody>
             <tr>
-              <td class="font-weight-bold">課程名稱</td>
+              <td class="font-weight-medium">課程名稱</td>
               <td>{{ info.name }}</td>
             </tr>
             <tr>
-              <td class="font-weight-bold">學期</td>
+              <td class="font-weight-medium">學期</td>
               <td>{{ `${info.year}-${info.semester}` }}</td>
             </tr>
             <tr>
-              <td class="font-weight-bold">教師</td>
+              <td class="font-weight-medium">教師</td>
               <td>{{ info.teacher.displayName }}</td>
             </tr>
             <tr>
-              <td class="font-weight-bold">課程狀態</td>
+              <td class="font-weight-medium">課程狀態</td>
               <td>
                 {{ COURSE_STATUS_LABEL[`${info.status}`] }}
                 <v-tooltip right>
@@ -44,7 +44,7 @@
               </td>
             </tr>
             <tr>
-              <td class="font-weight-bold">課程簡介</td>
+              <td class="font-weight-medium">課程簡介</td>
               <td style="width: 85%">{{ info.description }}</td>
             </tr>
           </tbody>

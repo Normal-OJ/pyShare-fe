@@ -2,7 +2,7 @@
   <v-app-bar app color="primary" height="56" elevate-on-scroll>
     <v-btn text class="text-body-1 text-none py-0 px-1 mr-2" :to="{ name: 'home' }" color="primary">
       <v-img class="mr-2" :src="require('@/assets/images/logo.png')" max-width="32" />
-      <v-toolbar-title style="color: white;" class="font-weight-bold">
+      <v-toolbar-title style="color: white;" class="font-weight-medium">
         Python 創作分享平台
       </v-toolbar-title>
     </v-btn>
@@ -13,7 +13,7 @@
           :key="label"
           :to="route"
           v-if="show"
-          class="text-body-1 font-weight-bold"
+          class="text-body-1 font-weight-medium"
           color="white"
           text
         >
@@ -41,7 +41,7 @@
     <v-menu offset-y v-if="isLogin">
       <template v-slot:activator="{ on, attrs }">
         <v-btn
-          class="text-body-1 font-weight-bold text-none"
+          class="text-body-1 font-weight-medium text-none"
           color="white"
           text
           v-bind="attrs"
@@ -60,7 +60,7 @@
     <v-btn
       v-else
       :to="{ name: 'login' }"
-      class="text-body-1 font-weight-bold"
+      class="text-body-1 font-weight-medium"
       dark
       text
       data-test="loginBtn"

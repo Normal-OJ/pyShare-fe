@@ -30,7 +30,7 @@
                 </template>
                 <v-card class="px-8 pb-4">
                   <v-card-title>
-                    {{ $formattedTime(timestamp) }}
+                    <div>{{ $formattedTime(timestamp) }}</div>
                     <v-spacer />
                     <v-btn icon @click="$set(dialog, index, false)"
                       ><v-icon>mdi-close</v-icon></v-btn

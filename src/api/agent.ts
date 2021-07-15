@@ -52,6 +52,9 @@ const Course = {
   getStats: (id: Course.ID): PysharePromise<Course.IStudentStats[]> =>
     Vue.axios.get(`/course/${id}/statistic`),
 
+  getOJStats: (id: Course.ID, pids: Problem.ID[]): PysharePromise<Course.IOJStats> =>
+    Vue.axios.get(`/course/${id}/statistic/oj-problem`, { params: { pids } }),
+
   getPermission: (id: Course.ID): PysharePromise<string[]> =>
     Vue.axios.get(`/course/${id}/permission`),
 }

@@ -19,6 +19,24 @@
             outlined
             color="primary darken-2"
             class="rounded mr-2"
+            :to="{ name: 'courseChallengesStats' }"
+            icon
+            v-on="on"
+            v-bind="attrs"
+          >
+            <v-icon>mdi-chart-bar</v-icon>
+          </v-btn>
+        </template>
+        <span>作答情形</span>
+      </v-tooltip>
+      <v-tooltip bottom>
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn
+            v-show="!isPreview"
+            v-role="[0, 1]"
+            outlined
+            color="primary darken-2"
+            class="rounded mr-2"
             icon
             v-on="on"
             v-bind="attrs"
@@ -50,23 +68,6 @@
         </template>
         <span>編輯測驗</span>
       </v-tooltip>
-      <!-- <v-tooltip bottom>
-        <template v-slot:activator="{ on, attrs }">
-          <v-btn
-            v-show="!isPreview && $isSelf(prob.author.username)"
-            outlined
-            color="primary darken-2"
-            class="align-self-end rounded ml-3"
-            :to="{ name: 'courseChallengeStats' }"
-            icon
-            v-on="on"
-            v-bind="attrs"
-          >
-            <v-icon>mdi-chart-bar</v-icon>
-          </v-btn>
-        </template>
-        <span>作答情形</span>
-      </v-tooltip> -->
     </div>
     <v-row class="mt-6">
       <v-col cols="12" md="8">

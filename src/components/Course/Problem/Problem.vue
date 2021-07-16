@@ -12,10 +12,9 @@
         </div>
       </div>
       <v-spacer />
-      <v-tooltip bottom>
+      <v-tooltip bottom v-if="!isPreview && canCopyProblem">
         <template v-slot:activator="{ on, attrs }">
           <v-btn
-            v-if="!isPreview && canCopyProblem"
             outlined
             color="primary darken-2"
             class="rounded mr-2"
@@ -29,10 +28,9 @@
         </template>
         <span>複製主題</span>
       </v-tooltip>
-      <v-tooltip bottom>
+      <v-tooltip bottom v-if="!isPreview && $isSelf(prob.author.username)">
         <template v-slot:activator="{ on, attrs }">
           <v-btn
-            v-show="!isPreview && $isSelf(prob.author.username)"
             outlined
             color="primary darken-2"
             class="rounded"

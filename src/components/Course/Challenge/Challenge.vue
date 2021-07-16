@@ -12,10 +12,10 @@
         </div>
       </div>
       <v-spacer />
-      <v-tooltip bottom>
+      <!-- <v-tooltip bottom>
         <template v-slot:activator="{ on, attrs }">
           <v-btn
-            v-if="!isPreview && canCopyProblem"
+            v-if="!isPreview"
             outlined
             color="primary darken-2"
             class="rounded mr-2"
@@ -28,12 +28,10 @@
           </v-btn>
         </template>
         <span>作答情形</span>
-      </v-tooltip>
-      <v-tooltip bottom>
+      </v-tooltip> -->
+      <v-tooltip bottom v-if="!isPreview && canCopyProblem">
         <template v-slot:activator="{ on, attrs }">
           <v-btn
-            v-show="!isPreview"
-            v-role="[0, 1]"
             outlined
             color="primary darken-2"
             class="rounded mr-2"
@@ -47,10 +45,9 @@
         </template>
         <span>複製測驗</span>
       </v-tooltip>
-      <v-tooltip bottom>
+      <v-tooltip bottom v-if="!isPreview && $isSelf(prob.author.username)">
         <template v-slot:activator="{ on, attrs }">
           <v-btn
-            v-show="!isPreview && $isSelf(prob.author.username)"
             outlined
             color="primary darken-2"
             class="rounded"
@@ -106,6 +103,7 @@ export default {
       default: false,
     },
   },
+
   components: { ColorLabel, Gravatar, CloneProblemModal },
 
   data: () => ({

@@ -84,7 +84,7 @@
         </v-list-item-content>
       </v-list-item>
 
-      <v-list-item :to="{ name: 'courseManages' }" color="primary">
+      <v-list-item v-if="canWriteCourse" :to="{ name: 'courseManages' }" color="primary">
         <v-list-item-icon>
           <v-icon>mdi-settings</v-icon>
         </v-list-item-icon>
@@ -148,9 +148,6 @@ export default {
       problems: GetterTypes.PROBLEMS,
       challenges: GetterTypes.CHALLENGES,
     }),
-    items() {
-      return this.links.slice(0, this.canWriteCourse ? 2 : 1)
-    },
   },
 
   data: () => ({

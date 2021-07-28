@@ -32,13 +32,7 @@
                     </v-icon>
                   </template>
                   <span>
-                    {{
-                      [
-                        '僅課程內成員可使用此課程',
-                        '任何人皆可檢視內容',
-                        '任何人皆可在此課程進行創作',
-                      ][info.status]
-                    }}
+                    {{ STATUS_DESCRIPTION[`${info.status}`] }}
                   </span>
                 </v-tooltip>
               </td>
@@ -78,9 +72,15 @@
 <script>
 import EditCourseModal from './EditCourseModal'
 import Members from '@/components/Course/Info/Members'
-import { COURSE_STATUS_LABEL } from '@/constants/course'
+import { COURSE_STATUS_LABEL, STATUS_OPTIONS } from '@/constants/course'
 import Spinner from '@/components/UI/Spinner'
 import { canWriteCourseMixin, canParticipateCourseMixin } from '@/lib/permissionMixin'
+
+const STATUS_DESCRIPTION = Object.fromEntries(
+  STATUS_OPTIONS.map(option => {
+    return [`${option.status}`, option.subtitle]
+  }),
+)
 
 export default {
   name: 'Info',
@@ -97,6 +97,7 @@ export default {
 
   data: () => ({
     COURSE_STATUS_LABEL,
+    STATUS_DESCRIPTION,
   }),
 
   computed: {

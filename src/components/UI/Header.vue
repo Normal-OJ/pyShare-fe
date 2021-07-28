@@ -52,7 +52,10 @@
         </v-btn>
       </template>
       <v-list>
-        <v-list-item link @click="$emit('logout')" data-test="logoutBtn">
+        <v-list-item link :to="{ name: 'profile', params: { id } }">
+          <v-list-item-title class="text-center">個人頁面</v-list-item-title>
+        </v-list-item>
+        <v-list-item link @click="handleLogout" data-test="logoutBtn">
           <v-list-item-title class="text-center">登出</v-list-item-title>
         </v-list-item>
       </v-list>
@@ -67,6 +70,7 @@
     >
       登入
     </v-btn>
+
     <Popup
       :isShow="isShowLogoutModal"
       title="連線階段已過期，請再次登入"
@@ -106,11 +110,6 @@ export default {
           show: [ROLE.ADMIN, ROLE.TEACHER, ROLE.STUDENT].includes(this.role),
         },
         {
-          label: '個人頁面',
-          route: this.isLogin ? { name: 'profile', params: { id: this.id } } : { path: '/profile' },
-          show: true,
-        },
-        {
           label: '管理員介面',
           route: { path: '/admin' },
           show: [ROLE.ADMIN].includes(this.role),
@@ -127,6 +126,11 @@ export default {
   methods: {
     handleClosePopup() {
       this.$emit('logout')
+    },
+    handleLogout() {
+      if (confirm('確認是否要登出？')) {
+        this.$emit('logout')
+      }
     },
   },
 }

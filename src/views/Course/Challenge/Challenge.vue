@@ -3,19 +3,29 @@
     <Spinner v-if="isLoading" />
     <div class="pa-4" v-else>
       <Challenge v-if="prob" :prob="prob" />
-      <ChallengeCode
-        class="mt-16"
-        :comment="comment"
-        :defaultCode="prob.defaultCode"
-        :testResult="testResult"
-        :isTestSubmissionPending="isTestSubmissionPending"
-        @submit-test-submission="submitTestSubmission"
-        @submit-new-submission="submitNewSubmission"
-      />
-      <div class="mt-8 mb-14">
-        <h4>歷史紀錄</h4>
-        <ChallengeHistory :comment="comment" />
-      </div>
+      <template v-if="canParticipateCourse">
+        <ChallengeCode
+          class="mt-16"
+          :comment="comment"
+          :defaultCode="prob.defaultCode"
+          :testResult="testResult"
+          :isTestSubmissionPending="isTestSubmissionPending"
+          @submit-test-submission="submitTestSubmission"
+          @submit-new-submission="submitNewSubmission"
+        />
+        <div class="mt-8 mb-14">
+          <h4>歷史紀錄</h4>
+          <ChallengeHistory :comment="comment" />
+        </div>
+      </template>
+      <template v-else>
+        <div class="d-flex flex-column align-center" :key="slotName">
+          <div class="text-subtitle-1 gray--text my-8">
+            由於您不在這堂課程內，且此課程並非公開課程，您僅能檢視題目而無法提交程式。
+          </div>
+          <v-img :src="require('@/assets/images/warning.svg')" max-width="400" contain />
+        </div>
+      </template>
     </div>
   </v-fade-transition>
 </template>
@@ -29,9 +39,11 @@ import agent from '@/api/agent'
 import { mapState, mapGetters, mapActions } from 'vuex'
 import { ActionTypes } from '@/store/action-types'
 import { GetterTypes } from '@/store/getter-types'
+import { canParticipateCourseMixin } from '@/lib/permissionMixin'
 
 export default {
   components: { Spinner, Challenge, ChallengeCode, ChallengeHistory },
+  mixins: [canParticipateCourseMixin],
   data: () => ({
     isLoading: true,
     testSubmissionId: null,

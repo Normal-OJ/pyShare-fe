@@ -234,7 +234,7 @@ const routes: RouteConfig[] = [
     component: () => import('@/views/About/About.vue'),
     meta: {
       isAllowGuest: true,
-      title: () => '登入',
+      title: () => '關於平台',
     },
   },
 ]

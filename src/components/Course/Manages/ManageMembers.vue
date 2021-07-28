@@ -45,7 +45,7 @@
       class="table"
       @click:row="handleRowClick"
     >
-      <template v-slot:item="{ item, isSelected, select }">
+      <template v-slot:item.data-table-select="{ item, isSelected, select }">
         <v-simple-checkbox
           v-if="item.role !== '教師'"
           :value="isSelected"

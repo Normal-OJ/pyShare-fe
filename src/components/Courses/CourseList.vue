@@ -33,6 +33,7 @@
     </template>
     <template v-slot:[`item.teacher`]="{ item }">
       <router-link :to="{ name: 'profile', params: { id: item.teacher.id } }">
+        <Gravatar :md5="item.teacher.md5" :size="20" class="mr-1" />
         {{ item.teacher.displayName }}
       </router-link>
     </template>
@@ -41,6 +42,7 @@
 
 <script>
 import { mapState } from 'vuex'
+import Gravatar from '@/components/UI/Gravatar.vue'
 
 const headers = [
   { text: '課程', value: 'name', width: '40%' },
@@ -56,6 +58,8 @@ const permissionText = {
 }
 export default {
   name: 'CourseList',
+
+  components: { Gravatar },
 
   props: {
     data: {

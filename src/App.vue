@@ -48,6 +48,10 @@ export default {
 </script>
 
 <style>
+a {
+  text-decoration-line: none;
+  color: var(--v-primary-base);
+}
 .display-amount {
   font-family: 'Montserrat';
   font-size: 6rem;

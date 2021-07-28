@@ -1,5 +1,5 @@
 <template>
-  <div v-if="!isLoading">
+  <div>
     <v-simple-table>
       <template v-slot:default>
         <thead>
@@ -9,7 +9,7 @@
             <th>程式與運行結果</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody v-if="!isLoading">
           <tr
             v-for="({ timestamp, judge_result, code, stderr, stdout }, index) in submissions"
             :key="timestamp"
@@ -47,7 +47,11 @@
               </v-dialog>
             </td>
           </tr>
+          <tr v-if="submissions.length === 0">
+            <td colspan="3">尚無繳交紀錄</td>
+          </tr>
         </tbody>
+        <Spinner v-else />
       </template>
     </v-simple-table>
   </div>
@@ -108,10 +112,10 @@ export default {
               id: this.comment.submissions[idx],
             }))
             this.isSubmissionPending = this.submissions.some(s => s.judge_result === undefined)
-            this.isLoading = false
           })
           this.dialog = new Array(this.comment.submissions.length).fill(false)
         }
+        this.isLoading = false
       },
       immediate: true,
       deep: true,

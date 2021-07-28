@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import VueCookie from 'vue-cookie'
 import Rollbar from 'rollbar'
-import { hasPermission } from './lib/utils'
+import { hasPermission, alertSuccess, alertFail } from './lib/utils'
 
 // untyped 3rd party module
 declare module 'vue-cookie'

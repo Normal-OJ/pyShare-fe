@@ -1,7 +1,7 @@
 <template>
   <v-container fluid class="d-flex flex-column mt-4">
-    <div class="d-flex align-center">
-      <v-col cols="10" md="6" class="d-flex">
+    <v-row>
+      <v-col cols="auto">
         <v-text-field
           v-model="searchText"
           label="快速搜尋"
@@ -13,13 +13,15 @@
         />
       </v-col>
       <v-spacer />
-      <template v-if="canWriteCourse">
-        <v-btn color="primary" :to="{ name: 'courseManageMembers' }" class="mr-3" outlined>
-          管理課程成員
-        </v-btn>
-        <AddStudentModal />
-      </template>
-    </div>
+      <v-col cols="auto">
+        <template v-if="canWriteCourse">
+          <v-btn color="primary" :to="{ name: 'courseManageMembers' }" class="mr-3" outlined>
+            管理課程成員
+          </v-btn>
+          <AddStudentModal @success="getCourseInfo($route.params.id)" />
+        </template>
+      </v-col>
+    </v-row>
 
     <v-data-table
       :headers="headers"
@@ -43,6 +45,8 @@
 
 <script>
 import AddStudentModal from '@/components/Course/AddStudentModal'
+import { ActionTypes } from '@/store/action-types'
+import { mapActions } from 'vuex'
 import { ROLE } from '@/constants/auth'
 import { canWriteCourseMixin } from '@/lib/permissionMixin'
 
@@ -80,6 +84,9 @@ export default {
       const route = this.$router.resolve({ name: 'profile', params: { id: value.id } })
       window.open(route.href, '_blank')
     },
+    ...mapActions({
+      getCourseInfo: ActionTypes.GET_COURSE_INFO,
+    }),
   },
 }
 </script>

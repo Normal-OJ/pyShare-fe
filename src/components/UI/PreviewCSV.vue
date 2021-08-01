@@ -1,36 +1,57 @@
 <template>
-  <!-- TODO -->
-  <!-- ADD -->
-  <!-- SEARCH -->
-  <!-- FEATURE -->
-  <v-simple-table>
-    <template v-slot:default>
-      <tbody>
-        <!-- TODO: is it needed to show (preview) the entire csv file? -->
-        <tr v-for="(row, idx) in csvFile" :key="idx">
-          <td v-for="(data, idx2) in row" :key="idx2">{{ data }}</td>
-        </tr>
-      </tbody>
-    </template>
-  </v-simple-table>
+  <v-data-table
+    v-if="headers"
+    :headers="headers"
+    :items="items"
+    :search="searchText"
+    :items-per-page="Number(-1)"
+    hide-default-footer
+  />
+  <pre v-else>
+    {{ errors }}
+  </pre>
 </template>
 
 <script>
+import Papa from 'papaparse'
+
 export default {
   props: {
-    type: {
-      type: String,
-      default: 'string',
-    },
     data: {
       required: true,
     },
   },
-
-  computed: {
-    csvFile() {
-      if (this.type === 'array') return this.data
-      return this.data.split('\n').map(row => row.split(','))
+  data: () => ({
+    headers: null,
+    items: null,
+    searchText: '',
+    errors: '',
+  }),
+  watch: {
+    data: {
+      handler() {
+        if (!this.data) {
+          this.headers = null
+          return
+        }
+        Papa.parse(this.data, {
+          header: true,
+          complete: results => {
+            console.log(results)
+            this.headers = results.meta.fields.map(col => ({
+              text: col,
+              value: col,
+            }))
+            this.items = results.data
+          },
+          error: errors => {
+            this.headers = null
+            this.errors = JSON.stringify(errors, null, 2)
+            console.log(errors)
+          },
+        })
+      },
+      immediate: true,
     },
   },
 }

@@ -10,13 +10,14 @@
   </v-app>
 </template>
 
-<script>
-import Header from '@/components/UI/Header'
-import Notification from '@/components/UI/Notification'
+<script lang="ts">
+import Vue from 'vue'
+import Header from '@/components/UI/Header.vue'
+import Notification from '@/components/UI/Notification.vue'
 import { mapActions } from 'vuex'
 import { ActionTypes } from './store/action-types'
 
-export default {
+export default Vue.extend({
   name: 'App',
 
   components: { Header, Notification },
@@ -44,7 +45,7 @@ export default {
       }
     },
   },
-}
+})
 </script>
 
 <style>

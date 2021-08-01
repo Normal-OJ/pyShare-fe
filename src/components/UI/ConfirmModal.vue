@@ -1,5 +1,5 @@
 <template>
-  <v-dialog :value="true" width="750">
+  <v-dialog :value="isOpen" width="750">
     <v-card>
       <v-card-title>
         <slot name="title" />
@@ -20,3 +20,14 @@
     </v-card>
   </v-dialog>
 </template>
+
+<script>
+export default {
+  props: {
+    isOpen: {
+      type: Boolean,
+      required: true,
+    },
+  },
+}
+</script>

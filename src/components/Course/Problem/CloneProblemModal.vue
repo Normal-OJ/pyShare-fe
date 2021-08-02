@@ -41,7 +41,6 @@
 <script>
 import { GetterTypes } from '@/store/getter-types'
 import { mapActions, mapGetters } from 'vuex'
-import agent from '@/api/agent'
 import { ActionTypes } from '@/store/action-types'
 
 export default {
@@ -85,7 +84,7 @@ export default {
     }),
     cloneProblem() {
       this.isLoading = true
-      agent.Problem.clone(this.clonePid, this.target, this.isTemplate)
+      this.$agent.Problem.clone(this.clonePid, this.target, this.isTemplate)
         .then(() => {
           this.$alertSuccess(`複製${this.label}成功`)
           this.onSuccess()

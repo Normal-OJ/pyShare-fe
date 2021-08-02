@@ -271,8 +271,6 @@
 </template>
 
 <script>
-import agent from '@/api/agent'
-
 export default {
   data: () => ({
     username: '',
@@ -303,7 +301,7 @@ export default {
   methods: {
     async getUser() {
       try {
-        const { data } = await agent.User.get(this.id)
+        const { data } = await this.$agent.User.get(this.id)
         this.username = data.data.username
         this.displayName = data.data.displayName
       } catch (error) {
@@ -313,7 +311,7 @@ export default {
     async getStats() {
       this.isNotFound = false
       try {
-        const { data } = await agent.User.getStats(this.id)
+        const { data } = await this.$agent.User.getStats(this.id)
         this.statistic = data.data
       } catch (error) {
         console.log('[views/Stats/getStats] error', error)

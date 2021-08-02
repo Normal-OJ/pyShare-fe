@@ -151,7 +151,6 @@
 
 <script>
 import { SCHOOLS } from '@/constants/auth'
-import agent from '@/api/agent'
 
 const initNewUserData = {
   school: '',
@@ -222,7 +221,7 @@ export default {
   },
 
   created() {
-    agent.School.getList()
+    this.$agent.School.getList()
       .then(resp => (this.schoolOptions = resp.data.data))
       .catch(error => {
         // 備援
@@ -230,7 +229,7 @@ export default {
         throw error
       })
       .finally(() => (this.isSchoolLoading = false))
-    agent.User.getList()
+    this.$agent.User.getList()
       .then(resp => (this.users = resp.data.data))
       .catch(error => {
         this.users = null
@@ -249,7 +248,7 @@ export default {
       }
       const csvString = `${csvHeader.join(',')}\n${csvContent.join(',')}`
       console.log(csvString)
-      agent.Auth.batchSignup({
+      this.$agent.Auth.batchSignup({
         csvString,
       })
         .then(() => {
@@ -263,7 +262,7 @@ export default {
         })
     },
     submitNewSchool() {
-      agent.School.createSchool(this.newSchoolForm.data)
+      this.$agent.School.createSchool(this.newSchoolForm.data)
         .then(() => {
           this.$alertSuccess('新增學校成功')
           this.newSchoolForm.data = { ...initNewSchoolData }

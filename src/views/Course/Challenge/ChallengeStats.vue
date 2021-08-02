@@ -5,7 +5,6 @@
 </template>
 
 <script>
-import agent from '@/api/agent'
 import { mapActions, mapGetters, mapState } from 'vuex'
 import { ActionTypes } from '@/store/action-types'
 import { GetterTypes } from '@/store/getter-types'
@@ -37,7 +36,7 @@ export default {
   methods: {
     async getProblem(pid) {
       try {
-        const { data } = await agent.Problem.get(pid)
+        const { data } = await this.$agent.Problem.get(pid)
         this.prob = data.data
         if (this.prob.extra._cls !== 'OJProblem') {
           throw new Error()

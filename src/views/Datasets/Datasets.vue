@@ -35,7 +35,6 @@
 </template>
 
 <script>
-import agent from '@/api/agent'
 import CreateDatasetModal from '@/components/Datasets/CreateDatasetModal'
 import Spinner from '@/components/UI/Spinner'
 
@@ -48,7 +47,7 @@ export default {
     datasets: null,
   }),
   mounted() {
-    agent.Dataset.getList().then(resp => (this.datasets = resp.data.data))
+    this.$agent.Dataset.getList().then(resp => (this.datasets = resp.data.data))
   },
   methods: {
     truncateDescription(description) {

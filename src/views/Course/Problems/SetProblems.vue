@@ -15,7 +15,6 @@
 import Spinner from '@/components/UI/Spinner'
 import SetProblems from '@/components/Course/Problems/SetProblems'
 import { mapState } from 'vuex'
-import agent from '@/api/agent'
 
 const OPERATION = {
   NEW: 'new',
@@ -66,7 +65,7 @@ export default {
   methods: {
     async getProblem(pid) {
       try {
-        const { data } = await agent.Problem.get(pid)
+        const { data } = await this.$agent.Problem.get(pid)
         this.prob = data.data
       } catch (error) {
         console.log('[views/SetProblems/getProblem] error', error)
@@ -78,9 +77,9 @@ export default {
         this.isLoading = true
         let result
         if (this.isEdit) {
-          result = await agent.Problem.update(this.pid, body)
+          result = await this.$agent.Problem.update(this.pid, body)
         } else {
-          result = await agent.Problem.create(body)
+          result = await this.$agent.Problem.create(body)
         }
         this.submitSuccess = true
         this.$alertSuccess(`${this.isEdit ? '更新' : '新增'}主題內容成功。`)
@@ -92,7 +91,7 @@ export default {
                 const formData = new FormData()
                 formData.append('attachment', file)
                 formData.append('attachmentName', file.name)
-                return agent.Problem.addAttachment(pid, formData)
+                return this.$agent.Problem.addAttachment(pid, formData)
               }),
             )
             this.$alertSuccess('新增主題附件成功。')
@@ -109,7 +108,7 @@ export default {
               willRemoveAttachments.map(filename => {
                 const formData = new FormData()
                 formData.append('attachmentName', filename)
-                return agent.Problem.removeAttachment(pid, formData)
+                return this.$agent.Problem.removeAttachment(pid, formData)
               }),
             )
             this.$alertSuccess('移除主題附件成功。')
@@ -144,7 +143,7 @@ export default {
     },
     async deleteProblem(pid) {
       try {
-        await agent.Problem.delete(pid)
+        await this.$agent.Problem.delete(pid)
         this.submitSuccess = true
         this.$alertSuccess('刪除題目成功。')
         this.$router.push({ name: 'courseProblems', params: { id: this.courseId } })

@@ -35,7 +35,6 @@ import Spinner from '@/components/UI/Spinner'
 import Challenge from '@/components/Course/Challenge/Challenge'
 import ChallengeCode from '@/components/Course/Challenge/ChallengeCode'
 import ChallengeHistory from '@/components/Course/Challenge/ChallengeHistory'
-import agent from '@/api/agent'
 import { mapState, mapGetters, mapActions } from 'vuex'
 import { ActionTypes } from '@/store/action-types'
 import { GetterTypes } from '@/store/getter-types'
@@ -92,7 +91,7 @@ export default {
   methods: {
     async getProblem(pid) {
       try {
-        const { data } = await agent.Problem.get(pid)
+        const { data } = await this.$agent.Problem.get(pid)
         this.prob = data.data
         if (this.prob.extra._cls !== 'OJProblem') {
           throw new Error()
@@ -109,17 +108,17 @@ export default {
       getComments: ActionTypes.GET_COMMENTS,
     }),
     fetchTestSubmission() {
-      agent.Submission.get(this.testSubmissionId).then(res => {
+      this.$agent.Submission.get(this.testSubmissionId).then(res => {
         this.testResult = res.data.data
       })
     },
     async submitTestSubmission(code) {
       const body = { problemId: this.pid, code }
       try {
-        const { data } = await agent.Submission.createTest(body)
+        const { data } = await this.$agent.Submission.createTest(body)
         const { submissionId } = data.data
         this.testSubmissionId = submissionId
-        agent.Submission.get(submissionId).then(res => {
+        this.$agent.Submission.get(submissionId).then(res => {
           this.testResult = res.data.data
         })
       } catch (error) {
@@ -130,7 +129,7 @@ export default {
     async submitNewSubmission(code) {
       if (this.comment) {
         try {
-          await agent.Comment.createSubmission(this.comment.id, { code })
+          await this.$agent.Comment.createSubmission(this.comment.id, { code })
           await this.getProblem(this.pid)
         } catch (error) {
           console.log('[views/Challenge/submitNewSubmission] error', error)
@@ -145,7 +144,7 @@ export default {
           code,
         }
         try {
-          await agent.Comment.create(body)
+          await this.$agent.Comment.create(body)
           await this.getProblem(this.pid)
         } catch (error) {
           console.log('[views/Challenge/submitNewSubmission(Comment)] error', error)

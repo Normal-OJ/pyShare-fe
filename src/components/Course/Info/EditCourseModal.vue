@@ -89,7 +89,6 @@
 <script>
 import { ActionTypes } from '@/store/action-types'
 import { YEARS, SEMESTERS, STATUS_OPTIONS } from '@/constants/course'
-import agent from '@/api/agent'
 
 export default {
   props: {
@@ -142,7 +141,7 @@ export default {
         this.isLoading = true
         const { name, year, semester, teacher, checkedOption, description } = this
         const body = { name, year, semester, teacher, status: checkedOption, description }
-        agent.Course.update(this.courseId, body)
+        this.$agent.Course.update(this.courseId, body)
           .then(() => {
             this.$store.dispatch(ActionTypes.GET_COURSE_INFO, this.courseId)
             this.dialog = false

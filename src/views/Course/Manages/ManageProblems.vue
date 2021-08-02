@@ -15,7 +15,6 @@ import ManageProblems from '@/components/Course/Manages/ManageProblems'
 import { mapActions, mapGetters, mapState } from 'vuex'
 import { GetterTypes } from '@/store/getter-types'
 import { ActionTypes } from '@/store/action-types'
-import agent from '@/api/agent'
 import { canWriteCourseMixin } from '@/lib/permissionMixin'
 
 export default {
@@ -62,7 +61,7 @@ export default {
     },
     async deleteProblem(pid) {
       try {
-        await agent.Problem.delete(pid)
+        await this.$agent.Problem.delete(pid)
         this.fetchData()
         this.$alertSuccess('刪除題目成功。')
       } catch (error) {

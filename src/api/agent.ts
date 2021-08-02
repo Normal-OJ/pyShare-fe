@@ -1,134 +1,156 @@
-import Vue from 'vue'
 import config from '@/constants/config'
-import { AxiosResponse } from 'axios'
+import store from '@/store'
+import { MutationTypes } from '@/store/mutation-types'
+import axios, { AxiosResponse } from 'axios'
+
+const instance = axios.create({
+  baseURL: config.API_BASE_URL,
+})
+
+instance.interceptors.response.use(
+  res => res,
+  error => {
+    if (error?.response) {
+      // catch Authorization Expired
+      if (
+        error.response?.data.message === 'Authorization Expired' ||
+        error.response?.data.message === 'Invalid Token'
+      ) {
+        store.commit(MutationTypes.SET_IS_SHOW_LOGOUT_MODAL, true)
+      }
+      throw error.response.data
+    }
+    throw error
+  },
+)
 
 // 因為後端在每個 response 裡面的 data 又塞了一個 data，
-// 所以這裡複寫 AxiosResponse 裡面的 data，改成 data: { data: <REAL_DATA> }
+// 所以這裡複寫 AxiosResponse 裡面的 data，改成 data: { data: <ACTUAL_DATA> }
 interface PyshareResponse<T = any> extends Omit<AxiosResponse<T>, 'data'> {
   data: {
-    data: T
+    data?: T
   }
 }
 
 interface PysharePromise<T = any> extends Promise<PyshareResponse<T>> {}
 
 const Auth = {
-  login: (body: Auth.ILoginBody) => Vue.axios.post('/auth/session', body),
+  login: (body: Auth.ILoginBody) => instance.post('/auth/session', body),
 
-  logout: () => Vue.axios.get('/auth/session'),
+  logout: () => instance.get('/auth/session'),
 
-  checkToken: () => Vue.axios.post('/auth/check/token'),
+  checkToken: () => instance.post('/auth/check/token'),
 
-  batchSignup: (body: Auth.IBatchSignupBody) => Vue.axios.post('/auth/batch-signup', body),
+  batchSignup: (body: Auth.IBatchSignupBody) => instance.post('/auth/batch-signup', body),
 
-  changePassword: (body: Auth.IChangePasswordBody) => Vue.axios.post('/auth/change/password', body),
+  changePassword: (body: Auth.IChangePasswordBody) => instance.post('/auth/change/password', body),
 
-  changeEmail: (body: Auth.IChangeEmailBody) => Vue.axios.post('/auth/change/email', body),
+  changeEmail: (body: Auth.IChangeEmailBody) => instance.post('/auth/change/email', body),
 
-  validateEmail: (body: Auth.IValidateEmailBody) => Vue.axios.post('/auth/check/email', body),
+  validateEmail: (body: Auth.IValidateEmailBody) => instance.post('/auth/check/email', body),
 }
 
 const Course = {
-  getList: (): PysharePromise<Partial<Course.IInfo>[]> => Vue.axios.get('/course'),
+  getList: (): PysharePromise<Partial<Course.IInfo>[]> => instance.get('/course'),
 
-  get: (id: Course.ID): PysharePromise<Course.IInfo> => Vue.axios.get(`/course/${id}`),
+  get: (id: Course.ID): PysharePromise<Course.IInfo> => instance.get(`/course/${id}`),
 
-  create: (body: Course.ICreateBody) => Vue.axios.post('/course', body),
+  create: (body: Course.ICreateBody) => instance.post('/course', body),
 
-  update: (id: Course.ID, body: Course.ICreateBody) => Vue.axios.put(`/course/${id}`, body),
+  update: (id: Course.ID, body: Course.ICreateBody) => instance.put(`/course/${id}`, body),
 
   // TODO: re-define delete api
-  // delete: id => Vue.axios.delete(`/course/${id}`),
+  // delete: id => instance.delete(`/course/${id}`),
 
   addStudent: (id: Course.ID, body: Course.IPatchStudentsBody) =>
-    Vue.axios.patch(`/course/${id}/student/insert`, body),
+    instance.patch(`/course/${id}/student/insert`, body),
 
   removeStudent: (id: Course.ID, body: Course.IPatchStudentsBody) =>
-    Vue.axios.patch(`/course/${id}/student/remove`, body),
+    instance.patch(`/course/${id}/student/remove`, body),
 
   patchTags: (id: Course.ID, body: Course.IPatchTagsBody) =>
-    Vue.axios.patch(`/course/${id}/tag`, body),
+    instance.patch(`/course/${id}/tag`, body),
 
   getStats: (id: Course.ID): PysharePromise<Course.IStudentStats[]> =>
-    Vue.axios.get(`/course/${id}/statistic`),
+    instance.get(`/course/${id}/statistic`),
 
   getOJStats: (id: Course.ID, pids: Problem.ID[]): PysharePromise<Course.IOJStats> =>
-    Vue.axios.get(`/course/${id}/statistic/oj-problem`, { params: { pids } }),
+    instance.get(`/course/${id}/statistic/oj-problem`, { params: { pids } }),
 
   getPermission: (id: Course.ID): PysharePromise<string[]> =>
-    Vue.axios.get(`/course/${id}/permission`),
+    instance.get(`/course/${id}/permission`),
 }
 
 const Problem = {
   getList: (params: Problem.IQueryOption): PysharePromise<Problem.IInfo[]> =>
-    Vue.axios.get('/problem', { params }),
+    instance.get('/problem', { params }),
 
-  get: (id: Problem.ID): PysharePromise<Problem.IInfo> => Vue.axios.get(`/problem/${id}`),
+  get: (id: Problem.ID): PysharePromise<Problem.IInfo> => instance.get(`/problem/${id}`),
 
-  create: (body: Problem.ICreateBody) => Vue.axios.post('/problem', body),
+  create: (body: Problem.ICreateBody) => instance.post('/problem', body),
 
-  update: (id: Problem.ID, body: Problem.ICreateBody) => Vue.axios.put(`/problem/${id}`, body),
+  update: (id: Problem.ID, body: Problem.ICreateBody) => instance.put(`/problem/${id}`, body),
 
-  delete: (id: Problem.ID) => Vue.axios.delete(`/problem/${id}`),
+  delete: (id: Problem.ID) => instance.delete(`/problem/${id}`),
 
   getAttachment: (id: Problem.ID, name: string): PysharePromise<File> =>
-    Vue.axios.get(`/problem/${id}/attachment/${name}`),
+    instance.get(`/problem/${id}/attachment/${name}`),
 
   addAttachment: (id: Problem.ID, body: FormData) =>
-    Vue.axios.post(`/problem/${id}/attachment`, body),
+    instance.post(`/problem/${id}/attachment`, body),
 
   removeAttachment: (id: Problem.ID, body: FormData) =>
-    Vue.axios({ method: 'delete', url: `/problem/${id}/attachment`, data: body }),
+    instance({ method: 'delete', url: `/problem/${id}/attachment`, data: body }),
 
   clone: (pid: Problem.ID, cid: Course.ID, isTemplate: boolean) =>
-    Vue.axios.get(`/problem/${pid}/clone/${cid}`, { params: { isTemplate } }),
+    instance.get(`/problem/${pid}/clone/${cid}`, { params: { isTemplate } }),
 }
 
 const Comment = {
-  get: (id: _Comment.ID): PysharePromise<_Comment.IInfo> => Vue.axios.get(`/comment/${id}`),
+  get: (id: _Comment.ID): PysharePromise<_Comment.IInfo> => instance.get(`/comment/${id}`),
 
-  create: (body: _Comment.ICreateBody) => Vue.axios.post('/comment', body),
+  create: (body: _Comment.ICreateBody) => instance.post('/comment', body),
 
-  update: (id: _Comment.ID, body: _Comment.ICreateBody) => Vue.axios.put(`/comment/${id}`, body),
+  update: (id: _Comment.ID, body: _Comment.ICreateBody) => instance.put(`/comment/${id}`, body),
 
-  delete: (id: _Comment.ID) => Vue.axios.delete(`/comment/${id}`),
+  delete: (id: _Comment.ID) => instance.delete(`/comment/${id}`),
 
-  like: (id: _Comment.ID) => Vue.axios.get(`/comment/${id}/like`),
+  like: (id: _Comment.ID) => instance.get(`/comment/${id}/like`),
 
   createSubmission: (id: _Comment.ID, body: Pick<_Comment.ICreateBody, 'code'>) =>
-    Vue.axios.post(`/comment/${id}/submission`, body),
+    instance.post(`/comment/${id}/submission`, body),
 }
 
 const Tag = {
   getList: (params: Tag.IQueryOption): PysharePromise<Tag.name[]> =>
-    Vue.axios.get('/tag', { params }),
+    instance.get('/tag', { params }),
 
-  create: (body: Tag.ICreateBody) => Vue.axios.post('/tag', body),
+  create: (body: Tag.ICreateBody) => instance.post('/tag', body),
 
   check: (body: Tag.ICreateBody): PysharePromise<Tag.ICheckResponse> =>
-    Vue.axios.post('/tag/check', body),
+    instance.post('/tag/check', body),
 
   // TODO: re-define delete api
-  // delete: body => Vue.axios.delete('/tag', body),
+  // delete: body => instance.delete('/tag', body),
 
-  delete: (body: Tag.ICreateBody) => Vue.axios({ method: 'delete', url: `/tag`, data: body }),
+  delete: (body: Tag.ICreateBody) => instance({ method: 'delete', url: `/tag`, data: body }),
 }
 
 const User = {
-  get: (id: User.ID): PysharePromise<User.IInfo> => Vue.axios.get(`/user/${id}`),
+  get: (id: User.ID): PysharePromise<User.IInfo> => instance.get(`/user/${id}`),
 
-  getList: (): PysharePromise<User.IInfo[]> => Vue.axios.get('/user'),
+  getList: (): PysharePromise<User.IInfo[]> => instance.get('/user'),
 
-  getStats: (id: User.ID): PysharePromise<User.IStats> => Vue.axios.get(`/user/${id}/statistic`),
+  getStats: (id: User.ID): PysharePromise<User.IStats> => instance.get(`/user/${id}/statistic`),
 }
 
 const Submission = {
-  get: (id: Submission.ID): PysharePromise<Submission.IInfo> => Vue.axios.get(`/submission/${id}`),
+  get: (id: Submission.ID): PysharePromise<Submission.IInfo> => instance.get(`/submission/${id}`),
 
   grade: (id: Submission.ID, state: Submission.State) =>
-    Vue.axios.put(`/submission/${id}/state`, { state }),
+    instance.put(`/submission/${id}/state`, { state }),
 
-  createTest: (body: Submission.ITestBody) => Vue.axios.post('/submission', body),
+  createTest: (body: Submission.ITestBody) => instance.post('/submission', body),
 }
 
 const Gitlab = {
@@ -142,19 +164,19 @@ const Permission = {
   get: (
     resource: 'course' | 'problem' | 'comment',
     id: Course.ID | Problem.ID | _Comment.ID,
-  ): PysharePromise<string[]> => Vue.axios.get(`/${resource}/${id}/permission`),
+  ): PysharePromise<string[]> => instance.get(`/${resource}/${id}/permission`),
 }
 
 const Dataset = {
-  getList: (): PysharePromise<Dataset.IInfo[]> => Vue.axios.get('/dataset'),
-  get: (id: Dataset.ID): PysharePromise<Dataset.IInfo> => Vue.axios.get(`/dataset/${id}`),
+  getList: (): PysharePromise<Dataset.IInfo[]> => instance.get('/dataset'),
+  get: (id: Dataset.ID): PysharePromise<Dataset.IInfo> => instance.get(`/dataset/${id}`),
 }
 
 const School = {
-  getList: (): PysharePromise<School.Info[]> => Vue.axios.get('/school'),
+  getList: (): PysharePromise<School.Info[]> => instance.get('/school'),
   get: (abbr: Pick<School.Info, 'abbr'>): PysharePromise<School.Info> =>
-    Vue.axios.get(`/school/${abbr}`),
-  createSchool: (body: School.Info) => Vue.axios.post('/school', body),
+    instance.get(`/school/${abbr}`),
+  createSchool: (body: School.Info) => instance.post('/school', body),
 }
 
 export default {

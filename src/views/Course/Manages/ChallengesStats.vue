@@ -48,7 +48,6 @@
 <script>
 import { GetterTypes } from '@/store/getter-types'
 import { mapActions, mapGetters, mapState } from 'vuex'
-import agent from '@/api/agent'
 import ChallengesStats from '@/components/Course/Manages/ChallengesStats.vue'
 import { ActionTypes } from '@/store/action-types'
 
@@ -86,7 +85,9 @@ export default {
   },
   async created() {
     await this.getProblem(this.paramsWithCourse)
-    this.stats = (await agent.Course.getOJStats(this.$route.params.id, this.pids.join())).data.data
+    this.stats = (
+      await this.$agent.Course.getOJStats(this.$route.params.id, this.pids.join())
+    ).data.data
   },
   methods: {
     ...mapActions({

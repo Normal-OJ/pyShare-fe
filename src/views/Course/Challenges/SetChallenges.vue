@@ -15,7 +15,6 @@
 import Spinner from '@/components/UI/Spinner'
 import SetChallenges from '@/components/Course/Challenges/SetChallenges'
 import { mapState } from 'vuex'
-import agent from '@/api/agent'
 
 const OPERATION = {
   NEW: 'new',
@@ -71,7 +70,7 @@ export default {
   methods: {
     async getProblem(pid) {
       try {
-        const { data } = await agent.Problem.get(pid)
+        const { data } = await this.$agent.Problem.get(pid)
         this.prob = data.data
         if (this.prob.extra._cls !== 'OJProblem') {
           throw new Error()
@@ -88,9 +87,9 @@ export default {
         this.isLoading = true
         let result
         if (this.isEdit) {
-          result = await agent.Problem.update(this.pid, body)
+          result = await this.$agent.Problem.update(this.pid, body)
         } else {
-          result = await agent.Problem.create(body)
+          result = await this.$agent.Problem.create(body)
         }
         this.submitSuccess = true
         this.$alertSuccess(`${this.isEdit ? '更新' : '新增'}測驗內容成功。`)
@@ -117,7 +116,7 @@ export default {
     },
     async deleteProblem(pid) {
       try {
-        await agent.Problem.delete(pid)
+        await this.$agent.Problem.delete(pid)
         this.submitSuccess = true
         this.$alertSuccess('刪除題目成功。')
         this.$router.push({ name: 'courseChallenges', params: { id: this.courseId } })

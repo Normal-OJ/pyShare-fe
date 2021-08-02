@@ -80,7 +80,6 @@
 <script>
 import { ActionTypes } from '@/store/action-types'
 import { mapState } from 'vuex'
-import agent from '@/api/agent'
 import { SCHOOLS } from '@/constants/auth'
 
 const USERNAME = 0
@@ -113,7 +112,7 @@ export default {
   }),
 
   created() {
-    agent.School.getList()
+    this.$agent.School.getList()
       .then(resp => (this.schoolOptions = resp.data.data))
       .catch(error => {
         // 備援

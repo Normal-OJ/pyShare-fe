@@ -22,7 +22,6 @@
 
 <script>
 import Spinner from '@/components/UI/Spinner'
-import agent from '@/api/agent'
 
 export default {
   components: { Spinner },
@@ -30,7 +29,7 @@ export default {
     dataset: null,
   }),
   mounted() {
-    agent.Dataset.get(this.$route.params.id).then(resp => (this.dataset = resp.data.data))
+    this.$agent.Dataset.get(this.$route.params.id).then(resp => (this.dataset = resp.data.data))
   },
 }
 </script>

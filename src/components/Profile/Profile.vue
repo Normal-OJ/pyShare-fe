@@ -110,7 +110,6 @@
 <script>
 import Spinner from '@/components/UI/Spinner'
 import Gravatar from '@/components/UI/Gravatar'
-import agent from '@/api/agent'
 import { mapState } from 'vuex'
 
 export default {
@@ -190,12 +189,12 @@ export default {
 
   methods: {
     getSchool() {
-      agent.School.get(this.user.school).then(resp => (this.school = resp.data.data.abbr))
+      this.$agent.School.get(this.user.school).then(resp => (this.school = resp.data.data.abbr))
     },
     validateEmail() {
       this.isEmailValidating = true
       const body = { email: this.formValues.email }
-      agent.Auth.validateEmail(body)
+      this.$agent.Auth.validateEmail(body)
         .then(() => {
           this.emailError = ''
         })
@@ -228,7 +227,7 @@ export default {
         oldPassword: this.formValues.oldPassword,
         newPassword: this.formValues.newPassword,
       }
-      agent.Auth.changePassword(body)
+      this.$agent.Auth.changePassword(body)
         .then(() => {
           this.$alertSuccess('更改密碼成功。')
         })
@@ -245,7 +244,7 @@ export default {
         password: this.formValues.oldPassword,
         email: this.formValues.email,
       }
-      agent.Auth.changeEmail(body)
+      this.$agent.Auth.changeEmail(body)
         .then(() => {
           this.$alertSuccess('更改信箱成功。')
         })

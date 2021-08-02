@@ -80,7 +80,6 @@
 
 <script>
 import { SCHOOLS } from '@/constants/auth'
-import agent from '@/api/agent'
 import BatchSignupForm from './BatchSignupForm.vue'
 import SingleSignupForm from './SingleSignupForm.vue'
 
@@ -96,7 +95,7 @@ export default {
   }),
 
   created() {
-    agent.School.getList()
+    this.$agent.School.getList()
       .then(resp => (this.schoolOptions = resp.data.data))
       .catch(error => {
         // 備援
@@ -108,7 +107,7 @@ export default {
   methods: {
     async signup(course, csvString, cb = () => {}) {
       try {
-        await agent.Auth.batchSignup({ course, csvString })
+        await this.$agent.Auth.batchSignup({ course, csvString })
       } catch (error) {
         if (error.data.fails.length > 0) {
           this.$alertFail('新增學生失敗。')

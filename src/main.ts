@@ -8,7 +8,7 @@ import { dayjsPlugin } from './lib/dayjsPlugin'
 import { utilsPlugin } from './lib/utils'
 import 'roboto-fontface/css/roboto/roboto-fontface.css'
 import '@mdi/font/css/materialdesignicons.css'
-import { apiSetup } from './api/api'
+import agent from './api/agent'
 import VueSocketIO from 'vue-socket.io'
 import Notifications from 'vue-notification'
 import { makeServer } from './server'
@@ -36,6 +36,14 @@ Vue.config.productionTip = false
 Vue.use(dayjsPlugin)
 Vue.use(utilsPlugin)
 
+// setup axios
+Vue.prototype.$agent = agent
+
+// expose vuex for cypress
+if (window.Cypress) {
+  window.__store__ = store
+}
+
 // Rollbar for tracking vue app's error
 Vue.prototype.$rollbar = new Rollbar({
   accessToken: process.env.VUE_APP_ROLLBAR_TOKEN,
@@ -52,14 +60,6 @@ Vue.prototype.$rollbar = new Rollbar({
     },
   },
 })
-
-// setup axios
-apiSetup()
-
-// expose vuex for cypress
-if (window.Cypress) {
-  window.__store__ = store
-}
 
 Vue.config.errorHandler = (err, vm) => {
   vm.$rollbar.error(err)

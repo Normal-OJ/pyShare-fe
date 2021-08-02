@@ -12,7 +12,6 @@
 
 <script>
 import Profile from '@/components/Profile/Profile'
-import agent from '@/api/agent'
 
 export default {
   components: { Profile },
@@ -47,7 +46,7 @@ export default {
   methods: {
     async getUser(id) {
       try {
-        const { data } = await agent.User.get(id)
+        const { data } = await this.$agent.User.get(id)
         this.user = data.data
       } catch (error) {
         console.log('[views/Profile/getUser] error', error)
@@ -56,7 +55,7 @@ export default {
     },
     async getStats(id) {
       try {
-        const { data } = await agent.User.getStats(id)
+        const { data } = await this.$agent.User.getStats(id)
         this.stats = data.data
       } catch (error) {
         console.log('[views/Profile/getStats] error', error)

@@ -414,7 +414,6 @@ import SubmissionStatusLabel from '@/components/UI/SubmissionStatusLabel'
 import { SUBMISSION_STATUS } from '@/constants/submission'
 import CommentResult from './CommentResult'
 import { ROLE } from '@/constants/auth'
-import agent from '@/api/agent'
 import CommentReplies from './CommentReplies'
 import { canWriteCourseMixin, canParticipateCourseMixin } from '@/lib/permissionMixin'
 
@@ -608,7 +607,7 @@ export default {
     },
     async getReply(cid, index, arr) {
       try {
-        const result = await agent.Comment.get(cid)
+        const result = await this.$agent.Comment.get(cid)
         arr[index] = { ...result.data.data, id: cid }
       } catch (error) {
         arr[index] = { status: 0, id: cid }

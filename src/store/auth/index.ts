@@ -1,11 +1,11 @@
 import { GetterTree, MutationTree, ActionTree } from 'vuex'
+import agent from '@/api/agent'
 import { initialState, State } from './state'
 import { RootState } from '../types'
 import { ActionTypes } from '../action-types'
 import { MutationTypes } from '../mutation-types'
 import { getJwt } from '@/lib/jwt'
 import { GetterTypes } from '../getter-types'
-import agent from '@/api/agent'
 
 const state = { ...initialState }
 

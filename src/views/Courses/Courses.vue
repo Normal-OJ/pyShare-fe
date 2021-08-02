@@ -19,7 +19,6 @@ import CourseList from '@/components/Courses/CourseList'
 import CreateCourseModal from '@/components/Courses/CreateCourseModal'
 import { mapActions, mapGetters, mapState } from 'vuex'
 import { ActionTypes } from '@/store/action-types'
-import agent from '@/api/agent'
 import { ROLE } from '@/constants/auth'
 import { COURSE_STATE } from '@/constants/course'
 import { GetterTypes } from '@/store/getter-types'
@@ -74,7 +73,7 @@ export default {
     },
     async submitCreateCourse(body, resolve, reject) {
       try {
-        await agent.Course.create(body)
+        await this.$agent.Course.create(body)
         // since the course of user is stored in jwt, we have to refresh jwt
         await this.getJwt()
         resolve()

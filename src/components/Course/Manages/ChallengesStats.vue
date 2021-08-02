@@ -25,7 +25,6 @@
 </template>
 
 <script>
-import agent from '@/api/agent'
 import ChallengeHistory from '../Challenge/ChallengeHistory.vue'
 import Spinner from '@/components/UI/Spinner.vue'
 
@@ -59,7 +58,7 @@ export default {
   methods: {
     async getComment() {
       if (!this.data.commentId) return
-      agent.Comment.get(this.data.commentId)
+      this.$agent.Comment.get(this.data.commentId)
         .then(resp => (this.comment = resp.data.data))
         .finally(() => (this.isLoading = false))
     },

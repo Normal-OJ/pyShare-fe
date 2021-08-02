@@ -60,7 +60,6 @@
 <script>
 import CodeEditor from '@/components/UI/CodeEditor'
 import ChallengeResult from './ChallengeResult'
-import agent from '@/api/agent'
 import Spinner from '@/components/UI/Spinner.vue'
 
 export default {
@@ -106,13 +105,15 @@ export default {
     comment: {
       handler() {
         if (this.comment && this.comment.submissions && this.comment.submissions.length > 0) {
-          Promise.all(this.comment.submissions.map(sid => agent.Submission.get(sid))).then(resp => {
-            this.submissions = resp.map((r, idx) => ({
-              ...r.data.data,
-              id: this.comment.submissions[idx],
-            }))
-            this.isSubmissionPending = this.submissions.some(s => s.judge_result === undefined)
-          })
+          Promise.all(this.comment.submissions.map(sid => this.$agent.Submission.get(sid))).then(
+            resp => {
+              this.submissions = resp.map((r, idx) => ({
+                ...r.data.data,
+                id: this.comment.submissions[idx],
+              }))
+              this.isSubmissionPending = this.submissions.some(s => s.judge_result === undefined)
+            },
+          )
           this.dialog = new Array(this.comment.submissions.length).fill(false)
         }
         this.isLoading = false
@@ -141,7 +142,7 @@ export default {
         this.isSubmissionPending = false
         return
       }
-      Promise.all(fetchIds.map(sid => agent.Submission.get(sid))).then(resp => {
+      Promise.all(fetchIds.map(sid => this.$agent.Submission.get(sid))).then(resp => {
         resp.forEach((r, idx) => {
           const pos = this.submissions.findIndex(s => s.id === fetchIds[idx])
           this.$set(this.submissions, pos, { ...r.data.data, id: fetchIds[idx] })

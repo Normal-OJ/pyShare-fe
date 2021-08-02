@@ -10,7 +10,6 @@
 import ProblemsStats from '@/components/Course/Manages/ProblemsStats'
 import { mapActions, mapState } from 'vuex'
 import { ActionTypes } from '@/store/action-types'
-import agent from '@/api/agent'
 
 export default {
   components: { ProblemsStats },
@@ -72,7 +71,7 @@ export default {
     }),
     async submitDeleteStudent(users, resolve, reject) {
       try {
-        await agent.Course.removeStudent(this.courseId, { users })
+        await this.$agent.Course.removeStudent(this.courseId, { users })
         this.getCourseStats(this.courseId)
         resolve()
       } catch (error) {

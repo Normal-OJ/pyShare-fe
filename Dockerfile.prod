@@ -7,5 +7,5 @@ WORKDIR /app
 COPY . .
 
 # install project dependencies and build app for production with minification
-RUN npm install --quiet && npm run build
+RUN npm install --only=prod --quiet && npm run build
 

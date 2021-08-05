@@ -8,14 +8,13 @@
       <div
         v-else-if="data && data.length > 0"
         class="align-self-center"
-        style="height: 500px; overflow: auto;"
+        style="height: 500px; overflow: auto"
       >
-        <div v-for="{ tag, name, content, time, sha } in data" :key="tag" class="mt-4">
+        <div v-for="{ tag, content, time, sha } in data" :key="tag" class="mt-4">
           <div class="d-flex flex-column">
             <div class="d-flex align-baseline" style="white-space: pre">
-              <div class="text-h5 font-weight-medium">{{ tag }}</div>
-              <div class="text-caption">&nbsp;({{ sha }})&nbsp;</div>
-              <div class="text-h6">{{ name }} &nbsp;{{ time }}</div>
+              <div class="text-h6">{{ tag }}</div>
+              <div class="text-caption">&nbsp;({{ time }}, {{ sha }})&nbsp;</div>
             </div>
             <div
               v-for="({ type, text }, index) in content"
@@ -83,20 +82,18 @@ export default {
     data() {
       return (
         this.releases &&
-        this.releases.map(release => {
-          const name = release.name
+        this.releases.map((release) => {
           const tag = release.tag_name
           const rawContent = release.description.split('\n')
           const content = rawContent
-            .map(raw => ({
+            .map((raw) => ({
               type: this.getType(raw),
               text: this.getContent(raw),
             }))
-            .filter(c => c.type)
-          const time = this.$dayjs(release.released_at).format('YYYY-MM-DD')
-          const sha = release.commit.id.substring(0, 8)
+            .filter((c) => c.type)
+          const time = this.$dayjs(release.commit.committed_date).format('YYYY-MM-DD')
+          const sha = release.commit.short_id
           return {
-            name,
             tag,
             content,
             time,
@@ -109,14 +106,11 @@ export default {
 
   methods: {
     getType(str) {
-      const matches = types.filter(type => str.match(type.rule))
+      const matches = types.filter((type) => str.match(type.rule))
       return matches.length > 0 ? matches[0].name : ''
     },
     getContent(str) {
-      return str
-        .split(':')
-        .slice(1)
-        .join('')
+      return str.split(':').slice(1).join('')
     },
   },
 }

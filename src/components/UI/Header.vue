@@ -104,11 +104,11 @@ export default {
           route: { path: '/courses' },
           show: true,
         },
-        {
-          label: '共享資料',
-          route: { path: '/datasets' },
-          show: [ROLE.ADMIN, ROLE.TEACHER, ROLE.STUDENT].includes(this.role),
-        },
+        // {
+        //   label: '共享資料',
+        //   route: { path: '/datasets' },
+        //   show: [ROLE.ADMIN, ROLE.TEACHER, ROLE.STUDENT].includes(this.role),
+        // },
         {
           label: '管理員介面',
           route: { path: '/admin' },

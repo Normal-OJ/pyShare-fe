@@ -129,8 +129,14 @@
                     `${liked.length} 個喜歡、${replies.length} 則留言、${submissions.length} 個程式版本`
                   }}</span>
                 </v-tooltip>
-                <v-btn :color="SUBMISSION_STATUS[submission.state].color" small tile depressed>
-                  {{ SUBMISSION_STATUS[submission.state].text }}
+                <v-btn
+                  v-if="SUBMISSION_STATUS[`${submission.state}`]"
+                  :color="SUBMISSION_STATUS[`${submission.state}`].color"
+                  small
+                  tile
+                  depressed
+                >
+                  {{ SUBMISSION_STATUS[`${submission.state}`].text }}
                 </v-btn>
               </v-card-title>
               <!-- Second Row -->

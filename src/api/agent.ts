@@ -3,11 +3,11 @@ import store from '@/store'
 import { MutationTypes } from '@/store/mutation-types'
 import axios, { AxiosResponse } from 'axios'
 
-const instance = axios.create({
+const fetcher = axios.create({
   baseURL: config.API_BASE_URL,
 })
 
-instance.interceptors.response.use(
+fetcher.interceptors.response.use(
   res => res,
   error => {
     if (error?.response) {
@@ -35,122 +35,116 @@ interface PyshareResponse<T = any> extends Omit<AxiosResponse<T>, 'data'> {
 interface PysharePromise<T = any> extends Promise<PyshareResponse<T>> {}
 
 const Auth = {
-  login: (body: Auth.ILoginBody) => instance.post('/auth/session', body),
+  login: (body: Auth.ILoginBody) => fetcher.post('/auth/session', body),
 
-  logout: () => instance.get('/auth/session'),
+  logout: () => fetcher.get('/auth/session'),
 
-  checkToken: () => instance.post('/auth/check/token'),
+  checkToken: () => fetcher.post('/auth/check/token'),
 
-  batchSignup: (body: Auth.IBatchSignupBody) => instance.post('/auth/batch-signup', body),
+  batchSignup: (body: Auth.IBatchSignupBody) => fetcher.post('/auth/batch-signup', body),
 
-  changePassword: (body: Auth.IChangePasswordBody) => instance.post('/auth/change/password', body),
+  changePassword: (body: Auth.IChangePasswordBody) => fetcher.post('/auth/change/password', body),
 
-  changeEmail: (body: Auth.IChangeEmailBody) => instance.post('/auth/change/email', body),
+  changeEmail: (body: Auth.IChangeEmailBody) => fetcher.post('/auth/change/email', body),
 
-  validateEmail: (body: Auth.IValidateEmailBody) => instance.post('/auth/check/email', body),
+  validateEmail: (body: Auth.IValidateEmailBody) => fetcher.post('/auth/check/email', body),
 }
 
 const Course = {
-  getList: (): PysharePromise<Partial<Course.IInfo>[]> => instance.get('/course'),
+  getList: (): PysharePromise<Partial<Course.IInfo>[]> => fetcher.get('/course'),
 
-  get: (id: Course.ID): PysharePromise<Course.IInfo> => instance.get(`/course/${id}`),
+  get: (id: Course.ID): PysharePromise<Course.IInfo> => fetcher.get(`/course/${id}`),
 
-  create: (body: Course.ICreateBody) => instance.post('/course', body),
+  create: (body: Course.ICreateBody) => fetcher.post('/course', body),
 
-  update: (id: Course.ID, body: Course.ICreateBody) => instance.put(`/course/${id}`, body),
-
-  // TODO: re-define delete api
-  // delete: id => instance.delete(`/course/${id}`),
+  update: (id: Course.ID, body: Course.ICreateBody) => fetcher.put(`/course/${id}`, body),
 
   addStudent: (id: Course.ID, body: Course.IPatchStudentsBody) =>
-    instance.patch(`/course/${id}/student/insert`, body),
+    fetcher.patch(`/course/${id}/student/insert`, body),
 
   removeStudent: (id: Course.ID, body: Course.IPatchStudentsBody) =>
-    instance.patch(`/course/${id}/student/remove`, body),
+    fetcher.patch(`/course/${id}/student/remove`, body),
 
   patchTags: (id: Course.ID, body: Course.IPatchTagsBody) =>
-    instance.patch(`/course/${id}/tag`, body),
+    fetcher.patch(`/course/${id}/tag`, body),
 
   getStats: (id: Course.ID): PysharePromise<Course.IStudentStats[]> =>
-    instance.get(`/course/${id}/statistic`),
+    fetcher.get(`/course/${id}/statistic`),
 
   getOJStats: (id: Course.ID, pids: Problem.ID[]): PysharePromise<Course.IOJStats> =>
-    instance.get(`/course/${id}/statistic/oj-problem`, { params: { pids } }),
+    fetcher.get(`/course/${id}/statistic/oj-problem`, { params: { pids } }),
 
   getPermission: (id: Course.ID): PysharePromise<string[]> =>
-    instance.get(`/course/${id}/permission`),
+    fetcher.get(`/course/${id}/permission`),
 }
 
 const Problem = {
   getList: (params: Problem.IQueryOption): PysharePromise<Problem.IInfo[]> =>
-    instance.get('/problem', { params }),
+    fetcher.get('/problem', { params }),
 
-  get: (id: Problem.ID): PysharePromise<Problem.IInfo> => instance.get(`/problem/${id}`),
+  get: (id: Problem.ID): PysharePromise<Problem.IInfo> => fetcher.get(`/problem/${id}`),
 
-  create: (body: Problem.ICreateBody) => instance.post('/problem', body),
+  create: (body: Problem.ICreateBody) => fetcher.post('/problem', body),
 
-  update: (id: Problem.ID, body: Problem.ICreateBody) => instance.put(`/problem/${id}`, body),
+  update: (id: Problem.ID, body: Problem.ICreateBody) => fetcher.put(`/problem/${id}`, body),
 
-  delete: (id: Problem.ID) => instance.delete(`/problem/${id}`),
+  delete: (id: Problem.ID) => fetcher.delete(`/problem/${id}`),
 
   getAttachment: (id: Problem.ID, name: string): PysharePromise<File> =>
-    instance.get(`/problem/${id}/attachment/${name}`),
+    fetcher.get(`/problem/${id}/attachment/${name}`),
 
   addAttachment: (id: Problem.ID, body: FormData) =>
-    instance.post(`/problem/${id}/attachment`, body),
+    fetcher.post(`/problem/${id}/attachment`, body),
 
   removeAttachment: (id: Problem.ID, body: FormData) =>
-    instance({ method: 'delete', url: `/problem/${id}/attachment`, data: body }),
+    fetcher({ method: 'delete', url: `/problem/${id}/attachment`, data: body }),
 
   clone: (pid: Problem.ID, cid: Course.ID, isTemplate: boolean) =>
-    instance.get(`/problem/${pid}/clone/${cid}`, { params: { isTemplate } }),
+    fetcher.get(`/problem/${pid}/clone/${cid}`, { params: { isTemplate } }),
 }
 
 const Comment = {
-  get: (id: _Comment.ID): PysharePromise<_Comment.IInfo> => instance.get(`/comment/${id}`),
+  get: (id: _Comment.ID): PysharePromise<_Comment.IInfo> => fetcher.get(`/comment/${id}`),
 
-  create: (body: _Comment.ICreateBody) => instance.post('/comment', body),
+  create: (body: _Comment.ICreateBody) => fetcher.post('/comment', body),
 
-  update: (id: _Comment.ID, body: _Comment.ICreateBody) => instance.put(`/comment/${id}`, body),
+  update: (id: _Comment.ID, body: _Comment.ICreateBody) => fetcher.put(`/comment/${id}`, body),
 
-  delete: (id: _Comment.ID) => instance.delete(`/comment/${id}`),
+  delete: (id: _Comment.ID) => fetcher.delete(`/comment/${id}`),
 
-  like: (id: _Comment.ID) => instance.get(`/comment/${id}/like`),
+  like: (id: _Comment.ID) => fetcher.get(`/comment/${id}/like`),
 
   createSubmission: (id: _Comment.ID, body: Pick<_Comment.ICreateBody, 'code'>) =>
-    instance.post(`/comment/${id}/submission`, body),
+    fetcher.post(`/comment/${id}/submission`, body),
 }
 
 const Tag = {
   getList: (params: Tag.IQueryOption): PysharePromise<Tag.name[]> =>
-    instance.get('/tag', { params }),
+    fetcher.get('/tag', { params }),
 
-  create: (body: Tag.ICreateBody) => instance.post('/tag', body),
+  create: (body: Tag.ICreateBody) => fetcher.post('/tag', body),
 
   check: (body: Tag.ICreateBody): PysharePromise<Tag.ICheckResponse> =>
-    instance.post('/tag/check', body),
+    fetcher.post('/tag/check', body),
 
-  // TODO: re-define delete api
-  // delete: body => instance.delete('/tag', body),
-
-  delete: (body: Tag.ICreateBody) => instance({ method: 'delete', url: `/tag`, data: body }),
+  delete: (body: Tag.ICreateBody) => fetcher({ method: 'delete', url: `/tag`, data: body }),
 }
 
 const User = {
-  get: (id: User.ID): PysharePromise<User.IInfo> => instance.get(`/user/${id}`),
+  get: (id: User.ID): PysharePromise<User.IInfo> => fetcher.get(`/user/${id}`),
 
-  getList: (): PysharePromise<User.IInfo[]> => instance.get('/user'),
+  getList: (): PysharePromise<User.IInfo[]> => fetcher.get('/user'),
 
-  getStats: (id: User.ID): PysharePromise<User.IStats> => instance.get(`/user/${id}/statistic`),
+  getStats: (id: User.ID): PysharePromise<User.IStats> => fetcher.get(`/user/${id}/statistic`),
 }
 
 const Submission = {
-  get: (id: Submission.ID): PysharePromise<Submission.IInfo> => instance.get(`/submission/${id}`),
+  get: (id: Submission.ID): PysharePromise<Submission.IInfo> => fetcher.get(`/submission/${id}`),
 
   grade: (id: Submission.ID, state: Submission.State) =>
-    instance.put(`/submission/${id}/state`, { state }),
+    fetcher.put(`/submission/${id}/state`, { state }),
 
-  createTest: (body: Submission.ITestBody) => instance.post('/submission', body),
+  createTest: (body: Submission.ITestBody) => fetcher.post('/submission', body),
 }
 
 const Gitlab = {
@@ -164,19 +158,19 @@ const Permission = {
   get: (
     resource: 'course' | 'problem' | 'comment',
     id: Course.ID | Problem.ID | _Comment.ID,
-  ): PysharePromise<string[]> => instance.get(`/${resource}/${id}/permission`),
+  ): PysharePromise<string[]> => fetcher.get(`/${resource}/${id}/permission`),
 }
 
 const Dataset = {
-  getList: (): PysharePromise<Dataset.IInfo[]> => instance.get('/dataset'),
-  get: (id: Dataset.ID): PysharePromise<Dataset.IInfo> => instance.get(`/dataset/${id}`),
+  getList: (): PysharePromise<Dataset.IInfo[]> => fetcher.get('/dataset'),
+  get: (id: Dataset.ID): PysharePromise<Dataset.IInfo> => fetcher.get(`/dataset/${id}`),
 }
 
 const School = {
-  getList: (): PysharePromise<School.Info[]> => instance.get('/school'),
+  getList: (): PysharePromise<School.Info[]> => fetcher.get('/school'),
   get: (abbr: Pick<School.Info, 'abbr'>): PysharePromise<School.Info> =>
-    instance.get(`/school/${abbr}`),
-  createSchool: (body: School.Info) => instance.post('/school', body),
+    fetcher.get(`/school/${abbr}`),
+  createSchool: (body: School.Info) => fetcher.post('/school', body),
 }
 
 export default {

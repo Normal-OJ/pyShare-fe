@@ -50,15 +50,15 @@
     <div class="mt-4 d-flex justify-space-around flex-wrap" v-else>
       <div class="d-flex flex-column align-center">
         <div class="text-h6">學生數</div>
-        <div class="display-amount">{{ info.students.length }}</div>
+        <div class="ctext-amount">{{ info.students.length }}</div>
       </div>
       <div class="d-flex flex-column align-center">
         <div class="text-h6">主題數</div>
-        <div class="display-amount">{{ info.numOfProblems }}</div>
+        <div class="ctext-amount">{{ info.numOfProblems }}</div>
       </div>
       <div class="d-flex flex-column align-center">
         <div class="text-h6">創作數</div>
-        <div class="display-amount">{{ info.numOfComments }}</div>
+        <div class="ctext-amount">{{ info.numOfComments }}</div>
       </div>
     </div>
     <template v-if="canParticipateCourse">

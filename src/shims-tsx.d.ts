@@ -1,3 +1,6 @@
+import { VNode } from 'vue/types'
+// we must force tsc to interpret this file as a module
+
 declare global {
   namespace JSX {
     // tslint:disable no-empty-interface

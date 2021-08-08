@@ -49,15 +49,15 @@
     <div v-else class="mt-4 d-flex justify-space-around flex-wrap">
       <div class="d-flex flex-column align-center">
         <div class="text-h6">累積主題</div>
-        <div class="display-amount">{{ stats.problems.length }}</div>
+        <div class="ctext-amount">{{ stats.problems.length }}</div>
       </div>
       <div class="d-flex flex-column align-center">
         <div class="text-h6">累積創作</div>
-        <div class="display-amount">{{ stats.comments.length }}</div>
+        <div class="ctext-amount">{{ stats.comments.length }}</div>
       </div>
       <div class="d-flex flex-column align-center">
         <div class="text-h6">獲得愛心</div>
-        <div class="display-amount">{{ totalLikedAmount }}</div>
+        <div class="ctext-amount">{{ totalLikedAmount }}</div>
       </div>
     </div>
     <div class="text-h5 mt-8" v-if="$isSelf(user.username)">更改信箱或密碼</div>

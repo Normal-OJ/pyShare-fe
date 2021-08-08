@@ -44,7 +44,7 @@ declare namespace Course {
 
   interface IOJStats {
     overview: {
-      [propName: string]: {
+      [pid: string]: {
         acCount: number
         acUser: number
         tryCount: number
@@ -57,8 +57,9 @@ declare namespace Course {
         tryCount: number
       }
       info: User.IInfo
-      [propName: string]: {
-        commentId: Comment.ID
+    } & {
+      [pid: string]: {
+        commentId: _Comment.ID
         // PASS | FAIL | NOT TRY
         result: 0 | 1 | 2
         tryCount: number

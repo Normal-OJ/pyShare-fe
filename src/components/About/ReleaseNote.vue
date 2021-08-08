@@ -82,15 +82,15 @@ export default {
     data() {
       return (
         this.releases &&
-        this.releases.map((release) => {
+        this.releases.map(release => {
           const tag = release.tag_name
           const rawContent = release.description.split('\n')
           const content = rawContent
-            .map((raw) => ({
+            .map(raw => ({
               type: this.getType(raw),
               text: this.getContent(raw),
             }))
-            .filter((c) => c.type)
+            .filter(c => c.type)
           const time = this.$dayjs(release.commit.committed_date).format('YYYY-MM-DD')
           const sha = release.commit.short_id
           return {
@@ -106,11 +106,14 @@ export default {
 
   methods: {
     getType(str) {
-      const matches = types.filter((type) => str.match(type.rule))
+      const matches = types.filter(type => str.match(type.rule))
       return matches.length > 0 ? matches[0].name : ''
     },
     getContent(str) {
-      return str.split(':').slice(1).join('')
+      return str
+        .split(':')
+        .slice(1)
+        .join('')
     },
   },
 }

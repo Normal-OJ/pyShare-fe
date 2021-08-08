@@ -221,6 +221,10 @@ const routes: RouteConfig[] = [
         meta: { title: () => '個人統計' },
       },
     ],
+    beforeEnter: (to, from, next) => {
+      if (typeof to.params.id === 'string') next()
+      else next({ params: store.getters[GetterTypes.USER_INFO].id })
+    },
   },
   {
     path: '/admin',

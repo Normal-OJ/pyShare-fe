@@ -6,16 +6,10 @@ import vuetify from './plugins/vuetify'
 import Rollbar from 'rollbar'
 import { dayjsPlugin } from './lib/dayjsPlugin'
 import { utilsPlugin } from './lib/utils'
-import 'roboto-fontface/css/roboto/roboto-fontface.css'
-import '@mdi/font/css/materialdesignicons.css'
 import agent from './api/agent'
 import VueSocketIO from 'vue-socket.io'
 import Notifications from 'vue-notification'
-import { makeServer } from './server'
-
-if (process.env.NODE_ENV === 'development' && process.env.VUE_APP_MIRAGE_ENABLED === 'true') {
-  makeServer({ environment: 'development' })
-}
+import './sass/styles.scss'
 
 Vue.use(Notifications)
 

@@ -48,14 +48,4 @@ export default Vue.extend({
 })
 </script>
 
-<style>
-a {
-  text-decoration-line: none;
-  color: var(--v-primary-base);
-}
-.display-amount {
-  font-family: 'Montserrat';
-  font-size: 6rem;
-  line-height: 6rem;
-}
-</style>
+<style></style>

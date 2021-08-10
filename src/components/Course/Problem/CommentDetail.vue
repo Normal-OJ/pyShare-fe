@@ -539,7 +539,7 @@ export default {
     },
   },
 
-  async created() {
+  created() {
     this.pollingSubmission = setInterval(
       that => {
         if (that.isSubmissionPending) {
@@ -658,6 +658,7 @@ export default {
         this.isReply = false
       } catch (error) {
         this.$alertFail('新增留言失敗。')
+        this.$rollbar.error('[components/CommentDetail/handleSubmitReply]', error)
       }
     },
   },

@@ -43,8 +43,8 @@ export default {
     displayFile: null,
   }),
 
-  async created() {
-    await this.getFileData()
+  created() {
+    this.getFileData()
   },
 
   methods: {

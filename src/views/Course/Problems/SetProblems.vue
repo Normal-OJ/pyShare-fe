@@ -49,11 +49,9 @@ export default {
     },
   },
 
-  async created() {
-    if (this.isEdit) await this.getProblem(this.pid)
-    else {
-      this.prob = { ...initialProb, course: this.courseId }
-    }
+  created() {
+    if (this.isEdit) this.getProblem(this.pid)
+    else this.prob = { ...initialProb, course: this.courseId }
   },
 
   data: () => ({
@@ -68,8 +66,7 @@ export default {
         const { data } = await this.$agent.Problem.get(pid)
         this.prob = data.data
       } catch (error) {
-        console.log('[views/SetProblems/getProblem] error', error)
-        throw error
+        this.$rollbar.error('[views/SetProblems/getProblem]', error)
       }
     },
     async handleSubmit(body, willAddAttachments, willRemoveAttachments) {
@@ -96,10 +93,9 @@ export default {
             )
             this.$alertSuccess('新增主題附件成功。')
           } catch (error) {
-            console.log('[views/SetProblems/handleSubmit - add attachments] error', error)
             this.$alertFail('新增主題附件失敗。')
             this.submitSuccess = false
-            throw error
+            this.$rollbar.error('[views/SetProblems/handleSubmit(add attachments)]', error)
           }
         }
         if (willRemoveAttachments.length > 0) {
@@ -113,10 +109,9 @@ export default {
             )
             this.$alertSuccess('移除主題附件成功。')
           } catch (error) {
-            console.log('[views/SetProblems/handleSubmit - remove attachments] error', error)
             this.$alertFail('移除主題附件失敗。')
             this.submitSuccess = false
-            throw error
+            this.$rollbar.error('[views/SetProblems/handleSubmit(remove attachments)]', error)
           }
         }
         this.getProblem(pid)
@@ -134,9 +129,8 @@ export default {
           }
         }
       } catch (error) {
-        console.log('[views/SetProblems/handleSubmit] error', error)
         this.$alertFail(`${this.isEdit ? '更新' : '新增'}主題內容失敗。`)
-        throw error
+        this.$rollbar.error('[views/SetProblems/handleSubmit]', error)
       } finally {
         this.isLoading = false
       }
@@ -148,9 +142,8 @@ export default {
         this.$alertSuccess('刪除題目成功。')
         this.$router.push({ name: 'courseProblems', params: { id: this.courseId } })
       } catch (error) {
-        console.log('[view/Course/Manages/ManageProblems] error', error)
         this.$alertFail('刪除題目失敗。')
-        throw error
+        this.$rollbar.error('[views/SetProblems/deleteProblem]', error)
       }
     },
   },

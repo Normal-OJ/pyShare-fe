@@ -42,7 +42,7 @@ export default {
     isWaiting: true,
   }),
 
-  async created() {
+  created() {
     this.fetchData()
   },
 
@@ -65,9 +65,8 @@ export default {
         this.fetchData()
         this.$alertSuccess('刪除題目成功。')
       } catch (error) {
-        console.log('[view/Course/Manages/ManageProblems] error', error)
         this.$alertFail('刪除題目失敗。')
-        throw error
+        this.$rollbar.error('[views/ManageProblems/deleteProblem]', error)
       }
     },
   },

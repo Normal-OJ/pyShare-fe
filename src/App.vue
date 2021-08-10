@@ -22,8 +22,8 @@ export default Vue.extend({
 
   components: { Header, Notification },
 
-  async created() {
-    await this.getJwt()
+  created() {
+    this.getJwt()
   },
 
   methods: {
@@ -40,8 +40,7 @@ export default Vue.extend({
           this.$router.replace({ name: 'home' })
         }
       } catch (error) {
-        console.log('[App/logout] error', error)
-        throw error
+        this.$rollbar.error('[App/logout]', error)
       }
     },
   },

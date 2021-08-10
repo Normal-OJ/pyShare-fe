@@ -60,11 +60,9 @@ export default {
     },
   },
 
-  async created() {
-    if (this.isEdit) await this.getProblem(this.pid)
-    else {
-      this.prob = { ...initialProb, course: this.courseId }
-    }
+  created() {
+    if (this.isEdit) this.getProblem(this.pid)
+    else this.prob = { ...initialProb, course: this.courseId }
   },
 
   methods: {
@@ -73,13 +71,12 @@ export default {
         const { data } = await this.$agent.Problem.get(pid)
         this.prob = data.data
         if (this.prob.extra._cls !== 'OJProblem') {
-          throw new Error()
+          throw new Error('This problem is not a challenge.')
         }
       } catch (error) {
-        console.log('[views/SetChallenges/getProblem] error', error)
         alert('題目不存在')
         this.$router.push({ name: 'courseManageChallenges' })
-        throw error
+        this.$rollbar.error('[views/SetChallenges/getProblem]', error)
       }
     },
     async handleSubmit(body) {
@@ -107,9 +104,8 @@ export default {
           })
         }
       } catch (error) {
-        console.log('[views/SetChallenges/handleSubmit] error', error)
         this.$alertFail(`${this.isEdit ? '更新' : '新增'}測驗內容失敗。`)
-        throw error
+        this.$rollbar.error('[views/SetChallenges/handleSubmit]', error)
       } finally {
         this.isLoading = false
       }
@@ -121,9 +117,8 @@ export default {
         this.$alertSuccess('刪除題目成功。')
         this.$router.push({ name: 'courseChallenges', params: { id: this.courseId } })
       } catch (error) {
-        console.log('[view/Course/Manages/ManageChallenges] error', error)
         this.$alertFail('刪除題目失敗。')
-        throw error
+        this.$rollbar.error('[views/SetChallenges/deleteProblem]', error)
       }
     },
   },

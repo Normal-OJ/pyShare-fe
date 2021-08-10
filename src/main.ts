@@ -55,6 +55,7 @@ Vue.prototype.$rollbar = new Rollbar({
   },
 })
 
+// setup global error handler to catch unexpected error
 Vue.config.errorHandler = (err, vm) => {
   vm.$rollbar.error(err)
   throw err

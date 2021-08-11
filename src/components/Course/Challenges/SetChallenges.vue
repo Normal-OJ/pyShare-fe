@@ -23,11 +23,10 @@
           label="顯示狀態"
           v-model="newProb.status"
           :items="status"
-          hint="當主題為「範本」，或顯示狀態設為「隱藏」時，僅教師可見"
+          hint="設為「隱藏」則只有老師和主題作者可見"
           persistent-hint
           outlined
           dense
-          :disabled="newProb.isTemplate"
         />
       </v-col>
       <v-col cols="12" md="6">
@@ -35,7 +34,7 @@
           v-if="canWriteCourse"
           class="pt-0 mt-0"
           v-model="newProb.isTemplate"
-          label="設為範本"
+          label="公開至共享資料集"
           hide-details
         />
       </v-col>

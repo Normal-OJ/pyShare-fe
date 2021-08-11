@@ -19,13 +19,7 @@
             item-text="name"
             item-value="id"
             outlined
-            dense
           />
-          請選擇欲將{{ label }}複製為何種形式
-          <v-radio-group v-model="isTemplate">
-            <v-radio :label="`複製為${label}`" :value="false" />
-            <v-radio :label="`複製為${label}範本`" :value="true" />
-          </v-radio-group>
         </v-form>
       </v-card-text>
       <v-card-actions>
@@ -64,7 +58,6 @@ export default {
   },
   data: () => ({
     isLoading: false,
-    isTemplate: false,
     target: null,
   }),
   computed: {
@@ -84,7 +77,7 @@ export default {
     }),
     cloneProblem() {
       this.isLoading = true
-      this.$agent.Problem.clone(this.clonePid, this.target, this.isTemplate)
+      this.$agent.Problem.clone(this.clonePid, this.target)
         .then(() => {
           this.$alertSuccess(`複製${this.label}成功`)
           this.onSuccess()

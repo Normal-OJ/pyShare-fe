@@ -99,8 +99,8 @@ const Problem = {
   removeAttachment: (id: Problem.ID, body: FormData) =>
     fetcher({ method: 'delete', url: `/problem/${id}/attachment`, data: body }),
 
-  clone: (pid: Problem.ID, cid: Course.ID, isTemplate: boolean) =>
-    fetcher.get(`/problem/${pid}/clone/${cid}`, { params: { isTemplate } }),
+  clone: (pid: Problem.ID, cid: Course.ID) =>
+    fetcher.get(`/problem/${pid}/clone/${cid}`, { params: { isTemplate: false } }),
 }
 
 const Comment = {

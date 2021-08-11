@@ -79,7 +79,6 @@ export default {
   computed: {
     ...mapState({
       username: state => state.auth.username,
-      role: state => state.auth.role,
     }),
   },
 

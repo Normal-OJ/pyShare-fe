@@ -413,11 +413,9 @@ import Gravatar from '@/components/UI/Gravatar'
 import SubmissionStatusLabel from '@/components/UI/SubmissionStatusLabel'
 import { SUBMISSION_STATUS } from '@/constants/submission'
 import CommentResult from './CommentResult'
-import { ROLE } from '@/constants/auth'
 import CommentReplies from './CommentReplies'
 import { canWriteCourseMixin, canParticipateCourseMixin } from '@/lib/permissionMixin'
 
-const { TEACHER, STUDENT } = ROLE
 const COMMENT_KEY = {
   TITLE: 'title',
   CONTENT: 'content',
@@ -489,8 +487,6 @@ export default {
 
   data() {
     return {
-      TEACHER,
-      STUDENT,
       pollingSubmission: null,
       statusOptions: Object.keys(SUBMISSION_STATUS).map(s => Number(s)),
       SUBMISSION_STATUS,

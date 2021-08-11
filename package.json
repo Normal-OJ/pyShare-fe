@@ -58,6 +58,7 @@
   },
   "devDependencies": {
     "cypress-file-upload": "^5.0.2",
+    "flush-promises": "^1.0.2",
     "jest": "^26.6.3",
     "prettier": "^1.19.1"
   },

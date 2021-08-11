@@ -72,27 +72,54 @@
         {{ item.comments.length }}
       </template>
       <template v-slot:[`item.manage`]="{ item }">
-        <v-btn
-          :to="{
-            name: 'courseSetProblems',
-            params: { operation: 'edit' },
-            query: { pid: item.pid },
-          }"
-          class="mx-1"
-          color="primary"
-          small
-        >
-          <v-icon class="mr-1" small>mdi-pencil</v-icon>
-          <span class="hidden-md-and-down">編輯</span>
-        </v-btn>
-        <v-btn class="mx-1" color="primary" small @click="openCloneDialog(item.pid)">
-          <v-icon class="mr-1" small>mdi-content-copy</v-icon>
-          <span class="hidden-md-and-down">複製</span>
-        </v-btn>
-        <v-btn class="mx-1" color="error" small @click="deleteProblem(item.pid)">
-          <v-icon class="mr-1" small>mdi-trash-can</v-icon>
-          <span class="hidden-md-and-down">刪除</span>
-        </v-btn>
+        <v-menu bottom right>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn icon v-on="on" v-bind="attrs" class="hidden-lg-and-up">
+              <v-icon>mdi-dots-horizontal</v-icon>
+            </v-btn>
+          </template>
+          <v-list>
+            <v-list-item
+              link
+              :to="{
+                name: 'courseSetProblems',
+                params: { operation: 'edit' },
+                query: { pid: item.pid },
+              }"
+            >
+              <v-list-item-title>編輯</v-list-item-title>
+            </v-list-item>
+            <v-list-item link @click="openCloneDialog(item.pid)">
+              <v-list-item-title>複製</v-list-item-title>
+            </v-list-item>
+            <v-list-item link @click="deleteProblem(item.pid)">
+              <v-list-item-title>刪除</v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-menu>
+        <div class="hidden-md-and-down">
+          <v-btn
+            :to="{
+              name: 'courseSetProblems',
+              params: { operation: 'edit' },
+              query: { pid: item.pid },
+            }"
+            class="mx-1"
+            color="primary"
+            small
+          >
+            <v-icon class="mr-1" small>mdi-pencil</v-icon>
+            <span>編輯</span>
+          </v-btn>
+          <v-btn class="mx-1" color="primary" small @click="openCloneDialog(item.pid)">
+            <v-icon class="mr-1" small>mdi-content-copy</v-icon>
+            <span>複製</span>
+          </v-btn>
+          <v-btn class="mx-1" color="error" small @click="deleteProblem(item.pid)">
+            <v-icon class="mr-1" small>mdi-trash-can</v-icon>
+            <span>刪除</span>
+          </v-btn>
+        </div>
       </template>
       <template v-slot:[slotName] v-for="slotName in ['no-data', 'no-results']">
         <div class="d-flex flex-column align-center" :key="slotName">

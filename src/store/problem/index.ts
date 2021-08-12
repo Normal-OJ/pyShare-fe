@@ -10,13 +10,13 @@ const state = { ...initialState }
 
 const getters = <GetterTree<State, RootState>>{
   [GetterTypes.PROBLEMS](state): Problem.IInfo[] {
-    return state.problems.filter(p => p.extra._cls !== 'OJProblem' && !p.isTemplate)
+    return state.problems.filter(p => p.extra._cls !== 'OJProblem')
   },
   [GetterTypes.TEMPLATES](state): Problem.IInfo[] {
     return state.problems.filter(p => p.extra._cls !== 'OJProblem' && p.isTemplate)
   },
   [GetterTypes.CHALLENGES](state): Problem.IInfo[] {
-    return state.problems.filter(p => p.extra._cls === 'OJProblem' && !p.isTemplate)
+    return state.problems.filter(p => p.extra._cls === 'OJProblem')
   },
   [GetterTypes.CHALLENGES_TEMPLATES](state): Problem.IInfo[] {
     return state.problems.filter(p => p.extra._cls === 'OJProblem' && p.isTemplate)

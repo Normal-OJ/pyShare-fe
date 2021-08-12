@@ -34,7 +34,7 @@
           v-if="canWriteCourse"
           class="pt-0 mt-0"
           v-model="newProb.isTemplate"
-          label="公開至共享資料集"
+          label="發布至公開資料集"
           hide-details
         />
       </v-col>

@@ -148,42 +148,44 @@ export default {
       problems: GetterTypes.PROBLEMS,
       challenges: GetterTypes.CHALLENGES,
     }),
+    manageItems() {
+      return [
+        {
+          title: '管理分類',
+          icon: 'mdi-tag-multiple',
+          routeName: 'courseManageTags',
+        },
+        {
+          title: '管理成員',
+          icon: 'mdi-account-multiple',
+          routeName: 'courseManageMembers',
+        },
+        {
+          title: '管理主題',
+          icon: 'mdi-view-list',
+          routeName: 'courseManageProblems',
+        },
+        {
+          title: '管理測驗',
+          icon: 'mdi-code-tags',
+          routeName: 'courseManageChallenges',
+        },
+        {
+          title: '主題統計',
+          icon: 'mdi-format-list-checks',
+          routeName: 'courseProblemsStats',
+        },
+        {
+          title: '測驗統計',
+          icon: 'mdi-code-tags-check',
+          routeName: 'courseChallengesStats',
+        },
+      ]
+    },
   },
 
   data: () => ({
     isMinify: false,
-    manageItems: [
-      {
-        title: '管理分類',
-        icon: 'mdi-tag-multiple',
-        routeName: 'courseManageTags',
-      },
-      {
-        title: '管理成員',
-        icon: 'mdi-account-multiple',
-        routeName: 'courseManageMembers',
-      },
-      {
-        title: '管理主題',
-        icon: 'mdi-view-list',
-        routeName: 'courseManageProblems',
-      },
-      {
-        title: '管理測驗',
-        icon: 'mdi-code-tags',
-        routeName: 'courseManageChallenges',
-      },
-      {
-        title: '主題統計',
-        icon: 'mdi-format-list-checks',
-        routeName: 'courseProblemsStats',
-      },
-      {
-        title: '測驗統計',
-        icon: 'mdi-code-tags-check',
-        routeName: 'courseChallengesStats',
-      },
-    ],
   }),
 }
 </script>

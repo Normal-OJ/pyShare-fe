@@ -3,11 +3,13 @@ declare namespace Dataset {
 
   interface IInfo {
     id: string
-    title: string
+    filename: string
     description: string
-    author: Pick<User.IInfo, 'username' | 'displayName' | 'id'>
-    update: Date
-    view: number
-    download: number
+    author: User.IInfo
+    created: Date
+    updated: Date
+    size: number
+    tags: string[]
+    patchNote: string[]
   }
 }

@@ -162,8 +162,8 @@ const Permission = {
 }
 
 const Dataset = {
-  getList: (): PysharePromise<Dataset.IInfo[]> => fetcher.get('/dataset'),
-  get: (id: Dataset.ID): PysharePromise<Dataset.IInfo> => fetcher.get(`/dataset/${id}`),
+  getList: (): PysharePromise<Dataset.IInfo[]> => fetcher.get('/attachment'),
+  get: (id: Dataset.ID): PysharePromise<Dataset.IInfo> => fetcher.get(`/attachment/${id}`),
 }
 
 const School = {

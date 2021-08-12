@@ -120,7 +120,10 @@ const routes: RouteConfig[] = [
         path: 'manages',
         name: 'courseManages',
         component: () => import('@/views/Course/Manages/Manages.vue'),
-        meta: { title: () => `管理 - ${store.getters[GetterTypes.COURSE_NAME]}` },
+        meta: {
+          detailedSideNav: true,
+          title: () => `管理 - ${store.getters[GetterTypes.COURSE_NAME]}`,
+        },
       },
       {
         path: 'manages/tags',
@@ -194,15 +197,45 @@ const routes: RouteConfig[] = [
   },
   {
     path: '/datasets',
-    name: 'datasets',
-    component: () => import('@/views/Datasets/Datasets.vue'),
-    meta: { title: () => '共享資料集' },
-  },
-  {
-    path: '/dataset/:id',
-    name: 'dataset',
     component: () => import('@/views/Datasets/Dataset.vue'),
-    meta: { title: () => '共享資料集' },
+    children: [
+      {
+        path: '',
+        name: 'datasets',
+        component: () => import('@/views/Datasets/Attachments.vue'),
+        meta: { title: () => '公開資料集' },
+      },
+      {
+        path: 'attachment/:id',
+        name: 'attachment',
+        component: () => import('@/views/Datasets/Attachment.vue'),
+        meta: { title: () => '公開資料集' },
+      },
+      {
+        path: 'problems',
+        name: 'templateProblems',
+        component: () => import('@/views/Datasets/Problems.vue'),
+        meta: { title: () => '公開主題' },
+      },
+      {
+        path: 'problem/:id',
+        name: 'templateProblem',
+        component: () => import('@/views/Datasets/Problem.vue'),
+        meta: { title: () => '公開主題' },
+      },
+      {
+        path: 'challenges',
+        name: 'templateChallenges',
+        component: () => import('@/views/Datasets/Challenges.vue'),
+        meta: { title: () => '公開測驗' },
+      },
+      {
+        path: 'challenge/:id',
+        name: 'templateChallenge',
+        component: () => import('@/views/Datasets/Challenge.vue'),
+        meta: { title: () => '公開測驗' },
+      },
+    ],
   },
   {
     path: '/profile/:id',

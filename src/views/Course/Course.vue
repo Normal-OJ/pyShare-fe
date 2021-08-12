@@ -25,7 +25,6 @@ export default {
 }
 .container {
   flex: 1;
-  /* height: 100%; */
   overflow: scroll;
 }
 </style>

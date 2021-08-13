@@ -29,10 +29,12 @@
         />
       </v-col>
       <v-spacer />
-      <v-btn v-if="canCreateAttachment" color="success">
+
+      <CreateDatasetModel />
+      <!-- <v-btn v-if="canCreateAttachment" color="success">
         <v-icon class="mr-1">mdi-plus</v-icon>
         新增資料集
-      </v-btn>
+      </v-btn> -->
     </div>
 
     <v-data-table
@@ -130,12 +132,13 @@
 <script>
 import ColorLabel from '@/components/UI/ColorLabel.vue'
 import Gravatar from '@/components/UI/Gravatar.vue'
+import CreateDatasetModel from '@/components/Datasets/CreateDatasetModal.vue'
 import { formatBytes } from '@/lib/utils'
 import { mapState } from 'vuex'
 import { ROLE } from '@/constants/auth'
 
 export default {
-  components: { ColorLabel, Gravatar },
+  components: { ColorLabel, Gravatar, CreateDatasetModel },
 
   data: () => ({
     selectedAttachments: [],
@@ -152,10 +155,10 @@ export default {
     headers() {
       return [
         { text: '資料集', value: 'filename' },
-        { text: '分類', value: 'tags' },
+        { text: '分類', value: 'tags', sortable: false },
         { text: '檔案大小', value: 'size' },
-        { text: '操作', value: 'operation' },
-        { text: '', value: 'data-table-expand' },
+        { text: '操作', value: 'operation', sortable: false, filterable: false },
+        { text: '', value: 'data-table-expand', sortable: false, filterable: false },
       ]
     },
     canCreateAttachment() {

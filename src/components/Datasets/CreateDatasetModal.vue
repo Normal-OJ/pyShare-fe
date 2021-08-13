@@ -2,15 +2,15 @@
   <v-dialog v-model="dialog" width="750" persistent>
     <template v-slot:activator="{ on, attrs }">
       <v-btn color="success" dark v-bind="attrs" v-on="on">
-        <v-icon class="mr-1">mdi-folder-plus</v-icon>
+        <v-icon class="mr-1">mdi-plus</v-icon>
         新增資料集
       </v-btn>
     </template>
 
     <v-card>
       <v-toolbar dark color="primary" dense>
-        <v-icon class="mr-1">mdi-folder-plus</v-icon>
-        <v-toolbar-title>新增課程</v-toolbar-title>
+        <v-icon class="mr-1">mdi-plus</v-icon>
+        <v-toolbar-title>新增資料集</v-toolbar-title>
         <v-spacer />
         <v-toolbar-items>
           <v-btn icon dark @click="dialog = false">
@@ -25,26 +25,27 @@
         </div>
         <v-form ref="form">
           <v-text-field
-            label="資料集名稱"
+            label="資料名稱"
             v-model="dataset.title"
-            :rules="[v => !!v || '請填寫資料集名稱']"
+            :rules="[v => !!v || '請填寫資料名稱']"
             outlined
             color="primary"
             dense
           />
-          <v-textarea
-            label="資料集說明"
-            v-model="dataset.description"
-            rows="10"
-            outlined
-            color="primary"
-          />
           <v-file-input
             label="上傳檔案"
             v-model="dataset.attachments"
-            multiple
             color="primary"
+            outlined
+            dense
             prepend-icon="mdi-file-upload"
+          />
+          <v-textarea
+            label="資料說明"
+            v-model="dataset.description"
+            rows="5"
+            outlined
+            color="primary"
           />
         </v-form>
       </v-card-text>
@@ -69,14 +70,14 @@ export default {
     dataset: {
       title: '',
       description: '',
-      attachments: [],
+      attachment: [],
     },
   }),
 
   computed: {
     isDisabled() {
-      const { title, attachments } = this.dataset
-      return !title || attachments.length == 0
+      const { title, attachment } = this.dataset
+      return !title || attachment.length == 0
     },
   },
 

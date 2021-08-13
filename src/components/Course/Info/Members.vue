@@ -1,7 +1,7 @@
 <template>
   <v-container fluid class="d-flex flex-column mt-4">
-    <div class="d-flex align-center">
-      <v-col cols="10" md="6" class="d-flex">
+    <v-row>
+      <v-col cols="auto">
         <v-text-field
           v-model="searchText"
           label="快速搜尋"
@@ -13,16 +13,15 @@
         />
       </v-col>
       <v-spacer />
-      <template v-if="canWriteCourse">
-        <v-btn color="primary" :to="{ name: 'courseManageMembers' }" class="mr-3" outlined>
-          管理課程成員
-        </v-btn>
-        <AddStudentModal
-          @submit-add-multiple-students="submitAddMultipleStudents"
-          @submit-add-student="submitAddStudent"
-        />
-      </template>
-    </div>
+      <v-col cols="auto">
+        <template v-if="canWriteCourse">
+          <v-btn color="primary" :to="{ name: 'courseManageMembers' }" class="mr-3" outlined>
+            管理課程成員
+          </v-btn>
+          <AddStudentModal @success="getCourseInfo($route.params.id)" />
+        </template>
+      </v-col>
+    </v-row>
 
     <v-data-table
       :headers="headers"
@@ -34,9 +33,6 @@
       class="table"
       @click:row="handleRowClick"
     >
-      <template v-slot:[`item.teacher`]="{ item }">
-        {{ item.teacher ? '教師' : '學生' }}
-      </template>
       <template v-slot:[slotName] v-for="slotName in ['no-data', 'no-results']">
         <div class="d-flex flex-column align-center" :key="slotName">
           <div class="text-subtitle-1 my-8">這裡還沒有任何成員，或找不到符合條件的成員</div>
@@ -48,19 +44,24 @@
 </template>
 
 <script>
-import AddStudentModal from './AddStudentModal'
+import AddStudentModal from '@/components/Course/AddStudentModal'
+import { ActionTypes } from '@/store/action-types'
+import { mapActions } from 'vuex'
 import { ROLE } from '@/constants/auth'
+import { canWriteCourseMixin } from '@/lib/permissionMixin'
 
 const { TEACHER } = ROLE
 
 const headers = [
   { text: '使用者名稱', value: 'username' },
   { text: '顯示名稱', value: 'displayName' },
-  { text: '身份', value: 'teacher' },
+  { text: '身份', value: 'role' },
 ]
 
 export default {
   name: 'MemberList',
+
+  mixins: [canWriteCourseMixin],
 
   components: { AddStudentModal },
 
@@ -76,30 +77,16 @@ export default {
     searchText: '',
     loading: false,
     TEACHER,
-    canWriteCourse: null,
   }),
-
-  async created() {
-    this.canWriteCourse = await this.$hasPermission('course', this.courseId, ['w'])
-  },
-
-  computed: {
-    courseId() {
-      return this.$route.params.id
-    },
-  },
 
   methods: {
     handleRowClick(value) {
       const route = this.$router.resolve({ name: 'profile', params: { id: value.id } })
       window.open(route.href, '_blank')
     },
-    submitAddMultipleStudents(file, resolve, reject) {
-      this.$emit('submit-add-multiple-students', file, resolve, reject)
-    },
-    submitAddStudent(csvString, resolve, reject) {
-      this.$emit('submit-add-student', csvString, resolve, reject)
-    },
+    ...mapActions({
+      getCourseInfo: ActionTypes.GET_COURSE_INFO,
+    }),
   },
 }
 </script>

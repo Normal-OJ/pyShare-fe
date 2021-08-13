@@ -13,8 +13,7 @@
 <script>
 import ManageTags from '@/components/Course/Manages/ManageTags'
 import { mapActions, mapState } from 'vuex'
-import { GET_COURSE_TAGS } from '@/store/actions.type'
-import agent from '@/api/agent'
+import { ActionTypes } from '@/store/action-types'
 
 export default {
   components: { ManageTags },
@@ -41,13 +40,13 @@ export default {
 
   methods: {
     ...mapActions({
-      getCourseTags: GET_COURSE_TAGS,
+      getCourseTags: ActionTypes.GET_COURSE_TAGS,
     }),
     getAllTags() {
-      agent.Tag.getList()
+      this.$agent.Tag.getList()
         .then(resp => {
           this.allTags = resp.data.data
-          return agent.Tag.check({ tags: this.allTags })
+          return this.$agent.Tag.check({ tags: this.allTags })
         })
         .then(resp => {
           this.removables = resp.data.data
@@ -60,7 +59,7 @@ export default {
     },
     async submitPatchTags(body) {
       try {
-        await agent.Course.patchTags(this.courseId, body)
+        await this.$agent.Course.patchTags(this.courseId, body)
         this.getCourseTags(this.courseId)
         this.getAllTags(this.courseId)
         this.$alertSuccess('編輯分類成功。')
@@ -72,7 +71,7 @@ export default {
     },
     async submitNewTags(tags, resolve, reject) {
       try {
-        await agent.Tag.create({ tags })
+        await this.$agent.Tag.create({ tags })
         resolve()
         this.getAllTags(this.courseId)
         this.$alertSuccess('新增分類成功。')
@@ -85,7 +84,7 @@ export default {
     },
     async deleteTags(tags, resolve, reject) {
       try {
-        await agent.Tag.delete({ tags })
+        await this.$agent.Tag.delete({ tags })
         this.getAllTags(this.courseId)
         this.$alertSuccess('刪除分類成功。')
         resolve()

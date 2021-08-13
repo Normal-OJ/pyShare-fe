@@ -23,7 +23,6 @@
 </template>
 
 <script>
-import agent from '@/api/agent'
 import Spinner from '@/components/UI/Spinner'
 
 const imageFilePossibleExtension = ['png', 'jpg', 'gif', 'jpeg', 'webp', 'svg', 'bmp']
@@ -44,8 +43,8 @@ export default {
     displayFile: null,
   }),
 
-  async created() {
-    await this.getFileData()
+  created() {
+    this.getFileData()
   },
 
   methods: {
@@ -59,7 +58,10 @@ export default {
       if (this.isImageFile(this.filename)) {
         this.isImg = true
       } else {
-        const { data } = await agent.Problem.getAttachment(this.$route.params.pid, this.filename)
+        const { data } = await this.$agent.Problem.getAttachment(
+          this.$route.params.pid,
+          this.filename,
+        )
         this.displayFile = data
       }
     },

@@ -9,27 +9,31 @@
     class="table"
     @click:row="handleRowClick"
   >
-    <template v-slot:[`header.status`]="{ header }">
-      {{ header.text }}
-      <v-tooltip top>
-        <template v-slot:activator="{ on, attrs }">
-          <v-icon class="mx-1" color="primary" small v-bind="attrs" v-on="on">
-            mdi-help-circle
-          </v-icon>
-        </template>
-        <span>
-          開放課程：任何人皆可檢視、創作<br />公開課程：任何人皆可檢視<br />不公開課程：僅課程內成員可檢視、創作
-        </span>
-      </v-tooltip>
+    <template v-slot:[`header.permission`]>
+      {{ permissionHeader }}
+      <template v-if="permissionHeader === '權限'">
+        <v-tooltip top>
+          <template v-slot:activator="{ on, attrs }">
+            <v-icon class="mx-1" color="primary" small v-bind="attrs" v-on="on">
+              mdi-help-circle
+            </v-icon>
+          </template>
+          <span>
+            可檢視：可以瀏覽課程內的主題與創作<br />
+            可參與：可以在課程內建立主題與創作
+          </span>
+        </v-tooltip>
+      </template>
     </template>
     <template v-slot:[`item.semester`]="{ item }">
       {{ item.year ? `${item.year}-${item.semester}` : '' }}
     </template>
-    <template v-slot:[`item.status`]="{ item }">
-      {{ COURSE_STATUS[`${item.status}`] }}
+    <template v-slot:[`item.permission`]="{ item }">
+      {{ permissionText[`${item.permission}`] }}
     </template>
     <template v-slot:[`item.teacher`]="{ item }">
       <router-link :to="{ name: 'profile', params: { id: item.teacher.id } }">
+        <Gravatar :md5="item.teacher.md5" :size="20" class="mr-1" />
         {{ item.teacher.displayName }}
       </router-link>
     </template>
@@ -37,17 +41,25 @@
 </template>
 
 <script>
-import { COURSE_STATUS } from '@/constants/course'
 import { mapState } from 'vuex'
+import Gravatar from '@/components/UI/Gravatar.vue'
 
 const headers = [
-  { text: '課程', value: 'name' },
-  { text: '學期', value: 'semester' },
-  { text: '狀態', value: 'status', sortable: true },
-  { text: '教師', value: 'teacher', sortable: false },
+  { text: '課程', value: 'name', width: '40%' },
+  { text: '學期', value: 'semester', width: '20%' },
+  { text: '', value: 'permission', width: '20%', sortable: false },
+  { text: '教師', value: 'teacher', width: '20%', sortable: false },
 ]
+const permissionText = {
+  teacher: '教師',
+  student: '學生',
+  read: '可檢視',
+  participate: '可參與',
+}
 export default {
   name: 'CourseList',
+
+  components: { Gravatar },
 
   props: {
     data: {
@@ -58,18 +70,21 @@ export default {
       type: Boolean,
       required: true,
     },
+    permissionHeader: {
+      type: String,
+      required: true,
+    },
   },
 
   computed: {
     ...mapState({
       username: state => state.auth.username,
-      role: state => state.auth.role,
     }),
   },
 
   data: () => ({
-    COURSE_STATUS,
     headers,
+    permissionText,
   }),
 
   methods: {

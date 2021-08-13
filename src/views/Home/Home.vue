@@ -1,6 +1,6 @@
 <template>
   <v-container fluid class="d-flex flex-column align-center banner">
-    <div class="text-h2 mb-6 font-weight-light">
+    <div class="text-h2 mb-6">
       歡迎來到 Python 創作分享平台
     </div>
     <div class="text-h5 mb-13">

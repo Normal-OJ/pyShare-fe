@@ -2,7 +2,7 @@
   <v-container fluid class="px-4">
     <v-card class="my-3 pb-6" elevation="0" v-if="statistic.problems">
       <v-card-title>
-        {{ `${displayName} 的統計資料` }}
+        {{ `${username}（${displayName}）的統計資料` }}
         <v-spacer />
         <v-btn color="primary" outlined :to="{ name: 'profile', params: { id } }" replace exact>
           查看個人頁面
@@ -11,7 +11,7 @@
       <v-divider />
       <v-expansion-panels flat="flat" multiple="multiple">
         <v-expansion-panel>
-          <v-expansion-panel-header class="title font-weight-bold">
+          <v-expansion-panel-header class="title font-weight-medium">
             發布的主題: {{ statistic.problems.length }}
           </v-expansion-panel-header>
           <v-expansion-panel-content>
@@ -45,7 +45,7 @@
           </v-expansion-panel-content>
         </v-expansion-panel>
         <v-expansion-panel>
-          <v-expansion-panel-header class="title font-weight-bold">
+          <v-expansion-panel-header class="title font-weight-medium">
             發布的創作: {{ statistic.comments.length }}
           </v-expansion-panel-header>
           <v-expansion-panel-content>
@@ -85,7 +85,7 @@
           </v-expansion-panel-content>
         </v-expansion-panel>
         <v-expansion-panel>
-          <v-expansion-panel-header class="title font-weight-bold">
+          <v-expansion-panel-header class="title font-weight-medium">
             發布的留言: {{ statistic.replies.length }}
           </v-expansion-panel-header>
           <v-expansion-panel-content>
@@ -120,7 +120,7 @@
           </v-expansion-panel-content>
         </v-expansion-panel>
         <v-expansion-panel>
-          <v-expansion-panel-header class="title font-weight-bold">
+          <v-expansion-panel-header class="title font-weight-medium">
             獲得愛心: {{ totalLikedAmount }}
           </v-expansion-panel-header>
           <v-expansion-panel-content>
@@ -175,7 +175,7 @@
           </v-expansion-panel-content>
         </v-expansion-panel>
         <v-expansion-panel>
-          <v-expansion-panel-header class="title font-weight-bold">
+          <v-expansion-panel-header class="title font-weight-medium">
             給予愛心: {{ totalLikesAmount }}
           </v-expansion-panel-header>
           <v-expansion-panel-content>
@@ -219,7 +219,7 @@
           </v-expansion-panel-content>
         </v-expansion-panel>
         <v-expansion-panel>
-          <v-expansion-panel-header class="title font-weight-bold">
+          <v-expansion-panel-header class="title font-weight-medium">
             創作執行結果: {{ statistic.execInfo.length }}
           </v-expansion-panel-header>
           <v-expansion-panel-content>
@@ -271,19 +271,15 @@
 </template>
 
 <script>
-import agent from '@/api/agent'
-import { mapState } from 'vuex'
-
 export default {
   data: () => ({
+    username: '',
+    displayName: '',
     statistic: {},
     isNotFound: false,
   }),
 
   computed: {
-    ...mapState({
-      displayName: state => state.auth.displayName,
-    }),
     totalLikedAmount() {
       return this.statistic.liked.reduce((a, b) => {
         return a + b.starers.length
@@ -298,14 +294,24 @@ export default {
   },
 
   created() {
+    this.getUser()
     this.getStats()
   },
 
   methods: {
+    async getUser() {
+      try {
+        const { data } = await this.$agent.User.get(this.id)
+        this.username = data.data.username
+        this.displayName = data.data.displayName
+      } catch (error) {
+        this.isNotFound = error.message.includes('not found')
+      }
+    },
     async getStats() {
       this.isNotFound = false
       try {
-        const { data } = await agent.User.getStats(this.id)
+        const { data } = await this.$agent.User.getStats(this.id)
         this.statistic = data.data
       } catch (error) {
         console.log('[views/Stats/getStats] error', error)

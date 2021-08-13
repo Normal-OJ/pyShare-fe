@@ -58,9 +58,7 @@
       </div>
       <v-divider class="mt-1 mb-4" />
       <div class="d-flex flex-row align-center">
-        <v-avatar class="mr-4" size="48" color="primary">
-          <span class="white--text headline">{{ comment.author.displayName.slice(0, 1) }}</span>
-        </v-avatar>
+        <Gravatar class="mr-4" :size="48" :md5="comment.author.md5" />
         <div class="d-flex flex-column" style="flex: 1">
           <!-- First Row -->
           <div class="d-flex flex-row align-center">
@@ -147,7 +145,7 @@
       </div>
       <div class="mt-4">
         <!-- Creation Content -->
-        <div class="text-body-1 font-weight-bold d-flex align-center my-4">
+        <div class="text-body-1 font-weight-medium d-flex align-center my-4">
           創作說明
           <v-tooltip right>
             <template v-slot:activator="{ on, attrs }">
@@ -185,7 +183,7 @@
           </div>
         </div>
         <!-- Creation Code -->
-        <div class="text-body-1 font-weight-bold d-flex align-center my-4">
+        <div class="text-body-1 font-weight-medium d-flex align-center my-4">
           創作程式
           <v-btn
             v-show="$isSelf(comment.author.username) && !isEdit[COMMENT_KEY.CODE]"
@@ -340,7 +338,7 @@
         </div>
         <!-- Creation Result -->
         <div v-if="!isEdit[COMMENT_KEY.CODE]">
-          <div class="text-body-1 font-weight-bold my-4">執行結果</div>
+          <div class="text-body-1 font-weight-medium my-4">執行結果</div>
           <Spinner v-if="(isSubmissionPending && !isBrowsingHistory) || !browsingSubmission" />
           <CommentResult v-else :sid="browsingSubmission.id" :result="browsingSubmission" />
         </div>
@@ -367,7 +365,7 @@
             </v-btn>
           </div>
           <div v-if="testResult">
-            <div class="text-body-1 font-weight-bold my-4">測試執行結果</div>
+            <div class="text-body-1 font-weight-medium my-4">測試執行結果</div>
             <Spinner v-if="isTestSubmissionPending" />
             <CommentResult v-else :sid="''" :result="testResult" isTest />
           </div>
@@ -411,14 +409,13 @@
 import TextEditor from '@/components/UI/TextEditor'
 import CodeEditor from '@/components/UI/CodeEditor'
 import Spinner from '@/components/UI/Spinner'
+import Gravatar from '@/components/UI/Gravatar'
 import SubmissionStatusLabel from '@/components/UI/SubmissionStatusLabel'
 import { SUBMISSION_STATUS } from '@/constants/submission'
 import CommentResult from './CommentResult'
-import { ROLE } from '@/constants/auth'
-import agent from '@/api/agent'
 import CommentReplies from './CommentReplies'
+import { canWriteCourseMixin, canParticipateCourseMixin } from '@/lib/permissionMixin'
 
-const { TEACHER, STUDENT } = ROLE
 const COMMENT_KEY = {
   TITLE: 'title',
   CONTENT: 'content',
@@ -428,10 +425,13 @@ const COMMENT_KEY = {
 export default {
   name: 'Comment',
 
+  mixins: [canWriteCourseMixin, canParticipateCourseMixin],
+
   components: {
     TextEditor,
     CodeEditor,
     Spinner,
+    Gravatar,
     CommentResult,
     CommentReplies,
     SubmissionStatusLabel,
@@ -485,6 +485,26 @@ export default {
     },
   },
 
+  data() {
+    return {
+      pollingSubmission: null,
+      statusOptions: Object.keys(SUBMISSION_STATUS).map(s => Number(s)),
+      SUBMISSION_STATUS,
+      COMMENT_KEY,
+      newComment: {},
+      isEdit: {
+        [COMMENT_KEY.TITLE]: false,
+        [COMMENT_KEY.CONTENT]: false,
+        [COMMENT_KEY.CODE]: false,
+      },
+      isDisableSubmitSubmission: false,
+      browsingSubmissionIndex: this.comment.submissions.length - 1,
+      replies: null,
+      isReply: false,
+      newReply: '',
+    }
+  },
+
   computed: {
     isSubmissionPending() {
       if (!this.comment || !this.comment.submission) return false
@@ -513,12 +533,9 @@ export default {
     hasAccepted() {
       return this.historySubmissions.some(submission => submission.state === 1)
     },
-    courseId() {
-      return this.$route.params.id
-    },
   },
 
-  async created() {
+  created() {
     this.pollingSubmission = setInterval(
       that => {
         if (that.isSubmissionPending) {
@@ -531,8 +548,6 @@ export default {
       1000,
       this,
     )
-    this.canParticipateCourse = await this.$hasPermission('course', this.courseId, ['p'])
-    this.canWriteCourse = await this.$hasPermission('course', this.courseId, ['w'])
   },
 
   watch: {
@@ -553,30 +568,6 @@ export default {
 
   beforeDestroy() {
     clearInterval(this.pollingSubmission)
-  },
-
-  data() {
-    return {
-      TEACHER,
-      STUDENT,
-      pollingSubmission: null,
-      statusOptions: Object.keys(SUBMISSION_STATUS).map(s => Number(s)),
-      SUBMISSION_STATUS,
-      COMMENT_KEY,
-      newComment: {},
-      isEdit: {
-        [COMMENT_KEY.TITLE]: false,
-        [COMMENT_KEY.CONTENT]: false,
-        [COMMENT_KEY.CODE]: false,
-      },
-      isDisableSubmitSubmission: false,
-      browsingSubmissionIndex: this.comment.submissions.length - 1,
-      replies: null,
-      isReply: false,
-      newReply: '',
-      canParticipateCourse: null,
-      canWriteCourse: null,
-    }
   },
 
   methods: {
@@ -612,7 +603,7 @@ export default {
     },
     async getReply(cid, index, arr) {
       try {
-        const result = await agent.Comment.get(cid)
+        const result = await this.$agent.Comment.get(cid)
         arr[index] = { ...result.data.data, id: cid }
       } catch (error) {
         arr[index] = { status: 0, id: cid }
@@ -663,6 +654,7 @@ export default {
         this.isReply = false
       } catch (error) {
         this.$alertFail('新增留言失敗。')
+        this.$rollbar.error('[components/CommentDetail/handleSubmitReply]', error)
       }
     },
   },

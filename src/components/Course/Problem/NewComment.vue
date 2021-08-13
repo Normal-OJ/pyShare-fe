@@ -60,7 +60,7 @@
       </v-btn>
     </div>
     <div v-if="testResult">
-      <div class="text-body-1 font-weight-bold my-4">測試執行結果</div>
+      <div class="text-body-1 font-weight-medium my-4">測試執行結果</div>
       <Spinner v-if="isTestSubmissionPending" />
       <CommentResult v-else :sid="''" :result="testResult" isTest />
     </div>

@@ -1,6 +1,6 @@
 <template>
   <v-container fluid>
-    <div class="text-h5">主題列表</div>
+    <div class="text-h5">主題</div>
     <div class="d-flex align-center">
       <v-col cols="10" md="6" class="d-flex">
         <v-select
@@ -28,6 +28,11 @@
         />
       </v-col>
       <v-spacer />
+      <template v-if="canWriteCourse">
+        <v-btn color="primary" :to="{ name: 'courseProblemsStats' }" class="mr-3" outlined>
+          檢視主題統計
+        </v-btn>
+      </template>
       <template v-if="canParticipateCourse">
         <v-btn color="primary" :to="{ name: 'courseManageProblems' }" class="mr-3" outlined>
           管理我的主題
@@ -92,6 +97,7 @@
 
 <script>
 import ColorLabel from '@/components/UI/ColorLabel'
+import { canWriteCourseMixin, canParticipateCourseMixin } from '@/lib/permissionMixin'
 
 const headers = [
   { text: '題號', value: 'pid' },
@@ -103,6 +109,8 @@ const headers = [
 
 export default {
   name: 'Problems',
+
+  mixins: [canWriteCourseMixin, canParticipateCourseMixin],
 
   components: { ColorLabel },
 
@@ -125,18 +133,7 @@ export default {
     headers,
     searchText: '',
     selectedTags: [],
-    canParticipateCourse: null,
   }),
-
-  async created() {
-    this.canParticipateCourse = await this.$hasPermission('course', this.courseId, ['p'])
-  },
-
-  computed: {
-    courseId() {
-      return this.$route.params.id
-    },
-  },
 
   watch: {
     selectedTags() {

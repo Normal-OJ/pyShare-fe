@@ -2,25 +2,27 @@
   <v-container fluid class="d-flex flex-column align-center login">
     <div class="text-h3" data-test="title">歡迎回來，請先登入</div>
     <v-radio-group v-model="loginMethod" row class="mt-8" hide-details>
-      <v-radio label="透過學校和使用者名稱登入" :value="USERNAME" />
-      <v-radio label="透過電子信箱登入" :value="EMAIL" data-test="emailRadio" />
+      <v-radio label="透過學校和使用者名稱登入" :value="LOGIN_BY.USERNAME" />
+      <v-radio label="透過電子信箱登入" :value="LOGIN_BY.EMAIL" data-test="emailRadio" />
     </v-radio-group>
     <v-form ref="form" class="mt-4" style="width: min(460px, 80%)">
-      <v-row v-if="loginMethod === USERNAME">
+      <v-row v-if="loginMethod === LOGIN_BY.USERNAME">
         <v-col cols="4">
           <v-select
             v-model="loginForm.school"
             :rules="loginRules.school"
             :items="schoolOptions"
-            :item-text="({ alias, name }) => `${alias} ${name}`"
-            item-value="alias"
+            :item-text="({ abbr, name }) => `${abbr} ${name}`"
+            item-value="abbr"
             label="學校"
             outlined
+            no-data-text="載入中"
+            :loading="isSchoolLoading"
             :error="!!errorMsg"
             @input="() => (errorMsg = '')"
             data-test="school"
           >
-            <template v-slot:selection="{ item }">{{ item.alias || item.name }}</template>
+            <template v-slot:selection="{ item }">{{ item.abbr || item.name }}</template>
           </v-select>
         </v-col>
         <v-col cols="8">
@@ -38,7 +40,7 @@
       </v-row>
       <v-text-field
         v-else
-        label="電子郵件"
+        label="電子信箱"
         v-model="loginForm.email"
         :rules="loginRules.email"
         class="mt-3 mb-3"
@@ -68,7 +70,7 @@
         class="mt-4"
         :loading="isLoading"
         @click="handleSubmit"
-        data-test="loginBtn"
+        data-test="submitLoginBtn"
       >
         登入
       </v-btn>
@@ -77,23 +79,25 @@
 </template>
 
 <script>
-import { LOGIN } from '@/store/actions.type.js'
-import { SCHOOLS } from '@/constants/auth.js'
+import { ActionTypes } from '@/store/action-types'
 import { mapState } from 'vuex'
+import { SCHOOLS } from '@/constants/auth'
 
-const USERNAME = 0
-const EMAIL = 1
+const LOGIN_BY = {
+  USERNAME: 0,
+  EMAIL: 1,
+}
 
 export default {
   name: 'Login',
 
   data: () => ({
     isLoading: false,
+    isSchoolLoading: true,
     errorMsg: '',
-    USERNAME,
-    EMAIL,
-    loginMethod: USERNAME,
-    schoolOptions: SCHOOLS,
+    LOGIN_BY,
+    loginMethod: LOGIN_BY.USERNAME,
+    schoolOptions: [],
     loginForm: {
       school: null,
       username: null,
@@ -109,36 +113,48 @@ export default {
     isShowPassword: false,
   }),
 
+  created() {
+    this.$agent.School.getList()
+      .then(resp => (this.schoolOptions = resp.data.data))
+      .catch(error => {
+        // 備援
+        this.schoolOptions = SCHOOLS
+        this.$rollbar.error('Failed to fetch school list!', error)
+      })
+      .finally(() => (this.isSchoolLoading = false))
+  },
+
   methods: {
     async handleSubmit() {
       if (!this.$refs.form.validate()) return
+      this.$rollbar.info('LoginBy', this.loginMethod)
       this.isLoading = true
       const { email, school, username, password } = this.loginForm
       const body =
-        this.loginMethod === this.USERNAME ? { school, username, password } : { email, password }
+        this.loginMethod === LOGIN_BY.USERNAME
+          ? { school, username, password }
+          : { email, password }
       this.$store
-        .dispatch(LOGIN, body)
-        .then(async () => {
+        .dispatch(ActionTypes.LOGIN, body)
+        .then(() => {
           this.$alertSuccess('登入成功')
-          await this.$nextTick()
           const { redirectToPath } = this.$route.query
-          if (redirectToPath === '/profile') {
-            this.$router.push({ name: 'profile', params: { id: this.id } })
-          } else {
-            this.$router.push(redirectToPath ? { path: redirectToPath } : { name: 'courses' })
-          }
+          this.$router.push(redirectToPath ? { path: redirectToPath } : { name: 'courses' })
         })
         .catch(error => {
           switch (error.message) {
             case 'Login Failed':
-              this.errorMsg = '登入失敗：學校、使用者名稱或密碼有誤'
+              this.errorMsg =
+                this.loginMethod === LOGIN_BY.USERNAME
+                  ? '登入失敗：學校、使用者名稱或密碼有誤'
+                  : '登入失敗：信箱或密碼有誤'
               break
             default:
               this.errorMsg = '登入失敗：系統異常，請洽管理員'
-              throw error
+              this.$rollbar.error('Failed to login with unknown reason!', error)
           }
         })
-      this.isLoading = false
+        .finally(() => (this.isLoading = false))
     },
   },
 

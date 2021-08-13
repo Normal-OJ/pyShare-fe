@@ -13,37 +13,28 @@
           dense
         />
       </v-col>
+
       <v-spacer />
 
       <div v-if="selected.length > 0">
-        <v-btn
-          icon
-          class="mr-3"
-          color="error"
-          @click="handleClickDelete()"
-          data-test="removeStudentBtn"
-        >
-          <v-icon>mdi-trash-can</v-icon>
-        </v-btn>
-        <v-btn color="primary" outlined class="mr-3" @click="downloadStats">
-          <v-icon>mdi-download</v-icon>
-          下載勾選的資料
+        <v-btn color="error" text @click="handleClickDelete()" data-test="removeStudentBtn">
+          <v-icon class="mr-1">mdi-trash-can</v-icon>
+          移除勾選的成員
         </v-btn>
       </div>
-      <v-btn color="primary" outlined class="mr-3" @click="downloadStats">
+
+      <v-spacer />
+
+      <v-btn color="primary" outlined class="mr-3" @click="downloadMembers">
         <v-icon>mdi-download</v-icon>
-        下載統計資料
+        匯出成員名單
       </v-btn>
-      <AddStudentModal
-        v-if="canWriteCourse"
-        @submit-add-multiple-students="submitAddMultipleStudents"
-        @submit-add-student="submitAddStudent"
-      />
+      <AddStudentModal v-if="canWriteCourse" @success="getCourseStats($route.params.id)" />
     </div>
 
     <v-data-table
       :headers="headers"
-      :items="stats"
+      :items="members"
       :search="searchText"
       :items-per-page="Number(-1)"
       hide-default-footer
@@ -54,10 +45,13 @@
       class="table"
       @click:row="handleRowClick"
     >
-      <template v-slot:[`item.detail`]="{ item }">
-        <v-btn icon small @click.stop="handleClickDetail(item.id)">
-          <v-icon>mdi-format-list-bulleted</v-icon>
-        </v-btn>
+      <template v-slot:item.data-table-select="{ item, isSelected, select }">
+        <v-simple-checkbox
+          v-if="item.role !== '教師'"
+          :value="isSelected"
+          :ripple="false"
+          @input="select($event)"
+        />
       </template>
       <template v-slot:[slotName] v-for="slotName in ['no-data', 'no-results']">
         <div class="d-flex flex-column align-center" :key="slotName">
@@ -78,31 +72,22 @@
 </template>
 
 <script>
-import AddStudentModal from '@/components/Course/Info/AddStudentModal'
+import AddStudentModal from '@/components/Course/AddStudentModal'
 import ConfirmDeleteModal from './ConfirmDeleteModal'
 import { ROLE } from '@/constants/auth'
-import { mapState } from 'vuex'
+import { mapActions, mapState } from 'vuex'
+import { canWriteCourseMixin } from '@/lib/permissionMixin'
+import { ActionTypes } from '@/store/action-types'
 
 const { TEACHER } = ROLE
-const statsHeaders = [
-  { text: '使用者名稱', value: 'username' },
-  { text: '顯示名稱', value: 'displayName' },
-  { text: '主題數', value: 'numOfProblems' },
-  { text: '創作數', value: 'numOfComments' },
-  { text: '留言數', value: 'numOfReplies' },
-  { text: '獲得愛心', value: 'numOfLiked' },
-  { text: '給予愛心', value: 'numOfLikes' },
-  { text: '執行成功', value: 'execSuccess' },
-  { text: '執行失敗', value: 'execFail' },
-  { text: 'AC 創作數', value: 'numOfAcceptedComments' },
-]
-const headers = [...statsHeaders, { text: '詳細', value: 'detail', sortable: false }]
 
 export default {
   components: { AddStudentModal, ConfirmDeleteModal },
 
+  mixins: [canWriteCourseMixin],
+
   props: {
-    stats: {
+    members: {
       type: Array,
       required: true,
     },
@@ -111,6 +96,21 @@ export default {
       required: true,
     },
   },
+
+  data: () => ({
+    headers: [
+      { text: '使用者名稱', value: 'username' },
+      { text: '顯示名稱', value: 'displayName' },
+      { text: '身份', value: 'role' },
+      { text: 'email', value: 'email' },
+    ],
+    selected: [],
+    searchText: '',
+    TEACHER,
+    isShowConfirmDeleteModal: false,
+    isWaitingDeleteStudent: false,
+    deleteStudentErrorMsg: '',
+  }),
 
   computed: {
     selectedUser() {
@@ -122,24 +122,6 @@ export default {
     ...mapState({
       courseName: state => state.course.courseInfo.name,
     }),
-    courseId() {
-      return this.$route.params.id
-    },
-  },
-
-  data: () => ({
-    headers,
-    selected: [],
-    searchText: '',
-    TEACHER,
-    isShowConfirmDeleteModal: false,
-    isWaitingDeleteStudent: false,
-    deleteStudentErrorMsg: '',
-    canWriteCourse: null,
-  }),
-
-  async created() {
-    this.canWriteCourse = await this.$hasPermission('course', this.courseId, ['w'])
   },
 
   methods: {
@@ -147,29 +129,16 @@ export default {
       const route = this.$router.resolve({ name: 'profile', params: { id: value.id } })
       window.open(route.href, '_blank')
     },
-    handleClickDetail(id) {
-      const route = this.$router.resolve({ name: 'profileStats', params: { id } })
-      window.open(route.href, '_blank')
-    },
-    submitAddMultipleStudents(file, resolve, reject) {
-      this.$emit('submit-add-multiple-students', file, resolve, reject)
-    },
-    submitAddStudent(csvString, resolve, reject) {
-      this.$emit('submit-add-student', csvString, resolve, reject)
-    },
     downloadData() {
-      const header = statsHeaders.map(h => h.text).join(',')
-      const headerKey = statsHeaders.map(h => h.value)
-      const body = this.stats
-        .filter(d => this.selected.length === 0 || this.selectedUser.includes(d.id))
-        .map(d => headerKey.map(hk => d[hk]).join(','))
-        .join('\n')
+      const header = this.headers.map(h => h.text).join(',')
+      const headerKey = this.headers.map(h => h.value)
+      const body = this.members.map(d => headerKey.map(hk => d[hk]).join(',')).join('\n')
       return `${header}\n${body}`
     },
-    downloadStats() {
+    downloadMembers() {
       const csvContent = 'data:text/csv;charset=utf-8,' + this.downloadData()
       const link = document.createElement('a')
-      link.download = `${this.courseName}_statistics.csv`
+      link.download = `${this.courseName}_成員名單.csv`
       link.href = csvContent
       link.click()
     },
@@ -196,6 +165,9 @@ export default {
           this.isWaitingDeleteStudent = false
         })
     },
+    ...mapActions({
+      getCourseStats: ActionTypes.GET_COURSE_STATS,
+    }),
   },
 }
 </script>

@@ -1,9 +1,11 @@
 <template>
   <ManageProblems
     :problems="problems"
+    :templates="canWriteCourse ? templates : []"
     :tags="tags"
     :loading="isWaiting"
     @get-problems-by-tags="getProblemsByTags"
+    @refetch-data="fetchData"
     @delete-problem="deleteProblem"
   />
 </template>
@@ -11,22 +13,28 @@
 <script>
 import ManageProblems from '@/components/Course/Manages/ManageProblems'
 import { mapActions, mapGetters, mapState } from 'vuex'
-import { PROBLEMS_OF_MINE } from '@/store/getters.type'
-import { GET_PROBLEMS } from '@/store/actions.type'
-import agent from '@/api/agent'
+import { GetterTypes } from '@/store/getter-types'
+import { ActionTypes } from '@/store/action-types'
+import { canWriteCourseMixin } from '@/lib/permissionMixin'
 
 export default {
   components: { ManageProblems },
+
+  mixins: [canWriteCourseMixin],
 
   computed: {
     ...mapState({
       tags: state => state.course.courseTags,
     }),
     ...mapGetters({
-      problems: PROBLEMS_OF_MINE,
+      problems: GetterTypes.PROBLEMS_OF_MINE,
+      templates: GetterTypes.TEMPLATES,
     }),
-    courseName() {
-      return this.$route.params.name
+    courseId() {
+      return this.$route.params.id
+    },
+    paramsWithCourse() {
+      return { course: this.courseId }
     },
   },
 
@@ -40,27 +48,25 @@ export default {
 
   methods: {
     async fetchData() {
-      const paramsWithCourse = {
-        course: this.courseName,
-      }
-      await this.getProblems(paramsWithCourse)
+      this.isWaiting = true
+      await Promise.all([this.getProblems(this.paramsWithCourse), this.getTags(this.courseId)])
       this.isWaiting = false
     },
     ...mapActions({
-      getProblems: GET_PROBLEMS,
+      getProblems: ActionTypes.GET_PROBLEMS,
+      getTags: ActionTypes.GET_COURSE_TAGS,
     }),
     getProblemsByTags(paramsWithTags) {
-      this.getProblems({ ...paramsWithTags, course: this.courseName })
+      this.getProblems({ ...paramsWithTags, course: this.courseId })
     },
     async deleteProblem(pid) {
       try {
-        await agent.Problem.delete(pid)
+        await this.$agent.Problem.delete(pid)
         this.fetchData()
         this.$alertSuccess('刪除題目成功。')
       } catch (error) {
-        console.log('[view/Course/Manages/ManageProblems] error', error)
         this.$alertFail('刪除題目失敗。')
-        throw error
+        this.$rollbar.error('[views/ManageProblems/deleteProblem]', error)
       }
     },
   },

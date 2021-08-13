@@ -1,6 +1,6 @@
 <template>
   <v-fade-transition>
-    <Spinner v-if="isWaiting" />
+    <Spinner v-if="isLoading" />
     <div class="pa-4" v-else>
       <Problem v-if="prob" :prob="prob" />
       <v-divider />
@@ -59,10 +59,9 @@ import Problem from '@/components/Course/Problem/Problem'
 import CommentList from '@/components/Course/Problem/CommentList'
 import CommentDetail from '@/components/Course/Problem/CommentDetail'
 import NewComment from '@/components/Course/Problem/NewComment'
-import agent from '@/api/agent'
 import { mapActions, mapGetters, mapState } from 'vuex'
-import { GET_COMMENTS, GET_COURSE_PROBLEMS } from '@/store/actions.type'
-import { COMMENTS } from '@/store/getters.type'
+import { ActionTypes } from '@/store/action-types'
+import { GetterTypes } from '@/store/getter-types'
 import Spinner from '@/components/UI/Spinner'
 
 export default {
@@ -70,12 +69,26 @@ export default {
 
   components: { Problem, CommentList, CommentDetail, NewComment, Spinner },
 
+  data: () => ({
+    prob: null,
+    filteredComments: [],
+    isLoading: true,
+    isEdit: false,
+    floor: null,
+    testResult: {
+      new: null,
+      detail: null,
+    },
+    testResultSubmissionId: null,
+    historySubmissions: [],
+  }),
+
   computed: {
     ...mapState({
       username: state => state.auth.username,
     }),
     ...mapGetters({
-      comments: COMMENTS,
+      comments: GetterTypes.COMMENTS,
     }),
     pid() {
       return Number(this.$route.params.pid)
@@ -103,38 +116,22 @@ export default {
 
   watch: {
     async pid() {
-      this.isWaiting = true
+      this.isLoading = true
       await this.getProblem(this.pid)
       this.fetchFloor()
-      this.isWaiting = false
+      this.isLoading = false
     },
   },
 
   async created() {
     await this.getProblem(this.pid)
-    this.$store.dispatch(GET_COURSE_PROBLEMS, this.prob.course)
     this.fetchFloor()
-    this.isWaiting = false
+    this.isLoading = false
   },
-
-  data: () => ({
-    prob: null,
-    courseInfo: null,
-    filteredComments: [],
-    isWaiting: true,
-    isEdit: false,
-    floor: null,
-    testResult: {
-      new: null,
-      detail: null,
-    },
-    testResultSubmissionId: null,
-    historySubmissions: [],
-  }),
 
   methods: {
     ...mapActions({
-      getComments: GET_COMMENTS,
+      getComments: ActionTypes.GET_COMMENTS,
     }),
     fetchFloor() {
       const { floor } = this.$route.query
@@ -151,11 +148,16 @@ export default {
     },
     async getProblem(pid) {
       try {
-        const { data } = await agent.Problem.get(pid)
+        const { data } = await this.$agent.Problem.get(pid)
         this.prob = data.data
+        if (this.prob.extra._cls === 'OJProblem') {
+          throw new Error()
+        }
         await this.getComments(data.data.comments)
       } catch (error) {
         console.log('[views/Problem/getProblem] error', error)
+        alert('主題不存在')
+        this.$router.push({ name: 'courseProblems' })
         throw error
       }
     },
@@ -163,17 +165,17 @@ export default {
       this.getComments(this.prob.comments)
     },
     fetchTestSubmission(source) {
-      agent.Submission.get(this.testResultSubmissionId).then(res => {
+      this.$agent.Submission.get(this.testResultSubmissionId).then(res => {
         this.testResult[source] = res.data.data
       })
     },
     async submitTestSubmission(code, source) {
       const body = { problemId: this.pid, code }
       try {
-        const { data } = await agent.Submission.createTest(body)
+        const { data } = await this.$agent.Submission.createTest(body)
         const { submissionId } = data.data
         this.testResultSubmissionId = submissionId
-        agent.Submission.get(submissionId).then(res => {
+        this.$agent.Submission.get(submissionId).then(res => {
           this.testResult[source] = res.data.data
         })
       } catch (error) {
@@ -188,12 +190,12 @@ export default {
         ...newComment,
       }
       try {
-        const { data } = await agent.Comment.create(body)
+        const { data } = await this.$agent.Comment.create(body)
         await this.getProblem(this.pid)
         let that = this
         this.$nextTick(() => {
           const { floor } = that.comments.find(comment => comment.id === data.data.id)
-          that.$router.push({ query: { floor } })
+          that.$router.push({ query: { floor }, params: { submit: true } })
           that.fetchFloor()
         })
       } catch (error) {
@@ -204,7 +206,7 @@ export default {
     async submitReply(id, content) {
       const body = { target: 'comment', id, content, title: '', code: '' }
       try {
-        await agent.Comment.create(body)
+        await this.$agent.Comment.create(body)
         await this.getProblem(this.pid)
         return true
       } catch (error) {
@@ -214,7 +216,7 @@ export default {
     },
     async submitNewSubmission(cid, code) {
       try {
-        await agent.Comment.createSubmission(cid, { code })
+        await this.$agent.Comment.createSubmission(cid, { code })
         await this.getProblem(this.pid)
       } catch (error) {
         console.log('[views/Problem/submitTestSubmission] error', error)
@@ -223,7 +225,7 @@ export default {
     },
     async updateComment(cid, newComment) {
       try {
-        await agent.Comment.update(cid, newComment)
+        await this.$agent.Comment.update(cid, newComment)
         this.getComments(this.prob.comments)
       } catch (error) {
         console.log('[views/Problem/updateComment] error', error)
@@ -232,7 +234,7 @@ export default {
     },
     getSubmissions(cid) {
       const comment = this.comments.find(comment => comment.id === cid)
-      Promise.all(comment.submissions.map(sid => agent.Submission.get(sid))).then(resp => {
+      Promise.all(comment.submissions.map(sid => this.$agent.Submission.get(sid))).then(resp => {
         this.historySubmissions = resp.map((res, index) => ({
           ...res.data.data,
           id: comment.submissions[index],
@@ -241,7 +243,7 @@ export default {
     },
     async gradeSubmission(sid, value, cid) {
       try {
-        await agent.Submission.grade(sid, Number(value))
+        await this.$agent.Submission.grade(sid, Number(value))
         this.getSubmissions(cid)
       } catch (error) {
         console.log('[views/Problem/gradeSubmission] error', error)
@@ -250,7 +252,7 @@ export default {
     },
     async likeComment(cid) {
       try {
-        await agent.Comment.like(cid)
+        await this.$agent.Comment.like(cid)
         this.getComments(this.prob.comments)
       } catch (error) {
         console.log('[views/Problem/likeComment] error', error)
@@ -260,7 +262,7 @@ export default {
     async updateReply(cid, content) {
       const body = { title: '', content }
       try {
-        await agent.Comment.update(cid, body)
+        await this.$agent.Comment.update(cid, body)
         this.getComments(this.prob.comments)
       } catch (error) {
         console.log('[views/Problem/updateReply] error', error)
@@ -269,7 +271,7 @@ export default {
     },
     async deleteReply(cid) {
       try {
-        await agent.Comment.delete(cid)
+        await this.$agent.Comment.delete(cid)
         this.getComments(this.prob.comments)
       } catch (error) {
         console.log('[views/Problem/deleteReply] error', error)
@@ -303,20 +305,26 @@ export default {
         id: `comment-${cid}`,
       })
     },
-  },
-
-  beforeRouteLeave(to, from, next) {
-    if (!this.floor) next()
-    if (this.floor === 'new' || this.isEdit) {
-      const answer = window.confirm('確定要離開嗎？未完成的編輯將不會儲存。')
-      if (!answer) {
-        next(false)
+    confirmLeave(to, from, next) {
+      if (!this.floor) next()
+      if ((this.floor === 'new' || this.isEdit) && !to.params.submit) {
+        const answer = window.confirm('確定要離開嗎？未完成的編輯將不會儲存。')
+        if (!answer) {
+          next(false)
+        } else {
+          next()
+        }
       } else {
         next()
       }
-    } else {
-      next()
-    }
+    },
+  },
+
+  beforeRouteUpdate(to, from, next) {
+    this.confirmLeave(to, from, next)
+  },
+  beforeRouteLeave(to, from, next) {
+    this.confirmLeave(to, from, next)
   },
 
   sockets: {

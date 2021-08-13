@@ -1,5 +1,5 @@
 <template>
-  <Profile v-if="!notFound" :id="id" :user="user" :stats="stats" />
+  <Profile v-if="!notFound" :id="$route.params.id" :user="user" :stats="stats" />
   <div v-else class="d-flex flex-column align-center">
     <div class="text-h2 mt-16">
       查無此人 😢
@@ -12,7 +12,6 @@
 
 <script>
 import Profile from '@/components/Profile/Profile'
-import agent from '@/api/agent'
 
 export default {
   components: { Profile },
@@ -28,17 +27,12 @@ export default {
     },
   }),
 
-  computed: {
-    id() {
-      return this.$route.params.id
-    },
-  },
-
   watch: {
-    id: {
+    '$route.params.id': {
       handler() {
-        this.getUser(this.id)
-        this.getStats(this.id)
+        console.log('watch~')
+        this.getUser(this.$route.params.id)
+        this.getStats(this.$route.params.id)
       },
       immediate: true,
     },
@@ -47,25 +41,21 @@ export default {
   methods: {
     async getUser(id) {
       try {
-        const { data } = await agent.User.getList()
-        const user = data.data.find(user => user.id === id)
-        if (!user) {
-          this.notFound = true
-          return
-        }
-        this.user = user
+        const { data } = await this.$agent.User.get(id)
+        this.user = data.data
       } catch (error) {
+        this.notFound = true
         console.log('[views/Profile/getUser] error', error)
-        throw error
+        this.$rollbar.error('Failed to getUser!', error)
       }
     },
     async getStats(id) {
       try {
-        const { data } = await agent.User.getStats(id)
+        const { data } = await this.$agent.User.getStats(id)
         this.stats = data.data
       } catch (error) {
         console.log('[views/Profile/getStats] error', error)
-        throw error
+        this.$rollbar.error('Failed to getStats!', error)
       }
     },
   },

@@ -14,10 +14,7 @@
 <script>
 import Spinner from '@/components/UI/Spinner'
 import SetProblems from '@/components/Course/Problems/SetProblems'
-import { mapActions, mapGetters, mapState } from 'vuex'
-import { GET_PROBLEM_INFO } from '@/store/actions.type'
-import { USER } from '@/store/getters.type'
-import agent from '@/api/agent'
+import { mapState } from 'vuex'
 
 const OPERATION = {
   NEW: 'new',
@@ -40,10 +37,6 @@ export default {
   computed: {
     ...mapState({
       courseTags: state => state.course.courseTags,
-      problemInfo: state => state.problem.problemInfo,
-    }),
-    ...mapGetters({
-      user: USER,
     }),
     isEdit() {
       return this.$route.params.operation === OPERATION.EDIT
@@ -54,33 +47,36 @@ export default {
     pid() {
       return this.$route.query.pid
     },
-    prob() {
-      if (this.isEdit) return this.problemInfo
-      return { ...initialProb, course: this.courseId, author: this.user }
-    },
   },
 
-  async created() {
-    if (this.isEdit) await this.getProblemInfo(this.pid)
+  created() {
+    if (this.isEdit) this.getProblem(this.pid)
+    else this.prob = { ...initialProb, course: this.courseId }
   },
 
   data: () => ({
     submitSuccess: false,
     isLoading: false,
+    prob: null,
   }),
 
   methods: {
-    ...mapActions({
-      getProblemInfo: GET_PROBLEM_INFO,
-    }),
+    async getProblem(pid) {
+      try {
+        const { data } = await this.$agent.Problem.get(pid)
+        this.prob = data.data
+      } catch (error) {
+        this.$rollbar.error('[views/SetProblems/getProblem]', error)
+      }
+    },
     async handleSubmit(body, willAddAttachments, willRemoveAttachments) {
       try {
         this.isLoading = true
         let result
         if (this.isEdit) {
-          result = await agent.Problem.update(this.pid, body)
+          result = await this.$agent.Problem.update(this.pid, body)
         } else {
-          result = await agent.Problem.create(body)
+          result = await this.$agent.Problem.create(body)
         }
         this.submitSuccess = true
         this.$alertSuccess(`${this.isEdit ? '更新' : '新增'}主題內容成功。`)
@@ -92,15 +88,14 @@ export default {
                 const formData = new FormData()
                 formData.append('attachment', file)
                 formData.append('attachmentName', file.name)
-                return agent.Problem.addAttachment(pid, formData)
+                return this.$agent.Problem.addAttachment(pid, formData)
               }),
             )
             this.$alertSuccess('新增主題附件成功。')
           } catch (error) {
-            console.log('[views/SetProblems/handleSubmit - add attachments] error', error)
             this.$alertFail('新增主題附件失敗。')
             this.submitSuccess = false
-            throw error
+            this.$rollbar.error('[views/SetProblems/handleSubmit(add attachments)]', error)
           }
         }
         if (willRemoveAttachments.length > 0) {
@@ -109,18 +104,17 @@ export default {
               willRemoveAttachments.map(filename => {
                 const formData = new FormData()
                 formData.append('attachmentName', filename)
-                return agent.Problem.removeAttachment(pid, formData)
+                return this.$agent.Problem.removeAttachment(pid, formData)
               }),
             )
             this.$alertSuccess('移除主題附件成功。')
           } catch (error) {
-            console.log('[views/SetProblems/handleSubmit - remove attachments] error', error)
             this.$alertFail('移除主題附件失敗。')
             this.submitSuccess = false
-            throw error
+            this.$rollbar.error('[views/SetProblems/handleSubmit(remove attachments)]', error)
           }
         }
-        this.getProblemInfo(pid)
+        this.getProblem(pid)
         if (this.submitSuccess) {
           if (!this.isEdit) {
             this.$router.push({
@@ -135,22 +129,21 @@ export default {
           }
         }
       } catch (error) {
-        console.log('[views/SetProblems/handleSubmit] error', error)
         this.$alertFail(`${this.isEdit ? '更新' : '新增'}主題內容失敗。`)
-        throw error
+        this.$rollbar.error('[views/SetProblems/handleSubmit]', error)
+      } finally {
+        this.isLoading = false
       }
-      this.isLoading = false
     },
     async deleteProblem(pid) {
       try {
-        await agent.Problem.delete(pid)
+        await this.$agent.Problem.delete(pid)
         this.submitSuccess = true
         this.$alertSuccess('刪除題目成功。')
         this.$router.push({ name: 'courseProblems', params: { id: this.courseId } })
       } catch (error) {
-        console.log('[view/Course/Manages/ManageProblems] error', error)
         this.$alertFail('刪除題目失敗。')
-        throw error
+        this.$rollbar.error('[views/SetProblems/deleteProblem]', error)
       }
     },
   },

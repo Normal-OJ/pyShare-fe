@@ -1,12 +1,6 @@
 <template>
   <v-app>
-    <Header
-      :isLogin="isLogin"
-      :id="id"
-      :displayName="displayName"
-      :isShowLogoutModal="isShowLogoutModal"
-      @logout="handleLogout"
-    />
+    <Header @logout="handleLogout" />
     <v-main>
       <transition name="fade">
         <router-view />
@@ -16,39 +10,41 @@
   </v-app>
 </template>
 
-<script>
-import Header from '@/components/UI/Header'
-import Notification from '@/components/UI/Notification'
-import { mapState, mapActions } from 'vuex'
-import { LOGOUT } from '@/store/actions.type'
+<script lang="ts">
+import Vue from 'vue'
+import Header from '@/components/UI/Header.vue'
+import Notification from '@/components/UI/Notification.vue'
+import { mapActions } from 'vuex'
+import { ActionTypes } from './store/action-types'
 
-export default {
+export default Vue.extend({
   name: 'App',
 
   components: { Header, Notification },
 
-  computed: {
-    ...mapState({
-      isLogin: state => state.auth.isAuthenticated,
-      id: state => state.auth.id,
-      displayName: state => state.auth.displayName,
-      isShowLogoutModal: state => state.auth.isShowLogoutModal,
-    }),
+  created() {
+    this.getJwt()
   },
 
   methods: {
     ...mapActions({
-      logout: LOGOUT,
+      getJwt: ActionTypes.GET_JWT,
+      logout: ActionTypes.LOGOUT,
     }),
     async handleLogout() {
       try {
         await this.logout()
-        this.$router.replace({ name: 'home' })
+        if (this.$route.name === 'home') {
+          this.$router.go(0)
+        } else {
+          this.$router.replace({ name: 'home' })
+        }
       } catch (error) {
-        console.log('[App/logout] error', error)
-        throw error
+        this.$rollbar.error('[App/logout]', error)
       }
     },
   },
-}
+})
 </script>
+
+<style></style>

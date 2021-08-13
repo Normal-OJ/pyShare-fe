@@ -1,11 +1,14 @@
 <template>
   <v-container class="pb-16">
-    <div class="d-flex justify-center mt-4">
-      <v-avatar class="mr-2" size="120" color="primary">
-        <span class="white--text text-h3" v-if="user.displayName">
-          {{ user.displayName.slice(0, 1) }}
+    <div class="d-flex flex-column align-center mt-4">
+      <Gravatar :size="120" :md5="user.md5 || ''" />
+      <div class="mt-2 text-body-2">
+        若欲更改頭像，請至
+        <span>
+          <a href="https://en.gravatar.com/" target="_blank" rel="noopener noreferrer">Gravatar</a>
         </span>
-      </v-avatar>
+        網站使用與平台同樣的 email 進行設定
+      </div>
     </div>
     <div class="text-h5">基本資訊</div>
     <Spinner v-if="!user.username || !user.displayName" />
@@ -13,22 +16,22 @@
       <v-simple-table>
         <template v-slot:default>
           <tbody>
-            <template v-if="$isSelf(user.username)">
+            <template v-if="$isSelf(user.username) || role === 0">
               <tr>
-                <td class="font-weight-bold">學校</td>
+                <td class="font-weight-medium">學校</td>
                 <td style="width: 70%">{{ school }}</td>
               </tr>
               <tr>
-                <td class="font-weight-bold">使用者名稱</td>
+                <td class="font-weight-medium">使用者名稱</td>
                 <td style="width: 70%">{{ user.username }}</td>
               </tr>
               <tr>
-                <td class="font-weight-bold">Email</td>
+                <td class="font-weight-medium">Email</td>
                 <td style="width: 70%">{{ user.email }}</td>
               </tr>
             </template>
             <tr>
-              <td class="font-weight-bold">顯示名稱</td>
+              <td class="font-weight-medium">顯示名稱</td>
               <td style="width: 70%">{{ user.displayName }}</td>
             </tr>
           </tbody>
@@ -46,18 +49,18 @@
     <div v-else class="mt-4 d-flex justify-space-around flex-wrap">
       <div class="d-flex flex-column align-center">
         <div class="text-h6">累積主題</div>
-        <div class="font-weight-thin text-h1">{{ stats.problems.length }}</div>
+        <div class="ctext-amount">{{ stats.problems.length }}</div>
       </div>
       <div class="d-flex flex-column align-center">
         <div class="text-h6">累積創作</div>
-        <div class="font-weight-thin text-h1">{{ stats.comments.length }}</div>
+        <div class="ctext-amount">{{ stats.comments.length }}</div>
       </div>
       <div class="d-flex flex-column align-center">
         <div class="text-h6">獲得愛心</div>
-        <div class="font-weight-thin text-h1">{{ totalLikedAmount }}</div>
+        <div class="ctext-amount">{{ totalLikedAmount }}</div>
       </div>
     </div>
-    <div class="text-h5 mt-8" v-if="$isSelf(user.username)">更改信箱密碼</div>
+    <div class="text-h5 mt-8" v-if="$isSelf(user.username)">更改信箱或密碼</div>
     <v-form ref="form" class="mt-4" v-if="$isSelf(user.username)">
       <v-row>
         <v-col cols="12" md="6">
@@ -106,8 +109,8 @@
 
 <script>
 import Spinner from '@/components/UI/Spinner'
-import { SCHOOLS } from '@/constants/auth'
-import agent from '@/api/agent'
+import Gravatar from '@/components/UI/Gravatar'
+import { mapState } from 'vuex'
 
 export default {
   props: {
@@ -124,11 +127,12 @@ export default {
     },
   },
 
-  components: { Spinner },
+  components: { Spinner, Gravatar },
 
   data() {
     return {
       isLoading: false,
+      school: '',
       formValues: {
         email: '',
         oldPassword: '',
@@ -158,11 +162,6 @@ export default {
         return a + b.starers.length
       }, 0)
     },
-    school() {
-      if (this.user.school === null) return ''
-      const school = SCHOOLS.find(s => s.alias === this.user.school)
-      return school.name
-    },
     isDisabledSubmit() {
       return (
         (!this.formValues.newPassword && !this.formValues.email) ||
@@ -170,13 +169,32 @@ export default {
         this.isEmailValidating
       )
     },
+    ...mapState({
+      role: state => state.auth.role,
+    }),
+  },
+
+  watch: {
+    user: {
+      handler() {
+        if (!this.user.school) {
+          this.school = '無'
+          return
+        }
+        this.getSchool()
+      },
+      deep: true,
+    },
   },
 
   methods: {
+    getSchool() {
+      this.$agent.School.get(this.user.school).then(resp => (this.school = resp.data.data.abbr))
+    },
     validateEmail() {
       this.isEmailValidating = true
       const body = { email: this.formValues.email }
-      agent.Auth.validateEmail(body)
+      this.$agent.Auth.validateEmail(body)
         .then(() => {
           this.emailError = ''
         })
@@ -209,7 +227,7 @@ export default {
         oldPassword: this.formValues.oldPassword,
         newPassword: this.formValues.newPassword,
       }
-      agent.Auth.changePassword(body)
+      this.$agent.Auth.changePassword(body)
         .then(() => {
           this.$alertSuccess('更改密碼成功。')
         })
@@ -226,7 +244,7 @@ export default {
         password: this.formValues.oldPassword,
         email: this.formValues.email,
       }
-      agent.Auth.changeEmail(body)
+      this.$agent.Auth.changeEmail(body)
         .then(() => {
           this.$alertSuccess('更改信箱成功。')
         })

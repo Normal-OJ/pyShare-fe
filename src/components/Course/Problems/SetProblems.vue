@@ -25,18 +25,27 @@
           label="顯示狀態"
           v-model="newProb.status"
           :items="status"
-          hint="隱藏僅老師和創題者可見"
+          hint="設為「隱藏」則只有老師和主題作者可見"
           persistent-hint
           outlined
           dense
         />
       </v-col>
-      <v-col cols="12" md="6">
+      <v-col cols="6" md="3">
         <v-checkbox
           v-if="canWriteCourse"
           class="pt-0 mt-0"
           v-model="newProb.allowMultipleComments"
-          label="允許主題下可以發表多個創作"
+          label="允許主題下每人可發表多個創作"
+          hide-details
+        />
+      </v-col>
+      <v-col cols="6" md="3">
+        <v-checkbox
+          v-if="canWriteCourse"
+          class="pt-0 mt-0"
+          v-model="newProb.isTemplate"
+          label="公開至共享資料集"
           hide-details
         />
       </v-col>
@@ -165,14 +174,16 @@ import TextEditor from '@/components/UI/TextEditor'
 import CodeEditor from '@/components/UI/CodeEditor'
 import ColorLabel from '@/components/UI/ColorLabel'
 import _ from 'lodash'
-import { mapGetters } from 'vuex'
-import { ROLE } from '@/store/getters.type'
+import { mapState } from 'vuex'
 import { ROLE as _ROLE } from '@/constants/auth'
+import { canWriteCourseMixin } from '@/lib/permissionMixin'
 
 const { TEACHER } = _ROLE
 
 export default {
   name: 'SetProblems',
+
+  mixins: [canWriteCourseMixin],
 
   components: { PreviewNewProblem, TextEditor, CodeEditor, ColorLabel },
 
@@ -212,12 +223,9 @@ export default {
   },
 
   computed: {
-    ...mapGetters({
-      role: ROLE,
+    ...mapState({
+      role: state => state.auth.role,
     }),
-    courseId() {
-      return this.$route.params.id
-    },
   },
 
   data: () => ({
@@ -230,12 +238,7 @@ export default {
     willRemoveAttachments: [],
     fileUploader: [],
     TEACHER,
-    canWriteCourse: null,
   }),
-
-  async created() {
-    this.canWriteCourse = await this.$hasPermission('course', this.courseId, ['w'])
-  },
 
   methods: {
     submit() {

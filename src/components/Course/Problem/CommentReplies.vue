@@ -7,9 +7,7 @@
       :key="id"
     >
       <div class="d-flex py-4">
-        <v-avatar class="ml-4" size="36" color="primary">
-          <span class="white--text headline">{{ author.displayName.slice(0, 1) }}</span>
-        </v-avatar>
+        <Gravatar class="ml-4" :size="36" :md5="author.md5" />
         <div class="d-flex flex-column">
           <v-card-title class="d-flex flex-row align-center flex-wrap text-body-2 pt-0">
             <router-link class="mr-2" :to="{ name: 'profile', params: { id: author.id } }">
@@ -80,6 +78,7 @@
 
 <script>
 import TextEditor from '@/components/UI/TextEditor'
+import Gravatar from '@/components/UI/Gravatar'
 
 export default {
   props: {
@@ -93,7 +92,7 @@ export default {
     },
   },
 
-  components: { TextEditor },
+  components: { TextEditor, Gravatar },
 
   data: () => ({
     newReplies: null,

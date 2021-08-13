@@ -35,7 +35,7 @@
 
     <v-data-table
       :headers="headers"
-      :items="problems"
+      :items="problems.concat(templates)"
       :search="searchText"
       :items-per-page="Number(-1)"
       hide-default-footer
@@ -54,6 +54,9 @@
           </template>
           <span>隱藏的主題</span>
         </v-tooltip>
+        <v-chip v-if="item.isTemplate" class="ml-2" small color="success" dark>
+          範本
+        </v-chip>
       </template>
       <template v-slot:[`item.tags`]="{ item }">
         <ColorLabel
@@ -69,22 +72,54 @@
         {{ item.comments.length }}
       </template>
       <template v-slot:[`item.manage`]="{ item }">
-        <v-btn
-          :to="{
-            name: 'courseSetProblems',
-            params: { operation: 'edit' },
-            query: { pid: item.pid },
-          }"
-          color="primary"
-          small
-        >
-          <v-icon class="mr-1" small>mdi-pencil</v-icon>
-          編輯
-        </v-btn>
-        <v-btn class="ml-3" color="error" small @click="deleteProblem(item.pid)">
-          <v-icon class="mr-1" small>mdi-trash-can</v-icon>
-          刪除
-        </v-btn>
+        <v-menu bottom right>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn icon v-on="on" v-bind="attrs" class="hidden-lg-and-up">
+              <v-icon>mdi-dots-horizontal</v-icon>
+            </v-btn>
+          </template>
+          <v-list>
+            <v-list-item
+              link
+              :to="{
+                name: 'courseSetProblems',
+                params: { operation: 'edit' },
+                query: { pid: item.pid },
+              }"
+            >
+              <v-list-item-title>編輯</v-list-item-title>
+            </v-list-item>
+            <v-list-item link @click="openCloneDialog(item.pid)">
+              <v-list-item-title>複製</v-list-item-title>
+            </v-list-item>
+            <v-list-item link @click="deleteProblem(item.pid)">
+              <v-list-item-title>刪除</v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-menu>
+        <div class="hidden-md-and-down">
+          <v-btn
+            :to="{
+              name: 'courseSetProblems',
+              params: { operation: 'edit' },
+              query: { pid: item.pid },
+            }"
+            class="mx-1"
+            color="primary"
+            small
+          >
+            <v-icon class="mr-1" small>mdi-pencil</v-icon>
+            <span>編輯</span>
+          </v-btn>
+          <v-btn class="mx-1" color="primary" small @click="openCloneDialog(item.pid)">
+            <v-icon class="mr-1" small>mdi-content-copy</v-icon>
+            <span>複製</span>
+          </v-btn>
+          <v-btn class="mx-1" color="error" small @click="deleteProblem(item.pid)">
+            <v-icon class="mr-1" small>mdi-trash-can</v-icon>
+            <span>刪除</span>
+          </v-btn>
+        </div>
       </template>
       <template v-slot:[slotName] v-for="slotName in ['no-data', 'no-results']">
         <div class="d-flex flex-column align-center" :key="slotName">
@@ -93,11 +128,20 @@
         </div>
       </template>
     </v-data-table>
+    <CloneProblemModal
+      :isOpen="dialog"
+      :clonePid="clonePid"
+      :defaultCourseId="$route.params.id"
+      label="主題"
+      @success="handleCloneSuccess"
+      @close="dialog = false"
+    />
   </v-container>
 </template>
 
 <script>
 import ColorLabel from '@/components/UI/ColorLabel'
+import CloneProblemModal from '../Problem/CloneProblemModal.vue'
 
 const headers = [
   { text: '題號', value: 'pid' },
@@ -108,10 +152,14 @@ const headers = [
 ]
 
 export default {
-  components: { ColorLabel },
+  components: { ColorLabel, CloneProblemModal },
 
   props: {
     problems: {
+      type: Array,
+      required: true,
+    },
+    templates: {
       type: Array,
       required: true,
     },
@@ -125,11 +173,16 @@ export default {
     },
   },
 
-  data: () => ({
-    headers,
-    searchText: '',
-    selectedTags: [],
-  }),
+  data() {
+    return {
+      searchText: '',
+      selectedTags: [],
+      dialog: false,
+      clonePid: 0,
+      isTemplate: false,
+      headers: headers,
+    }
+  },
 
   watch: {
     selectedTags() {
@@ -147,13 +200,13 @@ export default {
     customSort(items, index, isDesc) {
       items.sort((a, b) => {
         if (index[0] === 'creations') {
-          if (!isDesc) {
+          if (!isDesc[0]) {
             return a.comments.length - b.comments.length
           } else {
             return b.comments.length - a.comments.length
           }
         } else {
-          if (!isDesc) {
+          if (!isDesc[0]) {
             return a[index] < b[index] ? -1 : 1
           } else {
             return b[index] < a[index] ? -1 : 1
@@ -161,6 +214,14 @@ export default {
         }
       })
       return items
+    },
+    openCloneDialog(pid) {
+      this.clonePid = pid
+      this.dialog = true
+    },
+    handleCloneSuccess() {
+      this.$emit('refetch-data')
+      this.dialog = false
     },
     deleteProblem(pid) {
       const result = window.confirm('確認要刪除嗎？')

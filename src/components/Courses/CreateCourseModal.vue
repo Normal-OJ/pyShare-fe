@@ -26,13 +26,13 @@
         <v-form ref="form">
           <v-text-field
             label="課程名稱"
-            v-model="courseInfo.name"
+            v-model.trim="courseInfo.name"
             :rules="nameRules"
             outlined
             dense
             data-test="courseName"
             persistent-hint
-            hint="課程名稱僅能包含：A-Z、a-z、0-9、底線、減號、點"
+            hint="課程名稱僅能包含：中英文、數字、空格、底線、減號、點"
           />
           <v-row>
             <v-col>
@@ -118,7 +118,8 @@ export default {
     },
     nameRules: [
       val => !!val || '請輸入課程名稱',
-      val => RegExp(/[\w. _-]+$/).test(val) || '課程名稱包含非法字元',
+      val => RegExp(/^[\u4E00-\u9FCCA-Za-z0-9_.-\s]+$/).test(val) || '課程名稱包含非法字元',
+      val => (!!val && val.length >= 3) || '長度至少三個字元',
     ],
     years: YEARS,
     semesters: SEMESTERS,
@@ -145,6 +146,7 @@ export default {
             this.courseInfo.name = null
             this.dialog = false
             this.$alertSuccess('新增課程成功。')
+            this.$router.go(0)
           })
           .catch(() => {
             this.$alertFail('新增課程失敗')

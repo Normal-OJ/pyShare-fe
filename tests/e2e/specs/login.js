@@ -2,7 +2,7 @@ const emailRadioId = '[data-test=emailRadio]'
 const schoolId = '[data-test=school]'
 const usernameId = '[data-test=username]'
 const passwordId = '[data-test=password]'
-const loginBtnId = '[data-test=loginBtn]'
+const loginBtnId = '[data-test=submitLoginBtn]'
 const emailId = '[data-test=email]'
 
 describe('Login', () => {
@@ -10,6 +10,10 @@ describe('Login', () => {
     cy.visit('/')
     cy.logout()
     cy.reload()
+  })
+
+  after(() => {
+    cy.logout()
   })
 
   it('redirects from auth needed pages and redirects back after login.', () => {

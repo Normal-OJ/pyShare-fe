@@ -1,10 +1,8 @@
 <template>
   <div>
-    <div class="text-h4 font-weight-bold text-center">{{ prob.title }}</div>
+    <div class="text-h4 font-weight-medium text-center">{{ prob.title }}</div>
     <div class="d-flex flex-row mt-4">
-      <v-avatar class="mr-2" size="48" color="primary">
-        <span class="white--text headline">{{ prob.author.displayName.slice(0, 1) }}</span>
-      </v-avatar>
+      <Gravatar class="mr-2" :size="48" :md5="prob.author.md5" />
       <div class="d-flex flex-column">
         <router-link :to="{ name: 'profile', params: { id: prob.author.id } }">
           {{ prob.author.displayName }}
@@ -14,13 +12,28 @@
         </div>
       </div>
       <v-spacer />
-      <v-tooltip bottom>
+      <v-tooltip bottom v-if="!isPreview && canCopyProblem">
         <template v-slot:activator="{ on, attrs }">
           <v-btn
-            v-show="!isPreview && $isSelf(prob.author.username)"
             outlined
             color="primary darken-2"
-            class="align-self-end rounded"
+            class="rounded mr-2"
+            icon
+            v-on="on"
+            v-bind="attrs"
+            @click="dialog = true"
+          >
+            <v-icon>mdi-content-copy</v-icon>
+          </v-btn>
+        </template>
+        <span>複製主題</span>
+      </v-tooltip>
+      <v-tooltip bottom v-if="!isPreview && $isSelf(prob.author.username)">
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn
+            outlined
+            color="primary darken-2"
+            class="rounded"
             :to="{
               name: 'courseSetProblems',
               params: { id: prob.course, operation: 'edit' },
@@ -73,12 +86,21 @@
       @close="isPreviewAttachment = false"
       @download="downloadAttachment(previewAttachment)"
     />
+    <CloneProblemModal
+      :isOpen="dialog"
+      :clonePid="prob.pid"
+      label="主題"
+      @success="dialog = false"
+      @close="dialog = false"
+    />
   </div>
 </template>
 
 <script>
 import PreviewAttachmentModal from './PreviewAttachmentModal'
 import ColorLabel from '@/components/UI/ColorLabel'
+import Gravatar from '@/components/UI/Gravatar'
+import CloneProblemModal from './CloneProblemModal.vue'
 
 export default {
   name: 'Problem',
@@ -94,12 +116,18 @@ export default {
     },
   },
 
-  components: { PreviewAttachmentModal, ColorLabel },
+  components: { PreviewAttachmentModal, ColorLabel, Gravatar, CloneProblemModal },
 
   data: () => ({
     isPreviewAttachment: false,
     previewAttachment: '',
+    dialog: false,
+    canCopyProblem: null,
   }),
+
+  async created() {
+    this.canCopyProblem = await this.$hasPermission('problem', this.prob.pid, ['c'])
+  },
 
   methods: {
     setPreviewAttachment(filename) {

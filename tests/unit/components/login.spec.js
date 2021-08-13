@@ -27,6 +27,11 @@ const validLoginFormByEmail = {
   password: 'password',
 }
 
+const LOGIN_METHOD = {
+  USERNAME: 0,
+  EMAIL: 1,
+}
+
 describe('Login.vue', () => {
   /**
    * Form UI
@@ -43,9 +48,9 @@ describe('Login.vue', () => {
       })
     })
 
-    it('should have a custom title.', () => {
+    it('should have a title.', () => {
       const title = wrapper.find(titleId)
-      expect(title.text()).toMatch('歡迎回來，請先登入')
+      expect(title.exists()).toBeTruthy()
     })
 
     it('should have School, Username and Password inputs with label and empty value.', () => {
@@ -64,7 +69,7 @@ describe('Login.vue', () => {
 
     it('should have two radio btns and can switch to login by Email.', async () => {
       wrapper.find(emailRadioId).setChecked(true)
-      expect(wrapper.vm.$data.loginMethod).toEqual(1)
+      expect(wrapper.vm.$data.loginMethod).toEqual(LOGIN_METHOD.EMAIL)
       // 畫面渲染為非同步，等待下一個週期
       await wrapper.vm.$nextTick()
       const email = wrapper.find(emailId)
@@ -238,12 +243,12 @@ describe('Login.vue', () => {
     it.each([
       [
         validLoginForm,
-        0,
+        LOGIN_METHOD.USERNAME,
         (({ school, username, password }) => ({ school, username, password }))(validLoginForm),
       ],
       [
         validLoginFormByEmail,
-        1,
+        LOGIN_METHOD.EMAIL,
         (({ email, password }) => ({ email, password }))(validLoginFormByEmail),
       ],
     ])(
@@ -298,8 +303,8 @@ describe('Login.vue', () => {
     )
 
     it.each([
-      [validLoginForm, 0, '登入失敗：學校、使用者名稱或密碼有誤'],
-      [validLoginFormByEmail, 1, '登入失敗：信箱或密碼有誤'],
+      [validLoginForm, LOGIN_METHOD.USERNAME, '登入失敗：學校、使用者名稱或密碼有誤'],
+      [validLoginFormByEmail, LOGIN_METHOD.EMAIL, '登入失敗：信箱或密碼有誤'],
     ])(
       'should dispatch login after button being clicked, and login failed.',
       async (loginForm, loginMethod, expectedError) => {

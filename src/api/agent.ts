@@ -163,7 +163,14 @@ const Permission = {
 
 const Dataset = {
   getList: (): PysharePromise<Dataset.IInfo[]> => fetcher.get('/attachment'),
+
   get: (id: Dataset.ID): PysharePromise<Dataset.IInfo> => fetcher.get(`/attachment/${id}`),
+
+  create: (body: FormData) => fetcher.post('/attachment', body),
+
+  modify: (id: Dataset.ID, body: FormData) => fetcher.put(`/attachment/${id}`, body),
+
+  delete: (id: Dataset.ID) => fetcher.delete(`/attachment/${id}`),
 }
 
 const School = {

@@ -187,12 +187,7 @@ const routes: RouteConfig[] = [
       },
     ],
     beforeEnter: (to, from, next) => {
-      store
-        .dispatch(ActionTypes.GET_COURSE_INFO, to.params.id)
-        .then(() => {
-          document.title = `${to.meta.title(to)} | pyShare`
-        })
-        .then(next)
+      store.dispatch(ActionTypes.GET_COURSE_INFO, to.params.id).then(next)
     },
   },
   {
@@ -203,12 +198,6 @@ const routes: RouteConfig[] = [
         path: '',
         name: 'datasets',
         component: () => import('@/views/Datasets/Attachments.vue'),
-        meta: { title: () => '公開資料集' },
-      },
-      {
-        path: 'attachment/:id',
-        name: 'attachment',
-        component: () => import('@/views/Datasets/Attachment.vue'),
         meta: { title: () => '公開資料集' },
       },
       {
@@ -283,9 +272,13 @@ const router = new VueRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  document.title = `${to.meta.title(to)} | pyShare`
+  if (to.meta && typeof to.meta.title === 'function') {
+    document.title = `${to.meta.title(to)} | pyShare`
+  } else {
+    document.title = 'pyShare'
+  }
   const jwt = getJwt()
-  if (!to.meta.isAllowGuest && (!jwt || !jwt.isAuthenticated)) {
+  if (!(to.meta && to.meta.isAllowGuest) && (!jwt || !jwt.isAuthenticated)) {
     next({ name: 'login', query: { redirectToPath: to.path } })
   } else {
     next()

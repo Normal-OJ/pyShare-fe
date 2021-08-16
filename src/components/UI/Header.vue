@@ -92,7 +92,6 @@ const navs = [
   {
     label: '公開資料集',
     routeName: 'datasets',
-    authorizedRole: [ROLE.ADMIN, ROLE.TEACHER, ROLE.STUDENT],
   },
   {
     label: '管理員介面',

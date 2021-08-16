@@ -1,15 +1,15 @@
 <template>
   <v-container fluid>
-    <div class="text-h5">公開資料集</div>
-    <div class="d-flex align-center">
-      <v-col cols="10" md="6" class="d-flex">
+    <div class="text-h5 mb-2">公開資料集</div>
+    <v-row no-gutters align="center">
+      <v-col cols="12" md="6" class="d-flex">
         <v-select
           v-model="selectedTags"
           class="mr-3"
           label="選擇分類"
           outlined
           hide-details
-          :items="tags"
+          :items="tags || []"
           :loading="!tags"
           multiple
           dense
@@ -29,18 +29,16 @@
         />
       </v-col>
       <v-spacer />
-
-      <CreateDatasetModel />
-      <!-- <v-btn v-if="canCreateAttachment" color="success">
-        <v-icon class="mr-1">mdi-plus</v-icon>
-        新增資料集
-      </v-btn> -->
-    </div>
+      <template v-if="canCreateAttachment">
+        <v-switch v-model="onlyShowMine" label="顯示我上傳的資料集" class="mr-3" />
+        <CreateDatasetModel :tags="tags" @submit="createAttachment" />
+      </template>
+    </v-row>
 
     <v-data-table
       v-model="selectedAttachments"
       :headers="headers"
-      :items="attachments"
+      :items="filteredAttachments"
       :search="searchText"
       :items-per-page="Number(-1)"
       hide-default-footer
@@ -57,8 +55,7 @@
               <router-link :to="{ name: 'profile', params: { id: item.author.id } }">
                 {{ item.author.displayName }}
               </router-link>
-              &nbsp;·&nbsp;
-              {{ `更新於 ${$timeFromNow($dayjs(item.updated).unix())}` }}
+              &nbsp;·&nbsp;{{ `更新於 ${$timeFromNow($dayjs(item.updated).unix())}` }}
             </div>
           </div>
         </div>
@@ -80,8 +77,8 @@
       <template v-slot:item.operation="{ item }">
         <v-tooltip top>
           <template v-slot:activator="{ on, attrs }">
-            <v-btn color="primary" icon v-on="on" v-bind="attrs" class="mr-3">
-              <v-icon>mdi-import</v-icon>
+            <v-btn color="primary" icon v-on="on" v-bind="attrs" class="mr-2">
+              <v-icon>mdi-table-arrow-right</v-icon>
             </v-btn>
           </template>
           <span>引用至主題</span>
@@ -93,6 +90,7 @@
               icon
               v-on="on"
               v-bind="attrs"
+              class="mr-2"
               @click="downloadAttachment(item.id)"
             >
               <v-icon>mdi-download</v-icon>
@@ -100,20 +98,47 @@
           </template>
           <span>下載檔案</span>
         </v-tooltip>
+        <v-menu v-if="item.author.id === userId" bottom right>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn icon v-on="on" v-bind="attrs">
+              <v-icon>mdi-dots-horizontal</v-icon>
+            </v-btn>
+          </template>
+          <v-list>
+            <v-list-item link @click="editingAttachment = item">
+              <v-list-item-title>編輯</v-list-item-title>
+            </v-list-item>
+            <v-list-item link @click="deleteAttachment(item.id)">
+              <v-list-item-title>刪除</v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-menu>
       </template>
       <template v-slot:expanded-item="{ headers, item }">
         <td :colspan="headers.length" class="py-6 px-8">
-          <v-chip color="primary text-body-2 my-2" label small>詳細資訊</v-chip>
-          <div class="ml-3">{{ item.description }}</div>
-          <v-chip color="primary text-body-2 my-2" label small>版本備註</v-chip>
+          <v-chip color="primary text-body-2 my-2" label small>資料內容</v-chip>
+          <div class="ml-3" style="white-space: pre">{{ item.description }}</div>
+          <div class="my-2">
+            <v-chip color="primary text-body-2" label small>版本備註</v-chip>
+            <v-tooltip right>
+              <template v-slot:activator="{ on, attrs }">
+                <v-icon class="ml-3" color="primary" small v-bind="attrs" v-on="on">
+                  mdi-help-circle
+                </v-icon>
+              </template>
+              <span>當資料的上傳者更新此資料時，可以留下更新的備註呈現於此</span>
+            </v-tooltip>
+          </div>
           <div class="ml-3 mb-2">
             <ul>
-              <li v-for="(note, index) in item.patchNotes.slice().reverse()" :key="index">
-                版本 {{ item.patchNotes.length - index }}：
-                <span v-if="note">{{ note }}</span>
+              <li v-for="(note, index) in item.patchNotes.slice(1).reverse()" :key="index">
+                版本
+                {{ `${item.patchNotes.length - index - 1} → ${item.patchNotes.length - index}` }}
+                <span v-if="note" style="white-space: pre">{{ note }}</span>
                 <span v-else class="gray-text">沒有留下備註</span>
               </li>
             </ul>
+            <span v-if="item.patchNotes.length === 1">此資料沒有其他版本</span>
           </div>
           <div class="ml-3">最後更新時間：{{ $formattedTime($dayjs(item.updated).unix()) }}</div>
           <div class="ml-3">資料建立時間：{{ $formattedTime($dayjs(item.created).unix()) }}</div>
@@ -126,6 +151,14 @@
         </div>
       </template>
     </v-data-table>
+
+    <EditDatasetModal
+      :open="!!editingAttachment"
+      :tags="tags"
+      :dataset="editingAttachment"
+      @close="editingAttachment = null"
+      @submit="editAttachment"
+    />
   </v-container>
 </template>
 
@@ -133,25 +166,39 @@
 import ColorLabel from '@/components/UI/ColorLabel.vue'
 import Gravatar from '@/components/UI/Gravatar.vue'
 import CreateDatasetModel from '@/components/Datasets/CreateDatasetModal.vue'
+import EditDatasetModal from '@/components/Datasets/EditDatasetModal.vue'
 import { formatBytes } from '@/lib/utils'
 import { mapState } from 'vuex'
 import { ROLE } from '@/constants/auth'
 
 export default {
-  components: { ColorLabel, Gravatar, CreateDatasetModel },
+  components: { ColorLabel, Gravatar, CreateDatasetModel, EditDatasetModal },
 
   data: () => ({
     selectedAttachments: [],
-    attachments: undefined,
+    attachments: null,
     searchText: '',
     selectedTags: [],
-    tags: undefined,
+    tags: null,
+    onlyShowMine: false,
+    editingAttachment: null,
   }),
 
   computed: {
     ...mapState({
+      userId: state => state.auth.id,
       role: state => state.auth.role,
     }),
+    filteredAttachments() {
+      if (!this.attachments) return []
+      const attFilteredByTags = this.attachments.filter(att =>
+        this.selectedTags.every(tag => att.tags.includes(tag)),
+      )
+      if (this.onlyShowMine) {
+        return attFilteredByTags.filter(att => att.author.id === this.userId)
+      }
+      return attFilteredByTags
+    },
     headers() {
       return [
         { text: '資料集', value: 'filename' },
@@ -172,8 +219,10 @@ export default {
   },
 
   methods: {
-    selectTag(...args) {
-      console.log(args)
+    selectTag(tag) {
+      if (!this.selectedTags.includes(tag)) {
+        this.selectedTags.push(tag)
+      }
     },
     async getAttachments() {
       try {
@@ -200,6 +249,39 @@ export default {
         window.open(href, '_blank')
       } catch (error) {
         this.$rollbar('[views/Attachments/downloadAttachment]', error)
+      }
+    },
+    async createAttachment(body, resolve, reject) {
+      try {
+        await this.$agent.Dataset.create(body)
+        resolve()
+        this.getAttachments()
+      } catch (error) {
+        reject()
+        this.$rollbar('[views/Attachments/createAttachment]', error)
+      }
+    },
+    async editAttachment(id, body, resolve, reject) {
+      try {
+        await this.$agent.Dataset.modify(id, body)
+        resolve()
+        this.getAttachments()
+      } catch (error) {
+        reject()
+        this.$rollbar('[views/Attachments/createAttachment]', error)
+      }
+    },
+    async deleteAttachment(id) {
+      try {
+        const result = window.confirm('確認要刪除嗎？')
+        if (result) {
+          await this.$agent.Dataset.delete(id)
+          this.$alertSuccess('刪除資料集成功')
+          this.getAttachments()
+        }
+      } catch (error) {
+        this.$rollbar('[views/Attachments/deleteAttachment]', error)
+        this.$alertSuccess('刪除資料集失敗')
       }
     },
   },

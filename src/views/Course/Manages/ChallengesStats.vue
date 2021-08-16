@@ -85,9 +85,11 @@ export default {
   },
   async created() {
     await this.getProblem(this.paramsWithCourse)
-    this.stats = (
-      await this.$agent.Course.getOJStats(this.$route.params.id, this.pids.join())
-    ).data.data
+    if (Array.isArray(this.pids) && this.pids.length > 0) {
+      this.stats = (
+        await this.$agent.Course.getOJStats(this.$route.params.id, this.pids.join())
+      ).data.data
+    }
   },
   methods: {
     ...mapActions({

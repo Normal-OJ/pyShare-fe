@@ -1,28 +1,18 @@
 <template>
-  <v-dialog v-model="dialog" width="750" persistent>
-    <template v-slot:activator="{ on, attrs }">
-      <v-btn color="success" dark v-bind="attrs" v-on="on">
-        <v-icon class="mr-1">mdi-plus</v-icon>
-        新增資料集
-      </v-btn>
-    </template>
-
+  <v-dialog v-model="open" width="750" persistent>
     <v-card>
       <v-toolbar dark color="primary" dense>
-        <v-icon class="mr-1">mdi-plus</v-icon>
-        <v-toolbar-title>新增資料集</v-toolbar-title>
+        <v-icon class="mr-1">mdi-pencil</v-icon>
+        <v-toolbar-title>修改資料集</v-toolbar-title>
         <v-spacer />
         <v-toolbar-items>
-          <v-btn icon dark @click="dialog = false">
+          <v-btn icon dark @click="$emit('close')">
             <v-icon>mdi-close</v-icon>
           </v-btn>
         </v-toolbar-items>
       </v-toolbar>
 
       <v-card-text class="mt-8 text--primary">
-        <div class="mb-4 text-body-1">
-          資料集內容可在日後修改。
-        </div>
         <v-form ref="form">
           <v-card
             class="mt-2 px-2 py-6"
@@ -35,18 +25,10 @@
           >
             <v-card-text class="text-center">
               <v-row class="mb-2" justify="center" align="center">
-                <v-btn
-                  v-show="!dataset.fileObj"
-                  class="text-none"
-                  color="primary"
-                  dark
-                  small
-                  @click="openFileExplorer"
-                >
-                  選擇檔案 {{ dataset.fileObj }}
-                </v-btn>
-                <template v-if="dataset.fileObj">
-                  <v-chip color="primary" dark label>{{ dataset.fileObj.name }}</v-chip>
+                <template>
+                  <v-chip color="primary" dark label>
+                    {{ newDataset.fileObj ? newDataset.fileObj.name : dataset && dataset.filename }}
+                  </v-chip>
                   <v-btn color="primary" text small @click="openFileExplorer">
                     重新選取
                   </v-btn>
@@ -70,7 +52,7 @@
             <v-col cols="12" sm="6">
               <v-text-field
                 label="資料名稱"
-                v-model="dataset.filename"
+                v-model="newDataset.filename"
                 :rules="[v => !!v || '請填寫資料名稱']"
                 outlined
                 color="primary"
@@ -98,9 +80,19 @@
           <v-textarea
             class="mt-2"
             label="資料說明（選填）"
-            v-model="dataset.description"
+            v-model="newDataset.description"
             placeholder="您可以在此說明這份資料的內容、備註資料來源"
             rows="3"
+            outlined
+            color="primary"
+          />
+
+          <v-textarea
+            class="mt-2"
+            label="更新備註（選填）"
+            v-model="newDataset.patchNote"
+            placeholder="您可以在此備註在這次更新後檔案有什麼變化"
+            rows="1"
             outlined
             color="primary"
           />
@@ -126,18 +118,24 @@ export default {
   components: { ColorLabel },
 
   props: {
+    open: {
+      type: Boolean,
+      required: true,
+    },
     tags: {
       type: Array,
+    },
+    dataset: {
+      type: Object,
     },
   },
 
   data: () => ({
-    dialog: false,
     isLoading: false,
     elevation: 0,
     dragCounter: 0,
     selectedTags: [],
-    dataset: {
+    newDataset: {
       filename: '',
       description: '',
       tags: '',
@@ -149,29 +147,35 @@ export default {
 
   watch: {
     selectedTags() {
-      this.dataset.tags = this.selectedTags.join(',')
+      this.newDataset.tags = this.selectedTags.join(',')
+    },
+    dataset() {
+      if (!this.dataset) return
+      for (const key of ['filename', 'description']) {
+        this.newDataset[key] = this.dataset[key]
+      }
+      this.selectedTags = this.dataset.tags
     },
   },
 
   methods: {
     submit() {
-      if (!this.dataset.fileObj) {
-        this.noUploadFile = true
-        return
-      }
       if (this.$refs.form.validate()) {
         this.isLoading = true
         const body = new FormData()
-        for (const key in this.dataset) {
-          body.append(key, this.dataset[key])
+        for (const key in this.newDataset) {
+          if (key === 'fileObj' && !this.newDataset.fileObj) continue
+          body.append(key, this.newDataset[key])
         }
-        new Promise((resolve, reject) => this.$emit('submit', body, resolve, reject))
+        new Promise((resolve, reject) =>
+          this.$emit('submit', this.dataset.id, body, resolve, reject),
+        )
           .then(() => {
-            this.dialog = false
-            this.$alertSuccess('新增資料集成功。')
+            this.$emit('close')
+            this.$alertSuccess('編輯資料集成功。')
           })
           .catch(() => {
-            this.$alertFail('新增資料集失敗')
+            this.$alertFail('編輯資料集失敗')
           })
           .finally(() => (this.isLoading = false))
       }
@@ -186,9 +190,9 @@ export default {
         alert('只能上傳單個檔案')
         return
       }
-      this.dataset.fileObj = files[0]
-      if (!this.dataset.filename) {
-        this.dataset.filename = this.dataset.fileObj.name
+      this.newDataset.fileObj = files[0]
+      if (!this.newDataset.filename) {
+        this.newDataset.filename = this.newDataset.fileObj.name
       }
     },
     dragenter() {

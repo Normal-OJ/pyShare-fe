@@ -29,7 +29,7 @@
         <v-icon>mdi-download</v-icon>
         匯出成員名單
       </v-btn>
-      <AddStudentModal v-if="canWriteCourse" @success="getCourseStats($route.params.id)" />
+      <AddStudentModal v-if="canWriteCourse" @success="$emit('success-add-student')" />
     </div>
 
     <v-data-table
@@ -75,9 +75,8 @@
 import AddStudentModal from '@/components/Course/AddStudentModal'
 import ConfirmDeleteModal from './ConfirmDeleteModal'
 import { ROLE } from '@/constants/auth'
-import { mapActions, mapState } from 'vuex'
+import { mapState } from 'vuex'
 import { canWriteCourseMixin } from '@/lib/permissionMixin'
-import { ActionTypes } from '@/store/action-types'
 
 const { TEACHER } = ROLE
 
@@ -165,9 +164,6 @@ export default {
           this.isWaitingDeleteStudent = false
         })
     },
-    ...mapActions({
-      getCourseStats: ActionTypes.GET_COURSE_STATS,
-    }),
   },
 }
 </script>

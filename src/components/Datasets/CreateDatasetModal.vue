@@ -35,16 +35,6 @@
           >
             <v-card-text class="text-center">
               <v-row class="mb-2" justify="center" align="center">
-                <v-btn
-                  v-show="!dataset.fileObj"
-                  class="text-none"
-                  color="primary"
-                  dark
-                  small
-                  @click="openFileExplorer"
-                >
-                  選擇檔案 {{ dataset.fileObj }}
-                </v-btn>
                 <template v-if="dataset.fileObj">
                   <v-chip color="primary" dark label>{{ dataset.fileObj.name }}</v-chip>
                   <v-btn color="primary" text small @click="openFileExplorer">
@@ -58,10 +48,12 @@
                   @change="event => handleFileInput(event.target.files)"
                 />
               </v-row>
-              <div class="mt-8 mb-1">
+              <div class="mt-6 mb-3">
                 <v-icon :size="36">mdi-file-upload-outline</v-icon>
               </div>
-              從電腦中選擇檔案或拖曳檔案至此
+              <div class="text-body-1">
+                從電腦中<a @click="openFileExplorer">選擇檔案</a>或拖曳檔案至此
+              </div>
             </v-card-text>
           </v-card>
           <div v-if="noUploadFile" class="mt-1 error--text">請上傳檔案</div>
@@ -69,9 +61,15 @@
           <v-row class="mt-6">
             <v-col cols="12" sm="6">
               <v-text-field
-                label="資料名稱"
+                label="檔案名稱"
                 v-model="dataset.filename"
-                :rules="[v => !!v || '請填寫資料名稱']"
+                :rules="[
+                  v => !!v || '請填寫檔案名稱',
+                  v => (!!v && v.length <= 64) || '名稱上限為 64 個字',
+                ]"
+                counter="64"
+                hint="建議包含副檔名"
+                persistent-hint
                 outlined
                 color="primary"
                 clearable
@@ -97,9 +95,12 @@
 
           <v-textarea
             class="mt-2"
-            label="資料說明（選填）"
+            label="說明（選填）"
             v-model="dataset.description"
-            placeholder="您可以在此說明這份資料的內容、備註資料來源"
+            hint="您可以在此說明這份資料的內容、備註資料來源"
+            persistent-hint
+            :rules="[v => !v || v.length <= 1000 || '說明上限為 1000 個字']"
+            counter="1000"
             rows="3"
             outlined
             color="primary"
@@ -122,6 +123,14 @@
 <script>
 import ColorLabel from '@/components/UI/ColorLabel'
 
+const initialDataset = {
+  filename: '',
+  description: '',
+  tags: '',
+  patchNote: '',
+  fileObj: null,
+}
+
 export default {
   components: { ColorLabel },
 
@@ -137,13 +146,7 @@ export default {
     elevation: 0,
     dragCounter: 0,
     selectedTags: [],
-    dataset: {
-      filename: '',
-      description: '',
-      tags: '',
-      patchNote: '',
-      fileObj: null,
-    },
+    dataset: { ...initialDataset },
     noUploadFile: false,
   }),
 
@@ -169,6 +172,8 @@ export default {
           .then(() => {
             this.dialog = false
             this.$alertSuccess('新增資料集成功。')
+            this.dataset = { ...initialDataset }
+            this.selectedTags = []
           })
           .catch(() => {
             this.$alertFail('新增資料集失敗')
@@ -182,13 +187,15 @@ export default {
     handleFileInput(files) {
       this.noUploadFile = false
       this.elevation = 0
-      if (!files || files.length > 1) {
+      if (!files) {
+        alert('選取檔案失敗')
+      } else if (files.length > 1) {
         alert('只能上傳單個檔案')
-        return
-      }
-      this.dataset.fileObj = files[0]
-      if (!this.dataset.filename) {
-        this.dataset.filename = this.dataset.fileObj.name
+      } else if (files.length === 1) {
+        this.dataset.fileObj = files[0]
+        if (!this.dataset.filename) {
+          this.dataset.filename = this.dataset.fileObj.name
+        }
       }
     },
     dragenter() {

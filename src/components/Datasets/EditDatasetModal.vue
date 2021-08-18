@@ -40,10 +40,12 @@
                   @change="event => handleFileInput(event.target.files)"
                 />
               </v-row>
-              <div class="mt-8 mb-1">
+              <div class="mt-6 mb-3">
                 <v-icon :size="36">mdi-file-upload-outline</v-icon>
               </div>
-              從電腦中選擇檔案或拖曳檔案至此
+              <div class="text-body-1">
+                從電腦中<a @click="openFileExplorer">選擇檔案</a>或拖曳檔案至此
+              </div>
             </v-card-text>
           </v-card>
           <div v-if="noUploadFile" class="mt-1 error--text">請上傳檔案</div>
@@ -51,9 +53,15 @@
           <v-row class="mt-6">
             <v-col cols="12" sm="6">
               <v-text-field
-                label="資料名稱"
+                label="檔案名稱"
                 v-model="newDataset.filename"
-                :rules="[v => !!v || '請填寫資料名稱']"
+                :rules="[
+                  v => !!v || '請填寫檔案名稱',
+                  v => (!!v && v.length <= 64) || '名稱上限為 64 個字',
+                ]"
+                counter="64"
+                hint="建議包含副檔名"
+                persistent-hint
                 outlined
                 color="primary"
                 clearable
@@ -79,9 +87,12 @@
 
           <v-textarea
             class="mt-2"
-            label="資料說明（選填）"
+            label="說明（選填）"
             v-model="newDataset.description"
-            placeholder="您可以在此說明這份資料的內容、備註資料來源"
+            hint="您可以在此說明這份資料的內容、備註資料來源"
+            persistent-hint
+            :rules="[v => !v || v.length <= 1000 || '說明上限為 1000 個字']"
+            counter="1000"
             rows="3"
             outlined
             color="primary"
@@ -91,7 +102,8 @@
             class="mt-2"
             label="更新備註（選填）"
             v-model="newDataset.patchNote"
-            placeholder="您可以在此備註在這次更新後檔案有什麼變化"
+            hint="您可以在此備註在這次更新後檔案有什麼變化"
+            persistent-hint
             rows="1"
             outlined
             color="primary"

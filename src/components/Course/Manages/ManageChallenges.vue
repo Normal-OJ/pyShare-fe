@@ -48,14 +48,7 @@
         </router-link>
         <v-tooltip bottom>
           <template v-slot:activator="{ on, attrs }">
-            <v-icon
-              v-if="item.status === 0"
-              class="ml-1"
-              small
-              v-bind="attrs"
-              v-on="on"
-              color="error"
-            >
+            <v-icon v-if="item.status === 0" class="ml-1" small v-bind="attrs" v-on="on">
               mdi-minus-circle
             </v-icon>
           </template>
@@ -74,7 +67,7 @@
               mdi-earth
             </v-icon>
           </template>
-          <span>已發布於公開資料集</span>
+          <span>已發布於共享資源</span>
         </v-tooltip>
       </template>
       <template v-slot:[`item.tags`]="{ item }">
@@ -99,7 +92,6 @@
           </template>
           <v-list>
             <v-list-item
-              link
               :to="{
                 name: 'courseSetChallenges',
                 params: { operation: 'edit' },
@@ -108,10 +100,10 @@
             >
               <v-list-item-title>編輯</v-list-item-title>
             </v-list-item>
-            <v-list-item link @click="openCloneDialog(item.pid)">
+            <v-list-item @click="openCloneDialog(item.pid)">
               <v-list-item-title>複製</v-list-item-title>
             </v-list-item>
-            <v-list-item link @click="deleteProblem(item.pid)">
+            <v-list-item @click="deleteProblem(item.pid)">
               <v-list-item-title>刪除</v-list-item-title>
             </v-list-item>
           </v-list>
@@ -148,12 +140,12 @@
       </template>
     </v-data-table>
     <CloneProblemModal
-      :isOpen="dialog"
+      :isOpen="!!clonePid"
       :clonePid="clonePid"
       label="測驗"
       :defaultCourseId="$route.params.id"
       @success="handleCloneSuccess"
-      @close="dialog = false"
+      @close="clonePid = null"
     />
   </v-container>
 </template>
@@ -191,8 +183,7 @@ export default {
   data: () => ({
     headers,
     searchText: '',
-    dialog: false,
-    clonePid: 0,
+    clonePid: null,
     selectedTags: [],
   }),
 
@@ -229,11 +220,10 @@ export default {
     },
     openCloneDialog(pid) {
       this.clonePid = pid
-      this.dialog = true
     },
     handleCloneSuccess() {
       this.$emit('refetch-data')
-      this.dialog = false
+      this.clonePid = null
     },
     deleteProblem(pid) {
       const result = window.confirm('確認要刪除嗎？')

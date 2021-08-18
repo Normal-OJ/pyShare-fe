@@ -7,27 +7,28 @@
     disable-resize-watcher
   >
     <v-list dense :nav="!isMinify">
-      <v-list-item
-        v-for="{ label, icon, routeName } in headerNavs"
-        :key="label"
-        :to="{ name: routeName }"
-        link
-        exact
-        color="primary"
-      >
-        <v-list-item-icon>
-          <v-icon>{{ icon }}</v-icon>
-        </v-list-item-icon>
-        <v-list-item-content>
-          <v-list-item-title>{{ label }}</v-list-item-title>
-        </v-list-item-content>
-      </v-list-item>
+      <v-list-item-group color="primary">
+        <v-list-item
+          v-for="{ label, icon, routeName } in headerNavs"
+          :key="label"
+          :to="{ name: routeName }"
+          exact
+          color="primary"
+        >
+          <v-list-item-icon>
+            <v-icon>{{ icon }}</v-icon>
+          </v-list-item-icon>
+          <v-list-item-content>
+            <v-list-item-title>{{ label }}</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list-item-group>
     </v-list>
 
     <template v-slot:append>
       <v-divider />
       <v-list dense :nav="!isMinify">
-        <v-list-item link @click="isMinify = !isMinify">
+        <v-list-item @click="isMinify = !isMinify">
           <v-list-item-icon>
             <v-icon>
               {{ isMinify ? 'mdi-chevron-double-right' : 'mdi-chevron-double-left' }}

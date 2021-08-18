@@ -207,21 +207,9 @@ const routes: RouteConfig[] = [
         meta: { title: () => '公開主題' },
       },
       {
-        path: 'problem/:pid',
-        name: 'templateProblem',
-        component: () => import('@/views/Datasets/Problem.vue'),
-        meta: { title: () => '公開主題' },
-      },
-      {
         path: 'challenges',
         name: 'templateChallenges',
         component: () => import('@/views/Datasets/Challenges.vue'),
-        meta: { title: () => '公開測驗' },
-      },
-      {
-        path: 'challenge/:pid',
-        name: 'templateChallenge',
-        component: () => import('@/views/Datasets/Challenge.vue'),
         meta: { title: () => '公開測驗' },
       },
     ],

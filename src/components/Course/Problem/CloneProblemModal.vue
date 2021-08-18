@@ -5,7 +5,7 @@
         <v-toolbar-title>複製{{ label }}</v-toolbar-title>
         <v-spacer />
         <v-toolbar-items>
-          <v-btn icon dark @click="onClose">
+          <v-btn icon dark @click="close">
             <v-icon>mdi-close</v-icon>
           </v-btn>
         </v-toolbar-items>
@@ -45,7 +45,6 @@ export default {
     },
     clonePid: {
       type: Number,
-      required: true,
     },
     defaultCourseId: {
       type: String,
@@ -88,7 +87,7 @@ export default {
     onSuccess() {
       this.$emit('success')
     },
-    onClose() {
+    close() {
       this.$emit('close')
     },
   },

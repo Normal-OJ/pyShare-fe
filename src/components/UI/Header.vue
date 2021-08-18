@@ -50,10 +50,10 @@
         </v-btn>
       </template>
       <v-list>
-        <v-list-item link :to="{ name: 'profile', params: { id } }">
+        <v-list-item :to="{ name: 'profile', params: { id } }">
           <v-list-item-title class="text-center">個人頁面</v-list-item-title>
         </v-list-item>
-        <v-list-item link @click="handleLogout" data-test="logoutBtn">
+        <v-list-item @click="handleLogout" data-test="logoutBtn">
           <v-list-item-title class="text-center">登出</v-list-item-title>
         </v-list-item>
       </v-list>
@@ -90,7 +90,7 @@ const navs = [
     routeName: 'courses',
   },
   {
-    label: '公開資料集',
+    label: '共享資源',
     routeName: 'datasets',
   },
   {

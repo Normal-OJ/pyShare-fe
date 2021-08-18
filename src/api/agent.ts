@@ -93,6 +93,11 @@ const Problem = {
   getAttachment: (id: Problem.ID, name: string): PysharePromise<File> =>
     fetcher.get(`/problem/${id}/attachment/${name}`),
 
+  downloadAttachment: (id: Problem.ID, name: string): void => {
+    const url = `${config.API_BASE_URL}/problem/${id}/attachment/${name}`
+    window.open(url, '_blank')
+  },
+
   addAttachment: (id: Problem.ID, body: FormData) =>
     fetcher.post(`/problem/${id}/attachment`, body),
 

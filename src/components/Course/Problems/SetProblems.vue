@@ -2,8 +2,6 @@
   <v-container fluid class="pb-16">
     <v-row class="mb-4" no-gutters>
       <div class="text-h5">{{ isEdit ? '編輯主題' : '新增主題' }}</div>
-      <!-- <v-spacer />
-      <PreviewNewProblem :prob="newProb" /> -->
     </v-row>
 
     <v-row>
@@ -45,7 +43,7 @@
           v-if="canWriteCourse"
           class="pt-0 mt-0"
           v-model="newProb.isTemplate"
-          label="發布至公開資料集"
+          label="發布至共享資源"
           hide-details
         />
       </v-col>
@@ -72,21 +70,20 @@
       class="d-flex align-center flex-wrap mt-1"
     >
       <div class="text-body-2">已上傳：</div>
-      <!-- TODO: take out three chip attachment component -->
-      <v-chip
-        v-for="name in newProb.attachments"
-        :key="name"
-        class="ma-1"
-        outlined
-        label
-        color="primary"
-        close
-        @click:close="removeAttachmentFromProb(name)"
+      <AttachmentCard
+        v-for="att in newProb.attachments"
+        :key="att.filename"
+        :name="att.filename"
+        class="mb-1 mr-1"
+        @download="$agent.Problem.downloadAttachment(newProb.pid, att.filename)"
+        @preview="preview = { dialog: true, pid: newProb.pid, filename: att.filename }"
       >
-        {{
-          name.length > 15 ? `${name.substring(0, 10)}...${name.substring(name.length - 6)}` : name
-        }}
-      </v-chip>
+        <template v-slot:append>
+          <v-btn text color="error" small @click.stop="removeAttachmentFromProb(att)">
+            移除
+          </v-btn>
+        </template>
+      </AttachmentCard>
     </div>
 
     <div v-if="willAddAttachments.length > 0" class="d-flex align-center flex-wrap mt-1">
@@ -99,20 +96,20 @@
         <span>待上傳的附件會在送出新題目或更新題目時才會進行上傳</span>
       </v-tooltip>
       <div class="text-body-2 ml-1">待上傳：</div>
-      <v-chip
-        v-for="{ name } in willAddAttachments"
-        :key="name"
-        class="ma-1"
-        outlined
-        label
-        color="primary"
-        close
-        @click:close="removeFromWillAddAttachments(name)"
+      <AttachmentCard
+        v-for="att in willAddAttachments"
+        :key="att.name"
+        :name="att.name"
+        class="mb-1 mr-1"
+        :download="false"
+        @preview="$alertFail('待上傳的附件無法預覽')"
       >
-        {{
-          name.length > 15 ? `${name.substring(0, 10)}...${name.substring(name.length - 6)}` : name
-        }}
-      </v-chip>
+        <template v-slot:append>
+          <v-btn text color="error" small @click.stop="removeFromWillAddAttachments(att)">
+            移除
+          </v-btn>
+        </template>
+      </AttachmentCard>
     </div>
 
     <div v-if="willRemoveAttachments.length > 0" class="d-flex align-center flex-wrap mt-1">
@@ -125,20 +122,20 @@
         <span>待刪除的附件會在更新題目時才會進行刪除</span>
       </v-tooltip>
       <div class="text-body-2 ml-1">待刪除：</div>
-      <v-chip
-        v-for="name in willRemoveAttachments"
-        :key="name"
-        class="ma-1"
-        outlined
-        label
-        color="primary"
-        close
-        @click:close="undoRemoveAttachmentFromProb(name)"
+      <AttachmentCard
+        v-for="att in willRemoveAttachments"
+        :key="att.filename"
+        :name="att.filename"
+        class="mb-1 mr-1"
+        @download="$agent.Problem.downloadAttachment(newProb.pid, att.filename)"
+        @preview="preview = { dialog: true, pid: newProb.pid, filename: att.filename }"
       >
-        {{
-          name.length > 15 ? `${name.substring(0, 10)}...${name.substring(name.length - 6)}` : name
-        }}
-      </v-chip>
+        <template v-slot:append>
+          <v-btn text color="error" small @click.stop="undoRemoveAttachmentFromProb(att)">
+            還原
+          </v-btn>
+        </template>
+      </AttachmentCard>
     </div>
 
     <div class="mt-8 d-flex">
@@ -165,6 +162,12 @@
         刪除
       </v-btn>
     </div>
+    <PreviewAttachmentModal
+      v-model="preview.dialog"
+      :pid="preview.pid"
+      :filename="preview.filename"
+      @close="preview = { dialog: false, pid: null, filename: null }"
+    />
   </v-container>
 </template>
 
@@ -173,6 +176,8 @@ import PreviewNewProblem from '@/components/Course/Problems/PreviewNewProblem'
 import TextEditor from '@/components/UI/TextEditor'
 import CodeEditor from '@/components/UI/CodeEditor'
 import ColorLabel from '@/components/UI/ColorLabel'
+import PreviewAttachmentModal from '@/components/UI/PreviewAttachmentModal.vue'
+import AttachmentCard from '@/components/UI/AttachmentCard.vue'
 import _ from 'lodash'
 import { mapState } from 'vuex'
 import { ROLE as _ROLE } from '@/constants/auth'
@@ -185,7 +190,14 @@ export default {
 
   mixins: [canWriteCourseMixin],
 
-  components: { PreviewNewProblem, TextEditor, CodeEditor, ColorLabel },
+  components: {
+    PreviewNewProblem,
+    TextEditor,
+    CodeEditor,
+    ColorLabel,
+    PreviewAttachmentModal,
+    AttachmentCard,
+  },
 
   props: {
     prob: {
@@ -210,7 +222,7 @@ export default {
     prob: {
       handler() {
         this.newProb = _.cloneDeep(this.prob)
-        if (!this.isEdit && this.role <= this.TEACHER) {
+        if (!this.isEdit && this.role <= TEACHER) {
           this.newProb.allowMultipleComments = false
         }
       },
@@ -236,8 +248,12 @@ export default {
     newProb: {},
     willAddAttachments: [],
     willRemoveAttachments: [],
+    preview: {
+      dialog: false,
+      pid: null,
+      filename: null,
+    },
     fileUploader: [],
-    TEACHER,
   }),
 
   methods: {
@@ -246,18 +262,22 @@ export default {
       this.willAddAttachments = []
       this.willRemoveAttachments = []
     },
-    removeFromWillAddAttachments(removedFilename) {
+    removeFromWillAddAttachments(removedFile) {
       this.willAddAttachments = this.willAddAttachments.filter(
-        file => file.name !== removedFilename,
+        file => file.name !== removedFile.name,
       )
     },
-    removeAttachmentFromProb(removedFilename) {
-      this.willRemoveAttachments.push(removedFilename)
-      this.prob.attachments = this.prob.attachments.filter(file => file !== removedFilename)
+    removeAttachmentFromProb(removedFile) {
+      this.willRemoveAttachments.push(removedFile)
+      this.prob.attachments = this.prob.attachments.filter(
+        file => file.filename !== removedFile.filename,
+      )
     },
-    undoRemoveAttachmentFromProb(filename) {
-      this.willRemoveAttachments = this.willRemoveAttachments.filter(file => file !== filename)
-      this.prob.attachments.push(filename)
+    undoRemoveAttachmentFromProb(undoFile) {
+      this.willRemoveAttachments = this.willRemoveAttachments.filter(
+        file => file.filename !== undoFile.filename,
+      )
+      this.prob.attachments.push(undoFile)
     },
     goBack() {
       window.history.length > 1

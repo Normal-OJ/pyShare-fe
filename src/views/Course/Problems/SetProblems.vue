@@ -101,9 +101,9 @@ export default {
         if (willRemoveAttachments.length > 0) {
           try {
             await Promise.all(
-              willRemoveAttachments.map(filename => {
+              willRemoveAttachments.map(file => {
                 const formData = new FormData()
-                formData.append('attachmentName', filename)
+                formData.append('attachmentName', file.filename)
                 return this.$agent.Problem.removeAttachment(pid, formData)
               }),
             )

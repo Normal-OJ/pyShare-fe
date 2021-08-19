@@ -120,7 +120,10 @@ const routes: RouteConfig[] = [
         path: 'manages',
         name: 'courseManages',
         component: () => import('@/views/Course/Manages/Manages.vue'),
-        meta: { title: () => `管理 - ${store.getters[GetterTypes.COURSE_NAME]}` },
+        meta: {
+          detailedSideNav: true,
+          title: () => `管理 - ${store.getters[GetterTypes.COURSE_NAME]}`,
+        },
       },
       {
         path: 'manages/tags',
@@ -184,25 +187,32 @@ const routes: RouteConfig[] = [
       },
     ],
     beforeEnter: (to, from, next) => {
-      store
-        .dispatch(ActionTypes.GET_COURSE_INFO, to.params.id)
-        .then(() => {
-          document.title = `${to.meta.title(to)} | pyShare`
-        })
-        .then(next)
+      store.dispatch(ActionTypes.GET_COURSE_INFO, to.params.id).then(next)
     },
   },
   {
     path: '/datasets',
-    name: 'datasets',
-    component: () => import('@/views/Datasets/Datasets.vue'),
-    meta: { title: () => '共享資料集' },
-  },
-  {
-    path: '/dataset/:id',
-    name: 'dataset',
     component: () => import('@/views/Datasets/Dataset.vue'),
-    meta: { title: () => '共享資料集' },
+    children: [
+      {
+        path: '',
+        name: 'datasets',
+        component: () => import('@/views/Datasets/Attachments.vue'),
+        meta: { title: () => '公開資料集' },
+      },
+      {
+        path: 'problems',
+        name: 'templateProblems',
+        component: () => import('@/views/Datasets/Problems.vue'),
+        meta: { title: () => '公開主題' },
+      },
+      {
+        path: 'challenges',
+        name: 'templateChallenges',
+        component: () => import('@/views/Datasets/Challenges.vue'),
+        meta: { title: () => '公開測驗' },
+      },
+    ],
   },
   {
     path: '/profile/:id',
@@ -250,9 +260,13 @@ const router = new VueRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  document.title = `${to.meta.title(to)} | pyShare`
+  if (to.meta && typeof to.meta.title === 'function') {
+    document.title = `${to.meta.title(to)} | pyShare`
+  } else {
+    document.title = 'pyShare'
+  }
   const jwt = getJwt()
-  if (!to.meta.isAllowGuest && (!jwt || !jwt.isAuthenticated)) {
+  if (!(to.meta && to.meta.isAllowGuest) && (!jwt || !jwt.isAuthenticated)) {
     next({ name: 'login', query: { redirectToPath: to.path } })
   } else {
     next()

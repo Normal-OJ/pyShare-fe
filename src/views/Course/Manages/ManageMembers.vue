@@ -1,5 +1,10 @@
 <template>
-  <ManageMembers :members="members" :loading="!info" @delete-student="submitDeleteStudent" />
+  <ManageMembers
+    :members="members"
+    :loading="!info"
+    @success-add-student="getCourseInfo(courseId)"
+    @delete-student="submitDeleteStudent"
+  />
 </template>
 
 <script>
@@ -29,13 +34,8 @@ export default {
     },
   },
 
-  watch: {
-    courseId: {
-      handler() {
-        this.getCourseInfo(this.courseId)
-      },
-      immediate: true,
-    },
+  created() {
+    this.getCourseInfo(this.courseId)
   },
 
   methods: {
@@ -45,12 +45,13 @@ export default {
     async submitDeleteStudent(users, resolve, reject) {
       try {
         await this.$agent.Course.removeStudent(this.courseId, { users })
-        this.getCourseStats(this.courseId)
         resolve()
       } catch (error) {
         console.log('[views/ManageMembers/submitDeleteStudent] error', error)
         reject(error)
         throw error
+      } finally {
+        this.getCourseInfo(this.courseId)
       }
     },
   },

@@ -5,6 +5,7 @@
     :tags="courseTags"
     :isEdit="isEdit"
     :isLoading="isLoading"
+    :datasets="$route.query.datasets ? problemDatasets : []"
     @submit="handleSubmit"
     @delete-problem="deleteProblem"
   />
@@ -37,6 +38,7 @@ export default {
   computed: {
     ...mapState({
       courseTags: state => state.course.courseTags,
+      problemDatasets: state => state.problem.problemDatasets,
     }),
     isEdit() {
       return this.$route.params.operation === OPERATION.EDIT
@@ -69,7 +71,7 @@ export default {
         this.$rollbar.error('[views/SetProblems/getProblem]', error)
       }
     },
-    async handleSubmit(body, willAddAttachments, willRemoveAttachments) {
+    async handleSubmit(body, willAddAttachments, willRemoveAttachments, willImportAttachments) {
       try {
         this.isLoading = true
         let result
@@ -81,16 +83,22 @@ export default {
         this.submitSuccess = true
         this.$alertSuccess(`${this.isEdit ? '更新' : '新增'}主題內容成功。`)
         const pid = this.isEdit ? this.pid : result.data.data.pid
-        if (willAddAttachments.length > 0) {
+        if (willAddAttachments.length > 0 || willImportAttachments.length > 0) {
           try {
-            await Promise.all(
-              willAddAttachments.map(file => {
+            await Promise.all([
+              ...willAddAttachments.map(file => {
                 const formData = new FormData()
                 formData.append('attachment', file)
                 formData.append('attachmentName', file.name)
                 return this.$agent.Problem.addAttachment(pid, formData)
               }),
-            )
+              ...willImportAttachments.map(file => {
+                const formData = new FormData()
+                formData.append('attachmentId', file.id)
+                formData.append('attachmentName', file.filename)
+                return this.$agent.Problem.addAttachment(pid, formData)
+              }),
+            ])
             this.$alertSuccess('新增主題附件成功。')
           } catch (error) {
             this.$alertFail('新增主題附件失敗。')
@@ -101,9 +109,9 @@ export default {
         if (willRemoveAttachments.length > 0) {
           try {
             await Promise.all(
-              willRemoveAttachments.map(filename => {
+              willRemoveAttachments.map(file => {
                 const formData = new FormData()
-                formData.append('attachmentName', filename)
+                formData.append('attachmentName', file.filename)
                 return this.$agent.Problem.removeAttachment(pid, formData)
               }),
             )

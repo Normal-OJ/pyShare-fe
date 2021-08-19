@@ -93,6 +93,11 @@ const Problem = {
   getAttachment: (id: Problem.ID, name: string): PysharePromise<File> =>
     fetcher.get(`/problem/${id}/attachment/${name}`),
 
+  downloadAttachment: (id: Problem.ID, name: string): void => {
+    const url = `${config.API_BASE_URL}/problem/${id}/attachment/${name}`
+    window.open(url, '_blank')
+  },
+
   addAttachment: (id: Problem.ID, body: FormData) =>
     fetcher.post(`/problem/${id}/attachment`, body),
 
@@ -162,8 +167,15 @@ const Permission = {
 }
 
 const Dataset = {
-  getList: (): PysharePromise<Dataset.IInfo[]> => fetcher.get('/dataset'),
-  get: (id: Dataset.ID): PysharePromise<Dataset.IInfo> => fetcher.get(`/dataset/${id}`),
+  getList: (): PysharePromise<Dataset.IInfo[]> => fetcher.get('/attachment'),
+
+  get: (id: Dataset.ID): PysharePromise<Dataset.IInfo> => fetcher.get(`/attachment/${id}`),
+
+  create: (body: FormData) => fetcher.post('/attachment', body),
+
+  modify: (id: Dataset.ID, body: FormData) => fetcher.put(`/attachment/${id}`, body),
+
+  delete: (id: Dataset.ID) => fetcher.delete(`/attachment/${id}`),
 }
 
 const School = {

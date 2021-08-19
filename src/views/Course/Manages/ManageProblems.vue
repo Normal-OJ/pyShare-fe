@@ -1,7 +1,6 @@
 <template>
   <ManageProblems
     :problems="problems"
-    :templates="canWriteCourse ? templates : []"
     :tags="tags"
     :loading="isWaiting"
     @get-problems-by-tags="getProblemsByTags"
@@ -15,12 +14,9 @@ import ManageProblems from '@/components/Course/Manages/ManageProblems'
 import { mapActions, mapGetters, mapState } from 'vuex'
 import { GetterTypes } from '@/store/getter-types'
 import { ActionTypes } from '@/store/action-types'
-import { canWriteCourseMixin } from '@/lib/permissionMixin'
 
 export default {
   components: { ManageProblems },
-
-  mixins: [canWriteCourseMixin],
 
   computed: {
     ...mapState({
@@ -28,7 +24,6 @@ export default {
     }),
     ...mapGetters({
       problems: GetterTypes.PROBLEMS_OF_MINE,
-      templates: GetterTypes.TEMPLATES,
     }),
     courseId() {
       return this.$route.params.id

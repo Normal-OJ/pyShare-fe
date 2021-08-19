@@ -21,7 +21,7 @@
             icon
             v-on="on"
             v-bind="attrs"
-            @click="dialog = true"
+            @click="cloneProblemDialog = true"
           >
             <v-icon>mdi-content-copy</v-icon>
           </v-btn>
@@ -58,48 +58,37 @@
         <div class="text-h6">分類</div>
         <ColorLabel v-for="tag in prob.tags" :key="tag" :tag="tag" small class="ma-1" />
         <div class="text-h6 mt-4">附件</div>
-        <v-chip
-          v-for="name in prob.attachments"
-          :key="name"
-          class="ma-1"
-          outlined
-          label
-          color="primary"
-        >
-          {{
-            name.length > 15
-              ? `${name.substring(0, 10)}...${name.substring(name.length - 6)}`
-              : name
-          }}
-          <v-btn class="ml-1" icon small @click="setPreviewAttachment(name)">
-            <v-icon color="primary">mdi-eye</v-icon>
-          </v-btn>
-          <v-btn icon small @click="downloadAttachment(name)">
-            <v-icon color="primary">mdi-download</v-icon>
-          </v-btn>
-        </v-chip>
+        <AttachmentCard
+          v-for="{ filename } in prob.attachments"
+          :key="filename"
+          class="mr-1 mb-1"
+          :name="filename"
+          @preview="preview = { dialog: true, filename }"
+          @download="$agent.Problem.downloadAttachment(prob.pid, filename)"
+        />
       </v-col>
     </v-row>
     <PreviewAttachmentModal
-      v-if="isPreviewAttachment"
-      :filename="previewAttachment"
-      @close="isPreviewAttachment = false"
-      @download="downloadAttachment(previewAttachment)"
+      v-model="preview.dialog"
+      :pid="prob.pid"
+      :filename="preview.filename"
+      @close="preview = { dialog: false, pid: null, filename: null }"
     />
     <CloneProblemModal
-      :isOpen="dialog"
+      :isOpen="cloneProblemDialog"
       :clonePid="prob.pid"
       label="主題"
-      @success="dialog = false"
-      @close="dialog = false"
+      @success="cloneProblemDialog = false"
+      @close="cloneProblemDialog = false"
     />
   </div>
 </template>
 
 <script>
-import PreviewAttachmentModal from './PreviewAttachmentModal'
+import PreviewAttachmentModal from '@/components/UI/PreviewAttachmentModal'
 import ColorLabel from '@/components/UI/ColorLabel'
 import Gravatar from '@/components/UI/Gravatar'
+import AttachmentCard from '@/components/UI/AttachmentCard.vue'
 import CloneProblemModal from './CloneProblemModal.vue'
 
 export default {
@@ -116,12 +105,14 @@ export default {
     },
   },
 
-  components: { PreviewAttachmentModal, ColorLabel, Gravatar, CloneProblemModal },
+  components: { PreviewAttachmentModal, ColorLabel, Gravatar, AttachmentCard, CloneProblemModal },
 
   data: () => ({
-    isPreviewAttachment: false,
-    previewAttachment: '',
-    dialog: false,
+    preview: {
+      dialog: false,
+      filename: null,
+    },
+    cloneProblemDialog: false,
     canCopyProblem: null,
   }),
 
@@ -130,10 +121,6 @@ export default {
   },
 
   methods: {
-    setPreviewAttachment(filename) {
-      this.previewAttachment = filename
-      this.isPreviewAttachment = true
-    },
     downloadAttachment(filename) {
       const url = `https://pyshare.noj.tw/api/problem/${this.prob.pid}/attachment/${filename}`
       window.open(url, '_blank')

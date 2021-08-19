@@ -35,7 +35,7 @@
 
     <v-data-table
       :headers="headers"
-      :items="problems.concat(templates)"
+      :items="problems"
       :search="searchText"
       :items-per-page="Number(-1)"
       hide-default-footer
@@ -48,15 +48,27 @@
         </router-link>
         <v-tooltip bottom>
           <template v-slot:activator="{ on, attrs }">
-            <v-icon class="ml-1" small v-bind="attrs" v-on="on" v-if="item.status === 0">
+            <v-icon v-if="item.status === 0" class="ml-2" small v-bind="attrs" v-on="on">
               mdi-minus-circle
             </v-icon>
           </template>
           <span>隱藏的主題</span>
         </v-tooltip>
-        <v-chip v-if="item.isTemplate" class="ml-2" small color="success" dark>
-          範本
-        </v-chip>
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on, attrs }">
+            <v-icon
+              v-if="item.isTemplate"
+              class="ml-2"
+              small
+              v-bind="attrs"
+              v-on="on"
+              color="primary"
+            >
+              mdi-earth
+            </v-icon>
+          </template>
+          <span>已發布於共享資源</span>
+        </v-tooltip>
       </template>
       <template v-slot:[`item.tags`]="{ item }">
         <ColorLabel
@@ -89,10 +101,10 @@
             >
               <v-list-item-title>編輯</v-list-item-title>
             </v-list-item>
-            <v-list-item link @click="openCloneDialog(item.pid)">
+            <v-list-item @click="openCloneDialog(item.pid)">
               <v-list-item-title>複製</v-list-item-title>
             </v-list-item>
-            <v-list-item link @click="deleteProblem(item.pid)">
+            <v-list-item @click="deleteProblem(item.pid)">
               <v-list-item-title>刪除</v-list-item-title>
             </v-list-item>
           </v-list>
@@ -129,12 +141,12 @@
       </template>
     </v-data-table>
     <CloneProblemModal
-      :isOpen="dialog"
+      :isOpen="!!clonePid"
       :clonePid="clonePid"
       :defaultCourseId="$route.params.id"
       label="主題"
       @success="handleCloneSuccess"
-      @close="dialog = false"
+      @close="clonePid = null"
     />
   </v-container>
 </template>
@@ -159,10 +171,6 @@ export default {
       type: Array,
       required: true,
     },
-    templates: {
-      type: Array,
-      required: true,
-    },
     tags: {
       type: Array,
       required: true,
@@ -177,8 +185,7 @@ export default {
     return {
       searchText: '',
       selectedTags: [],
-      dialog: false,
-      clonePid: 0,
+      clonePid: null,
       isTemplate: false,
       headers: headers,
     }
@@ -217,11 +224,10 @@ export default {
     },
     openCloneDialog(pid) {
       this.clonePid = pid
-      this.dialog = true
     },
     handleCloneSuccess() {
       this.$emit('refetch-data')
-      this.dialog = false
+      this.clonePid = null
     },
     deleteProblem(pid) {
       const result = window.confirm('確認要刪除嗎？')

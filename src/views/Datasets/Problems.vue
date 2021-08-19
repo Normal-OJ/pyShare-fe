@@ -29,11 +29,11 @@
         />
       </v-col>
       <v-spacer />
-      <v-switch v-model="onlyShowMine" label="顯示我上傳的主題" class="mr-3" />
-      <v-btn color="success">
+      <v-switch v-model="onlyShowMine" label="只顯示我的主題" class="mr-3" />
+      <!-- <v-btn color="success">
         <v-icon class="mr-1">mdi-playlist-plus</v-icon>
         新增主題
-      </v-btn>
+      </v-btn> -->
     </v-row>
 
     <v-data-table
@@ -81,21 +81,26 @@
           </template>
           <span>複製主題</span>
         </v-tooltip>
-        <v-menu v-if="item.author.id === userId" bottom right>
+        <v-tooltip top>
           <template v-slot:activator="{ on, attrs }">
-            <v-btn icon v-on="on" v-bind="attrs">
-              <v-icon>mdi-dots-horizontal</v-icon>
+            <v-btn
+              v-if="item.author.id === userId"
+              color="primary"
+              icon
+              class="ml-1"
+              :to="{
+                name: 'courseSetProblems',
+                params: { id: item.course, operation: 'edit' },
+                query: { pid: item.pid },
+              }"
+              v-on="on"
+              v-bind="attrs"
+            >
+              <v-icon>mdi-pencil</v-icon>
             </v-btn>
           </template>
-          <v-list>
-            <v-list-item>
-              <v-list-item-title>編輯</v-list-item-title>
-            </v-list-item>
-            <v-list-item>
-              <v-list-item-title>刪除</v-list-item-title>
-            </v-list-item>
-          </v-list>
-        </v-menu>
+          <span>編輯</span>
+        </v-tooltip>
       </template>
       <template v-slot:expanded-item="{ headers, item }">
         <td :colspan="headers.length" class="py-6 px-8">

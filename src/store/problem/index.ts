@@ -53,6 +53,9 @@ const mutations = <MutationTree<State>>{
   [MutationTypes.SET_PROBLEMS](state, payload) {
     state.problems = payload
   },
+  [MutationTypes.SET_PROBLEM_DATASETS](state, payload) {
+    state.problemDatasets = payload
+  },
 }
 
 export default {

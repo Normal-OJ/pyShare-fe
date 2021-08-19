@@ -73,7 +73,6 @@
       :pid="prob.pid"
       :filename="preview.filename"
       @close="preview = { dialog: false, pid: null, filename: null }"
-      @download="$agent.Problem.downloadAttachment(prob.pid, preview.filename)"
     />
     <CloneProblemModal
       :isOpen="cloneProblemDialog"

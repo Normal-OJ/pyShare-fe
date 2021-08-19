@@ -42,8 +42,8 @@ export default {
       type: Boolean,
       required: true,
     },
-    pid: {
-      type: Number,
+    id: {
+      type: String,
     },
     filename: {
       type: String,
@@ -59,9 +59,9 @@ export default {
   }),
 
   watch: {
-    filename: {
+    id: {
       handler() {
-        if (!this.filename) return
+        if (!this.id) return
         this.getFileData()
       },
       immediate: true,
@@ -70,7 +70,7 @@ export default {
 
   methods: {
     async getFileData() {
-      const result = await this.$agent.Problem.getAttachment(this.pid, this.filename)
+      const result = await this.$agent.Dataset.get(this.id)
       const { type, subType } = getContentType(result.headers)
       if (type !== 'text') {
         this.fileType = 'unsupported'

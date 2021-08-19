@@ -47,7 +47,7 @@
       show-select
       show-expand
     >
-      <template v-slot:item.filename="{ item }">
+      <template v-slot:item.size="{ item }">
         <div class="d-flex align-center py-3" style="max-width: 400px; word-break: break-all">
           <Gravatar :size="40" :md5="item.author.md5" />
           <div class="ml-4 d-flex flex-column">
@@ -56,7 +56,9 @@
               <router-link :to="{ name: 'profile', params: { id: item.author.id } }">
                 {{ item.author.displayName }}
               </router-link>
-              &nbsp;·&nbsp;{{ `更新於 ${$timeFromNow($dayjs(item.updated).unix())}` }}
+              &nbsp;·&nbsp;{{ `更新於 ${$timeFromNow(item.updated)}` }}&nbsp;·&nbsp;{{
+                item.formattedSize
+              }}
             </div>
           </div>
         </div>
@@ -72,9 +74,6 @@
           @click.native="selectTag(tag)"
         />
       </template>
-      <template v-slot:item.size="{ item }">
-        {{ item.formattedSize }}
-      </template>
       <template v-slot:item.operation="{ item }">
         <v-tooltip top>
           <template v-slot:activator="{ on, attrs }">
@@ -84,12 +83,27 @@
               v-on="on"
               v-bind="attrs"
               class="mr-2"
-              @click="cloneDataset(item)"
+              @click="preview = { dialog: true, id: item.id, filename: item.filename }"
+            >
+              <v-icon>mdi-eye</v-icon>
+            </v-btn>
+          </template>
+          <span>預覽資料</span>
+        </v-tooltip>
+        <v-tooltip top>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              color="primary"
+              icon
+              v-on="on"
+              v-bind="attrs"
+              class="mr-2"
+              @click="cloneDataset([item])"
             >
               <v-icon>mdi-table-arrow-right</v-icon>
             </v-btn>
           </template>
-          <span>引用至主題</span>
+          <span>複製這份資料</span>
         </v-tooltip>
         <v-tooltip top>
           <template v-slot:activator="{ on, attrs }">
@@ -154,8 +168,8 @@
                 </ul>
                 <span v-if="item.patchNotes.length === 1">此資料沒有其他版本</span>
               </div>
-              <div>最後更新時間：{{ $formattedTime($dayjs(item.updated).unix()) }}</div>
-              <div>資料建立時間：{{ $formattedTime($dayjs(item.created).unix()) }}</div>
+              <div>最後更新時間：{{ $formattedTime(item.updated) }}</div>
+              <div>資料建立時間：{{ $formattedTime(item.created) }}</div>
             </v-col>
           </v-row>
         </td>
@@ -181,6 +195,35 @@
       :datasets="cloningDatasets"
       @close="cloneDialog = false"
     />
+
+    <v-tooltip top>
+      <template v-slot:activator="{ on, attrs }">
+        <v-fab-transition>
+          <v-btn
+            v-show="selectedDatasets.length > 0"
+            class="mb-12"
+            absolute
+            bottom
+            fab
+            dark
+            v-on="on"
+            v-bind="attrs"
+            color="primary"
+            style="left: 50%"
+            @click="cloneDataset(selectedDatasets)"
+          >
+            <v-icon>mdi-table-arrow-right</v-icon>
+          </v-btn>
+        </v-fab-transition>
+      </template>
+      <span>複製已選擇的資料</span>
+    </v-tooltip>
+    <PreviewDatasetModal
+      v-model="preview.dialog"
+      :id="preview.id"
+      :filename="preview.filename"
+      @close="preview = { dialog: false, id: null, filename: null }"
+    />
   </v-container>
 </template>
 
@@ -190,12 +233,20 @@ import Gravatar from '@/components/UI/Gravatar.vue'
 import CreateDatasetModel from '@/components/Datasets/CreateDatasetModal.vue'
 import EditDatasetModal from '@/components/Datasets/EditDatasetModal.vue'
 import CloneDatasetModal from '@/components/Datasets/CloneDatasetModal.vue'
+import PreviewDatasetModal from '@/components/UI/PreviewDatasetModal.vue'
 import { formatBytes } from '@/lib/utils'
 import { mapState } from 'vuex'
 import { ROLE } from '@/constants/auth'
 
 export default {
-  components: { ColorLabel, Gravatar, CreateDatasetModel, EditDatasetModal, CloneDatasetModal },
+  components: {
+    ColorLabel,
+    Gravatar,
+    CreateDatasetModel,
+    EditDatasetModal,
+    CloneDatasetModal,
+    PreviewDatasetModal,
+  },
 
   data: () => ({
     selectedDatasets: [],
@@ -207,6 +258,11 @@ export default {
     editingDataset: null,
     cloneDialog: false,
     cloningDatasets: [],
+    preview: {
+      dialog: false,
+      id: null,
+      filename: null,
+    },
   }),
 
   computed: {
@@ -226,9 +282,9 @@ export default {
     },
     headers() {
       return [
-        { text: '資料集', value: 'filename', sortable: false },
+        { text: '資料集', value: 'size' },
         { text: '分類', value: 'tags', sortable: false },
-        { text: '檔案大小', value: 'size' },
+        { text: '複製次數', value: 'quoteCount' },
         { text: '操作', value: 'operation', sortable: false, filterable: false },
         { text: '', value: 'data-table-expand', sortable: false, filterable: false },
       ]
@@ -268,8 +324,8 @@ export default {
         this.$rollbar('[views/Attachments/getTags]', error)
       }
     },
-    cloneDataset(dataset) {
-      this.cloningDatasets = [dataset]
+    cloneDataset(datasets) {
+      this.cloningDatasets = datasets
       this.cloneDialog = true
     },
     async downloadDataset(id) {

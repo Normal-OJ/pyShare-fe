@@ -86,7 +86,10 @@
       </AttachmentCard>
     </div>
 
-    <div v-if="willAddAttachments.length > 0" class="d-flex align-center flex-wrap mt-1">
+    <div
+      v-if="willAddAttachments.length > 0 || willImportAttachments.length > 0"
+      class="d-flex align-center flex-wrap mt-1"
+    >
       <v-tooltip bottom>
         <template v-slot:activator="{ on, attr }">
           <v-icon color="primary" small v-on="on" v-bind="attr">
@@ -106,6 +109,20 @@
       >
         <template v-slot:append>
           <v-btn text color="error" small @click.stop="removeFromWillAddAttachments(att)">
+            移除
+          </v-btn>
+        </template>
+      </AttachmentCard>
+      <AttachmentCard
+        v-for="att in willImportAttachments"
+        :key="att.filename"
+        :name="att.filename"
+        class="mb-1 mr-1"
+        :download="false"
+        @preview="$alertFail('待上傳的附件無法預覽')"
+      >
+        <template v-slot:append>
+          <v-btn text color="error" small @click.stop="removeFromWillImportAttachments(att)">
             移除
           </v-btn>
         </template>
@@ -216,6 +233,10 @@ export default {
       type: Boolean,
       required: true,
     },
+    datasets: {
+      type: Array,
+      required: true,
+    },
   },
 
   watch: {
@@ -247,6 +268,7 @@ export default {
     ],
     newProb: {},
     willAddAttachments: [],
+    willImportAttachments: [],
     willRemoveAttachments: [],
     preview: {
       dialog: false,
@@ -256,15 +278,31 @@ export default {
     fileUploader: [],
   }),
 
+  mounted() {
+    this.willImportAttachments = [...this.datasets]
+  },
+
   methods: {
     submit() {
-      this.$emit('submit', this.newProb, this.willAddAttachments, this.willRemoveAttachments)
+      this.$emit(
+        'submit',
+        this.newProb,
+        this.willAddAttachments,
+        this.willRemoveAttachments,
+        this.willImportAttachments,
+      )
       this.willAddAttachments = []
       this.willRemoveAttachments = []
+      this.willImportAttachments = []
     },
     removeFromWillAddAttachments(removedFile) {
       this.willAddAttachments = this.willAddAttachments.filter(
         file => file.name !== removedFile.name,
+      )
+    },
+    removeFromWillImportAttachments(removedFile) {
+      this.willImportAttachments = this.willImportAttachments.filter(
+        file => file.filename !== removedFile.filename,
       )
     },
     removeAttachmentFromProb(removedFile) {

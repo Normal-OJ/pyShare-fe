@@ -12,6 +12,7 @@ export enum MutationTypes {
 
   // problem module
   SET_PROBLEMS = 'setProblems',
+  SET_PROBLEM_DATASETS = 'setProblemDatasets',
 
   // comment module
   SET_COMMENTS = 'setComments',

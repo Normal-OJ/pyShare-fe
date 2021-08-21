@@ -118,6 +118,9 @@ export default {
       await this.getProblem(this.pid)
       this.fetchFloor()
       this.isLoading = false
+      this.$nextTick(() => {
+        this.$vuetify.goTo(0)
+      })
     },
   },
 

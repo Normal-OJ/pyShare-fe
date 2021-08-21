@@ -40,7 +40,7 @@
             <v-list-item-title>主題</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <template v-if="$route.name === 'courseProblem'">
+        <div v-if="$route.name === 'courseProblem'" style="max-height: 300px; overflow-y: auto">
           <v-list-item
             v-for="{ pid, title } in problems"
             :key="pid"
@@ -53,7 +53,7 @@
               <v-list-item-title>{{ title }}</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
-        </template>
+        </div>
 
         <v-list-item :to="{ name: 'courseChallenges' }" color="primary">
           <v-list-item-icon>
@@ -63,7 +63,7 @@
             <v-list-item-title>測驗</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <template v-if="$route.name === 'courseChallenge'">
+        <div v-if="$route.name === 'courseChallenge'" style="max-height: 300px; overflow-y: auto">
           <v-list-item
             v-for="{ pid, title } in challenges"
             :key="pid"
@@ -76,7 +76,7 @@
               <v-list-item-title>{{ title }}</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
-        </template>
+        </div>
 
         <v-list-item :to="{ name: 'courseInfo' }" color="primary">
           <v-list-item-icon>

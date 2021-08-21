@@ -49,7 +49,7 @@
         <span>編輯主題</span>
       </v-tooltip>
     </div>
-    <v-row class="mt-6">
+    <v-row class="my-6">
       <v-col cols="12" md="8">
         <div class="text-h6">主題說明</div>
         <div class="text-body-1 ma-1" v-html="prob.description" />
@@ -57,6 +57,7 @@
       <v-col cols="12" md="4">
         <div class="text-h6">分類</div>
         <ColorLabel v-for="tag in prob.tags" :key="tag" :tag="tag" small class="ma-1" />
+        <div v-if="prob.tags.length === 0" class="gray--text">無</div>
         <div class="text-h6 mt-4">附件</div>
         <AttachmentCard
           v-for="{ filename } in prob.attachments"
@@ -66,6 +67,7 @@
           @preview="preview = { dialog: true, filename }"
           @download="$agent.Problem.downloadAttachment(prob.pid, filename)"
         />
+        <div v-if="prob.attachments.length === 0" class="gray--text">無</div>
       </v-col>
     </v-row>
     <PreviewAttachmentModal

@@ -279,8 +279,11 @@ export default {
     },
   },
   watch: {
-    filteredComments() {
-      this.$emit('change-filtered-comments', this.filteredComments)
+    filteredComments: {
+      handler() {
+        this.$emit('change-filtered-comments', this.filteredComments)
+      },
+      immediate: true,
     },
   },
   mounted() {

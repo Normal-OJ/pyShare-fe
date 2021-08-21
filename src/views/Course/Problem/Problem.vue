@@ -24,10 +24,10 @@
         @submit-new-comment="submitNewComment"
       />
       <CommentDetail
-        v-else-if="floor && selectedComment"
+        v-else-if="floor && selectedComment.data"
         :previousFloor="previousFloor"
         :nextFloor="nextFloor"
-        :comment="selectedComment"
+        :comment="selectedComment.data"
         :defaultCode="prob && prob.defaultCode"
         :testResult="testResult['detail']"
         :username="username"
@@ -94,23 +94,21 @@ export default {
       return Number(this.$route.params.pid)
     },
     selectedComment() {
-      return this.comments.find(c => String(c.floor) === String(this.floor))
-    },
-    selectedCommentIndex() {
       const idx = this.filteredComments.findIndex(c => String(c.floor) === String(this.floor))
-      return idx === -1 ? null : idx
+      if (idx === -1) return { data: null, index: null }
+      return { data: this.filteredComments[idx], index: idx }
     },
     previousFloor() {
-      if (this.selectedCommentIndex === null) return null
-      return this.selectedCommentIndex === 0
+      if (this.selectedComment.index === null) return null
+      return this.selectedComment.index === 0
         ? null
-        : this.filteredComments[this.selectedCommentIndex - 1].floor
+        : this.filteredComments[this.selectedComment.index - 1].floor
     },
     nextFloor() {
-      if (this.selectedCommentIndex === null) return null
-      return this.selectedCommentIndex === this.filteredComments.length - 1
+      if (this.selectedComment.index === null) return null
+      return this.selectedComment.index === this.filteredComments.length - 1
         ? null
-        : this.filteredComments[this.selectedCommentIndex + 1].floor
+        : this.filteredComments[this.selectedComment.index + 1].floor
     },
   },
 

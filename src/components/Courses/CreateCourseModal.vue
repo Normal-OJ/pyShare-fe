@@ -143,7 +143,6 @@ export default {
         const body = { ...this.courseInfo, teacher: this.id }
         new Promise((resolve, reject) => this.$emit('submit', body, resolve, reject))
           .then(() => {
-            this.courseInfo.name = null
             this.dialog = false
             this.$alertSuccess('新增課程成功。')
             this.$router.go(0)

@@ -203,14 +203,6 @@ export default {
     isAllowMultipleComments: {
       required: null,
     },
-    subscribeRefetch: {
-      type: Function,
-      required: true,
-    },
-    unsubscribeRefetch: {
-      type: Function,
-      required: true,
-    },
   },
   data() {
     return {
@@ -285,12 +277,6 @@ export default {
       },
       immediate: true,
     },
-  },
-  mounted() {
-    this.subscribeRefetch()
-  },
-  destroyed() {
-    this.unsubscribeRefetch()
   },
   methods: {
     navigate(floor) {

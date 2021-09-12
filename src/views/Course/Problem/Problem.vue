@@ -8,8 +8,6 @@
         <CommentList
           :comments="comments"
           :isAllowMultipleComments="prob && prob.allowMultipleComments"
-          :subscribeRefetch="subscribeRefetchComment"
-          :unsubscribeRefetch="unsubscribeRefetchComment"
           @refetch-floor="fetchFloor"
           @change-filtered-comments="comments => (filteredComments = comments)"
         />
@@ -35,8 +33,6 @@
         :setIsEdit="setIsEdit"
         :submitReply="submitReply"
         :deleteReply="deleteReply"
-        :subscribeRefetch="subscribeRefetchReply"
-        :unsubscribeRefetch="unsubscribeRefetchReply"
         @refetch-floor="fetchFloor"
         @update-comment="updateComment"
         @fetch-submission="fetchSubmission"
@@ -81,6 +77,8 @@ export default {
     },
     testResultSubmissionId: null,
     historySubmissions: [],
+    unsubscribeProblem: null,
+    unsubscribeComment: null,
   }),
 
   computed: {
@@ -113,21 +111,39 @@ export default {
   },
 
   watch: {
-    async pid() {
-      this.isLoading = true
-      await this.getProblem(this.pid)
-      this.fetchFloor()
-      this.isLoading = false
-      this.$nextTick(() => {
-        this.$vuetify.goTo(0)
-      })
+    pid: {
+      async handler(newVal) {
+        if (this.unsubscribeProblem) {
+          this.unsubscribeProblem()
+          this.unsubscribeProblem = null
+        }
+        if (newVal) {
+          this.unsubscribeProblem = this.subscribeRefetchComment(newVal)
+        }
+        this.isLoading = true
+        await this.getProblem(this.pid)
+        this.fetchFloor()
+        this.isLoading = false
+        this.$nextTick(() => {
+          this.$vuetify.goTo(0)
+        })
+      },
+      immediate: true,
+    },
+    selectedComment(newVal) {
+      if (this.unsubscribeComment) {
+        this.unsubscribeComment()
+        this.unsubscribeComment = null
+      }
+      if (newVal.data) {
+        this.unsubscribeComment = this.subscribeRefetchReply(newVal.data.id)
+      }
     },
   },
 
-  async created() {
-    await this.getProblem(this.pid)
-    this.fetchFloor()
-    this.isLoading = false
+  beforeDestroy() {
+    if (this.unsubscribeProblem) this.unsubscribeProblem()
+    if (this.unsubscribeComment) this.unsubscribeComment()
   },
 
   methods: {
@@ -193,11 +209,10 @@ export default {
       try {
         const { data } = await this.$agent.Comment.create(body)
         await this.getProblem(this.pid)
-        let that = this
         this.$nextTick(() => {
-          const { floor } = that.comments.find(comment => comment.id === data.data.id)
-          that.$router.push({ query: { floor }, params: { submit: true } })
-          that.fetchFloor()
+          const { floor } = this.comments.find(comment => comment.id === data.data.id)
+          this.$router.push({ query: { floor }, params: { submit: true } })
+          this.fetchFloor()
         })
       } catch (error) {
         console.log('[views/Problem/submitNewComment] error', error)
@@ -282,29 +297,29 @@ export default {
     setIsEdit(value) {
       this.isEdit = value
     },
-    subscribeRefetchComment() {
+    subscribeRefetchComment(pid) {
       this.$socket.emit('subscribe', {
         topic: 'COMMENT',
-        id: `problem-${this.pid}`,
+        id: `problem-${pid}`,
       })
-    },
-    unsubscribeRefetchComment() {
-      this.$socket.emit('unsubscribe', {
-        topic: 'COMMENT',
-        id: `problem-${this.pid}`,
-      })
+      return () => {
+        this.$socket.emit('unsubscribe', {
+          topic: 'COMMENT',
+          id: `problem-${pid}`,
+        })
+      }
     },
     subscribeRefetchReply(cid) {
       this.$socket.emit('subscribe', {
         topic: 'COMMENT',
         id: `comment-${cid}`,
       })
-    },
-    unsubscribeRefetchReply(cid) {
-      this.$socket.emit('unsubscribe', {
-        topic: 'COMMENT',
-        id: `comment-${cid}`,
-      })
+      return () => {
+        this.$socket.emit('unsubscribe', {
+          topic: 'COMMENT',
+          id: `comment-${cid}`,
+        })
+      }
     },
     confirmLeave(to, from, next) {
       if (!this.floor) next()
@@ -334,20 +349,8 @@ export default {
         const target = data.id.split('-')[0]
         if (target === 'problem') {
           this.getProblem(this.pid)
-          this.$notify({
-            group: 'notify',
-            type: 'my-info',
-            title: '創作列表更新',
-            text: '有人新增、修改，或刪除了創作',
-          })
         } else {
           this.getComments(this.prob.comments)
-          this.$notify({
-            group: 'notify',
-            type: 'my-info',
-            title: '留言列表更新',
-            text: '有人新增、修改，或刪除了留言',
-          })
         }
       } catch (error) {
         console.log('[views/Problem/sockets] error', error)

@@ -475,14 +475,6 @@ export default {
       type: Function,
       required: true,
     },
-    subscribeRefetch: {
-      type: Function,
-      required: true,
-    },
-    unsubscribeRefetch: {
-      type: Function,
-      required: true,
-    },
   },
 
   data() {
@@ -657,14 +649,6 @@ export default {
         this.$rollbar.error('[components/CommentDetail/handleSubmitReply]', error)
       }
     },
-  },
-
-  mounted() {
-    this.subscribeRefetch(this.comment.id)
-  },
-
-  destroyed() {
-    this.unsubscribeRefetch(this.comment.id)
   },
 }
 </script>

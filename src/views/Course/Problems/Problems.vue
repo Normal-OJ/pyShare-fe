@@ -54,31 +54,5 @@ export default {
       this.getProblems({ ...paramsWithTags, course: this.courseId })
     },
   },
-
-  // mounted() {
-  //   this.$socket.emit('subscribe', {
-  //     topic: 'PROBLEM',
-  //     id: this.courseName,
-  //   })
-  // },
-
-  // destroyed() {
-  //   this.$socket.emit('unsubscribe', {
-  //     topic: 'PROBLEM',
-  //     id: this.courseName,
-  //   })
-  // },
-
-  // sockets: {
-  //   refetch: function() {
-  //     this.getProblems(this.paramsWithCourse)
-  //     this.$notify({
-  //       group: 'notify',
-  //       type: 'my-info',
-  //       title: '主題列表更新',
-  //       text: '有人新增、修改，或刪除了主題',
-  //     })
-  //   },
-  // },
 }
 </script>

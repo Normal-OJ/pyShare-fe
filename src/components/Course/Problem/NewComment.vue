@@ -141,7 +141,6 @@ export default {
     },
     closeNewComment() {
       this.$router.replace({ query: null })
-      this.$emit('refetch-floor')
     },
     submitTestSubmission() {
       this.$emit('submit-test-submission', this.newComment.code, 'new')

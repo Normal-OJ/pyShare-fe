@@ -282,7 +282,6 @@ export default {
     navigate(floor) {
       if (this.$route.query.floor !== floor) {
         this.$router.replace({ query: { floor } })
-        this.$emit('refetch-floor')
       }
     },
   },

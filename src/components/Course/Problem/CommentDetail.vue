@@ -300,7 +300,7 @@
                       <v-icon class="ml-1">mdi-chevron-down</v-icon>
                     </v-btn>
                   </template>
-                  <span>批改創作</span>
+                  <span>批改程式</span>
                 </v-tooltip>
               </template>
               <v-list>
@@ -378,7 +378,7 @@
         </v-icon>
         愛心（{{ comment.liked && comment.liked.length }}）
       </v-btn>
-      <v-btn v-if="canParticipateCourse" text width="50%" @click="isReply = true">
+      <v-btn v-if="canParticipateCourse" text width="50%" @click="startReply">
         <v-icon class="mr-1">mdi-comment-outline</v-icon>
         留言（{{ comment.replies && comment.replies.length }}）
       </v-btn>
@@ -386,10 +386,10 @@
     <div v-show="isReply" class="mt-6">
       <TextEditor v-model="newReply" />
       <div class="d-flex mt-2">
-        <v-btn class="mr-2" color="primary" small @click="handleSubmitReply">
+        <v-btn class="mr-2" color="primary" small @click="submitReply">
           送出
         </v-btn>
-        <v-btn color="primary" text small @click="isReply = false">
+        <v-btn color="primary" text small @click="endReply">
           取消
         </v-btn>
       </div>
@@ -398,7 +398,7 @@
     <CommentReplies
       v-else
       :replies="replies"
-      :setIsEdit="setIsEdit"
+      @mutate-is-editing="val => $emit('update:isEditing', val)"
       @update-reply="(id, index) => $emit('update-reply', id, index)"
       @delete-reply="id => $emit('delete-reply', id)"
     />
@@ -415,6 +415,7 @@ import { SUBMISSION_STATUS } from '@/constants/submission'
 import CommentResult from './CommentResult'
 import CommentReplies from './CommentReplies'
 import { canWriteCourseMixin, canParticipateCourseMixin } from '@/lib/permissionMixin'
+import { mapState } from 'vuex'
 
 const COMMENT_KEY = {
   TITLE: 'title',
@@ -455,24 +456,12 @@ export default {
     testResult: {
       type: Object,
     },
-    username: {
-      type: String,
-      required: true,
-    },
     historySubmissions: {
       type: Array,
       required: true,
     },
-    setIsEdit: {
-      type: Function,
-      required: true,
-    },
-    submitReply: {
-      type: Function,
-      required: true,
-    },
-    deleteReply: {
-      type: Function,
+    isEditing: {
+      type: Boolean,
       required: true,
     },
   },
@@ -498,6 +487,9 @@ export default {
   },
 
   computed: {
+    ...mapState({
+      username: state => state.auth.username,
+    }),
     isSubmissionPending() {
       if (!this.comment || !this.comment.submission) return false
       if (!this.browsingSubmission) return true
@@ -560,12 +552,12 @@ export default {
 
   beforeDestroy() {
     clearInterval(this.pollingSubmission)
+    this.$emit('update:isEditing', false)
   },
 
   methods: {
     gotoFloor(targetFloor) {
       this.$router.push({ query: { floor: targetFloor } })
-      this.$emit('refetch-floor')
     },
     setDefaultCode() {
       const result = window.confirm('套用預設程式碼將會覆蓋掉現有的程式碼，是否要繼續？')
@@ -575,17 +567,11 @@ export default {
     closeSelectedComment() {
       this.$emit('fetch-submission')
       this.$router.replace({ query: null })
-      this.$emit('refetch-floor')
     },
     async deleteSelectedComment() {
       const result = window.confirm('確認要刪除創作嗎？')
-      if (!result) return
-      try {
-        await this.deleteReply(this.comment.id)
-        this.$router.replace({ query: null })
-        this.$emit('refetch-floor')
-      } catch (error) {
-        this.$alertFail('刪除失敗。')
+      if (result) {
+        this.$emit('delete-comment', this.comment.id)
       }
     },
     async getReplies() {
@@ -608,12 +594,12 @@ export default {
         this.isDisableSubmitSubmission = !this.newComment[key]
       }
       this.isEdit[key] = true
-      this.setIsEdit(true)
+      this.$emit('update:isEditing', true)
     },
     cancelEditComment(key) {
       this.isEdit[key] = false
       if (Object.values(this.isEdit).every(edit => !edit)) {
-        this.setIsEdit(false)
+        this.$emit('update:isEditing', false)
       }
     },
     confirmEditComment(key) {
@@ -639,15 +625,19 @@ export default {
     likeComment() {
       this.$emit('like-comment', this.comment.id)
     },
-    async handleSubmitReply() {
-      try {
-        await this.submitReply(this.comment.id, this.newReply)
-        this.newReply = ''
-        this.isReply = false
-      } catch (error) {
-        this.$alertFail('新增留言失敗。')
-        this.$rollbar.error('[components/CommentDetail/handleSubmitReply]', error)
-      }
+    startReply() {
+      this.isReply = true
+      this.$emit('update:isEditing', true)
+    },
+    endReply() {
+      this.newReply = ''
+      this.isReply = false
+      this.$emit('update:isEditing', false)
+    },
+    submitReply() {
+      this.$emit('submit-reply', this.comment.id, this.newReply, () => {
+        this.endReply()
+      })
     },
   },
 }

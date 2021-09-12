@@ -86,10 +86,6 @@ export default {
       type: Array,
       required: true,
     },
-    setIsEdit: {
-      type: Function,
-      required: true,
-    },
   },
 
   components: { TextEditor, Gravatar },
@@ -108,12 +104,12 @@ export default {
     editReply(index) {
       this.$set(this.newReplies, index, this.replies[index].content)
       this.$set(this.isEdit, index, true)
-      this.setIsEdit(true)
+      this.$emit('mutate-is-editing', true)
     },
     cancelEditReply(index) {
       this.$set(this.isEdit, index, false)
       if (this.isEdit.every(edit => !edit)) {
-        this.setIsEdit(false)
+        this.$emit('mutate-is-editing', false)
       }
     },
     updateReply(id, index) {

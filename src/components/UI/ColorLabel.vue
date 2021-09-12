@@ -3,8 +3,8 @@
     label
     :small="small"
     :color="labelColor.color"
-    :dark="labelColor.dark"
-    class="text-body-2"
+    :style="{ color: labelColor.textColor }"
+    class="text-body-2 font-weight-medium"
     :close="close"
     @click:close="$emit('close-chip')"
   >
@@ -40,24 +40,21 @@ export default {
 
   data: () => ({
     color: [
-      { color: '#d32f2f', dark: true },
-      { color: '#C2185B', dark: true },
-      { color: '#7B1FA2', dark: true },
-      { color: '#512DA8', dark: true },
-      { color: '#303F9F', dark: true },
-      { color: '#1976D2', dark: true },
-      { color: '#0288D1', dark: true },
-      { color: '#0097A7', dark: true },
-      { color: '#00796B', dark: true },
-      { color: '#388E3C', dark: true },
-      { color: '#689F38', dark: true },
-      { color: '#AFB42B', dark: true },
-      { color: '#FFA000', dark: true },
-      { color: '#F57C00', dark: true },
-      { color: '#E64A19', dark: true },
-      { color: '#5D4037', dark: true },
-      { color: '#616161', dark: true },
-      { color: '#455A64', dark: true },
+      { color: '#FECACA', textColor: '#B91C1C' },
+      { color: '#FED7AA', textColor: '#C2410C' },
+      { color: '#FDE68A', textColor: '#B45309' },
+      { color: '#FEF08A', textColor: '#A16207' },
+      { color: '#BBF7D0', textColor: '#15803D' },
+      { color: '#A7F3D0', textColor: '#047857' },
+      { color: '#99F6E4', textColor: '#0F766E' },
+      { color: '#A5F3FC', textColor: '#0E7490' },
+      { color: '#BFDBFE', textColor: '#1D4ED8' },
+      { color: '#C7D2FE', textColor: '#4338CA' },
+      { color: '#DDD6FE', textColor: '#6D28D9' },
+      { color: '#E9D5FF', textColor: '#7E22CE' },
+      { color: '#F5D0FE', textColor: '#A21CAF' },
+      { color: '#FBCFE8', textColor: '#BE185D' },
+      { color: '#FECDD3', textColor: '#BE123C' },
     ],
   }),
 }

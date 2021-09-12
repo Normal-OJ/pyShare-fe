@@ -22,9 +22,11 @@
             </div>
             <v-list-item v-for="item in courseTags" :key="item">
               <v-list-item-content>
-                <v-list-item-title class="py-1">{{ item }}</v-list-item-title>
+                <v-list-item-title>
+                  <ColorLabel :tag="item" small />
+                </v-list-item-title>
               </v-list-item-content>
-              <v-tooltip bottom="bottom" color="#000000E6">
+              <v-tooltip left>
                 <template v-slot:activator="{ on }">
                   <v-btn
                     color="secondary"
@@ -46,7 +48,7 @@
       <v-col cols="12" md="2">
         <v-row class="hidden-sm-and-down" :style="{ height: '40vh' }"></v-row>
         <v-row justify="center">
-          <v-tooltip bottom="bottom" color="#000000E6">
+          <v-tooltip bottom>
             <template v-slot:activator="{ on }">
               <v-btn
                 color="primary"
@@ -58,7 +60,7 @@
                 <v-icon>mdi-transfer-left</v-icon>
               </v-btn>
             </template>
-            <span>將選取的分類授權給此課程使用 </span>
+            <span>將選取的分類授權給此課程使用</span>
           </v-tooltip>
         </v-row>
       </v-col>
@@ -98,7 +100,9 @@
                   </v-list-item-action>
                   <v-list-item-content>
                     <div class="d-flex align-center">
-                      <v-list-item-title class="py-1">{{ item }}</v-list-item-title>
+                      <v-list-item-title>
+                        <ColorLabel :tag="item" small />
+                      </v-list-item-title>
                       <v-spacer />
                       <v-tooltip bottom :disabled="!removables || !removables[item]">
                         <template v-slot:activator="{ on, attrs }">
@@ -135,6 +139,7 @@
 <script>
 import CreateTagModal from './CreateTagModal'
 import Popup from '../../UI/Popup'
+import ColorLabel from '../../UI/ColorLabel.vue'
 
 const PATCH_OPTION = {
   PUSH: 'push',
@@ -148,7 +153,7 @@ const initialPatchTagsBody = {
 export default {
   name: 'ManageTags',
 
-  components: { CreateTagModal, Popup },
+  components: { CreateTagModal, Popup, ColorLabel },
 
   props: {
     courseTags: {
@@ -166,18 +171,6 @@ export default {
       type: String,
       required: true,
     },
-    // submitPatchTags: {
-    //   type: Function,
-    //   required: true,
-    // },
-    // submitNewTags: {
-    //   type: Function,
-    //   required: true,
-    // },
-    // deleteTags: {
-    //   type: Function,
-    //   required: true,
-    // },
   },
 
   data: () => ({

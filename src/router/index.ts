@@ -238,9 +238,32 @@ const routes: RouteConfig[] = [
   },
   {
     path: '/admin',
-    name: 'admin',
     component: () => import('@/views/Admin/Admin.vue'),
-    meta: { title: () => '管理員介面' },
+    children: [
+      {
+        path: '',
+        name: 'admin',
+        redirect: { name: 'adminUsers' },
+      },
+      {
+        path: 'users',
+        name: 'adminUsers',
+        component: () => import('@/views/Admin/AdminUsers.vue'),
+        meta: { title: () => '管理帳號' },
+      },
+      {
+        path: 'schools',
+        name: 'adminSchools',
+        component: () => import('@/views/Admin/AdminSchools.vue'),
+        meta: { title: () => '管理學校' },
+      },
+      {
+        path: 'sandbox',
+        name: 'adminSandbox',
+        component: () => import('@/views/Admin/AdminSandbox.vue'),
+        meta: { title: () => '管理沙盒' },
+      },
+    ],
   },
   {
     path: '/about',

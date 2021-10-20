@@ -3,7 +3,7 @@ import store from '@/store'
 import { MutationTypes } from '@/store/mutation-types'
 import axios, { AxiosResponse } from 'axios'
 
-const fetcher = axios.create({
+export const fetcher = axios.create({
   baseURL: config.API_BASE_URL,
 })
 
@@ -132,7 +132,7 @@ const Tag = {
   check: (body: Tag.ICreateBody): PysharePromise<Tag.ICheckResponse> =>
     fetcher.post('/tag/check', body),
 
-  delete: (body: Tag.ICreateBody) => fetcher({ method: 'delete', url: `/tag`, data: body }),
+  delete: (body: Tag.ICreateBody) => fetcher({ method: 'delete', url: '/tag', data: body }),
 }
 
 const User = {
@@ -180,9 +180,21 @@ const Dataset = {
 
 const School = {
   getList: (): PysharePromise<School.Info[]> => fetcher.get('/school'),
+
   get: (abbr: Pick<School.Info, 'abbr'>): PysharePromise<School.Info> =>
     fetcher.get(`/school/${abbr}`),
+
   createSchool: (body: School.Info) => fetcher.post('/school', body),
+}
+
+const Sandbox = {
+  getList: (): PysharePromise<Sandbox.Info[]> => fetcher.get('/sandbox'),
+
+  create: (body: Sandbox.CreateBody) => fetcher.post('/sandbox', body),
+
+  modify: (body: Sandbox.CreateBody) => fetcher.put('/sandbox', body),
+
+  delete: (url: string) => fetcher({ method: 'delete', url: '/sandbox', data: { url } }),
 }
 
 export default {
@@ -197,4 +209,5 @@ export default {
   Gitlab,
   Permission,
   Dataset,
+  Sandbox,
 }

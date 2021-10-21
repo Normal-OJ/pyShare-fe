@@ -27,7 +27,7 @@ describe('NewSandboxForm.vue', () => {
         data: { url: '', alias: '', token: '' },
       })
       // the submit button is disabled
-      expect(NewSandboxForm.computed.isSubmitDisabled.call(wrapper.vm.$data)).toEqual(true)
+      expect(NewSandboxForm.computed.isSubmitDisabled.call(wrapper.vm)).toEqual(true)
       // check input elements
       const ids = [urlId, aliasId, tokenId]
       ids.forEach(id => {
@@ -48,7 +48,7 @@ describe('NewSandboxForm.vue', () => {
         })
         await wrapper.vm.$nextTick()
         expect(wrapper.vm.$data.newSandboxForm).toEqual({
-          isValid: false,
+          isValid: true,
           data: { ...populateWith },
         })
         const url = wrapper.find(urlId)
@@ -56,8 +56,6 @@ describe('NewSandboxForm.vue', () => {
         expect(url.element.readOnly).toEqual(true)
         const alias = wrapper.find(aliasId)
         expect(alias.element.value).toEqual(populateWith.alias || '')
-        const token = wrapper.find(tokenId)
-        expect(token.element.value).toEqual('')
       },
     )
   })
@@ -67,7 +65,7 @@ describe('NewSandboxForm.vue', () => {
    * 測試表單驗證
    */
   describe('Form Validation', () => {
-    it('should require url & token when Creating a sandbox.', async () => {
+    it('should require url, token & not require alias when Creating a sandbox.', async () => {
       const wrapper = mount(NewSandboxForm, {
         ...baseMountConfig(),
         propsData: {
@@ -76,38 +74,34 @@ describe('NewSandboxForm.vue', () => {
       })
       await wrapper.find(urlId).setValue('http://foo.bar')
       expect(wrapper.vm.$data.newSandboxForm.isValid).toEqual(false)
-      expect(NewSandboxForm.computed.isSubmitDisabled.call(wrapper.vm.$data)).toEqual(true)
+      expect(NewSandboxForm.computed.isSubmitDisabled.call(wrapper.vm)).toEqual(true)
       await wrapper.find(aliasId).setValue('nickname')
       expect(wrapper.vm.$data.newSandboxForm.isValid).toEqual(false)
-      expect(NewSandboxForm.computed.isSubmitDisabled.call(wrapper.vm.$data)).toEqual(true)
+      expect(NewSandboxForm.computed.isSubmitDisabled.call(wrapper.vm)).toEqual(true)
       await wrapper.find(tokenId).setValue('s3cr3t')
       await wrapper.vm.$nextTick()
       expect(wrapper.vm.$data.newSandboxForm.isValid).toEqual(true)
-      expect(NewSandboxForm.computed.isSubmitDisabled.call(wrapper.vm.$data)).toEqual(false)
+      expect(NewSandboxForm.computed.isSubmitDisabled.call(wrapper.vm)).toEqual(false)
       await wrapper.find(aliasId).setValue('nickname')
       await wrapper.vm.$nextTick()
       expect(wrapper.vm.$data.newSandboxForm.isValid).toEqual(true)
-      expect(NewSandboxForm.computed.isSubmitDisabled.call(wrapper.vm.$data)).toEqual(false)
+      expect(NewSandboxForm.computed.isSubmitDisabled.call(wrapper.vm)).toEqual(false)
     })
 
-    it('should require token when Modifying a sandbox.', async () => {
+    it('should not require alias when Modifying a sandbox.', async () => {
       const wrapper = mount(NewSandboxForm, {
         ...baseMountConfig(),
         propsData: {
-          populateWith: { data: { url: 'http://foo.bar', alias: '', token: '' } },
+          populateWith: { data: { url: 'http://foo.bar', alias: '' } },
         },
       })
-      await wrapper.find(aliasId).setValue('nickname')
-      expect(wrapper.vm.$data.newSandboxForm.isValid).toEqual(false)
-      expect(NewSandboxForm.computed.isSubmitDisabled.call(wrapper.vm.$data)).toEqual(true)
-      await wrapper.find(tokenId).setValue('s3cr3t')
       await wrapper.vm.$nextTick()
       expect(wrapper.vm.$data.newSandboxForm.isValid).toEqual(true)
-      expect(NewSandboxForm.computed.isSubmitDisabled.call(wrapper.vm.$data)).toEqual(false)
+      expect(NewSandboxForm.computed.isSubmitDisabled.call(wrapper.vm)).toEqual(false)
       await wrapper.find(aliasId).setValue('nickname')
       await wrapper.vm.$nextTick()
       expect(wrapper.vm.$data.newSandboxForm.isValid).toEqual(true)
-      expect(NewSandboxForm.computed.isSubmitDisabled.call(wrapper.vm.$data)).toEqual(false)
+      expect(NewSandboxForm.computed.isSubmitDisabled.call(wrapper.vm)).toEqual(false)
     })
   })
 
@@ -136,20 +130,19 @@ describe('NewSandboxForm.vue', () => {
     })
 
     it.each([
-      ['http://foo.bar', 'nickname', 's3cr3t'],
-      ['http://123', '', 's3cr3t'],
-    ])("should emit 'modify' after submitting a Modified sandbox.", async (url, alias, token) => {
+      ['http://foo.bar', 'nickname'],
+      ['http://123', ''],
+    ])("should emit 'modify' after submitting a Modified sandbox.", async (url, alias) => {
       const wrapper = mount(NewSandboxForm, {
         ...baseMountConfig(),
         propsData: {
-          populateWith: { data: { url, alias: alias, token: '' } },
+          populateWith: { data: { url, alias: alias } },
         },
       })
-      await wrapper.find(tokenId).setValue(token)
       await wrapper.find(submitId).trigger('click')
       await wrapper.vm.$nextTick()
       expect(wrapper.emitted().modify).toBeTruthy()
-      expect(wrapper.emitted().modify[0]).toEqual([{ url, alias, token }])
+      expect(wrapper.emitted().modify[0]).toEqual([{ url, alias }])
     })
 
     it("should emit 'cancel' after clicking cancel button.", async () => {

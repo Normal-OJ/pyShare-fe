@@ -21,6 +21,7 @@
       data-test="alias"
     />
     <v-textarea
+      v-if="populateWith.new"
       v-model.trim="newSandboxForm.data.token"
       :rules="[val => !!val || '此欄位為必填']"
       label="Token"
@@ -68,7 +69,10 @@ export default {
 
   computed: {
     isSubmitDisabled() {
-      return !this.newSandboxForm.data.url || !this.newSandboxForm.data.token
+      return (
+        !this.newSandboxForm.data.url ||
+        (!!this.populateWith.new && !this.newSandboxForm.data.token)
+      )
     },
   },
 

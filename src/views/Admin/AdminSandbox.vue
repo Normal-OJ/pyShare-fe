@@ -31,6 +31,7 @@
         :items="sandboxes"
         :search="searchText"
       >
+        <template v-slot:top> </template>
         <template v-slot:item.operation="{ item }">
           <v-menu bottom right>
             <template v-slot:activator="{ on, attrs }">
@@ -39,7 +40,7 @@
               </v-btn>
             </template>
             <v-list>
-              <v-list-item @click="populateWith = { data: item }">
+              <v-list-item @click="populateWith = { data: item, isLoading: false }">
                 <v-list-item-title>編輯</v-list-item-title>
               </v-list-item>
               <v-list-item @click="deleteSandbox(item.url)">
@@ -71,6 +72,7 @@ const initNewSandboxData = {
     alias: '',
   },
   new: true,
+  isLoading: false,
 }
 
 export default {
@@ -97,10 +99,10 @@ export default {
             mutate()
           })
           .catch(error => {
+            this.populateWith.loading = false
             this.$alertFail('新增沙盒失敗')
             this.$rollbar.error('[views/AdminSandbox/submitNewSandbox]', error)
           })
-          .finally(() => (this.populateWith.loading = false))
       },
       modifySandbox(data) {
         this.populateWith.loading = true
@@ -111,10 +113,10 @@ export default {
             mutate()
           })
           .catch(error => {
+            this.populateWith.loading = false
             this.$alertFail('編輯沙盒失敗')
             this.$rollbar.error('[views/AdminSandbox/modifySandbox]', error)
           })
-          .finally(() => (this.populateWith.loading = false))
       },
       deleteSandbox(url) {
         if (!confirm('確定要刪除嗎？此操作將無法復原。')) return

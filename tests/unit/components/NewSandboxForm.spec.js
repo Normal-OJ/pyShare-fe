@@ -103,6 +103,20 @@ describe('NewSandboxForm.vue', () => {
       expect(wrapper.vm.$data.newSandboxForm.isValid).toEqual(true)
       expect(NewSandboxForm.computed.isSubmitDisabled.call(wrapper.vm)).toEqual(false)
     })
+
+    it.each([
+      { new: true, data: { url: '', alias: '', token: '' } },
+      { data: { url: 'http://foo.bar', alias: '' } },
+    ])('should not emit if form validation failed.', async populateWith => {
+      const wrapper = mount(NewSandboxForm, {
+        ...baseMountConfig(),
+        propsData: { populateWith },
+      })
+      await wrapper.find(aliasId).setValue(new Array(33).join('A'))
+      await wrapper.find(submitId).trigger('click')
+      await wrapper.vm.$nextTick()
+      expect(wrapper.emitted().submit).toBeFalsy()
+    })
   })
 
   /**

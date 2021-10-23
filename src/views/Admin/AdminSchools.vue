@@ -1,35 +1,33 @@
 <template>
-  <v-container fluid class="d-flex flex-column">
-    <v-card flat>
-      <v-card-title class="pt-0 mt-0">
-        學校列表
-        <v-spacer />
-        <v-text-field
-          v-model="searchText"
-          append-icon="mdi-magnify"
-          label="Search"
-          single-line
-          hide-details
-        />
-        <v-btn class="ml-6 mt-4" color="primary" @click="showNewSchoolForm = true">
-          <v-icon class="mr-2">mdi-account-plus</v-icon>
-          新增學校
-        </v-btn>
-      </v-card-title>
-      <NewSchoolForm
-        v-if="showNewSchoolForm"
-        @submit="submitNewSchool"
-        @cancel="showNewSchoolForm = false"
+  <v-container fluid class="d-flex flex-column py-12">
+    <v-row class="mb-4">
+      <div class="text-h6">學校列表</div>
+      <v-spacer />
+      <v-text-field
+        v-model="searchText"
+        append-icon="mdi-magnify"
+        label="Search"
+        single-line
+        hide-details
       />
-      <div v-if="error">載入失敗</div>
-      <v-data-table
-        v-else
-        :loading="!schools"
-        :headers="schoolTableHeaders"
-        :items="schools"
-        :search="searchText"
-      />
-    </v-card>
+      <v-btn class="ml-6 mt-4" color="primary" @click="showNewSchoolForm = true">
+        <v-icon class="mr-2">mdi-account-plus</v-icon>
+        新增學校
+      </v-btn>
+    </v-row>
+    <NewSchoolForm
+      v-if="showNewSchoolForm"
+      @submit="submitNewSchool"
+      @cancel="showNewSchoolForm = false"
+    />
+    <div v-else-if="error">載入失敗</div>
+    <v-data-table
+      v-else
+      :loading="!schools"
+      :headers="schoolTableHeaders"
+      :items="schools"
+      :search="searchText"
+    />
   </v-container>
 </template>
 

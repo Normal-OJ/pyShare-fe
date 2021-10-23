@@ -1,38 +1,36 @@
 <template>
-  <v-container fluid class="d-flex flex-column pb-12">
-    <v-card flat>
-      <v-card-title>
-        帳號列表
-        <v-spacer />
-        <v-text-field
-          v-model="searchText"
-          append-icon="mdi-magnify"
-          label="Search"
-          single-line
-          hide-details
-        />
-        <v-btn class="ml-6 mt-4" color="primary" @click="showNewUserForm = true">
-          <v-icon class="mr-2">mdi-account-plus</v-icon>
-          新增帳號
-        </v-btn>
-      </v-card-title>
-      <NewUserForm
-        v-if="showNewUserForm"
-        :schoolOptions="schoolOptions"
-        @submit="submitNewUser"
-        @cancel="showNewUserForm = false"
+  <v-container fluid class="d-flex flex-column py-12">
+    <v-row class="mb-4">
+      <div class="text-h6">帳號列表</div>
+      <v-spacer />
+      <v-text-field
+        v-model="searchText"
+        append-icon="mdi-magnify"
+        label="Search"
+        single-line
+        hide-details
       />
-      <div v-if="error">載入失敗</div>
-      <v-data-table
-        v-else
-        :loading="!users"
-        :headers="userTableHeaders"
-        :items="users"
-        :search="searchText"
-      >
-        <template v-slot:item.role="{ value }">{{ roles[value] }}</template>
-      </v-data-table>
-    </v-card>
+      <v-btn class="ml-6 mt-4" color="primary" @click="showNewUserForm = true">
+        <v-icon class="mr-2">mdi-account-plus</v-icon>
+        新增帳號
+      </v-btn>
+    </v-row>
+    <NewUserForm
+      v-if="showNewUserForm"
+      :schoolOptions="schoolOptions"
+      @submit="submitNewUser"
+      @cancel="showNewUserForm = false"
+    />
+    <div v-else-if="error">載入失敗</div>
+    <v-data-table
+      v-else
+      :loading="!users"
+      :headers="userTableHeaders"
+      :items="users"
+      :search="searchText"
+    >
+      <template v-slot:item.role="{ value }">{{ roles[value] }}</template>
+    </v-data-table>
   </v-container>
 </template>
 

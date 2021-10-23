@@ -1,56 +1,54 @@
 <template>
-  <v-container fluid class="d-flex flex-column pb-12">
-    <v-card flat>
-      <v-card-title>
-        沙盒列表
-        <v-spacer />
-        <v-text-field
-          v-model="searchText"
-          append-icon="mdi-magnify"
-          label="Search"
-          single-line
-          hide-details
-        />
-        <v-btn class="ml-6 mt-4" color="primary" @click="populateWith = initNewSandboxData">
-          <v-icon class="mr-2">mdi-account-plus</v-icon>
-          新增沙盒
-        </v-btn>
-      </v-card-title>
-      <NewSandboxForm
-        v-if="!!populateWith"
-        :populateWith="populateWith"
-        @modify="modifySandbox"
-        @submit="submitNewSandbox"
-        @cancel="populateWith = null"
+  <v-container fluid class="d-flex flex-column py-12">
+    <v-row class="mb-4">
+      <div class="text-h6">沙盒列表</div>
+      <v-spacer />
+      <v-text-field
+        v-model="searchText"
+        append-icon="mdi-magnify"
+        label="Search"
+        single-line
+        hide-details
       />
-      <div v-else-if="error">載入失敗</div>
-      <v-data-table
-        v-else
-        :loading="!sandboxes"
-        :headers="sandboxTableHeaders"
-        :items="sandboxes"
-        :search="searchText"
-      >
-        <template v-slot:top> </template>
-        <template v-slot:item.operation="{ item }">
-          <v-menu bottom right>
-            <template v-slot:activator="{ on, attrs }">
-              <v-btn icon v-on="on" v-bind="attrs">
-                <v-icon>mdi-dots-horizontal</v-icon>
-              </v-btn>
-            </template>
-            <v-list>
-              <v-list-item @click="populateWith = { data: item, isLoading: false }">
-                <v-list-item-title>編輯</v-list-item-title>
-              </v-list-item>
-              <v-list-item @click="deleteSandbox(item.url)">
-                <v-list-item-title>刪除</v-list-item-title>
-              </v-list-item>
-            </v-list>
-          </v-menu>
-        </template>
-      </v-data-table>
-    </v-card>
+      <v-btn class="ml-6 mt-4" color="primary" @click="populateWith = initNewSandboxData">
+        <v-icon class="mr-2">mdi-account-plus</v-icon>
+        新增沙盒
+      </v-btn>
+    </v-row>
+    <NewSandboxForm
+      v-if="!!populateWith"
+      :populateWith="populateWith"
+      @modify="modifySandbox"
+      @submit="submitNewSandbox"
+      @cancel="populateWith = null"
+    />
+    <div v-else-if="error">載入失敗</div>
+    <v-data-table
+      v-else
+      :loading="!sandboxes"
+      :headers="sandboxTableHeaders"
+      :items="sandboxes"
+      :search="searchText"
+    >
+      <template v-slot:top> </template>
+      <template v-slot:item.operation="{ item }">
+        <v-menu bottom right>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn icon v-on="on" v-bind="attrs">
+              <v-icon>mdi-dots-horizontal</v-icon>
+            </v-btn>
+          </template>
+          <v-list>
+            <v-list-item @click="populateWith = { data: item, isLoading: false }">
+              <v-list-item-title>編輯</v-list-item-title>
+            </v-list-item>
+            <v-list-item @click="deleteSandbox(item.url)">
+              <v-list-item-title>刪除</v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-menu>
+      </template>
+    </v-data-table>
   </v-container>
 </template>
 

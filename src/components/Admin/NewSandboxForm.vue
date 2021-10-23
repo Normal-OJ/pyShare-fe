@@ -7,7 +7,6 @@
       label="連線位址 URL"
       outlined
       dense
-      class="mx-2"
       data-test="url"
     />
     <v-text-field
@@ -17,7 +16,6 @@
       outlined
       dense
       counter="32"
-      class="mx-2"
       data-test="alias"
     />
     <v-textarea
@@ -27,26 +25,19 @@
       label="Token"
       outlined
       dense
-      class="mx-2"
       data-test="token"
     />
     <v-btn
       color="success"
+      class="mr-3"
       :disabled="isSubmitDisabled"
       :loading="populateWith.isLoading"
-      class="mx-2"
       @click="submit"
       data-test="submit"
     >
       送出
     </v-btn>
-    <v-btn
-      :disabled="populateWith.isLoading"
-      class="mx-2"
-      @click="$emit('cancel')"
-      text
-      data-test="cancel"
-    >
+    <v-btn :disabled="populateWith.isLoading" @click="$emit('cancel')" text data-test="cancel">
       取消
     </v-btn>
   </v-form>

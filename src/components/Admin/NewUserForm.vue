@@ -1,5 +1,5 @@
 <template>
-  <v-form v-model="newUserForm.isValid">
+  <v-form ref="form" v-model="newUserForm.isValid">
     <v-select
       v-model="newUserForm.data.school"
       :rules="[val => val !== null || '此欄位為必填']"
@@ -109,6 +109,7 @@ export default {
 
   methods: {
     submit() {
+      if (!this.$refs.form.validate()) return
       const { school, username, displayName, password, role, email } = this.newUserForm.data
       const csvHeader = ['school', 'username', 'displayName', 'password', 'role']
       const csvContent = [school, username, displayName, password, role]

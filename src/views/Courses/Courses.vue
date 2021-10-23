@@ -73,10 +73,10 @@ export default {
     },
     async submitCreateCourse(body, resolve, reject) {
       try {
-        await this.$agent.Course.create(body)
+        const { data } = await this.$agent.Course.create(body)
         // since the course of user is stored in jwt, we have to refresh jwt
         await this.getJwt()
-        resolve()
+        resolve(data.data.id)
       } catch (error) {
         console.log('[views/Courses/submitCreateCourse] error', error)
         reject(error)

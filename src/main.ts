@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import VueCompositionAPI from '@vue/composition-api'
 import App from './App.vue'
 import router from './router'
 import store from './store'
@@ -10,6 +11,8 @@ import agent from './api/agent'
 import VueSocketIO from 'vue-socket.io'
 import Notifications from 'vue-notification'
 import './sass/styles.scss'
+
+Vue.use(VueCompositionAPI)
 
 Vue.use(Notifications)
 

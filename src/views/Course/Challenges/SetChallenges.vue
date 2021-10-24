@@ -68,14 +68,17 @@ export default {
   methods: {
     async getProblem(pid) {
       try {
-        const { data } = await this.$agent.Problem.get(pid)
-        this.prob = data.data
+        const { data: probData } = await this.$agent.Problem.get(pid)
+        this.prob = probData.data
         if (this.prob.extra._cls !== 'OJProblem') {
-          throw new Error('This problem is not a challenge.')
+          alert('此測驗不存在')
+          this.$rollbar.error('[views/SetChallenges/getProblem] not OJProblem:', pid)
+          this.$router.push({ name: 'courseManageChallenges' })
         }
+        const { data: ioData } = await this.$agent.Problem.getIOFiles(pid)
+        this.prob.extra = { ...this.prob.extra, ...ioData.data }
       } catch (error) {
-        alert('題目不存在')
-        this.$router.push({ name: 'courseManageChallenges' })
+        alert('讀取題目發生錯誤，請重新整理再試一次')
         this.$rollbar.error('[views/SetChallenges/getProblem]', error)
       }
     },
@@ -92,17 +95,17 @@ export default {
         this.$alertSuccess(`${this.isEdit ? '更新' : '新增'}測驗內容成功。`)
         const pid = this.isEdit ? this.pid : result.data.data.pid
         this.getProblem(pid)
-        if (!this.isEdit) {
-          this.$router.push({
-            name: 'courseChallenges',
-            params: { id: this.courseId },
-          })
-        } else {
-          this.$router.push({
-            name: 'courseChallenge',
-            params: { pid: pid },
-          })
-        }
+        this.$router.push(
+          !this.isEdit
+            ? {
+                name: 'courseChallenges',
+                params: { id: this.courseId },
+              }
+            : {
+                name: 'courseChallenge',
+                params: { pid: pid },
+              },
+        )
       } catch (error) {
         this.$alertFail(`${this.isEdit ? '更新' : '新增'}測驗內容失敗。`)
         this.$rollbar.error('[views/SetChallenges/handleSubmit]', error)

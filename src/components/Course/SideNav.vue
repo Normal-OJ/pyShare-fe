@@ -45,7 +45,6 @@
             v-for="{ pid, title } in problems"
             :key="pid"
             :to="{ name: 'courseProblem', params: { pid: pid } }"
-            color="primary"
             :class="{ 'ml-4': !isMinify }"
           >
             <v-list-item-icon class="pl-3 mr-3">{{ pid }}</v-list-item-icon>
@@ -55,7 +54,7 @@
           </v-list-item>
         </div>
 
-        <v-list-item :to="{ name: 'courseChallenges' }" color="primary">
+        <v-list-item :to="{ name: 'courseChallenges' }">
           <v-list-item-icon>
             <v-icon>mdi-code-tags</v-icon>
           </v-list-item-icon>
@@ -68,7 +67,6 @@
             v-for="{ pid, title } in challenges"
             :key="pid"
             :to="{ name: 'courseChallenge', params: { pid: pid } }"
-            color="primary"
             :class="{ 'ml-4': !isMinify }"
           >
             <v-list-item-icon class="pl-3 mr-3">{{ pid }}</v-list-item-icon>
@@ -78,7 +76,7 @@
           </v-list-item>
         </div>
 
-        <v-list-item :to="{ name: 'courseInfo' }" color="primary">
+        <v-list-item :to="{ name: 'courseInfo' }">
           <v-list-item-icon>
             <v-icon>mdi-view-compact</v-icon>
           </v-list-item-icon>
@@ -87,7 +85,7 @@
           </v-list-item-content>
         </v-list-item>
 
-        <v-list-item v-if="canWriteCourse" :to="{ name: 'courseManages' }" color="primary">
+        <v-list-item v-if="canWriteCourse" :to="{ name: 'courseManages' }" exact>
           <v-list-item-icon>
             <v-icon>mdi-cog</v-icon>
           </v-list-item-icon>
@@ -100,7 +98,6 @@
             v-for="{ title, icon, routeName } in manageItems"
             :key="routeName"
             :to="{ name: routeName }"
-            color="primary"
             :class="{ 'ml-4': !isMinify }"
           >
             <v-list-item-icon class="pl-3 mr-3">

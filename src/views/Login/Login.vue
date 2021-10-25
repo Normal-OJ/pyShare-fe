@@ -74,6 +74,9 @@
       >
         登入
       </v-btn>
+      <div style="margin-top: 100px" class="text-center">
+        <router-link :to="{ name: 'forgetPassword' }">忘記密碼</router-link>
+      </div>
     </v-form>
   </v-container>
 </template>

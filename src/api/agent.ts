@@ -48,6 +48,8 @@ const Auth = {
   changeEmail: (body: Auth.IChangeEmailBody) => fetcher.post('/auth/change/email', body),
 
   validateEmail: (body: Auth.IValidateEmailBody) => fetcher.post('/auth/check/email', body),
+
+  passwordRecovery: (email: string) => fetcher.post('/auth/password-recovery', { email }),
 }
 
 const Course = {

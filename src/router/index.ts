@@ -37,6 +37,15 @@ const routes: RouteConfig[] = [
     },
   },
   {
+    path: '/forget-password',
+    name: 'forgetPassword',
+    component: () => import('@/views/Login/ForgetPassword.vue'),
+    meta: {
+      title: () => '忘記密碼',
+      isAllowGuest: true,
+    },
+  },
+  {
     path: '/courses',
     name: 'courses',
     component: () => import('@/views/Courses/Courses.vue'),
@@ -162,7 +171,7 @@ const routes: RouteConfig[] = [
         },
       },
       {
-        path: 'manages/problems_stats',
+        path: 'manages/problems-stats',
         name: 'courseProblemsStats',
         component: () => import('@/views/Course/Manages/ProblemsStats.vue'),
         meta: {
@@ -171,7 +180,7 @@ const routes: RouteConfig[] = [
         },
       },
       {
-        path: 'manages/challenges_stats',
+        path: 'manages/challenges-stats',
         name: 'courseChallengesStats',
         component: () => import('@/views/Course/Manages/ChallengesStats.vue'),
         meta: {

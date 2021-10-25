@@ -93,6 +93,9 @@ const Problem = {
   getAttachment: (id: Problem.ID, name: string): PysharePromise<File> =>
     fetcher.get(`/problem/${id}/attachment/${name}`),
 
+  getIOFiles: (id: Problem.ID): PysharePromise<{ input: File; output: File }> =>
+    fetcher.get(`/problem/${id}/io`),
+
   downloadAttachment: (id: Problem.ID, name: string): void => {
     const url = `${config.API_BASE_URL}/problem/${id}/attachment/${name}`
     window.open(url, '_blank')

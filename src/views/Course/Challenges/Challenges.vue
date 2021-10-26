@@ -15,6 +15,7 @@ import { ActionTypes } from '@/store/action-types'
 
 export default {
   components: { Challenges },
+
   computed: {
     ...mapState({
       tags: state => state.course.courseTags,

@@ -53,6 +53,12 @@
       :loading="loading"
       :custom-sort="customSort"
     >
+      <template v-slot:item.pid="{ value, item }">
+        <div class="d-flex align-center">
+          <ProblemStatusIcon :acceptance="item.acceptance" />
+          <span class="ml-1">{{ value }}</span>
+        </div>
+      </template>
       <template v-slot:[`item.title`]="{ item }">
         <router-link :to="{ name: 'courseProblem', params: { pid: item.pid } }">
           {{ item.title }}
@@ -97,6 +103,7 @@
 
 <script>
 import ColorLabel from '@/components/UI/ColorLabel'
+import ProblemStatusIcon from '@/components/UI/ProblemStatusIcon'
 import { canWriteCourseMixin, canParticipateCourseMixin } from '@/lib/permissionMixin'
 
 const headers = [
@@ -112,7 +119,7 @@ export default {
 
   mixins: [canWriteCourseMixin, canParticipateCourseMixin],
 
-  components: { ColorLabel },
+  components: { ColorLabel, ProblemStatusIcon },
 
   props: {
     problems: {

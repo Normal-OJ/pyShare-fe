@@ -50,7 +50,13 @@
       hide-default-footer
       :loading="loading"
     >
-      <template v-slot:[`item.title`]="{ item }">
+      <template v-slot:item.pid="{ value, item }">
+        <div class="d-flex align-center">
+          <ProblemStatusIcon :acceptance="item.acceptance" />
+          <span class="ml-1">{{ value }}</span>
+        </div>
+      </template>
+      <template v-slot:item.title="{ item }">
         <router-link :to="{ name: 'courseChallenge', params: { pid: item.pid } }">
           {{ item.title }}
         </router-link>
@@ -94,6 +100,7 @@
 
 <script>
 import ColorLabel from '@/components/UI/ColorLabel'
+import ProblemStatusIcon from '@/components/UI/ProblemStatusIcon'
 import { canWriteCourseMixin } from '@/lib/permissionMixin'
 
 const headers = [
@@ -103,11 +110,11 @@ const headers = [
 ]
 
 export default {
-  name: 'Problems',
+  name: 'Challenges',
 
   mixins: [canWriteCourseMixin],
 
-  components: { ColorLabel },
+  components: { ColorLabel, ProblemStatusIcon },
 
   props: {
     challenges: {

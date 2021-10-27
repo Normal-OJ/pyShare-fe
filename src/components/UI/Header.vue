@@ -26,12 +26,26 @@
     <v-menu offset-y v-if="isLogin">
       <template v-slot:activator="{ on, attrs }">
         <v-btn class="text-body-1" icon v-bind="attrs" v-on="on">
-          <v-icon color="white">mdi-bell</v-icon>
+          <v-badge
+            color="error"
+            :value="md5 === EMPTY_EMAIL"
+            offset-x="12"
+            offset-y="12"
+            content="1"
+          >
+            <v-icon color="white">mdi-bell</v-icon>
+          </v-badge>
         </v-btn>
       </template>
-      <v-card width="400" class="d-flex flex-column align-center py-5">
-        <div class="text-h5 font-weight-black mb-5">🚧 功能建置中</div>
-        <v-img :src="require('@/assets/images/underConstruction.svg')" max-width="300" contain />
+      <v-card width="400" class="d-flex flex-column pa-5">
+        <div class="text-h5 font-weight-medium mb-5">
+          <v-icon class="mr-1" size="32">mdi-email</v-icon>
+          請設定電子信箱
+        </div>
+        <div>
+          <div class="mb-5">以利於忘記密碼時使用信箱復原密碼</div>
+          <a :href="`/profile/${id}`">➡️ 前往設定</a>
+        </div>
       </v-card>
     </v-menu>
 
@@ -103,6 +117,7 @@ const navs = [
     routeName: 'about',
   },
 ]
+const EMPTY_EMAIL = 'd41d8cd98f00b204e9800998ecf8427e'
 
 export default {
   name: 'Header',
@@ -126,6 +141,9 @@ export default {
     },
     logoImgSource() {
       return logoImg
+    },
+    EMPTY_EMAIL() {
+      return EMPTY_EMAIL
     },
   },
 

@@ -14,6 +14,7 @@
       :items-per-page="Number(-1)"
       :customSort="customSort"
       :search="search"
+      :loading="loading"
       hide-default-footer
     >
       <template v-slot:item="{ item }">
@@ -56,6 +57,7 @@ export default {
   data: () => ({
     stats: null,
     search: '',
+    loading: true,
   }),
   computed: {
     ...mapState({
@@ -89,6 +91,7 @@ export default {
       this.stats = (
         await this.$agent.Course.getOJStats(this.$route.params.id, this.pids.join())
       ).data.data
+      this.loading = false
     }
   },
   methods: {

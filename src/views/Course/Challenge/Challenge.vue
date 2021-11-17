@@ -66,6 +66,10 @@ export default {
   },
   watch: {
     async pid() {
+      // clear test results
+      this.testSubmissionId = null
+      this.testResult = null
+      // fetch new problem
       this.isLoading = true
       this.getProblem(this.pid).then(() => (this.isLoading = false))
     },

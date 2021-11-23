@@ -1,7 +1,7 @@
 <template>
   <v-tooltip right>
     <template v-slot:activator="{ on, attr }">
-      <v-icon :color="v.color" v-on="on" v-bind="attr">
+      <v-icon :color="v.color" size="14" v-on="on" v-bind="attr">
         {{ v.icon }}
       </v-icon>
     </template>

@@ -68,7 +68,7 @@
     </div>
     <v-row class="mt-6">
       <v-col cols="12" md="8">
-        <div class="text-h6">主題說明</div>
+        <div class="text-h6">測驗說明</div>
         <div class="text-body-1 ma-1" v-html="prob.description" />
       </v-col>
       <v-col cols="12" md="4">

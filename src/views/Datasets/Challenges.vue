@@ -105,7 +105,7 @@
         <td :colspan="headers.length" class="py-6 px-8">
           <v-row>
             <v-col cols="12" md="8">
-              <v-chip class="mb-2 text-body-2" color="primary" label small>主題說明</v-chip>
+              <v-chip class="mb-2 text-body-2" color="primary" label small>測驗說明</v-chip>
               <div v-html="item.description" />
             </v-col>
             <v-col cols="12" md="4">

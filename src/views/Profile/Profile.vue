@@ -30,7 +30,6 @@ export default {
   watch: {
     '$route.params.id': {
       handler() {
-        console.log('watch~')
         this.getUser(this.$route.params.id)
         this.getStats(this.$route.params.id)
       },

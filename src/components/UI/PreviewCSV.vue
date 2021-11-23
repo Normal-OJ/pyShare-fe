@@ -41,7 +41,7 @@ export default {
               text: col,
               value: col,
             }))
-            this.items = results.data
+            this.items = results.data.slice(0, 20)
           },
           error: errors => {
             this.headers = null

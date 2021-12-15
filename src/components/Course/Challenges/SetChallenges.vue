@@ -139,6 +139,7 @@ import _ from 'lodash'
 import { mapState } from 'vuex'
 import { ROLE as _ROLE } from '@/constants/auth'
 import { canWriteCourseMixin } from '@/lib/permissionMixin'
+import { downloadFile } from '@/lib/utils'
 
 const { TEACHER } = _ROLE
 
@@ -228,11 +229,8 @@ export default {
     },
     downloadFile(type) {
       const content = type === 'i' ? this.newProb.extra.input : this.newProb.extra.output
-      const file = 'data:text/plain;charset=utf-8,' + encodeURIComponent(content)
-      const link = document.createElement('a')
-      link.download = type === 'i' ? 'input.txt' : 'output.txt'
-      link.href = file
-      link.click()
+      const fileContent = 'data:text/plain;charset=utf-8,' + encodeURIComponent(content)
+      downloadFile(type === 'i' ? 'input.txt' : 'output.txt', fileContent)
     },
     submit() {
       this.$emit('submit', this.newProb)

@@ -124,8 +124,7 @@ export default {
 
   methods: {
     downloadAttachment(filename) {
-      const url = `https://pyshare.noj.tw/api/problem/${this.prob.pid}/attachment/${filename}`
-      window.open(url, '_blank')
+      this.$agent.Problem.downloadAttachment(this.prob.pid, filename)
     },
   },
 }

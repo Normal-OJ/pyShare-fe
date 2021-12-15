@@ -51,6 +51,7 @@ import { GetterTypes } from '@/store/getter-types'
 import { mapActions, mapGetters, mapState } from 'vuex'
 import ChallengesStats from '@/components/Course/Manages/ChallengesStats.vue'
 import { ActionTypes } from '@/store/action-types'
+import { downloadFile } from '@/lib/utils'
 
 export default {
   components: { ChallengesStats },
@@ -118,10 +119,7 @@ export default {
     },
     downloadStats() {
       const csvContent = 'data:text/csv;charset=utf-8,' + this.downloadData()
-      const link = document.createElement('a')
-      link.download = `${this.courseName}_測驗統計.csv`
-      link.href = csvContent
-      link.click()
+      downloadFile(`${this.courseName}_測驗統計.csv`, csvContent)
     },
     customSort(items, index, isDesc) {
       if (index && index.length < 1) return items

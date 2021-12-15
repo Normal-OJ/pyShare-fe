@@ -92,6 +92,7 @@
 
 <script>
 import FsLightbox from 'fslightbox-vue'
+import { downloadFile } from '@/lib/utils'
 
 const imageFilePossibleExtension = ['png', 'jpg', 'gif', 'jpeg', 'webp', 'svg', 'bmp']
 
@@ -190,13 +191,9 @@ export default {
     },
     download(file) {
       if (this.isTest) {
-        const link = document.createElement('a')
-        link.download = file.filename
-        link.href = `data:application/octet-stream;base64,${file.content}`
-        link.click()
+        downloadFile(file.filename, `data:application/octet-stream;base64,${file.content}`)
       } else {
-        const url = `https://pyshare.noj.tw/api/submission/${this.sid}/file/${file}`
-        window.open(url, '_blank')
+        this.$agent.Submission.downloadFile(this.sid, file)
       }
     },
     openLightbox(index) {

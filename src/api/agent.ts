@@ -34,6 +34,10 @@ interface PyshareResponse<T = any> extends Omit<AxiosResponse<T>, 'data'> {
 
 interface PysharePromise<T = any> extends Promise<PyshareResponse<T>> {}
 
+const openInNewTab = (url: string) => {
+  window.open(url, '_blank')
+}
+
 const Auth = {
   login: (body: Auth.ILoginBody) => fetcher.post('/auth/session', body),
 
@@ -92,15 +96,15 @@ const Problem = {
 
   delete: (id: Problem.ID) => fetcher.delete(`/problem/${id}`),
 
-  getAttachment: (id: Problem.ID, name: string): PysharePromise<File> =>
-    fetcher.get(`/problem/${id}/attachment/${name}`),
+  getAttachment: (id: Problem.ID, filename: string): PysharePromise<File> =>
+    fetcher.get(`/problem/${id}/attachment/${filename}`),
 
   getIOFiles: (id: Problem.ID): PysharePromise<{ input: File; output: File }> =>
     fetcher.get(`/problem/${id}/io`),
 
-  downloadAttachment: (id: Problem.ID, name: string): void => {
-    const url = `${config.API_BASE_URL}/problem/${id}/attachment/${name}`
-    window.open(url, '_blank')
+  downloadAttachment: (id: Problem.ID, filename: string): void => {
+    const url = `${config.API_BASE_URL}/problem/${id}/attachment/${filename}`
+    openInNewTab(url)
   },
 
   addAttachment: (id: Problem.ID, body: FormData) =>
@@ -155,6 +159,11 @@ const Submission = {
     fetcher.put(`/submission/${id}/state`, { state }),
 
   createTest: (body: Submission.ITestBody) => fetcher.post('/submission', body),
+
+  downloadFile: (id: Submission.ID, filename: string): void => {
+    const url = `${config.API_BASE_URL}/submission/${id}/file/${filename}`
+    openInNewTab(url)
+  },
 }
 
 const Gitlab = {
@@ -181,6 +190,11 @@ const Dataset = {
   modify: (id: Dataset.ID, body: FormData) => fetcher.put(`/attachment/${id}`, body),
 
   delete: (id: Dataset.ID) => fetcher.delete(`/attachment/${id}`),
+
+  downloadFile: (id: Dataset.ID): void => {
+    const url = `${config.API_BASE_URL}/attachment/${id}`
+    openInNewTab(url)
+  },
 }
 
 const School = {

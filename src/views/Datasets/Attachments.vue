@@ -330,9 +330,9 @@ export default {
     },
     async downloadDataset(id) {
       try {
-        const { href } = this.$router.resolve(`/api/attachment/${id}`)
-        window.open(href, '_blank')
+        this.$agent.Dataset.downloadFile(id)
       } catch (error) {
+        this.$alertSuccess('下載過程發生錯誤')
         this.$rollbar('[views/Attachments/downloadDataset]', error)
       }
     },

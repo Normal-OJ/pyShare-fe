@@ -145,6 +145,7 @@ import ColorLabel from '@/components/UI/ColorLabel.vue'
 import Gravatar from '@/components/UI/Gravatar.vue'
 import CloneProblemModal from '@/components/Course/Problem/CloneProblemModal.vue'
 import { mapState } from 'vuex'
+import { downloadFile } from '@/lib/utils'
 
 export default {
   components: { ColorLabel, Gravatar, CloneProblemModal },
@@ -225,11 +226,11 @@ export default {
     },
     downloadTestcase(prob, type) {
       const content = type === 'i' ? prob.extra.input : prob.extra.output
-      const file = 'data:text/plain;charset=utf-8,' + encodeURIComponent(content)
-      const link = document.createElement('a')
-      link.download = type === 'i' ? `pid-${prob.pid}-input.txt` : `pid-${prob.pid}-output.txt`
-      link.href = file
-      link.click()
+      const fileContent = 'data:text/plain;charset=utf-8,' + encodeURIComponent(content)
+      downloadFile(
+        type === 'i' ? `pid-${prob.pid}-input.txt` : `pid-${prob.pid}-output.txt`,
+        fileContent,
+      )
     },
   },
 }

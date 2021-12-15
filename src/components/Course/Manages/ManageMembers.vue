@@ -77,6 +77,7 @@ import ConfirmDeleteModal from './ConfirmDeleteModal'
 import { ROLE } from '@/constants/auth'
 import { mapState } from 'vuex'
 import { canWriteCourseMixin } from '@/lib/permissionMixin'
+import { downloadFile } from '@/lib/utils'
 
 const { TEACHER } = ROLE
 
@@ -136,10 +137,7 @@ export default {
     },
     downloadMembers() {
       const csvContent = 'data:text/csv;charset=utf-8,' + this.downloadData()
-      const link = document.createElement('a')
-      link.download = `${this.courseName}_成員名單.csv`
-      link.href = csvContent
-      link.click()
+      downloadFile(`${this.courseName}_成員名單.csv`, csvContent)
     },
     handleClickDelete() {
       this.isShowConfirmDeleteModal = true

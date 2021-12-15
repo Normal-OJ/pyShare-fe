@@ -128,13 +128,11 @@
 import PreviewCSV from '@/components/UI/PreviewCSV'
 import ConfirmModal from '@/components/UI/ConfirmModal'
 import Spinner from '../UI/Spinner.vue'
+import { downloadFile } from '@/lib/utils'
 
 const template =
   'school,username,displayName,password\n,400123456S,王大明,gB7hj31p\nNTNU,409456000H,陳耳東,409456000H\nNTUST,B123456789,,'
 const csvContent = 'data:text/csv;charset=utf-8,' + template
-const link = document.createElement('a')
-link.download = '批次新增學生範例檔案.csv'
-link.href = csvContent
 
 export default {
   components: { PreviewCSV, ConfirmModal, Spinner },
@@ -172,7 +170,7 @@ export default {
       this.fileReader.readAsText(this.newStudentFile)
     },
     downloadExample() {
-      link.click()
+      downloadFile('批次新增學生範例檔案.csv', csvContent)
     },
   },
 }

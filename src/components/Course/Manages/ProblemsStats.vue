@@ -50,6 +50,7 @@
 
 <script>
 import { mapState } from 'vuex'
+import { downloadFile } from '@/lib/utils'
 
 const statsHeaders = [
   { text: '使用者名稱', value: 'username' },
@@ -108,10 +109,7 @@ export default {
     },
     downloadStats() {
       const csvContent = 'data:text/csv;charset=utf-8,' + this.downloadData()
-      const link = document.createElement('a')
-      link.download = `${this.courseName}_主題統計.csv`
-      link.href = csvContent
-      link.click()
+      downloadFile(`${this.courseName}_主題統計.csv`, csvContent)
     },
   },
 }

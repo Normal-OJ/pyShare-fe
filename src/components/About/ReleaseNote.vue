@@ -95,7 +95,7 @@ export default {
   },
 
   data: () => ({
-    currentCommit: process.env.VITE_APP_GIT_SHA,
+    currentCommit: import.meta.env.VITE_APP_GIT_SHA,
     typeColor,
     isShowAll: false,
   }),

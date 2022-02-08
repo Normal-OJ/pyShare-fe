@@ -125,6 +125,7 @@ export default {
       })
     },
     async submitTestSubmission(code) {
+      this.testResult = null
       const body = { problemId: this.pid, code }
       try {
         const { data } = await this.$agent.Submission.createTest(body)
@@ -138,14 +139,18 @@ export default {
         throw error
       }
     },
-    async submitNewSubmission(code) {
+    async submitNewSubmission(code, cb) {
       if (this.comment) {
         try {
           await this.$agent.Comment.createSubmission(this.comment.id, { code })
+          this.$alertSuccess('提交程式成功。')
           await this.getProblem(this.pid)
         } catch (error) {
+          this.$alertFail('提交程式失敗。')
           console.log('[views/Challenge/submitNewSubmission] error', error)
           throw error
+        } finally {
+          cb()
         }
       } else {
         const body = {
@@ -157,10 +162,14 @@ export default {
         }
         try {
           await this.$agent.Comment.create(body)
+          this.$alertSuccess('提交程式成功。')
           await this.getProblem(this.pid)
         } catch (error) {
-          console.log('[views/Challenge/submitNewSubmission(Comment)] error', error)
+          this.$alertFail('提交程式失敗。')
+          console.log('[views/Challenge/submitNewSubmission (Create Comment First)] error', error)
           throw error
+        } finally {
+          cb()
         }
       }
     },

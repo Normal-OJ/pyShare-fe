@@ -221,7 +221,7 @@ export default {
         throw error
       }
     },
-    async submitNewComment(newComment) {
+    async submitNewComment(newComment, cb) {
       try {
         const body = { target: 'problem', id: `${this.pid}`, ...newComment }
         const { data } = await this.$agent.Comment.create(body)
@@ -235,6 +235,8 @@ export default {
         this.$alertFail('新增創作失敗。')
         console.log('[views/Problem/submitNewComment] error', error)
         throw error
+      } finally {
+        cb()
       }
     },
     async likeComment(cid) {

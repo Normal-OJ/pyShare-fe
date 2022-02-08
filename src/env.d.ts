@@ -8,7 +8,7 @@ interface ImportMetaEnv {
   readonly VITE_APP_ROLLBAR_TOKEN: string
   readonly VITE_APP_ROLLBAR_ENABLED: string
   readonly VITE_APP_GIT_SHA: string
-  readonly VITE_APP_MIRAGE_ENABLED: string
+  readonly VITE_APP_USE_PROXY: string
 }
 
 interface ImportMeta {

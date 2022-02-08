@@ -29,12 +29,14 @@
       <v-btn
         color="success"
         class="mr-6"
+        :loading="isTestSubmissionPending"
         @click="submitTest"
       >
         測試
       </v-btn>
       <v-btn
         color="success"
+        :loading="isSubmissionJudging"
         @click="submitCode"
       >
         送出
@@ -61,6 +63,7 @@ export default {
   props: {
     comment: {
       type: Object,
+      required: true,
     },
     defaultCode: {
       type: String,
@@ -78,8 +81,8 @@ export default {
 
   data() {
     return {
-      isPending: false,
       code: this.defaultCode,
+      isSubmissionJudging: false,
     }
   },
 
@@ -105,7 +108,8 @@ export default {
       this.$emit('submit-test-submission', this.code)
     },
     submitCode() {
-      this.$emit('submit-new-submission', this.code)
+      this.isSubmissionJudging = true
+      this.$emit('submit-new-submission', this.code, () => (this.isSubmissionJudging = false))
     },
   },
 }

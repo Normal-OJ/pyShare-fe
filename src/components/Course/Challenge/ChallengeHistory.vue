@@ -14,7 +14,17 @@
             v-for="({ timestamp, judge_result, code, stderr, stdout }, index) in submissions"
             :key="timestamp"
           >
-            <td>{{ $formattedTime(timestamp) }}</td>
+            <td>
+              <v-tooltip right>
+                <template #activator="{ on, attr }">
+                  <span
+                    v-bind="attr"
+                    v-on="on"
+                  >{{ $timeFromNow(timestamp) }}</span>
+                </template>
+                <span>{{ $formattedTime(timestamp) }}</span>
+              </v-tooltip>
+            </td>
             <td class="text-body-2">
               <pre
                 v-if="judge_result !== undefined"
@@ -78,6 +88,7 @@ export default {
   props: {
     comment: {
       type: Object,
+      required: true,
     },
   },
 
@@ -121,6 +132,7 @@ export default {
                 ...r.data.data,
                 id: this.comment.submissions[idx],
               }))
+              this.submissions.reverse()
               this.isSubmissionPending = this.submissions.some((s) => s.judge_result === undefined)
             },
           )

@@ -58,6 +58,7 @@
       <v-btn
         color="success"
         :disabled="isDisableSubmitTestSubmission"
+        :loading="isTestSubmissionPending"
         @click="submitTestSubmission"
       >
         測試程式
@@ -79,6 +80,7 @@
       <v-btn
         color="success"
         :disabled="isDisableSubmitComment"
+        :loading="isSubmissionJudging"
         @click="submitNewComment"
       >
         送出創作
@@ -117,6 +119,7 @@ export default {
       content: '',
       code: '',
     },
+    isSubmissionJudging: false,
     pollingSubmission: null,
   }),
 
@@ -128,6 +131,7 @@ export default {
       return !this.newComment.title
     },
     isTestSubmissionPending() {
+      console.log(this.testResult)
       if (!this.testResult) return false
       return !Object.keys(this.testResult).some((key) => key === 'stdout')
     },
@@ -171,7 +175,8 @@ export default {
       this.$emit('submit-test-submission', this.newComment.code, 'new')
     },
     submitNewComment() {
-      this.$emit('submit-new-comment', this.newComment)
+      this.isSubmissionJudging = true
+      this.$emit('submit-new-comment', this.newComment, () => (this.isSubmissionJudging = false))
     },
   },
 }

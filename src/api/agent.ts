@@ -2,14 +2,15 @@ import config from '@/constants/config'
 import store from '@/store'
 import { MutationTypes } from '@/store/mutation-types'
 import axios, { AxiosResponse } from 'axios'
+import { REQ_TYPE_ROUTE } from '@/constants/task'
 
 export const fetcher = axios.create({
   baseURL: config.API_BASE_URL,
 })
 
 fetcher.interceptors.response.use(
-  res => res,
-  error => {
+  (res) => res,
+  (error) => {
     if (error?.response) {
       // catch Authorization Expired
       if (
@@ -33,6 +34,10 @@ interface PyshareResponse<T = any> extends Omit<AxiosResponse<T>, 'data'> {
 }
 
 interface PysharePromise<T = any> extends Promise<PyshareResponse<T>> {}
+
+const openInNewTab = (url: string) => {
+  window.open(url, '_blank')
+}
 
 const Auth = {
   login: (body: Auth.ILoginBody) => fetcher.post('/auth/session', body),
@@ -92,15 +97,15 @@ const Problem = {
 
   delete: (id: Problem.ID) => fetcher.delete(`/problem/${id}`),
 
-  getAttachment: (id: Problem.ID, name: string): PysharePromise<File> =>
-    fetcher.get(`/problem/${id}/attachment/${name}`),
+  getAttachment: (id: Problem.ID, filename: string): PysharePromise<File> =>
+    fetcher.get(`/problem/${id}/attachment/${filename}`),
 
   getIOFiles: (id: Problem.ID): PysharePromise<{ input: File; output: File }> =>
     fetcher.get(`/problem/${id}/io`),
 
-  downloadAttachment: (id: Problem.ID, name: string): void => {
-    const url = `${config.API_BASE_URL}/problem/${id}/attachment/${name}`
-    window.open(url, '_blank')
+  downloadAttachment: (id: Problem.ID, filename: string): void => {
+    const url = `${config.API_BASE_URL}/problem/${id}/attachment/${filename}`
+    openInNewTab(url)
   },
 
   addAttachment: (id: Problem.ID, body: FormData) =>
@@ -155,12 +160,17 @@ const Submission = {
     fetcher.put(`/submission/${id}/state`, { state }),
 
   createTest: (body: Submission.ITestBody) => fetcher.post('/submission', body),
+
+  downloadFile: (id: Submission.ID, filename: string): void => {
+    const url = `${config.API_BASE_URL}/submission/${id}/file/${filename}`
+    openInNewTab(url)
+  },
 }
 
 const Gitlab = {
   getReleases: async () => {
     const url = `${config.GITLAB_API_BASE_URL}/projects/${config.GITLAB_PROJECT_ID}/releases`
-    return fetch(url).then(response => response.json())
+    return fetch(url).then((response) => response.json())
   },
 }
 
@@ -181,6 +191,11 @@ const Dataset = {
   modify: (id: Dataset.ID, body: FormData) => fetcher.put(`/attachment/${id}`, body),
 
   delete: (id: Dataset.ID) => fetcher.delete(`/attachment/${id}`),
+
+  downloadFile: (id: Dataset.ID): void => {
+    const url = `${config.API_BASE_URL}/attachment/${id}`
+    openInNewTab(url)
+  },
 }
 
 const School = {
@@ -202,6 +217,24 @@ const Sandbox = {
   delete: (url: string) => fetcher({ method: 'delete', url: '/sandbox', data: { url } }),
 }
 
+const Task = {
+  getList: (id: Course.ID): PysharePromise<Task.IInfo[]> => fetcher.get(`/course/${id}/tasks`),
+
+  getProgressList: (id: Course.ID): PysharePromise<Task.ITaskProgress[]> =>
+    fetcher.get(`/course/${id}/task/record`),
+
+  get: (id: Task.ID): PysharePromise<Task.IInfo> => fetcher.get(`/task/${id}`),
+
+  create: (body: Task.ICreateBody) => fetcher.post('/task', body),
+
+  createRequirement: (id: Task.ID, type: Task.ReqType, body: Task.RequirementCreateBody) =>
+    fetcher.post(`/task/${id}/${REQ_TYPE_ROUTE[type]}`, body),
+
+  delete: () => new Promise((resolve, reject) => reject('not implement yet')),
+
+  getReq: (id: Task.ReqID): PysharePromise<any> => fetcher.get(`/requirement/${id}`),
+}
+
 export default {
   Auth,
   Course,
@@ -215,4 +248,5 @@ export default {
   Permission,
   Dataset,
   Sandbox,
+  Task,
 }

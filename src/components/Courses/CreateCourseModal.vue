@@ -1,19 +1,41 @@
 <template>
-  <v-dialog v-model="dialog" width="750" persistent>
-    <template v-slot:activator="{ on, attrs }">
-      <v-btn color="success" dark v-bind="attrs" v-on="on" data-test="newCourseBtn">
-        <v-icon class="mr-1">mdi-layers-plus</v-icon>
+  <v-dialog
+    v-model="dialog"
+    width="750"
+    persistent
+  >
+    <template #activator="{ on, attrs }">
+      <v-btn
+        color="success"
+        dark
+        v-bind="attrs"
+        data-test="newCourseBtn"
+        v-on="on"
+      >
+        <v-icon class="mr-1">
+          mdi-layers-plus
+        </v-icon>
         新增課程
       </v-btn>
     </template>
 
     <v-card>
-      <v-toolbar dark color="primary" dense>
-        <v-icon class="mr-1">mdi-layers-plus</v-icon>
+      <v-toolbar
+        dark
+        color="primary"
+        dense
+      >
+        <v-icon class="mr-1">
+          mdi-layers-plus
+        </v-icon>
         <v-toolbar-title>新增課程</v-toolbar-title>
         <v-spacer />
         <v-toolbar-items>
-          <v-btn icon dark @click="dialog = false">
+          <v-btn
+            icon
+            dark
+            @click="dialog = false"
+          >
             <v-icon>mdi-close</v-icon>
           </v-btn>
         </v-toolbar-items>
@@ -25,8 +47,8 @@
         </div>
         <v-form ref="form">
           <v-text-field
-            label="課程名稱"
             v-model.trim="courseInfo.name"
+            label="課程名稱"
             :rules="nameRules"
             outlined
             dense
@@ -37,8 +59,8 @@
           <v-row>
             <v-col>
               <v-select
-                label="學年度"
                 v-model="courseInfo.year"
+                label="學年度"
                 :items="years"
                 outlined
                 dense
@@ -47,8 +69,8 @@
             </v-col>
             <v-col>
               <v-select
-                label="學期"
                 v-model="courseInfo.semester"
+                label="學期"
                 :items="semesters"
                 outlined
                 dense
@@ -58,26 +80,38 @@
           </v-row>
         </v-form>
 
-        <div class="text-h6">課程狀態</div>
-        <v-row justify="space-between" no-gutters>
+        <div class="text-h6">
+          課程狀態
+        </div>
+        <v-row
+          justify="space-between"
+          no-gutters
+        >
           <v-card
             v-for="{ status, icon, title, subtitle } in statusOptions"
             :key="status"
             width="30%"
             class="pa-3"
             :ripple="false"
-            @click="courseInfo.status = status"
             :style="{
               border: courseInfo.status === status ? 'solid 3px var(--v-primary-base)' : null,
             }"
             :data-test="`courseStatus${status}`"
+            @click="courseInfo.status = status"
           >
             <div class="d-flex flex-column align-center">
-              <v-icon size="54" :color="courseInfo.status === status ? 'primary' : null">
+              <v-icon
+                size="54"
+                :color="courseInfo.status === status ? 'primary' : null"
+              >
                 {{ icon }}
               </v-icon>
-              <div class="text-h6">{{ title }}</div>
-              <div class="text-subtitle-1">{{ subtitle }}</div>
+              <div class="text-h6">
+                {{ title }}
+              </div>
+              <div class="text-subtitle-1">
+                {{ subtitle }}
+              </div>
             </div>
           </v-card>
         </v-row>
@@ -91,8 +125,8 @@
           color="success"
           :disabled="isDisabled"
           :loading="isLoading"
-          @click="submit"
           data-test="courseSubmit"
+          @click="submit"
         >
           送出
         </v-btn>
@@ -117,9 +151,9 @@ export default {
       description: '',
     },
     nameRules: [
-      val => !!val || '請輸入課程名稱',
-      val => RegExp(/^[\u4E00-\u9FCCA-Za-z0-9_.-\s]+$/).test(val) || '課程名稱包含非法字元',
-      val => (!!val && val.length >= 3) || '長度至少三個字元',
+      (val) => !!val || '請輸入課程名稱',
+      (val) => RegExp(/^[\u4E00-\u9FCCA-Za-z0-9_.-\s]+$/).test(val) || '課程名稱包含非法字元',
+      (val) => (!!val && val.length >= 3) || '長度至少三個字元',
     ],
     years: YEARS,
     semesters: SEMESTERS,
@@ -128,7 +162,7 @@ export default {
 
   computed: {
     ...mapState({
-      id: state => state.auth.id,
+      id: (state) => state.auth.id,
     }),
     isDisabled() {
       const { name, year, semester } = this.courseInfo
@@ -142,7 +176,7 @@ export default {
         this.isLoading = true
         const body = { ...this.courseInfo, teacher: this.id }
         new Promise((resolve, reject) => this.$emit('submit', body, resolve, reject))
-          .then(id => {
+          .then((id) => {
             this.dialog = false
             this.$alertSuccess('新增課程成功。')
             this.$router.push({ path: `/course/${id}` })

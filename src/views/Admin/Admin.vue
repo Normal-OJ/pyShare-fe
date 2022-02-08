@@ -8,10 +8,7 @@
 </template>
 
 <script>
-import AdminSideNav from '@/components/Admin/AdminSideNav.vue'
-
 export default {
-  components: { AdminSideNav },
 }
 </script>
 

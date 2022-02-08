@@ -2,10 +2,13 @@
   <div>
     <v-row>
       <v-col cols="auto">
-        <slot></slot>
+        <slot />
       </v-col>
       <v-spacer />
-      <v-col cols="4" class="d-flex align-center">
+      <v-col
+        cols="4"
+        class="d-flex align-center"
+      >
         <span class="text-subtitle-2 mr-2">編輯器</span>
         <v-slider
           v-model="containerHeight"
@@ -18,7 +21,10 @@
           @click:prepend="containerHeight = Math.max(200, containerHeight - 100)"
         />
       </v-col>
-      <v-col cols="auto" class="d-flex align-center">
+      <v-col
+        cols="auto"
+        class="d-flex align-center"
+      >
         <span class="text-subtitle-2 mr-1">字體</span>
         <v-btn
           color="primary"
@@ -41,8 +47,8 @@
       </v-col>
     </v-row>
     <MonacoEditor
-      class="editor"
       ref="editor"
+      class="editor"
       :style="{ height: containerHeight + 'px' }"
       :value="value"
       :options="options"
@@ -75,6 +81,12 @@ export default {
     },
   },
 
+  data: () => ({
+    editor: null,
+    fontSize: 14,
+    containerHeight: 400,
+  }),
+
   computed: {
     options() {
       return {
@@ -88,11 +100,13 @@ export default {
     },
   },
 
-  data: () => ({
-    editor: null,
-    fontSize: 14,
-    containerHeight: 400,
-  }),
+  mounted() {
+    if (this.height) this.containerHeight = this.height
+  },
+
+  destroyed() {
+    window.removeEventListener('resize', this.handleResize)
+  },
 
   methods: {
     editorDidMount(editorInstance) {
@@ -105,14 +119,6 @@ export default {
     handleResize() {
       this.editor.layout()
     },
-  },
-
-  mounted() {
-    if (this.height) this.containerHeight = this.height
-  },
-
-  destroyed() {
-    window.removeEventListener('resize', this.handleResize)
   },
 }
 </script>

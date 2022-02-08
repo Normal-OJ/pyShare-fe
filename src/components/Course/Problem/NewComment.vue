@@ -1,33 +1,49 @@
 <template>
   <div>
     <div class="mt-4 d-flex">
-      <div class="text-h5">新增創作</div>
+      <div class="text-h5">
+        新增創作
+      </div>
       <v-spacer />
-      <v-btn icon @click="closeNewComment">
+      <v-btn
+        icon
+        @click="closeNewComment"
+      >
         <v-icon>mdi-close</v-icon>
       </v-btn>
     </div>
     <div class="mt-4 d-flex flex-column">
-      <div class="text-body-1">創作標題（必填）</div>
-      <v-text-field v-model="newComment.title" outlined dense hide-details />
+      <div class="text-body-1">
+        創作標題（必填）
+      </div>
+      <v-text-field
+        v-model="newComment.title"
+        outlined
+        dense
+        hide-details
+      />
     </div>
     <div class="mt-4 d-flex flex-column">
-      <div class="text-body-1">創作說明</div>
+      <div class="text-body-1">
+        創作說明
+      </div>
       <TextEditor v-model="newComment.content" />
     </div>
     <div class="mt-4 d-flex flex-column">
       <CodeEditor v-model="newComment.code">
         <div class="d-flex pb-1">
-          <div class="text-body-1">創作程式</div>
+          <div class="text-body-1">
+            創作程式
+          </div>
           <v-tooltip bottom>
-            <template v-slot:activator="{ on, attr }">
+            <template #activator="{ on, attr }">
               <v-btn
                 class="ml-2"
                 color="primary"
-                v-on="on"
                 v-bind="attr"
                 small
                 icon
+                v-on="on"
                 @click="setDefaultCode"
               >
                 <v-icon>mdi-autorenew</v-icon>
@@ -47,35 +63,44 @@
         測試程式
       </v-btn>
       <v-tooltip bottom>
-        <template v-slot:activator="{ on, attr }">
-          <v-icon class="ml-3" color="primary" v-on="on" v-bind="attr">
+        <template #activator="{ on, attr }">
+          <v-icon
+            class="ml-3"
+            color="primary"
+            v-bind="attr"
+            v-on="on"
+          >
             mdi-information
           </v-icon>
         </template>
         <span>在送出創作前運行程式以預覽結果，送出之後也可以再加入新版的程式碼。</span>
       </v-tooltip>
       <v-spacer />
-      <v-btn color="success" :disabled="isDisableSubmitComment" @click="submitNewComment">
+      <v-btn
+        color="success"
+        :disabled="isDisableSubmitComment"
+        @click="submitNewComment"
+      >
         送出創作
       </v-btn>
     </div>
     <div v-if="testResult">
-      <div class="text-body-1 font-weight-medium my-4">測試執行結果</div>
+      <div class="text-body-1 font-weight-medium my-4">
+        測試執行結果
+      </div>
       <Spinner v-if="isTestSubmissionPending" />
-      <CommentResult v-else :sid="''" :result="testResult" isTest />
+      <CommentResult
+        v-else
+        :sid="''"
+        :result="testResult"
+        is-test
+      />
     </div>
   </div>
 </template>
 
 <script>
-import TextEditor from '@/components/UI/TextEditor'
-import CodeEditor from '@/components/UI/CodeEditor'
-import Spinner from '@/components/UI/Spinner'
-import CommentResult from './CommentResult'
-
 export default {
-  components: { TextEditor, CodeEditor, Spinner, CommentResult },
-
   props: {
     defaultCode: {
       type: String,
@@ -86,6 +111,15 @@ export default {
     },
   },
 
+  data: () => ({
+    newComment: {
+      title: '',
+      content: '',
+      code: '',
+    },
+    pollingSubmission: null,
+  }),
+
   computed: {
     isDisableSubmitTestSubmission() {
       return !this.newComment.code
@@ -95,13 +129,22 @@ export default {
     },
     isTestSubmissionPending() {
       if (!this.testResult) return false
-      return !Object.keys(this.testResult).some(key => key === 'stdout')
+      return !Object.keys(this.testResult).some((key) => key === 'stdout')
+    },
+  },
+
+  watch: {
+    defaultCode: {
+      handler() {
+        this.newComment.code = this.defaultCode
+      },
+      immediate: true,
     },
   },
 
   created() {
     this.pollingSubmission = setInterval(
-      that => {
+      (that) => {
         if (that.isTestSubmissionPending) {
           this.$emit('fetch-test-submission', 'new')
         }
@@ -114,24 +157,6 @@ export default {
   beforeDestroy() {
     clearInterval(this.pollingSubmission)
   },
-
-  watch: {
-    defaultCode: {
-      handler() {
-        this.newComment.code = this.defaultCode
-      },
-      immediate: true,
-    },
-  },
-
-  data: () => ({
-    newComment: {
-      title: '',
-      content: '',
-      code: '',
-    },
-    pollingSubmission: null,
-  }),
 
   methods: {
     setDefaultCode() {

@@ -6,7 +6,10 @@
     :width="200"
     disable-resize-watcher
   >
-    <v-list dense :nav="!isMinify">
+    <v-list
+      dense
+      :nav="!isMinify"
+    >
       <v-list-item-group color="primary">
         <v-list-item
           v-for="{ label, icon, routeName } in headerNavs"
@@ -25,9 +28,12 @@
       </v-list-item-group>
     </v-list>
 
-    <template v-slot:append>
+    <template #append>
       <v-divider />
-      <v-list dense :nav="!isMinify">
+      <v-list
+        dense
+        :nav="!isMinify"
+      >
         <v-list-item @click="isMinify = !isMinify">
           <v-list-item-icon>
             <v-icon>
@@ -74,10 +80,10 @@ export default {
 
   computed: {
     ...mapState({
-      role: state => state.auth.role,
+      role: (state) => state.auth.role,
     }),
     headerNavs() {
-      return navs.filter(nav => {
+      return navs.filter((nav) => {
         if (nav.authorizedRole && !nav.authorizedRole.includes(this.role)) return false
         return true
       })

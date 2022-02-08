@@ -1,6 +1,8 @@
 <template>
   <div>
-    <div class="text-h6">測驗題（題號 {{ pid }}）學生作答情況</div>
+    <div class="text-h6">
+      測驗題（題號 {{ pid }}）學生作答情況
+    </div>
   </div>
 </template>
 
@@ -16,7 +18,7 @@ export default {
 
   computed: {
     ...mapState({
-      courseInfo: state => state.course.courseInfo,
+      courseInfo: (state) => state.course.courseInfo,
     }),
     ...mapGetters({
       comments: GetterTypes.COMMENTS,

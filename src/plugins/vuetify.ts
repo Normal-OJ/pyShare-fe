@@ -1,8 +1,8 @@
+import '@mdi/font/css/materialdesignicons.css'
 import Vue from 'vue'
 import Vuetify from 'vuetify/lib'
 import zhHant from 'vuetify/src/locale/zh-Hant'
 import colors from 'vuetify/lib/util/colors'
-import '@mdi/font/css/materialdesignicons.css'
 
 Vue.use(Vuetify)
 

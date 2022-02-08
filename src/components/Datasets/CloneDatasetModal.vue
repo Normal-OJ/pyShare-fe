@@ -1,11 +1,23 @@
 <template>
-  <v-dialog :value="open" width="750" persistent>
+  <v-dialog
+    :value="open"
+    width="750"
+    persistent
+  >
     <v-card>
-      <v-toolbar dark color="primary" dense>
+      <v-toolbar
+        dark
+        color="primary"
+        dense
+      >
         <v-toolbar-title>複製資料集</v-toolbar-title>
         <v-spacer />
         <v-toolbar-items>
-          <v-btn icon dark @click="close">
+          <v-btn
+            icon
+            dark
+            @click="close"
+          >
             <v-icon>mdi-close</v-icon>
           </v-btn>
         </v-toolbar-items>
@@ -13,17 +25,23 @@
       <v-card-text class="mt-8 text--primary">
         <v-stepper v-model="step">
           <v-stepper-header>
-            <v-stepper-step :complete="step > 1" step="1">
+            <v-stepper-step
+              :complete="step > 1"
+              step="1"
+            >
               選擇複製方式
             </v-stepper-step>
 
-            <v-divider></v-divider>
+            <v-divider />
 
-            <v-stepper-step :complete="step > 2" step="2">
+            <v-stepper-step
+              :complete="step > 2"
+              step="2"
+            >
               命名複製資料
             </v-stepper-step>
 
-            <v-divider></v-divider>
+            <v-divider />
 
             <v-stepper-step step="3">
               完成
@@ -32,8 +50,13 @@
 
           <v-stepper-items>
             <v-stepper-content step="1">
-              <v-form class="mt-2 mb-8" ref="stepOneForm">
-                <div class="text-body-1">請選擇欲將資料集複製到哪個課程</div>
+              <v-form
+                ref="stepOneForm"
+                class="mt-2 mb-8"
+              >
+                <div class="text-body-1">
+                  請選擇欲將資料集複製到哪個課程
+                </div>
                 <v-select
                   v-model="targetCourse"
                   label="選擇課程"
@@ -45,13 +68,28 @@
                   outlined
                   dense
                 />
-                <div class="text-body-1">請選擇複製方式</div>
-                <v-radio-group v-model="isToCreateProblem" row class="mt-2 mb-6" hide-details>
-                  <v-radio label="使用選取的資料集建立新主題" :value="CLONE_TO.NEW" />
-                  <v-radio label="將選取的資料集匯入已存在的主題" :value="CLONE_TO.EXISTING" />
+                <div class="text-body-1">
+                  請選擇複製方式
+                </div>
+                <v-radio-group
+                  v-model="isToCreateProblem"
+                  row
+                  class="mt-2 mb-6"
+                  hide-details
+                >
+                  <v-radio
+                    label="使用選取的資料集建立新主題"
+                    :value="CLONE_TO.NEW"
+                  />
+                  <v-radio
+                    label="將選取的資料集匯入已存在的主題"
+                    :value="CLONE_TO.EXISTING"
+                  />
                 </v-radio-group>
                 <div v-show="!isToCreateProblem">
-                  <div class="text-body-1">請選擇欲將資料集匯入至哪個主題</div>
+                  <div class="text-body-1">
+                    請選擇欲將資料集匯入至哪個主題
+                  </div>
                   <v-select
                     v-model="targetPid"
                     label="選擇主題（請先選取課程）"
@@ -67,7 +105,11 @@
                 </div>
               </v-form>
               <div class="d-flex justify-end">
-                <v-btn color="primary" :loading="stepOneLoading" @click="stepOneToTwo">
+                <v-btn
+                  color="primary"
+                  :loading="stepOneLoading"
+                  @click="stepOneToTwo"
+                >
                   下一步
                 </v-btn>
               </div>
@@ -77,13 +119,21 @@
               <template v-if="!isToCreateProblem && targetProblem">
                 主題 {{ targetPid }} 內的附件有：
                 <ul>
-                  <li v-for="{ filename } in targetProblem.attachments" :key="filename">
+                  <li
+                    v-for="{ filename } in targetProblem.attachments"
+                    :key="filename"
+                  >
                     {{ filename }}
                   </li>
                 </ul>
               </template>
-              <v-form class="mt-2 mb-8" ref="stepTwoForm">
-                <div class="text-subtitle-1">您可以在右邊的輸入框重新命名複製出來的資料檔名</div>
+              <v-form
+                ref="stepTwoForm"
+                class="mt-2 mb-8"
+              >
+                <div class="text-subtitle-1">
+                  您可以在右邊的輸入框重新命名複製出來的資料檔名
+                </div>
                 <div class="text-body-2 mb-4">
                   由於檔名為程式讀檔時的檔名，故同一個主題內檔名不得重複
                 </div>
@@ -92,9 +142,14 @@
                   :key="dataset.id"
                   class="d-flex align-baseline mt-2"
                 >
-                  <div class="d-flex justify-space-between" style="width: 50%">
+                  <div
+                    class="d-flex justify-space-between"
+                    style="width: 50%"
+                  >
                     <div>{{ dataset.filename }}</div>
-                    <v-icon class="mx-2">mdi-arrow-right</v-icon>
+                    <v-icon class="mx-2">
+                      mdi-arrow-right
+                    </v-icon>
                   </div>
                   <v-text-field
                     v-model="clonedDatasets[index].filename"
@@ -120,10 +175,17 @@
               </v-form>
 
               <div class="d-flex justify-end">
-                <v-btn color="primary" text @click="step = 1">
+                <v-btn
+                  color="primary"
+                  text
+                  @click="step = 1"
+                >
                   上一步
                 </v-btn>
-                <v-btn color="primary" @click="stepTwoToThree">
+                <v-btn
+                  color="primary"
+                  @click="stepTwoToThree"
+                >
                   下一步
                 </v-btn>
               </div>
@@ -132,7 +194,12 @@
             <v-stepper-content step="3">
               <v-card height="150">
                 <v-card-title class="text-center">
-                  <v-icon class="mr-2" color="success">mdi-check-circle</v-icon>
+                  <v-icon
+                    class="mr-2"
+                    color="success"
+                  >
+                    mdi-check-circle
+                  </v-icon>
                   複製資料成功，即將前往主題編輯頁面...
                 </v-card-title>
                 <v-card-actions class="justify-center">
@@ -148,15 +215,12 @@
 </template>
 
 <script>
-import Spinner from '@/components/UI/Spinner.vue'
 import { GetterTypes } from '@/store/getter-types'
 import { mapActions, mapGetters, mapMutations } from 'vuex'
 import { ActionTypes } from '@/store/action-types'
 import { MutationTypes } from '@/store/mutation-types'
 
 export default {
-  components: { Spinner },
-
   props: {
     open: {
       type: Boolean,
@@ -185,7 +249,7 @@ export default {
       courseProblems: GetterTypes.PROBLEMS_OF_MINE,
     }),
     problems() {
-      return this.courseProblems.map(p => ({
+      return this.courseProblems.map((p) => ({
         ...p,
         displayName: `${p.pid} - ${p.title}`,
       }))

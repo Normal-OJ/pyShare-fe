@@ -1,7 +1,12 @@
 <template>
-  <v-container fluid class="d-flex flex-column py-12">
+  <v-container
+    fluid
+    class="d-flex flex-column py-12"
+  >
     <v-row class="mb-4">
-      <div class="text-h6">沙盒列表</div>
+      <div class="text-h6">
+        沙盒列表
+      </div>
       <v-spacer />
       <v-text-field
         v-model="searchText"
@@ -10,19 +15,27 @@
         single-line
         hide-details
       />
-      <v-btn class="ml-6 mt-4" color="primary" @click="populateWith = initNewSandboxData">
-        <v-icon class="mr-2">mdi-account-plus</v-icon>
+      <v-btn
+        class="ml-6 mt-4"
+        color="primary"
+        @click="populateWith = initNewSandboxData"
+      >
+        <v-icon class="mr-2">
+          mdi-account-plus
+        </v-icon>
         新增沙盒
       </v-btn>
     </v-row>
     <NewSandboxForm
       v-if="!!populateWith"
-      :populateWith="populateWith"
+      :populate-with="populateWith"
       @modify="modifySandbox"
       @submit="submitNewSandbox"
       @cancel="populateWith = null"
     />
-    <div v-else-if="error">載入失敗</div>
+    <div v-else-if="error">
+      載入失敗
+    </div>
     <v-data-table
       v-else
       :loading="!sandboxes"
@@ -30,11 +43,18 @@
       :items="sandboxes"
       :search="searchText"
     >
-      <template v-slot:top> </template>
-      <template v-slot:item.operation="{ item }">
-        <v-menu bottom right>
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn icon v-on="on" v-bind="attrs">
+      <template #top />
+      <template #item.operation="{ item }">
+        <v-menu
+          bottom
+          right
+        >
+          <template #activator="{ on, attrs }">
+            <v-btn
+              icon
+              v-bind="attrs"
+              v-on="on"
+            >
               <v-icon>mdi-dots-horizontal</v-icon>
             </v-btn>
           </template>
@@ -53,7 +73,6 @@
 </template>
 
 <script>
-import NewSandboxForm from '@/components/Admin/NewSandboxForm.vue'
 import { ref, computed } from '@vue/composition-api'
 import useSWRV from 'swrv'
 import { fetcher } from '@/api/agent'
@@ -74,7 +93,6 @@ const initNewSandboxData = {
 }
 
 export default {
-  components: { NewSandboxForm },
   setup() {
     const { data, error, mutate } = useSWRV('/sandbox', fetcher)
     const sandboxes = computed(() => data.value?.data.data)
@@ -96,7 +114,7 @@ export default {
             this.populateWith = null
             mutate()
           })
-          .catch(error => {
+          .catch((error) => {
             this.populateWith.loading = false
             this.$alertFail('新增沙盒失敗')
             this.$rollbar.error('[views/AdminSandbox/submitNewSandbox]', error)
@@ -110,7 +128,7 @@ export default {
             this.populateWith = null
             mutate()
           })
-          .catch(error => {
+          .catch((error) => {
             this.populateWith.loading = false
             this.$alertFail('編輯沙盒失敗')
             this.$rollbar.error('[views/AdminSandbox/modifySandbox]', error)

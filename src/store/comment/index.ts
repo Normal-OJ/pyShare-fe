@@ -10,10 +10,10 @@ const state = { ...initialState }
 
 const getters = <GetterTree<State, RootState>>{
   [GetterTypes.COMMENTS](state) {
-    return state.comments.filter(c => c.status !== 0)
+    return state.comments.filter((c) => c.status !== 0)
   },
   [GetterTypes.COMMENT_OF_MINE](state, getters, rootState) {
-    return state.comments.find(c => c.author.id === rootState.auth.id)
+    return state.comments.find((c) => c.author.id === rootState.auth.id)
   },
 }
 

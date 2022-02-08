@@ -8,17 +8,18 @@
 </template>
 
 <script>
-import Challenges from '@/components/Course/Challenges/Challenges'
 import { mapActions, mapGetters, mapState } from 'vuex'
 import { GetterTypes } from '@/store/getter-types'
 import { ActionTypes } from '@/store/action-types'
 
 export default {
-  components: { Challenges },
+  data: () => ({
+    isLoading: true,
+  }),
 
   computed: {
     ...mapState({
-      tags: state => state.course.courseTags,
+      tags: (state) => state.course.courseTags,
     }),
     ...mapGetters({
       challenges: GetterTypes.CHALLENGES,
@@ -30,10 +31,6 @@ export default {
       return { course: this.courseId }
     },
   },
-
-  data: () => ({
-    isLoading: true,
-  }),
 
   created() {
     Promise.all([this.getProblems(this.paramsWithCourse), this.getTags(this.courseId)]).then(

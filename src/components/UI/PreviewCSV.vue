@@ -36,14 +36,14 @@ export default {
         }
         Papa.parse(this.data, {
           header: true,
-          complete: results => {
-            this.headers = results.meta.fields.map(col => ({
+          complete: (results) => {
+            this.headers = results.meta.fields.map((col) => ({
               text: col,
               value: col,
             }))
             this.items = results.data.slice(0, 20)
           },
-          error: errors => {
+          error: (errors) => {
             this.headers = null
             this.errors = JSON.stringify(errors, null, 2)
             this.$rollbar.error('[components/PreviewCSV/Papa.parse]', errors)

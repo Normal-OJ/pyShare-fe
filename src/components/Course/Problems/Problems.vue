@@ -1,8 +1,14 @@
 <template>
   <v-container fluid>
-    <div class="text-h5">主題</div>
+    <div class="text-h5">
+      主題
+    </div>
     <div class="d-flex align-center">
-      <v-col cols="10" md="6" class="d-flex">
+      <v-col
+        cols="10"
+        md="6"
+        class="d-flex"
+      >
         <v-select
           v-model="selectedTags"
           class="mr-3"
@@ -13,8 +19,12 @@
           multiple
           dense
         >
-          <template v-slot:selection="{ item }">
-            <ColorLabel :tag="item" small class="mt-2 mr-1" />
+          <template #selection="{ item }">
+            <ColorLabel
+              :tag="item"
+              small
+              class="mt-2 mr-1"
+            />
           </template>
         </v-select>
         <v-text-field
@@ -29,16 +39,31 @@
       </v-col>
       <v-spacer />
       <template v-if="canWriteCourse">
-        <v-btn color="primary" :to="{ name: 'courseProblemsStats' }" class="mr-3" outlined>
+        <v-btn
+          color="primary"
+          :to="{ name: 'courseProblemsStats' }"
+          class="mr-3"
+          outlined
+        >
           檢視主題統計
         </v-btn>
       </template>
       <template v-if="canParticipateCourse">
-        <v-btn color="primary" :to="{ name: 'courseManageProblems' }" class="mr-3" outlined>
+        <v-btn
+          color="primary"
+          :to="{ name: 'courseManageProblems' }"
+          class="mr-3"
+          outlined
+        >
           管理我的主題
         </v-btn>
-        <v-btn color="success" :to="{ name: 'courseSetProblems', params: { operation: 'new' } }">
-          <v-icon class="mr-1">mdi-playlist-plus</v-icon>
+        <v-btn
+          color="success"
+          :to="{ name: 'courseSetProblems', params: { operation: 'new' } }"
+        >
+          <v-icon class="mr-1">
+            mdi-playlist-plus
+          </v-icon>
           新增主題
         </v-btn>
       </template>
@@ -53,26 +78,32 @@
       :loading="loading"
       :custom-sort="customSort"
     >
-      <template v-slot:item.pid="{ value, item }">
+      <template #item.pid="{ value, item }">
         <div class="d-flex align-center">
           <ProblemStatusIcon :acceptance="item.acceptance" />
           <span class="ml-1">{{ value }}</span>
         </div>
       </template>
-      <template v-slot:[`item.title`]="{ item }">
+      <template #[`item.title`]="{ item }">
         <router-link :to="{ name: 'courseProblem', params: { pid: item.pid } }">
           {{ item.title }}
         </router-link>
         <v-tooltip bottom>
-          <template v-slot:activator="{ on, attrs }">
-            <v-icon class="ml-1" small v-bind="attrs" v-on="on" v-if="item.status === 0">
+          <template #activator="{ on, attrs }">
+            <v-icon
+              v-if="item.status === 0"
+              class="ml-1"
+              small
+              v-bind="attrs"
+              v-on="on"
+            >
               mdi-minus-circle
             </v-icon>
           </template>
           <span>隱藏的主題</span>
         </v-tooltip>
       </template>
-      <template v-slot:[`item.tags`]="{ item }">
+      <template #[`item.tags`]="{ item }">
         <ColorLabel
           v-for="tag in item.tags"
           :key="tag"
@@ -83,18 +114,30 @@
           @click.native="selectTag(tag)"
         />
       </template>
-      <template v-slot:[`item.creations`]="{ item }">
+      <template #[`item.creations`]="{ item }">
         {{ item.comments.length }}
       </template>
-      <template v-slot:[`item.author.displayName`]="{ item }">
+      <template #[`item.author.displayName`]="{ item }">
         <router-link :to="{ name: 'profile', params: { id: item.author.id } }">
           {{ item.author.displayName }}
         </router-link>
       </template>
-      <template v-slot:[slotName] v-for="slotName in ['no-data', 'no-results']">
-        <div class="d-flex flex-column align-center" :key="slotName">
-          <div class="text-subtitle-1 my-8">這裡還沒有任何主題，或找不到符合條件的主題</div>
-          <v-img :src="require('@/assets/images/noData.svg')" max-width="600" contain />
+      <template
+        v-for="slotName in ['no-data', 'no-results']"
+        #[slotName]
+      >
+        <div
+          :key="slotName"
+          class="d-flex flex-column align-center"
+        >
+          <div class="text-subtitle-1 my-8">
+            這裡還沒有任何主題，或找不到符合條件的主題
+          </div>
+          <v-img
+            :src="require('@/assets/images/noData.svg')"
+            max-width="600"
+            contain
+          />
         </div>
       </template>
     </v-data-table>
@@ -102,8 +145,6 @@
 </template>
 
 <script>
-import ColorLabel from '@/components/UI/ColorLabel'
-import ProblemStatusIcon from '@/components/UI/ProblemStatusIcon'
 import { canWriteCourseMixin, canParticipateCourseMixin } from '@/lib/permissionMixin'
 
 const headers = [
@@ -118,8 +159,6 @@ export default {
   name: 'Problems',
 
   mixins: [canWriteCourseMixin, canParticipateCourseMixin],
-
-  components: { ColorLabel, ProblemStatusIcon },
 
   props: {
     problems: {
@@ -156,7 +195,7 @@ export default {
       this.selectedTags = [...new Set([...this.selectedTags, tag])]
     },
     unselectTag(tag) {
-      this.selectedTags = this.selectedTags.filter(t => t !== tag)
+      this.selectedTags = this.selectedTags.filter((t) => t !== tag)
     },
     customSort(items, index, isDesc) {
       items.sort((a, b) => {

@@ -54,7 +54,7 @@
     </div>
 
     <v-data-table
-      v-model="selected"
+      v-model="selectedIncludeTeacher"
       :headers="headers"
       :items="members"
       :search="searchText"
@@ -68,7 +68,7 @@
     >
       <template #item.data-table-select="{ item, isSelected, select }">
         <v-simple-checkbox
-          v-if="item.role !== '教師'"
+          v-if="item.role === '學生'"
           :value="isSelected"
           :ripple="false"
           @input="select($event)"
@@ -133,7 +133,7 @@ export default {
       { text: '身份', value: 'role' },
       { text: 'email', value: 'email' },
     ],
-    selected: [],
+    selectedIncludeTeacher: [],
     searchText: '',
     TEACHER,
     isShowConfirmDeleteModal: false,
@@ -142,6 +142,9 @@ export default {
   }),
 
   computed: {
+    selected() {
+      return this.selectedIncludeTeacher.filter((s) => s.role === '學生')
+    },
     selectedUser() {
       return this.selected.map((s) => s.id)
     },

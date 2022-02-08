@@ -441,6 +441,7 @@
           <div class="mt-4 d-flex">
             <v-btn
               color="success"
+              :loading="isTestSubmissionPending"
               :disabled="isDisableSubmitSubmission"
               @click="submitTestSubmission"
             >
@@ -462,6 +463,7 @@
             <v-spacer />
             <v-btn
               color="success"
+              :loading="isSubmissionPending"
               @click="submitNewSubmission"
             >
               送出創作

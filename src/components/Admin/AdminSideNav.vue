@@ -86,7 +86,7 @@ export default {
   name: 'AdminSideNav',
   setup() {
     const isMinify = ref(false)
-    return { navs, isMinify, currentCommit: process.env.VITE_APP_GIT_SHA }
+    return { navs, isMinify, currentCommit: import.meta.env.VITE_APP_GIT_SHA }
   },
 }
 </script>

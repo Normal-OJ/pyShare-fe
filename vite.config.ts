@@ -22,9 +22,9 @@ export default defineConfig({
     ],
   },
   server: {
-    // proxy: {
-    //   '/api': 'https://pyshare.noj.tw',
-    // },
+    proxy: {
+      '/api': 'https://pyshare.noj.tw',
+    },
     host: '0.0.0.0',
     port: 8080,
   },

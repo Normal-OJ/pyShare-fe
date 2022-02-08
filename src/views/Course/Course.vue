@@ -8,10 +8,7 @@
 </template>
 
 <script>
-import SideNav from '@/components/Course/SideNav'
-
 export default {
-  components: { SideNav },
 }
 </script>
 

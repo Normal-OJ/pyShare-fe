@@ -1,10 +1,23 @@
 <template>
-  <v-btn outlined small color="primary" style="font-size: 0.875rem" @click="$emit('preview')">
+  <v-btn
+    outlined
+    small
+    color="primary"
+    style="font-size: 0.875rem"
+    @click="$emit('preview')"
+  >
     <span class="text-none mr-1">{{ truncatedName }}</span>
-    <v-btn v-if="download" icon small @click.stop="$emit('download')">
-      <v-icon color="primary">mdi-download</v-icon>
+    <v-btn
+      v-if="download"
+      icon
+      small
+      @click.stop="$emit('download')"
+    >
+      <v-icon color="primary">
+        mdi-download
+      </v-icon>
     </v-btn>
-    <slot name="append"></slot>
+    <slot name="append" />
   </v-btn>
 </template>
 
@@ -23,9 +36,9 @@ export default {
 
   computed: {
     truncatedName() {
-      return this.name.length <= 14
-        ? this.name
-        : `${this.name.substring(0, 8)}...${this.name.substring(this.name.length - 6)}`
+      return this.name.length <= 14 ?
+        this.name :
+        `${this.name.substring(0, 8)}...${this.name.substring(this.name.length - 6)}`
     },
   },
 }

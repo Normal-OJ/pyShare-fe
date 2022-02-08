@@ -1,18 +1,32 @@
 <template>
-  <v-dialog :value="isOpen" width="750">
+  <v-dialog
+    :value="isOpen"
+    width="750"
+  >
     <v-card>
-      <v-toolbar dark color="primary" dense>
+      <v-toolbar
+        dark
+        color="primary"
+        dense
+      >
         <v-toolbar-title>複製{{ label }}</v-toolbar-title>
         <v-spacer />
         <v-toolbar-items>
-          <v-btn icon dark @click="close">
+          <v-btn
+            icon
+            dark
+            @click="close"
+          >
             <v-icon>mdi-close</v-icon>
           </v-btn>
         </v-toolbar-items>
       </v-toolbar>
       <v-card-text class="mt-8 text--primary">
         請選擇欲將{{ label }}（pid: {{ clonePid }}）複製到哪個課程
-        <v-form class="mt-2" ref="form">
+        <v-form
+          ref="form"
+          class="mt-2"
+        >
           <v-select
             v-model="target"
             :items="teachingCourses"
@@ -24,7 +38,12 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer />
-        <v-btn color="success" :loading="isLoading" :disabled="!target" @click="cloneProblem">
+        <v-btn
+          color="success"
+          :loading="isLoading"
+          :disabled="!target"
+          @click="cloneProblem"
+        >
           送出
         </v-btn>
       </v-card-actions>

@@ -1,5 +1,8 @@
 <template>
-  <v-form ref="form" v-model="newSandboxForm.isValid">
+  <v-form
+    ref="form"
+    v-model="newSandboxForm.isValid"
+  >
     <v-text-field
       v-model.trim="newSandboxForm.data.url"
       :rules="[val => !!val || '此欄位為必填', val => val.length <= 2048 || 'URL 過長']"
@@ -32,12 +35,17 @@
       class="mr-3"
       :disabled="isSubmitDisabled"
       :loading="populateWith.isLoading"
-      @click="submit"
       data-test="submit"
+      @click="submit"
     >
       送出
     </v-btn>
-    <v-btn :disabled="populateWith.isLoading" @click="$emit('cancel')" text data-test="cancel">
+    <v-btn
+      :disabled="populateWith.isLoading"
+      text
+      data-test="cancel"
+      @click="$emit('cancel')"
+    >
       取消
     </v-btn>
   </v-form>

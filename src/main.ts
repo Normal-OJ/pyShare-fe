@@ -43,10 +43,10 @@ if (window.Cypress) {
 
 // Rollbar for tracking vue app's error
 Vue.prototype.$rollbar = new Rollbar({
-  accessToken: process.env.VUE_APP_ROLLBAR_TOKEN,
+  accessToken: process.env.VITE_APP_ROLLBAR_TOKEN,
   captureUncaught: true,
   captureUnhandledRejections: true,
-  enabled: process.env.VUE_APP_ROLLBAR_ENABLED === 'false' ? false : true,
+  enabled: process.env.VITE_APP_ROLLBAR_ENABLED === 'false' ? false : true,
   nodeSourceMaps: true,
   environment: process.env.NODE_ENV,
   payload: {
@@ -68,5 +68,5 @@ new Vue({
   router,
   store,
   vuetify,
-  render: h => h(App),
+  render: (h) => h(App),
 }).$mount('#app')

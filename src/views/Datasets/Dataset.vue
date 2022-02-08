@@ -9,7 +9,6 @@
 
 <script>
 import DatasetSideNav from '@/components/Datasets/DatasetsSideNav.vue'
-
 export default {
   components: { DatasetSideNav },
 }

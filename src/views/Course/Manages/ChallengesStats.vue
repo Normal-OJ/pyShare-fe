@@ -1,10 +1,18 @@
 <template>
   <v-container fluid>
     <div class="d-flex">
-      <div class="text-h5">測驗統計</div>
+      <div class="text-h5">
+        測驗統計
+      </div>
       <v-spacer />
-      <v-btn color="primary" class="mr-3" @click="downloadStats">
-        <v-icon class="mr-1">mdi-download</v-icon>
+      <v-btn
+        color="primary"
+        class="mr-3"
+        @click="downloadStats"
+      >
+        <v-icon class="mr-1">
+          mdi-download
+        </v-icon>
         匯出統計資料
       </v-btn>
     </div>
@@ -12,16 +20,19 @@
       :headers="headers"
       :items="items"
       :items-per-page="Number(-1)"
-      :customSort="customSort"
+      :custom-sort="customSort"
       :search="search"
       :loading="loading"
       hide-default-footer
     >
-      <template v-slot:item="{ item }">
+      <template #item="{ item }">
         <tr :data-id="item.info.id">
           <v-tooltip left>
-            <template v-slot:activator="{ on, attr }">
-              <td v-on="on" v-bind="attr">
+            <template #activator="{ on, attr }">
+              <td
+                v-bind="attr"
+                v-on="on"
+              >
                 <router-link :to="{ name: 'profile', params: { id: item.info.id } }">
                   {{ item.info.displayName }}
                 </router-link>
@@ -30,12 +41,20 @@
             <span>{{ item.info.username }}</span>
           </v-tooltip>
 
-          <td v-for="pid in pids" :key="pid" class="pa-0">
-            <ChallengesStats :user="item.info" :pid="pid" :data="item[pid]" />
+          <td
+            v-for="pid in pids"
+            :key="pid"
+            class="pa-0"
+          >
+            <ChallengesStats
+              :user="item.info"
+              :pid="pid"
+              :data="item[pid]"
+            />
           </td>
 
           <td>
-            {{ item.overview.acCount }}<span class="caption">{{ `/${pids.length}` }}</span>
+            {{ item.overview.acCount }}<span class="text-caption">{{ `/${pids.length}` }}</span>
           </td>
           <td>
             {{ item.overview.tryCount }}
@@ -49,12 +68,10 @@
 <script>
 import { GetterTypes } from '@/store/getter-types'
 import { mapActions, mapGetters, mapState } from 'vuex'
-import ChallengesStats from '@/components/Course/Manages/ChallengesStats.vue'
 import { ActionTypes } from '@/store/action-types'
 import { downloadFile } from '@/lib/utils'
 
 export default {
-  components: { ChallengesStats },
   data: () => ({
     stats: null,
     search: '',
@@ -62,13 +79,13 @@ export default {
   }),
   computed: {
     ...mapState({
-      courseName: state => state.course.courseInfo.name,
+      courseName: (state) => state.course.courseInfo.name,
     }),
     ...mapGetters({
       challenges: GetterTypes.CHALLENGES,
     }),
     pids() {
-      return this.challenges.map(c => c.pid)
+      return this.challenges.map((c) => c.pid)
     },
     paramsWithCourse() {
       return { course: this.$route.params.id }
@@ -76,7 +93,7 @@ export default {
     headers() {
       return [
         { text: '成員 \\ 題號', value: 'username' },
-        ...this.pids.map(pid => ({ text: pid, value: pid })),
+        ...this.pids.map((pid) => ({ text: pid, value: pid })),
         { text: '完成題數', value: 'acCount' },
         { text: '繳交次數', value: 'tryCount' },
       ]
@@ -100,11 +117,11 @@ export default {
       getProblem: ActionTypes.GET_PROBLEMS,
     }),
     downloadData() {
-      const csvHeader = this.headers.map(h => h.text).join(',')
+      const csvHeader = this.headers.map((h) => h.text).join(',')
       const csvBody = this.items
-        .map(item => {
+        .map((item) => {
           const row = []
-          this.pids.forEach(pid => {
+          this.pids.forEach((pid) => {
             row.push(`${item[pid].result === 0 ? '通過' : '未通過'}(${item[pid].tryCount})`)
           })
           return [

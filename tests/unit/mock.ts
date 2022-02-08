@@ -1,4 +1,4 @@
-type ResolveData<T> = {
+type ResolveData = {
   data: {
     data: any
   }
@@ -8,18 +8,18 @@ type RejectError = {
   message: string
 }
 
-interface MockAgent<T> {
+interface MockAgent {
   [key: string]: {
-    [key: string]: () => Promise<ResolveData<T> | RejectError>
+    [key: string]: () => Promise<ResolveData | RejectError>
   }
 }
 
-export function createMockAgent<T = any>(
+export function createMockAgent(
   service: string,
   func: string,
-  data: T,
+  data: any,
   error: any,
-): MockAgent<T> {
+): MockAgent {
   return {
     [service]: {
       [func]: () =>

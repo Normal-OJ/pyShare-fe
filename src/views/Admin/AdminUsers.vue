@@ -1,7 +1,12 @@
 <template>
-  <v-container fluid class="d-flex flex-column py-12">
+  <v-container
+    fluid
+    class="d-flex flex-column py-12"
+  >
     <v-row class="mb-4">
-      <div class="text-h6">帳號列表</div>
+      <div class="text-h6">
+        帳號列表
+      </div>
       <v-spacer />
       <v-text-field
         v-model="searchText"
@@ -10,18 +15,26 @@
         single-line
         hide-details
       />
-      <v-btn class="ml-6 mt-4" color="primary" @click="showNewUserForm = true">
-        <v-icon class="mr-2">mdi-account-plus</v-icon>
+      <v-btn
+        class="ml-6 mt-4"
+        color="primary"
+        @click="showNewUserForm = true"
+      >
+        <v-icon class="mr-2">
+          mdi-account-plus
+        </v-icon>
         新增帳號
       </v-btn>
     </v-row>
     <NewUserForm
       v-if="showNewUserForm"
-      :schoolOptions="schoolOptions"
+      :school-options="schoolOptions"
       @submit="submitNewUser"
       @cancel="showNewUserForm = false"
     />
-    <div v-else-if="error">載入失敗</div>
+    <div v-else-if="error">
+      載入失敗
+    </div>
     <v-data-table
       v-else
       :loading="!users"
@@ -29,13 +42,14 @@
       :items="users"
       :search="searchText"
     >
-      <template v-slot:item.role="{ value }">{{ roles[value] }}</template>
+      <template #item.role="{ value }">
+        {{ roles[value] }}
+      </template>
     </v-data-table>
   </v-container>
 </template>
 
 <script>
-import NewUserForm from '@/components/Admin/NewUserForm.vue'
 import { ref, computed } from '@vue/composition-api'
 import useSWRV from 'swrv'
 import { fetcher } from '@/api/agent'
@@ -50,7 +64,6 @@ const userTableHeaders = [
 const roles = ['管理員', '教師', '學生']
 
 export default {
-  components: { NewUserForm },
   setup() {
     const { data, error, mutate } = useSWRV('/user', fetcher)
     const users = computed(() => data.value?.data.data)
@@ -74,7 +87,7 @@ export default {
             mutate()
             this.showNewUserForm = false
           })
-          .catch(error => {
+          .catch((error) => {
             this.$alertFail('新增帳號失敗' + error.message)
             this.$rollbar.error('[views/AdminUsers/submitNewUser]', error)
           })

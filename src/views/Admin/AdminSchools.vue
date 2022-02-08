@@ -1,7 +1,12 @@
 <template>
-  <v-container fluid class="d-flex flex-column py-12">
+  <v-container
+    fluid
+    class="d-flex flex-column py-12"
+  >
     <v-row class="mb-4">
-      <div class="text-h6">學校列表</div>
+      <div class="text-h6">
+        學校列表
+      </div>
       <v-spacer />
       <v-text-field
         v-model="searchText"
@@ -10,8 +15,14 @@
         single-line
         hide-details
       />
-      <v-btn class="ml-6 mt-4" color="primary" @click="showNewSchoolForm = true">
-        <v-icon class="mr-2">mdi-account-plus</v-icon>
+      <v-btn
+        class="ml-6 mt-4"
+        color="primary"
+        @click="showNewSchoolForm = true"
+      >
+        <v-icon class="mr-2">
+          mdi-account-plus
+        </v-icon>
         新增學校
       </v-btn>
     </v-row>
@@ -20,7 +31,9 @@
       @submit="submitNewSchool"
       @cancel="showNewSchoolForm = false"
     />
-    <div v-else-if="error">載入失敗</div>
+    <div v-else-if="error">
+      載入失敗
+    </div>
     <v-data-table
       v-else
       :loading="!schools"
@@ -32,7 +45,6 @@
 </template>
 
 <script>
-import NewSchoolForm from '@/components/Admin/NewSchoolForm.vue'
 import { ref, computed } from '@vue/composition-api'
 import useSWRV from 'swrv'
 import { fetcher } from '@/api/agent'
@@ -43,7 +55,6 @@ const schoolTableHeaders = [
 ]
 
 export default {
-  components: { NewSchoolForm },
   setup() {
     const { data, error, mutate } = useSWRV('/school', fetcher)
     const schools = computed(() => data.value?.data.data)
@@ -63,7 +74,7 @@ export default {
             resolve()
             this.showNewSchoolForm = false
           })
-          .catch(error => {
+          .catch((error) => {
             this.$alertFail('新增學校失敗' + error.message)
             this.$rollbar.error('[views/AdminSchool/submitNewSchool]', error)
           })

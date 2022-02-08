@@ -1,5 +1,8 @@
 <template>
-  <v-form ref="form" v-model="newSchoolForm.isValid">
+  <v-form
+    ref="form"
+    v-model="newSchoolForm.isValid"
+  >
     <v-text-field
       v-model="newSchoolForm.data.abbr"
       :rules="[val => !!val || '此欄位為必填', val => val.length <= 16 || '使用者名稱至多 16 字元']"
@@ -23,12 +26,17 @@
       class="mr-3"
       :disabled="isSubmitDisabled"
       :loading="newSchoolForm.isLoading"
-      @click="submit"
       data-test="submit"
+      @click="submit"
     >
       送出
     </v-btn>
-    <v-btn :disabled="newSchoolForm.isLoading" @click="$emit('cancel')" text data-test="cancel">
+    <v-btn
+      :disabled="newSchoolForm.isLoading"
+      text
+      data-test="cancel"
+      @click="$emit('cancel')"
+    >
       取消
     </v-btn>
   </v-form>
@@ -51,15 +59,15 @@ export default {
     },
   }),
 
-  watch: {
-    'newSchoolForm.data.abbr'() {
-      this.newSchoolForm.data.abbr = this.newSchoolForm.data.abbr.toUpperCase()
-    },
-  },
-
   computed: {
     isSubmitDisabled() {
       return !this.newSchoolForm.data.abbr || !this.newSchoolForm.data.name
+    },
+  },
+
+  watch: {
+    'newSchoolForm.data.abbr'() {
+      this.newSchoolForm.data.abbr = this.newSchoolForm.data.abbr.toUpperCase()
     },
   },
 

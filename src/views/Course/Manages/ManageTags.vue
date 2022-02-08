@@ -1,9 +1,9 @@
 <template>
   <ManageTags
-    :allTags="allTags || []"
+    :all-tags="allTags || []"
     :removables="removables"
-    :errorMsg="errorMsg"
-    :courseTags="courseTags || []"
+    :error-msg="errorMsg"
+    :course-tags="courseTags || []"
     @submit-patch-tags="submitPatchTags"
     @submit-new-tags="submitNewTags"
     @delete-tags="deleteTags"
@@ -11,27 +11,24 @@
 </template>
 
 <script>
-import ManageTags from '@/components/Course/Manages/ManageTags'
 import { mapActions, mapState } from 'vuex'
 import { ActionTypes } from '@/store/action-types'
 
 export default {
-  components: { ManageTags },
-
-  computed: {
-    ...mapState({
-      courseTags: state => state.course.courseTags,
-    }),
-    courseId() {
-      return this.$route.params.id
-    },
-  },
-
   data: () => ({
     allTags: [],
     removables: null,
     errorMsg: '',
   }),
+
+  computed: {
+    ...mapState({
+      courseTags: (state) => state.course.courseTags,
+    }),
+    courseId() {
+      return this.$route.params.id
+    },
+  },
 
   created() {
     this.getAllTags()
@@ -44,14 +41,14 @@ export default {
     }),
     getAllTags() {
       this.$agent.Tag.getList()
-        .then(resp => {
+        .then((resp) => {
           this.allTags = resp.data.data
           return this.$agent.Tag.check({ tags: this.allTags })
         })
-        .then(resp => {
+        .then((resp) => {
           this.removables = resp.data.data
         })
-        .catch(error => {
+        .catch((error) => {
           console.log('[views/ManageTags/getAllTags] error', error)
           this.errorMsg = '管理分類出現未知錯誤，請稍後再試或聯絡開發人員。'
           throw error

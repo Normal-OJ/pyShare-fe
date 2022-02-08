@@ -1,20 +1,53 @@
 <template>
   <div>
-    <notifications group="notify" position="bottom left" :duration="5000">
-      <template slot="body" slot-scope="props">
-        <div :class="`${props.item.type} notify`" @click="props.close">
-          <v-icon size="30" class="mr-2" color="white">mdi-playlist-star</v-icon>
+    <notifications
+      group="notify"
+      position="bottom left"
+      :duration="5000"
+    >
+      <template
+        slot="body"
+        slot-scope="props"
+      >
+        <div
+          :class="`${props.item.type} notify`"
+          @click="props.close"
+        >
+          <v-icon
+            size="30"
+            class="mr-2"
+            color="white"
+          >
+            mdi-playlist-star
+          </v-icon>
           <div>
-            <div class="text-body-1">{{ props.item.title }}</div>
-            <div class="text-body-2">{{ props.item.text }}</div>
+            <div class="text-body-1">
+              {{ props.item.title }}
+            </div>
+            <div class="text-body-2">
+              {{ props.item.text }}
+            </div>
           </div>
         </div>
       </template>
     </notifications>
-    <notifications group="alert" position="bottom left">
-      <template slot="body" slot-scope="props">
-        <div :class="`${props.item.type} alert`" @click="props.close">
-          <v-icon size="30" class="mr-2" color="white">
+    <notifications
+      group="alert"
+      position="bottom left"
+    >
+      <template
+        slot="body"
+        slot-scope="props"
+      >
+        <div
+          :class="`${props.item.type} alert`"
+          @click="props.close"
+        >
+          <v-icon
+            size="30"
+            class="mr-2"
+            color="white"
+          >
             {{
               props.item.type === 'my-success'
                 ? 'mdi-check-circle-outline'
@@ -22,7 +55,9 @@
             }}
           </v-icon>
           <div>
-            <div class="text-body-1">{{ props.item.title }}</div>
+            <div class="text-body-1">
+              {{ props.item.title }}
+            </div>
           </div>
         </div>
       </template>

@@ -12,15 +12,11 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import Header from '@/components/UI/Header.vue'
-import Notification from '@/components/UI/Notification.vue'
 import { mapActions } from 'vuex'
 import { ActionTypes } from './store/action-types'
 
 export default Vue.extend({
   name: 'App',
-
-  components: { Header, Notification },
 
   created() {
     this.getJwt()
@@ -34,10 +30,10 @@ export default Vue.extend({
     async handleLogout() {
       try {
         await this.logout()
-        if (this.$route.name === 'home') {
+        if (this.$route.name === 'login') {
           this.$router.go(0)
         } else {
-          this.$router.replace({ name: 'home' })
+          this.$router.replace({ name: 'login' })
         }
       } catch (error) {
         this.$rollbar.error('[App/logout]', error)

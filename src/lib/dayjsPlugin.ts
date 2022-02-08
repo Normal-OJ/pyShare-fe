@@ -6,12 +6,20 @@ import { VueConstructor } from 'vue/types/umd'
 dayjs.locale('zh-tw')
 dayjs.extend(relativeTime)
 
-const timeFromNow = (timestamp: number) => {
-  return dayjs(timestamp * 1000).fromNow()
+const format = 'YYYY-MM-DD HH:mm'
+
+const timeFromNow = (timestamp: number | string) => {
+  if (typeof timestamp === 'number') {
+    return dayjs(timestamp * 1000).fromNow()
+  }
+  return dayjs(timestamp).fromNow()
 }
 
-const formattedTime = (timestamp: number) => {
-  return dayjs(timestamp * 1000).format('YYYY-MM-DD HH:mm')
+const formattedTime = (timestamp: number | string) => {
+  if (typeof timestamp === 'number') {
+    return dayjs(timestamp * 1000).format(format)
+  }
+  return dayjs(timestamp).format(format)
 }
 
 export const dayjsPlugin = {

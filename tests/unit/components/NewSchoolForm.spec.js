@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils'
-import NewSchoolForm from '@/components/Admin/NewSchoolForm'
+import NewSchoolForm from '@/components/Admin/NewSchoolForm.vue'
 import baseMountConfig from '../helper'
 
 const abbrId = '[data-test=abbr]'
@@ -25,7 +25,7 @@ describe('NewSchoolForm.vue', () => {
       expect(NewSchoolForm.computed.isSubmitDisabled.call(wrapper.vm)).toEqual(true)
       // check input elements
       const ids = [abbrId, nameId]
-      ids.forEach(id => {
+      ids.forEach((id) => {
         const node = wrapper.find(id)
         expect(node.exists()).toEqual(true)
         expect(node.element.value).toEqual('')
@@ -75,7 +75,7 @@ describe('NewSchoolForm.vue', () => {
       ['NTNU', '國立臺灣師範大學'],
       ['AAA', '一二三'],
       ['BBB', 'CCC'],
-    ])("should emit 'submit' after submitting a New school.", async (abbr, name) => {
+    ])('should emit \'submit\' after submitting a New school.', async (abbr, name) => {
       const wrapper = mount(NewSchoolForm, { ...baseMountConfig() })
       await wrapper.find(abbrId).setValue(abbr)
       await wrapper.find(nameId).setValue(name)
@@ -85,7 +85,7 @@ describe('NewSchoolForm.vue', () => {
       expect(wrapper.emitted().submit[0][0]).toEqual({ abbr, name })
     })
 
-    it("should emit 'cancel' after clicking cancel button.", async () => {
+    it('should emit \'cancel\' after clicking cancel button.', async () => {
       const wrapper = mount(NewSchoolForm, { ...baseMountConfig() })
       await wrapper.find(cancelId).trigger('click')
       await wrapper.vm.$nextTick()

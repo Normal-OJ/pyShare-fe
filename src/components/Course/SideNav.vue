@@ -9,16 +9,29 @@
     <v-list>
       <v-list-item>
         <v-list-item-avatar class="rounded">
-          <v-avatar size="48" color="secondary" tile>
-            <span class="white--text headline" v-if="courseInfo">
+          <v-avatar
+            size="48"
+            color="secondary"
+            tile
+          >
+            <span
+              v-if="courseInfo"
+              class="white--text text-h5"
+            >
               {{ courseInfo.name.slice(0, 1) }}
             </span>
           </v-avatar>
         </v-list-item-avatar>
         <v-list-item-content>
-          <v-tooltip bottom v-if="courseInfo">
-            <template v-slot:activator="{ on, attr }">
-              <v-list-item-title v-on="on" v-bind="attr">
+          <v-tooltip
+            v-if="courseInfo"
+            bottom
+          >
+            <template #activator="{ on, attr }">
+              <v-list-item-title
+                v-bind="attr"
+                v-on="on"
+              >
                 {{ courseInfo.name }}
               </v-list-item-title>
             </template>
@@ -30,7 +43,10 @@
 
     <v-divider />
 
-    <v-list dense :nav="!isMinify">
+    <v-list
+      dense
+      :nav="!isMinify"
+    >
       <v-list-item-group color="primary">
         <v-list-item :to="{ name: 'courseProblems' }">
           <v-list-item-icon>
@@ -40,14 +56,19 @@
             <v-list-item-title>主題</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <div v-if="$route.name === 'courseProblem'" style="max-height: 300px; overflow-y: auto">
+        <div
+          v-if="$route.name === 'courseProblem'"
+          style="max-height: 300px; overflow-y: auto"
+        >
           <v-list-item
             v-for="{ pid, title } in problems"
             :key="pid"
             :to="{ name: 'courseProblem', params: { pid: pid } }"
             :class="{ 'ml-4': !isMinify }"
           >
-            <v-list-item-icon class="pl-3 mr-3">{{ pid }}</v-list-item-icon>
+            <v-list-item-icon class="pl-3 mr-3">
+              {{ pid }}
+            </v-list-item-icon>
             <v-list-item-content>
               <v-list-item-title>{{ title }}</v-list-item-title>
             </v-list-item-content>
@@ -62,30 +83,44 @@
             <v-list-item-title>測驗</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <div v-if="$route.name === 'courseChallenge'" style="max-height: 300px; overflow-y: auto">
+        <div
+          v-if="$route.name === 'courseChallenge'"
+          style="max-height: 300px; overflow-y: auto"
+        >
           <v-list-item
             v-for="{ pid, title } in challenges"
             :key="pid"
             :to="{ name: 'courseChallenge', params: { pid: pid } }"
             :class="{ 'ml-4': !isMinify }"
           >
-            <v-list-item-icon class="pl-3 mr-3">{{ pid }}</v-list-item-icon>
+            <v-list-item-icon class="pl-3 mr-3">
+              {{ pid }}
+            </v-list-item-icon>
             <v-list-item-content>
               <v-list-item-title>{{ title }}</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
         </div>
 
-        <v-list-item :to="{ name: 'courseInfo' }">
-          <v-list-item-icon>
-            <v-icon>mdi-view-compact</v-icon>
-          </v-list-item-icon>
-          <v-list-item-content>
-            <v-list-item-title>總覽</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
+        <template v-for="{ title, icon, routeName } in regularItems">
+          <v-list-item
+            :key="routeName"
+            :to="{ name: routeName }"
+          >
+            <v-list-item-icon>
+              <v-icon>{{ icon }}</v-icon>
+            </v-list-item-icon>
+            <v-list-item-content>
+              <v-list-item-title>{{ title }}</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </template>
 
-        <v-list-item v-if="canWriteCourse" :to="{ name: 'courseManages' }" exact>
+        <v-list-item
+          v-if="canWriteCourse"
+          :to="{ name: 'courseManages' }"
+          exact
+        >
           <v-list-item-icon>
             <v-icon>mdi-cog</v-icon>
           </v-list-item-icon>
@@ -101,7 +136,9 @@
             :class="{ 'ml-4': !isMinify }"
           >
             <v-list-item-icon class="pl-3 mr-3">
-              <v-icon size="18px">{{ icon }}</v-icon>
+              <v-icon size="18px">
+                {{ icon }}
+              </v-icon>
             </v-list-item-icon>
             <v-list-item-content>
               <v-list-item-title>{{ title }}</v-list-item-title>
@@ -111,9 +148,12 @@
       </v-list-item-group>
     </v-list>
 
-    <template v-slot:append>
+    <template #append>
       <v-divider />
-      <v-list dense :nav="!isMinify">
+      <v-list
+        dense
+        :nav="!isMinify"
+      >
         <v-list-item @click="isMinify = !isMinify">
           <v-list-item-icon>
             <v-icon>
@@ -141,14 +181,32 @@ export default {
 
   mixins: [canWriteCourseMixin],
 
+  data: () => ({
+    isMinify: false,
+  }),
+
   computed: {
     ...mapState({
-      courseInfo: state => state.course.courseInfo,
+      courseInfo: (state) => state.course.courseInfo,
     }),
     ...mapGetters({
       problems: GetterTypes.PROBLEMS,
       challenges: GetterTypes.CHALLENGES,
     }),
+    regularItems() {
+      return [
+        // {
+        //   title: '任務',
+        //   icon: 'mdi-clipboard-list',
+        //   routeName: 'courseTasks',
+        // },
+        {
+          title: '總覽',
+          icon: 'mdi-view-compact',
+          routeName: 'courseInfo',
+        },
+      ]
+    },
     manageItems() {
       return [
         {
@@ -171,6 +229,11 @@ export default {
           icon: 'mdi-code-tags',
           routeName: 'courseManageChallenges',
         },
+        // {
+        //   title: '管理任務',
+        //   icon: 'mdi-clipboard-list',
+        //   routeName: 'courseManageTasks',
+        // },
         {
           title: '主題統計',
           icon: 'mdi-format-list-checks',
@@ -184,9 +247,5 @@ export default {
       ]
     },
   },
-
-  data: () => ({
-    isMinify: false,
-  }),
 }
 </script>

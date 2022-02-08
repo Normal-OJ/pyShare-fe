@@ -1,8 +1,14 @@
 <template>
   <div>
-    <div class="text-h4 font-weight-medium text-center">{{ prob.title }}</div>
+    <div class="text-h4 font-weight-medium text-center">
+      {{ prob.title }}
+    </div>
     <div class="d-flex flex-row mt-4">
-      <Gravatar class="mr-2" :size="48" :md5="prob.author.md5" />
+      <Gravatar
+        class="mr-2"
+        :size="48"
+        :md5="prob.author.md5"
+      />
       <div class="d-flex flex-column">
         <router-link :to="{ name: 'profile', params: { id: prob.author.id } }">
           {{ prob.author.displayName }}
@@ -29,15 +35,18 @@
         </template>
         <span>作答情形</span>
       </v-tooltip> -->
-      <v-tooltip bottom v-if="!isPreview && canCopyProblem">
-        <template v-slot:activator="{ on, attrs }">
+      <v-tooltip
+        v-if="!isPreview && canCopyProblem"
+        bottom
+      >
+        <template #activator="{ on, attrs }">
           <v-btn
             outlined
             color="primary darken-2"
             class="rounded mr-2"
             icon
-            v-on="on"
             v-bind="attrs"
+            v-on="on"
             @click="dialog = true"
           >
             <v-icon>mdi-content-copy</v-icon>
@@ -45,8 +54,11 @@
         </template>
         <span>複製測驗</span>
       </v-tooltip>
-      <v-tooltip bottom v-if="!isPreview && $isSelf(prob.author.username)">
-        <template v-slot:activator="{ on, attrs }">
+      <v-tooltip
+        v-if="!isPreview && $isSelf(prob.author.username)"
+        bottom
+      >
+        <template #activator="{ on, attrs }">
           <v-btn
             outlined
             color="primary darken-2"
@@ -57,8 +69,8 @@
               query: { pid: prob.pid },
             }"
             icon
-            v-on="on"
             v-bind="attrs"
+            v-on="on"
           >
             <v-icon>mdi-pencil-outline</v-icon>
           </v-btn>
@@ -67,19 +79,38 @@
       </v-tooltip>
     </div>
     <v-row class="mt-6">
-      <v-col cols="12" md="8">
-        <div class="text-h6">測驗說明</div>
-        <div class="text-body-1 ma-1" v-html="prob.description" />
+      <v-col
+        cols="12"
+        md="8"
+      >
+        <div class="text-h6">
+          測驗說明
+        </div>
+        <div
+          class="text-body-1 ma-1"
+          v-html="prob.description"
+        />
       </v-col>
-      <v-col cols="12" md="4">
-        <div class="text-h6">分類</div>
-        <ColorLabel v-for="tag in prob.tags" :key="tag" :tag="tag" small class="ma-1" />
+      <v-col
+        cols="12"
+        md="4"
+      >
+        <div class="text-h6">
+          分類
+        </div>
+        <ColorLabel
+          v-for="tag in prob.tags"
+          :key="tag"
+          :tag="tag"
+          small
+          class="ma-1"
+        />
       </v-col>
     </v-row>
 
     <CloneProblemModal
-      :isOpen="dialog"
-      :clonePid="prob.pid"
+      :is-open="dialog"
+      :clone-pid="prob.pid"
       label="測驗"
       @success="dialog = false"
       @close="dialog = false"
@@ -88,10 +119,6 @@
 </template>
 
 <script>
-import ColorLabel from '@/components/UI/ColorLabel'
-import Gravatar from '@/components/UI/Gravatar'
-import CloneProblemModal from '../Problem/CloneProblemModal.vue'
-
 export default {
   props: {
     prob: {
@@ -103,8 +130,6 @@ export default {
       default: false,
     },
   },
-
-  components: { ColorLabel, Gravatar, CloneProblemModal },
 
   data: () => ({
     dialog: false,

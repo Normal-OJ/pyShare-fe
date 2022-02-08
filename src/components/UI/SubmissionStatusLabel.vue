@@ -1,5 +1,9 @@
 <template>
-  <v-chip :color="state.color" :small="small" label>
+  <v-chip
+    :color="state.color"
+    :small="small"
+    label
+  >
     {{ state.text }}
     <slot />
   </v-chip>

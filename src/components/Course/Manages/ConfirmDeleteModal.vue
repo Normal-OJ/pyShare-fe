@@ -1,11 +1,22 @@
 <template>
-  <v-dialog :value="isVisible" persistent width="1000px">
-    <v-card width="1000px" class="pb-4">
+  <v-dialog
+    :value="isVisible"
+    persistent
+    width="1000px"
+  >
+    <v-card
+      width="1000px"
+      class="pb-4"
+    >
       <v-toolbar elevation="0">
         <v-toolbar-title>是否要移除勾選的成員？</v-toolbar-title>
         <v-spacer />
         <v-toolbar-items>
-          <v-btn icon color="black" @click="$emit('close')">
+          <v-btn
+            icon
+            color="black"
+            @click="$emit('close')"
+          >
             <v-icon>mdi-close</v-icon>
           </v-btn>
         </v-toolbar-items>
@@ -17,7 +28,12 @@
         </p>
         <div style="max-height: 200px; overflow-y: scroll">
           <ol>
-            <li v-for="member in willDeleteMembers" :key="member">{{ member }}</li>
+            <li
+              v-for="member in willDeleteMembers"
+              :key="member"
+            >
+              {{ member }}
+            </li>
           </ol>
         </div>
       </v-card-text>
@@ -36,10 +52,10 @@
         />
         <v-btn
           color="error"
-          @click="handleClick"
           :disabled="inputText !== courseName"
           :loading="isLoading"
           data-test="confirmDeleteBtn"
+          @click="handleClick"
         >
           確認刪除
         </v-btn>
@@ -70,15 +86,15 @@ export default {
     },
   },
 
-  computed: {
-    ...mapState({
-      courseName: state => state.course.courseInfo.name,
-    }),
-  },
-
   data: () => ({
     inputText: '',
   }),
+
+  computed: {
+    ...mapState({
+      courseName: (state) => state.course.courseInfo.name,
+    }),
+  },
 
   methods: {
     handleClick() {

@@ -1,5 +1,9 @@
 <template>
-  <VueEditor :value="value" @input="$emit('input', $event)" :editor-toolbar="customToolbar" />
+  <VueEditor
+    :value="value"
+    :editor-toolbar="customToolbar"
+    @input="$emit('input', $event)"
+  />
 </template>
 
 <script>
@@ -15,14 +19,14 @@ const customToolbar = [
 ]
 
 export default {
+
+  components: { VueEditor },
   props: {
     value: {
       type: String,
       default: '',
     },
   },
-
-  components: { VueEditor },
 
   data: () => ({
     customToolbar,

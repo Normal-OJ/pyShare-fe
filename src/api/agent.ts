@@ -2,14 +2,15 @@ import config from '@/constants/config'
 import store from '@/store'
 import { MutationTypes } from '@/store/mutation-types'
 import axios, { AxiosResponse } from 'axios'
+import { REQ_TYPE_ROUTE } from '@/constants/task'
 
 export const fetcher = axios.create({
   baseURL: config.API_BASE_URL,
 })
 
 fetcher.interceptors.response.use(
-  res => res,
-  error => {
+  (res) => res,
+  (error) => {
     if (error?.response) {
       // catch Authorization Expired
       if (
@@ -169,7 +170,7 @@ const Submission = {
 const Gitlab = {
   getReleases: async () => {
     const url = `${config.GITLAB_API_BASE_URL}/projects/${config.GITLAB_PROJECT_ID}/releases`
-    return fetch(url).then(response => response.json())
+    return fetch(url).then((response) => response.json())
   },
 }
 
@@ -216,6 +217,24 @@ const Sandbox = {
   delete: (url: string) => fetcher({ method: 'delete', url: '/sandbox', data: { url } }),
 }
 
+const Task = {
+  getList: (id: Course.ID): PysharePromise<Task.IInfo[]> => fetcher.get(`/course/${id}/tasks`),
+
+  getProgressList: (id: Course.ID): PysharePromise<Task.ITaskProgress[]> =>
+    fetcher.get(`/course/${id}/task/record`),
+
+  get: (id: Task.ID): PysharePromise<Task.IInfo> => fetcher.get(`/task/${id}`),
+
+  create: (body: Task.ICreateBody) => fetcher.post('/task', body),
+
+  createRequirement: (id: Task.ID, type: Task.ReqType, body: Task.RequirementCreateBody) =>
+    fetcher.post(`/task/${id}/${REQ_TYPE_ROUTE[type]}`, body),
+
+  delete: () => new Promise((resolve, reject) => reject('not implement yet')),
+
+  getReq: (id: Task.ReqID): PysharePromise<any> => fetcher.get(`/requirement/${id}`),
+}
+
 export default {
   Auth,
   Course,
@@ -229,4 +248,5 @@ export default {
   Permission,
   Dataset,
   Sandbox,
+  Task,
 }

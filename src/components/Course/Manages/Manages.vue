@@ -1,9 +1,17 @@
 <template>
-  <v-container fluid style="padding-bottom: 300px">
-    <div class="text-h5">課程管理</div>
+  <v-container
+    fluid
+    style="padding-bottom: 300px"
+  >
+    <div class="text-h5">
+      課程管理
+    </div>
     <div class="d-flex flex-wrap">
       <template v-for="{ title, description, icon, routeName } in items">
-        <v-hover v-slot:default="{ hover }" :key="routeName">
+        <v-hover
+          v-slot="{ hover }"
+          :key="routeName"
+        >
           <v-card
             class="px-4 mt-6 mx-6"
             :elevation="hover ? 6 : 2"
@@ -12,7 +20,11 @@
           >
             <div class="d-flex justify-start flex-wrap">
               <div class="d-flex justify-center align-center">
-                <v-icon size="60" color="primary" v-text="icon" />
+                <v-icon
+                  size="60"
+                  color="primary"
+                  v-text="icon"
+                />
               </div>
               <div>
                 <v-card-title v-text="title" />

@@ -1,6 +1,6 @@
 import CompositionApi from '@vue/composition-api'
 import { mount } from '@vue/test-utils'
-import ForgetPassword from '@/views/Login/ForgetPassword'
+import ForgetPassword from '@/views/Login/ForgetPassword.vue'
 import flushPromises from 'flush-promises'
 import baseMountConfig from '../helper'
 import { createMockAgent } from '../mock'
@@ -51,8 +51,8 @@ describe('ForgetPassword.vue', () => {
         { input: 'gg@test.com', expectedValue: true },
         { input: 'dev@pyshare.io', expectedValue: true },
       ]
-      testcase.forEach(tc => {
-        expect(emailRules.every(rule => rule(tc.input) === tc.expectedValue)).toBeTruthy()
+      testcase.forEach((tc) => {
+        expect(emailRules.every((rule) => rule(tc.input) === tc.expectedValue)).toBeTruthy()
       })
     })
 

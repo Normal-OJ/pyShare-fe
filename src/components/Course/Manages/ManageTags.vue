@@ -1,7 +1,9 @@
 <template>
   <v-container fluid>
     <v-row no-gutters>
-      <div class="text-h5">管理分類</div>
+      <div class="text-h5">
+        管理分類
+      </div>
       <v-spacer />
       <CreateTagModal
         @submit-new-tags="
@@ -11,28 +13,53 @@
     </v-row>
 
     <v-row>
-      <v-col cols="12" md="5">
-        <div class="text-h6">課程分類</div>
-        <div class="text-subtitle-1">以下為在此課程內的主題可使用的分類</div>
-        <v-card class="my-6" tile>
+      <v-col
+        cols="12"
+        md="5"
+      >
+        <div class="text-h6">
+          課程分類
+        </div>
+        <div class="text-subtitle-1">
+          以下為在此課程內的主題可使用的分類
+        </div>
+        <v-card
+          class="my-6"
+          tile
+        >
           <v-list>
-            <div v-show="courseTags.length === 0" class="text-center py-4">
-              <div class="text-body-2 mb-2">課程沒有可用的分類，快加入一些吧！</div>
-              <v-img :src="require('@/assets/images/emptyBox.svg')" max-height="100" contain />
+            <div
+              v-show="courseTags.length === 0"
+              class="text-center py-4"
+            >
+              <div class="text-body-2 mb-2">
+                課程沒有可用的分類，快加入一些吧！
+              </div>
+              <v-img
+                :src="require('@/assets/images/emptyBox.svg')"
+                max-height="100"
+                contain
+              />
             </div>
-            <v-list-item v-for="item in courseTags" :key="item">
+            <v-list-item
+              v-for="item in courseTags"
+              :key="item"
+            >
               <v-list-item-content>
                 <v-list-item-title>
-                  <ColorLabel :tag="item" small />
+                  <ColorLabel
+                    :tag="item"
+                    small
+                  />
                 </v-list-item-title>
               </v-list-item-content>
               <v-tooltip left>
-                <template v-slot:activator="{ on }">
+                <template #activator="{ on }">
                   <v-btn
                     color="secondary"
-                    v-on="on"
                     small="small"
                     icon
+                    v-on="on"
                     @click="handleSubmitPatchTags(PATCH_OPTION.POP, [item])"
                   >
                     <v-icon>mdi-close</v-icon>
@@ -45,16 +72,22 @@
         </v-card>
       </v-col>
 
-      <v-col cols="12" md="2">
-        <v-row class="hidden-sm-and-down" :style="{ height: '40vh' }"></v-row>
+      <v-col
+        cols="12"
+        md="2"
+      >
+        <v-row
+          class="hidden-sm-and-down"
+          :style="{ height: '40vh' }"
+        />
         <v-row justify="center">
           <v-tooltip bottom>
-            <template v-slot:activator="{ on }">
+            <template #activator="{ on }">
               <v-btn
                 color="primary"
-                v-on="on"
                 large="large"
                 :disabled="selectedTags && selectedTags.length === 0"
+                v-on="on"
                 @click="handleSubmitPatchTags(PATCH_OPTION.PUSH, selectedTags)"
               >
                 <v-icon>mdi-transfer-left</v-icon>
@@ -65,22 +98,48 @@
         </v-row>
       </v-col>
 
-      <v-col cols="12" md="5">
-        <div class="text-h6">其他分類</div>
-        <div class="text-subtitle-1">平台所有的分類，可以自由新增分類</div>
-        <v-card class="my-6" tile>
+      <v-col
+        cols="12"
+        md="5"
+      >
+        <div class="text-h6">
+          其他分類
+        </div>
+        <div class="text-subtitle-1">
+          平台所有的分類，可以自由新增分類
+        </div>
+        <v-card
+          class="my-6"
+          tile
+        >
           <v-list>
             <v-list-item @click="toggleAll">
               <v-list-item-action>
-                <v-icon :color="iconColor">{{ icon }}</v-icon>
+                <v-icon :color="iconColor">
+                  {{ icon }}
+                </v-icon>
               </v-list-item-action>
-              <v-list-item-title class="py-1">全選</v-list-item-title>
+              <v-list-item-title class="py-1">
+                全選
+              </v-list-item-title>
             </v-list-item>
-            <v-divider></v-divider>
-            <v-list-item-group v-model="selectedTags" multiple="multiple">
-              <div v-show="candidateTags.length === 0" class="text-center py-4">
-                <div class="text-body-2 mb-2">沒有其他分類了</div>
-                <v-img :src="require('@/assets/images/noData.svg')" max-height="100" contain />
+            <v-divider />
+            <v-list-item-group
+              v-model="selectedTags"
+              multiple="multiple"
+            >
+              <div
+                v-show="candidateTags.length === 0"
+                class="text-center py-4"
+              >
+                <div class="text-body-2 mb-2">
+                  沒有其他分類了
+                </div>
+                <v-img
+                  :src="require('@/assets/images/noData.svg')"
+                  max-height="100"
+                  contain
+                />
               </div>
               <v-list-item
                 v-for="item in candidateTags"
@@ -89,7 +148,7 @@
                 inactive
                 :ripple="false"
               >
-                <template v-slot:default="{ active, toggle }">
+                <template #default="{ active, toggle }">
                   <v-list-item-action>
                     <v-checkbox
                       :input-value="active"
@@ -101,11 +160,17 @@
                   <v-list-item-content>
                     <div class="d-flex align-center">
                       <v-list-item-title>
-                        <ColorLabel :tag="item" small />
+                        <ColorLabel
+                          :tag="item"
+                          small
+                        />
                       </v-list-item-title>
                       <v-spacer />
-                      <v-tooltip bottom :disabled="!removables || !removables[item]">
-                        <template v-slot:activator="{ on, attrs }">
+                      <v-tooltip
+                        bottom
+                        :disabled="!removables || !removables[item]"
+                      >
+                        <template #activator="{ on, attrs }">
                           <div v-on="on">
                             <v-btn
                               color="error"
@@ -132,15 +197,15 @@
         </v-card>
       </v-col>
     </v-row>
-    <Popup :isShow="isPopupActive && !!errorMsg" :title="errorMsg" @click="isPopupActive = false" />
+    <Popup
+      :is-show="isPopupActive && !!errorMsg"
+      :title="errorMsg"
+      @click="isPopupActive = false"
+    />
   </v-container>
 </template>
 
 <script>
-import CreateTagModal from './CreateTagModal'
-import Popup from '../../UI/Popup'
-import ColorLabel from '../../UI/ColorLabel.vue'
-
 const PATCH_OPTION = {
   PUSH: 'push',
   POP: 'pop',
@@ -152,8 +217,6 @@ const initialPatchTagsBody = {
 
 export default {
   name: 'ManageTags',
-
-  components: { CreateTagModal, Popup, ColorLabel },
 
   props: {
     courseTags: {
@@ -183,7 +246,7 @@ export default {
 
   computed: {
     candidateTags() {
-      return this.allTags.filter(tag => !this.courseTags.includes(tag))
+      return this.allTags.filter((tag) => !this.courseTags.includes(tag))
     },
     selectAll() {
       return this.selectedTags.length === this.candidateTags.length
@@ -213,7 +276,7 @@ export default {
     deleteTag(tag) {
       new Promise((resolve, reject) => this.$emit('delete-tags', [tag], resolve, reject)).then(
         () => {
-          this.selectedTags = this.selectedTags.filter(t => t !== tag)
+          this.selectedTags = this.selectedTags.filter((t) => t !== tag)
         },
       )
     },

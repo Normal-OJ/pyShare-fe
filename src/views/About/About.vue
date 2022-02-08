@@ -1,18 +1,16 @@
 <template>
   <div>
-    <ReleaseNote :releases="releases" :isLoading="isLoading" />
+    <ReleaseNote
+      :releases="releases"
+      :is-loading="isLoading"
+    />
     <v-divider class="mt-4" />
     <MeetOurTeam />
   </div>
 </template>
 
 <script>
-import ReleaseNote from '@/components/About/ReleaseNote'
-import MeetOurTeam from '@/components/About/MeetOurTeam'
-
 export default {
-  components: { ReleaseNote, MeetOurTeam },
-
   data: () => ({
     releases: null,
     isLoading: true,

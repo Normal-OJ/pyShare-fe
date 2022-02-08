@@ -29,15 +29,6 @@ export default {
     },
   },
 
-  computed: {
-    labelColor() {
-      const hash = this.tag.split('').reduce((a, b) => {
-        return a + b.charCodeAt(0)
-      }, 0)
-      return this.color[hash % this.color.length]
-    },
-  },
-
   data: () => ({
     color: [
       { color: '#FECACA', textColor: '#B91C1C' },
@@ -57,5 +48,14 @@ export default {
       { color: '#FECDD3', textColor: '#BE123C' },
     ],
   }),
+
+  computed: {
+    labelColor() {
+      const hash = this.tag.split('').reduce((a, b) => {
+        return a + b.charCodeAt(0)
+      }, 0)
+      return this.color[hash % this.color.length]
+    },
+  },
 }
 </script>

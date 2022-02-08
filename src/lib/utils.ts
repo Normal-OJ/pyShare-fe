@@ -21,7 +21,7 @@ export const hasPermission = async (
       await store.dispatch(ActionTypes.GET_PERMISSIONS, { resource, id })
     }
     // 物件 copy by sharing，這裡會吃到新的
-    return requirement.every(req => permissions[resource][id].includes(req))
+    return requirement.every((req) => permissions[resource][id].includes(req))
   } catch (error) {
     console.log('[lib/utils/hasPermission] error', error)
     return false
@@ -46,14 +46,24 @@ export const alertFail = (text: string) => {
 
 export const formatBytes = (bytes: number, decimals: number = 2): string => {
   if (bytes === 0) return '0 Bytes'
-
   const k = 1024
   const dm = decimals < 0 ? 0 : decimals
   const sizes = ['Bytes', 'KB', 'MB', 'GB']
-
   const i = Math.floor(Math.log(bytes) / Math.log(k))
-
   return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i]
+}
+
+export const createFileDownloadLink = (filename: string, href: string): HTMLAnchorElement => {
+  const fileDownloadLink = document.createElement('a')
+  fileDownloadLink.download = filename
+  fileDownloadLink.href = href
+  return fileDownloadLink
+}
+
+export const downloadFile = (filename: string, href: string): void => {
+  const link = createFileDownloadLink(filename, href)
+  link.click()
+  link.remove()
 }
 
 export const utilsPlugin = {

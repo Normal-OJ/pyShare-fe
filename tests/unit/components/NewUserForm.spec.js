@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils'
-import NewUserForm from '@/components/Admin/NewUserForm'
+import NewUserForm from '@/components/Admin/NewUserForm.vue'
 import baseMountConfig from '../helper'
 import Papa from 'papaparse'
 
@@ -31,7 +31,7 @@ describe('NewUserForm.vue', () => {
       expect(NewUserForm.computed.isSubmitDisabled.call(wrapper.vm)).toEqual(true)
       // check input elements
       const ids = [schoolId, usernameId, displayNameId, passwordId, roleId, emailId]
-      ids.forEach(id => {
+      ids.forEach((id) => {
         const node = wrapper.find(id)
         expect(node.exists()).toEqual(true)
         expect(node.element.value).toEqual('')
@@ -89,7 +89,7 @@ describe('NewUserForm.vue', () => {
       ['username', 'displayName', 'password', 1, 'dev@noj.tw'],
       ['username', 'displayName', 'password', 0, 'admin@pyshare.noj.tw'],
     ])(
-      "should emit 'submit' after submitting a New school.",
+      'should emit \'submit\' after submitting a New school.',
       async (username, displayName, password, role, email) => {
         const wrapper = mount(NewUserForm, {
           ...baseMountConfig(),
@@ -110,7 +110,7 @@ describe('NewUserForm.vue', () => {
       },
     )
 
-    it("should emit 'cancel' after clicking cancel button.", async () => {
+    it('should emit \'cancel\' after clicking cancel button.', async () => {
       const wrapper = mount(NewUserForm, { ...baseMountConfig(), propsData: { schoolOptions: [] } })
       await wrapper.find(cancelId).trigger('click')
       await wrapper.vm.$nextTick()

@@ -1,5 +1,8 @@
 <template>
-  <v-container fluid class="d-flex flex-column mt-4">
+  <v-container
+    fluid
+    class="d-flex flex-column mt-4"
+  >
     <v-row>
       <v-col cols="auto">
         <v-text-field
@@ -15,7 +18,12 @@
       <v-spacer />
       <v-col cols="auto">
         <template v-if="canWriteCourse">
-          <v-btn color="primary" :to="{ name: 'courseManageMembers' }" class="mr-3" outlined>
+          <v-btn
+            color="primary"
+            :to="{ name: 'courseManageMembers' }"
+            class="mr-3"
+            outlined
+          >
             管理課程成員
           </v-btn>
           <AddStudentModal @success="getCourseInfo($route.params.id)" />
@@ -33,10 +41,22 @@
       class="table"
       @click:row="handleRowClick"
     >
-      <template v-slot:[slotName] v-for="slotName in ['no-data', 'no-results']">
-        <div class="d-flex flex-column align-center" :key="slotName">
-          <div class="text-subtitle-1 my-8">這裡還沒有任何成員，或找不到符合條件的成員</div>
-          <v-img :src="require('@/assets/images/noData.svg')" max-width="600" contain />
+      <template
+        v-for="slotName in ['no-data', 'no-results']"
+        #[slotName]
+      >
+        <div
+          :key="slotName"
+          class="d-flex flex-column align-center"
+        >
+          <div class="text-subtitle-1 my-8">
+            這裡還沒有任何成員，或找不到符合條件的成員
+          </div>
+          <v-img
+            :src="require('@/assets/images/noData.svg')"
+            max-width="600"
+            contain
+          />
         </div>
       </template>
     </v-data-table>
@@ -44,9 +64,8 @@
 </template>
 
 <script>
-import AddStudentModal from '@/components/Course/AddStudentModal'
-import { ActionTypes } from '@/store/action-types'
 import { mapActions } from 'vuex'
+import { ActionTypes } from '@/store/action-types'
 import { ROLE } from '@/constants/auth'
 import { canWriteCourseMixin } from '@/lib/permissionMixin'
 
@@ -62,8 +81,6 @@ export default {
   name: 'MemberList',
 
   mixins: [canWriteCourseMixin],
-
-  components: { AddStudentModal },
 
   props: {
     members: {

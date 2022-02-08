@@ -1,16 +1,19 @@
 <template>
   <div>
     <div class="mt-4 d-flex flex-column">
-      <CodeEditor v-model="code" :height="200">
+      <CodeEditor
+        v-model="code"
+        :height="200"
+      >
         <div class="d-flex pb-1">
           <v-tooltip bottom>
-            <template v-slot:activator="{ on, attr }">
+            <template #activator="{ on, attr }">
               <v-btn
                 class="ml-2"
                 color="primary"
-                v-on="on"
                 v-bind="attr"
                 small
+                v-on="on"
                 @click="setDefaultCode"
               >
                 <v-icon>mdi-autorenew</v-icon>
@@ -23,15 +26,28 @@
     </div>
     <div class="mt-4 d-flex">
       <v-spacer />
-      <v-btn color="success" @click="submitTest" class="mr-6">測試</v-btn>
-      <v-btn color="success" @click="submitCode">送出</v-btn>
+      <v-btn
+        color="success"
+        class="mr-6"
+        @click="submitTest"
+      >
+        測試
+      </v-btn>
+      <v-btn
+        color="success"
+        @click="submitCode"
+      >
+        送出
+      </v-btn>
     </div>
     <div v-if="testResult">
-      <div class="text-body-1 font-weight-medium my-4">測試執行結果</div>
+      <div class="text-body-1 font-weight-medium my-4">
+        測試執行結果
+      </div>
       <Spinner v-if="isTestSubmissionPending" />
       <ChallengeResult
         v-else
-        :judgeResult="testResult.judge_result"
+        :judge-result="testResult.judge_result"
         :code="testResult.code"
         :stdout="testResult.stdout"
         :stderr="testResult.stderr"
@@ -41,13 +57,7 @@
 </template>
 
 <script>
-import CodeEditor from '@/components/UI/CodeEditor'
-import Spinner from '@/components/UI/Spinner'
-import ChallengeResult from './ChallengeResult'
-
 export default {
-  components: { CodeEditor, Spinner, ChallengeResult },
-
   props: {
     comment: {
       type: Object,

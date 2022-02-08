@@ -8,7 +8,6 @@
 </template>
 
 <script>
-import Problems from '@/components/Course/Problems/Problems'
 import { mapActions, mapGetters, mapState } from 'vuex'
 import { GetterTypes } from '@/store/getter-types'
 import { ActionTypes } from '@/store/action-types'
@@ -16,13 +15,15 @@ import { ActionTypes } from '@/store/action-types'
 export default {
   // TODO: prevent maximum call stack size exceeded
   // https://github.com/vuejs/vue/issues/9081
-  name: 'viewsProblems',
+  name: 'ViewsProblems',
 
-  components: { Problems },
+  data: () => ({
+    isLoading: true,
+  }),
 
   computed: {
     ...mapState({
-      tags: state => state.course.courseTags,
+      tags: (state) => state.course.courseTags,
     }),
     ...mapGetters({
       problems: GetterTypes.PROBLEMS,
@@ -34,10 +35,6 @@ export default {
       return { course: this.courseId }
     },
   },
-
-  data: () => ({
-    isLoading: true,
-  }),
 
   created() {
     Promise.all([this.getProblems(this.paramsWithCourse), this.getTags(this.courseId)]).then(

@@ -20,6 +20,7 @@ export default {
   },
   computed: {
     source() {
+      // FIXME: do not depend on noj avatar
       const defaultAvatar = encodeURI(config.DEFAULT_AVATAR)
       const url = `${config.GRAVATAR_API_BASE_URL}/${this.md5}?d=${defaultAvatar}`
       return url

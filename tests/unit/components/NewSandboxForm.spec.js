@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils'
-import NewSandboxForm from '@/components/Admin/NewSandboxForm'
+import NewSandboxForm from '@/components/Admin/NewSandboxForm.vue'
 import baseMountConfig from '../helper'
 
 const urlId = '[data-test=url]'
@@ -30,7 +30,7 @@ describe('NewSandboxForm.vue', () => {
       expect(NewSandboxForm.computed.isSubmitDisabled.call(wrapper.vm)).toEqual(true)
       // check input elements
       const ids = [urlId, aliasId, tokenId]
-      ids.forEach(id => {
+      ids.forEach((id) => {
         const node = wrapper.find(id)
         expect(node.exists()).toEqual(true)
         expect(node.element.value).toEqual('')
@@ -39,7 +39,7 @@ describe('NewSandboxForm.vue', () => {
 
     it.each([{ url: 'http://foo.bar', alias: 'foobar' }, { url: 'http://madoka' }])(
       'should have correct input value when Modifying a sandbox.',
-      async populateWith => {
+      async (populateWith) => {
         const wrapper = mount(NewSandboxForm, {
           ...baseMountConfig(),
           propsData: {
@@ -109,7 +109,7 @@ describe('NewSandboxForm.vue', () => {
     it.each([
       { new: true, data: { url: '', alias: '', token: '' } },
       { data: { url: 'http://foo.bar', alias: '' } },
-    ])('should not emit if form validation failed.', async populateWith => {
+    ])('should not emit if form validation failed.', async (populateWith) => {
       const wrapper = mount(NewSandboxForm, {
         ...baseMountConfig(),
         propsData: { populateWith },
@@ -129,7 +129,7 @@ describe('NewSandboxForm.vue', () => {
     it.each([
       ['http://foo.bar', 'nickname', 's3cr3t'],
       ['http://123', '', 's3cr3t'],
-    ])("should emit 'submit' after submitting a New sandbox.", async (url, alias, token) => {
+    ])('should emit \'submit\' after submitting a New sandbox.', async (url, alias, token) => {
       const wrapper = mount(NewSandboxForm, {
         ...baseMountConfig(),
         propsData: {
@@ -148,7 +148,7 @@ describe('NewSandboxForm.vue', () => {
     it.each([
       ['http://foo.bar', 'nickname'],
       ['http://123', ''],
-    ])("should emit 'modify' after submitting a Modified sandbox.", async (url, alias) => {
+    ])('should emit \'modify\' after submitting a Modified sandbox.', async (url, alias) => {
       const wrapper = mount(NewSandboxForm, {
         ...baseMountConfig(),
         propsData: {
@@ -161,7 +161,7 @@ describe('NewSandboxForm.vue', () => {
       expect(wrapper.emitted().modify[0]).toEqual([{ url, alias }])
     })
 
-    it("should emit 'cancel' after clicking cancel button.", async () => {
+    it('should emit \'cancel\' after clicking cancel button.', async () => {
       const wrapper = mount(NewSandboxForm, {
         ...baseMountConfig(),
         propsData: {

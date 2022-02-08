@@ -1,15 +1,21 @@
 <template>
   <v-fade-transition>
     <Spinner v-if="isLoading" />
-    <div class="pa-4" v-else>
-      <Challenge v-if="prob" :prob="prob" />
+    <div
+      v-else
+      class="pa-4"
+    >
+      <Challenge
+        v-if="prob"
+        :prob="prob"
+      />
       <template v-if="canParticipateCourse">
         <ChallengeCode
           class="mt-16"
           :comment="comment"
-          :defaultCode="prob.defaultCode"
-          :testResult="testResult"
-          :isTestSubmissionPending="isTestSubmissionPending"
+          :default-code="prob.defaultCode"
+          :test-result="testResult"
+          :is-test-submission-pending="isTestSubmissionPending"
           @submit-test-submission="submitTestSubmission"
           @submit-new-submission="submitNewSubmission"
         />
@@ -19,11 +25,18 @@
         </div>
       </template>
       <template v-else>
-        <div class="d-flex flex-column align-center" :key="slotName">
+        <div
+          :key="slotName"
+          class="d-flex flex-column align-center"
+        >
           <div class="text-subtitle-1 gray--text my-8">
             由於您不在這堂課程內，且此課程並非公開課程，您僅能檢視題目而無法提交程式。
           </div>
-          <v-img :src="require('@/assets/images/warning.svg')" max-width="400" contain />
+          <v-img
+            :src="require('@/assets/images/warning.svg')"
+            max-width="400"
+            contain
+          />
         </div>
       </template>
     </div>
@@ -31,17 +44,12 @@
 </template>
 
 <script>
-import Spinner from '@/components/UI/Spinner'
-import Challenge from '@/components/Course/Challenge/Challenge'
-import ChallengeCode from '@/components/Course/Challenge/ChallengeCode'
-import ChallengeHistory from '@/components/Course/Challenge/ChallengeHistory'
 import { mapState, mapGetters, mapActions } from 'vuex'
 import { ActionTypes } from '@/store/action-types'
 import { GetterTypes } from '@/store/getter-types'
 import { canParticipateCourseMixin } from '@/lib/permissionMixin'
 
 export default {
-  components: { Spinner, Challenge, ChallengeCode, ChallengeHistory },
   mixins: [canParticipateCourseMixin],
   data: () => ({
     isLoading: true,
@@ -51,7 +59,7 @@ export default {
   }),
   computed: {
     ...mapState({
-      username: state => state.auth.username,
+      username: (state) => state.auth.username,
     }),
     ...mapGetters({
       comment: GetterTypes.COMMENT_OF_MINE,
@@ -80,7 +88,7 @@ export default {
     this.isLoading = false
 
     this.pollingSubmission = setInterval(
-      that => {
+      (that) => {
         if (that.isTestSubmissionPending) {
           that.fetchTestSubmission()
         }
@@ -112,7 +120,7 @@ export default {
       getComments: ActionTypes.GET_COMMENTS,
     }),
     fetchTestSubmission() {
-      this.$agent.Submission.get(this.testSubmissionId).then(res => {
+      this.$agent.Submission.get(this.testSubmissionId).then((res) => {
         this.testResult = res.data.data
       })
     },
@@ -122,7 +130,7 @@ export default {
         const { data } = await this.$agent.Submission.createTest(body)
         const { submissionId } = data.data
         this.testSubmissionId = submissionId
-        this.$agent.Submission.get(submissionId).then(res => {
+        this.$agent.Submission.get(submissionId).then((res) => {
           this.testResult = res.data.data
         })
       } catch (error) {

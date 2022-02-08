@@ -1,5 +1,8 @@
 <template>
-  <v-form ref="form" v-model="newUserForm.isValid">
+  <v-form
+    ref="form"
+    v-model="newUserForm.isValid"
+  >
     <v-select
       v-model="newUserForm.data.school"
       :rules="[val => val !== null || '此欄位為必填']"
@@ -11,7 +14,9 @@
       dense
       data-test="school"
     >
-      <template v-slot:selection="{ item }">{{ item.abbr || item.name }}</template>
+      <template #selection="{ item }">
+        {{ item.abbr || item.name }}
+      </template>
     </v-select>
     <v-text-field
       v-model="newUserForm.data.username"
@@ -36,9 +41,9 @@
       outlined
       :type="newUserForm.isShowPassword ? 'text' : 'password'"
       :append-icon="newUserForm.isShowPassword ? 'mdi-eye' : 'mdi-eye-off'"
-      @click:append="newUserForm.isShowPassword = !newUserForm.isShowPassword"
       dense
       data-test="password"
+      @click:append="newUserForm.isShowPassword = !newUserForm.isShowPassword"
     />
     <v-select
       v-model="newUserForm.data.role"
@@ -64,7 +69,12 @@
     >
       送出
     </v-btn>
-    <v-btn :disabled="newUserForm.isLoading" data-test="cancel" @click="$emit('cancel')" text>
+    <v-btn
+      :disabled="newUserForm.isLoading"
+      data-test="cancel"
+      text
+      @click="$emit('cancel')"
+    >
       取消
     </v-btn>
   </v-form>

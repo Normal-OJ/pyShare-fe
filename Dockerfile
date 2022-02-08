@@ -9,4 +9,4 @@ COPY package*.json ./
 # install project dependencies
 RUN npm install
 
-CMD [ "npm", "run", "serve" ]
+CMD [ "npm", "run", "dev" ]

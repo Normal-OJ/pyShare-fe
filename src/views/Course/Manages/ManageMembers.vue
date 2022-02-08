@@ -8,16 +8,13 @@
 </template>
 
 <script>
-import ManageMembers from '@/components/Course/Manages/ManageMembers'
 import { mapActions, mapState } from 'vuex'
 import { ActionTypes } from '@/store/action-types'
 
 export default {
-  components: { ManageMembers },
-
   computed: {
     ...mapState({
-      info: state => state.course.courseInfo,
+      info: (state) => state.course.courseInfo,
     }),
     courseId() {
       return this.$route.params.id
@@ -25,7 +22,7 @@ export default {
     members() {
       if (!this.info) return []
       const items = [{ ...this.info.teacher, role: '教師' }].concat(
-        this.info.students.map(s => ({
+        this.info.students.map((s) => ({
           ...s,
           role: '學生',
         })),

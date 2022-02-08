@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils'
-import Login from '@/views/Login/Login'
+import Login from '@/views/Login/Login.vue'
 import flushPromises from 'flush-promises'
 import baseMountConfig from '../helper'
 import { createMockAgent } from '../mock'
@@ -107,20 +107,20 @@ describe('Login.vue', () => {
         { input: 'madoka', expectedType: 'boolean' },
         { input: '.............', expectedType: 'boolean' },
       ]
-      testcase.forEach(tc => {
+      testcase.forEach((tc) => {
         expect(
           loginRules.username.every(
-            rule => rule(tc.input) && typeof rule(tc.input) === tc.expectedType,
+            (rule) => rule(tc.input) && typeof rule(tc.input) === tc.expectedType,
           ),
         ).toBeTruthy()
         expect(
           loginRules.email.every(
-            rule => rule(tc.input) && typeof rule(tc.input) === tc.expectedType,
+            (rule) => rule(tc.input) && typeof rule(tc.input) === tc.expectedType,
           ),
         ).toBeTruthy()
         expect(
           loginRules.password.every(
-            rule => rule(tc.input) && typeof rule(tc.input) === tc.expectedType,
+            (rule) => rule(tc.input) && typeof rule(tc.input) === tc.expectedType,
           ),
         ).toBeTruthy()
       })
@@ -134,8 +134,8 @@ describe('Login.vue', () => {
         { input: 'NTNU', expectedValue: true },
         { input: 'NTUST', expectedValue: true },
       ]
-      testcase.forEach(tc => {
-        expect(loginRules.school.every(rule => rule(tc.input) === tc.expectedValue)).toBeTruthy()
+      testcase.forEach((tc) => {
+        expect(loginRules.school.every((rule) => rule(tc.input) === tc.expectedValue)).toBeTruthy()
       })
     })
 
@@ -232,7 +232,7 @@ describe('Login.vue', () => {
       }
       const store = new Vuex.Store({
         state,
-        mutations: { change: state => (state.auth.id = 2) },
+        mutations: { change: (state) => (state.auth.id = 2) },
       })
       const wrapper = mount(Login, { localVue, vuetify, store, mocks })
       expect(wrapper.vm.id).toEqual(1)
@@ -255,7 +255,7 @@ describe('Login.vue', () => {
       'should dispatch login with correct data after submit.',
       async (payload, loginMethod, expectedData) => {
         const actions = {
-          login: jest.fn(() => new Promise(resolve => resolve())),
+          login: jest.fn(() => new Promise((resolve) => resolve())),
         }
         const store = new Vuex.Store({ actions })
         const data = () => ({ loginForm: payload, loginMethod })
@@ -281,7 +281,7 @@ describe('Login.vue', () => {
       'should dispatch login after button being clicked, and login successfully.',
       async (redirectToPath, expectedValue) => {
         const actions = {
-          login: jest.fn(() => new Promise(resolve => resolve())),
+          login: jest.fn(() => new Promise((resolve) => resolve())),
         }
         const store = new Vuex.Store({ actions })
         const data = () => ({ loginForm: validLoginForm })
@@ -324,21 +324,24 @@ describe('Login.vue', () => {
       },
     )
 
-    it('should dispatch login after button being clicked, and login failed with unknown error.', async () => {
-      const actions = {
-        login: jest.fn(() => new Promise((_, reject) => reject({}))),
-      }
-      const store = new Vuex.Store({ actions })
-      const data = () => ({ loginForm: validLoginForm })
-      const wrapper = mount(Login, { localVue, vuetify, store, mocks, data })
-      expect(wrapper.vm.$data.errorMsg).toEqual('')
-      await wrapper.find(loginBtnId).trigger('click')
-      expect(actions.login).toHaveBeenCalled()
-      expect(wrapper.vm.$data.isLoading).toEqual(true)
-      await flushPromises()
-      expect(wrapper.vm.$data.isLoading).toEqual(false)
-      expect(wrapper.vm.$data.errorMsg).toEqual('登入失敗：系統異常，請洽管理員')
-    })
+    it(
+      'should dispatch login after button being clicked, and login failed with unknown error.',
+      async () => {
+        const actions = {
+          login: jest.fn(() => new Promise((_, reject) => reject({}))),
+        }
+        const store = new Vuex.Store({ actions })
+        const data = () => ({ loginForm: validLoginForm })
+        const wrapper = mount(Login, { localVue, vuetify, store, mocks, data })
+        expect(wrapper.vm.$data.errorMsg).toEqual('')
+        await wrapper.find(loginBtnId).trigger('click')
+        expect(actions.login).toHaveBeenCalled()
+        expect(wrapper.vm.$data.isLoading).toEqual(true)
+        await flushPromises()
+        expect(wrapper.vm.$data.isLoading).toEqual(false)
+        expect(wrapper.vm.$data.errorMsg).toEqual('登入失敗：系統異常，請洽管理員')
+      },
+    )
 
     it('should not dispatch login with invalid form.', async () => {
       const actions = { login: jest.fn() }

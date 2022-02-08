@@ -1,33 +1,39 @@
 <template>
   <v-fade-transition>
     <Spinner v-if="isLoading" />
-    <div class="pa-4" v-else>
-      <Problem v-if="prob" :prob="prob" />
+    <div
+      v-else
+      class="pa-4"
+    >
+      <Problem
+        v-if="prob"
+        :prob="prob"
+      />
       <v-divider />
       <div v-show="!floor">
         <CommentList
           :comments="comments"
-          :isAllowMultipleComments="prob && prob.allowMultipleComments"
+          :is-allow-multiple-comments="prob && prob.allowMultipleComments"
           @change-filtered-comments="comments => (filteredComments = comments)"
         />
       </div>
       <NewComment
         v-if="floor && String(floor) === 'new'"
-        :defaultCode="prob && prob.defaultCode"
-        :testResult="testResult['new']"
+        :default-code="prob && prob.defaultCode"
+        :test-result="testResult['new']"
         @fetch-test-submission="fetchTestSubmission"
         @submit-test-submission="submitTestSubmission"
         @submit-new-comment="submitNewComment"
       />
       <CommentDetail
         v-else-if="floor && selectedComment.data"
-        :previousFloor="previousFloor"
-        :nextFloor="nextFloor"
+        :previous-floor="previousFloor"
+        :next-floor="nextFloor"
         :comment="selectedComment.data"
-        :defaultCode="prob && prob.defaultCode"
-        :testResult="testResult['detail']"
-        :historySubmissions="historySubmissions"
-        :isEditing.sync="isEditing"
+        :default-code="prob && prob.defaultCode"
+        :test-result="testResult['detail']"
+        :history-submissions="historySubmissions"
+        :is-editing.sync="isEditing"
         @fetch-submission="fetchSubmission"
         @fetch-test-submission="fetchTestSubmission"
         @submit-test-submission="submitTestSubmission"
@@ -47,19 +53,19 @@
 </template>
 
 <script>
-import Problem from '@/components/Course/Problem/Problem'
-import CommentList from '@/components/Course/Problem/CommentList'
-import CommentDetail from '@/components/Course/Problem/CommentDetail'
-import NewComment from '@/components/Course/Problem/NewComment'
 import { mapActions, mapGetters } from 'vuex'
 import { ActionTypes } from '@/store/action-types'
 import { GetterTypes } from '@/store/getter-types'
-import Spinner from '@/components/UI/Spinner'
 
 export default {
   name: 'CourseProblem',
 
-  components: { Problem, CommentList, CommentDetail, NewComment, Spinner },
+  beforeRouteUpdate(to, from, next) {
+    this.confirmLeave(to, from, next)
+  },
+  beforeRouteLeave(to, from, next) {
+    this.confirmLeave(to, from, next)
+  },
 
   data: () => ({
     prob: null,
@@ -84,21 +90,21 @@ export default {
       return Number(this.$route.params.pid)
     },
     selectedComment() {
-      const idx = this.filteredComments.findIndex(c => String(c.floor) === String(this.floor))
+      const idx = this.filteredComments.findIndex((c) => String(c.floor) === String(this.floor))
       if (idx === -1) return { data: null, index: null }
       return { data: this.filteredComments[idx], index: idx }
     },
     previousFloor() {
       if (this.selectedComment.index === null) return null
-      return this.selectedComment.index === 0
-        ? null
-        : this.filteredComments[this.selectedComment.index - 1].floor
+      return this.selectedComment.index === 0 ?
+        null :
+        this.filteredComments[this.selectedComment.index - 1].floor
     },
     nextFloor() {
       if (this.selectedComment.index === null) return null
-      return this.selectedComment.index === this.filteredComments.length - 1
-        ? null
-        : this.filteredComments[this.selectedComment.index + 1].floor
+      return this.selectedComment.index === this.filteredComments.length - 1 ?
+        null :
+        this.filteredComments[this.selectedComment.index + 1].floor
     },
     floor() {
       return this.$route.query.floor
@@ -163,7 +169,7 @@ export default {
       this.getComments(this.prob.comments)
     },
     fetchTestSubmission(source) {
-      this.$agent.Submission.get(this.testResultSubmissionId).then(res => {
+      this.$agent.Submission.get(this.testResultSubmissionId).then((res) => {
         this.testResult[source] = res.data.data
       })
     },
@@ -173,7 +179,7 @@ export default {
         const { data } = await this.$agent.Submission.createTest(body)
         const { submissionId } = data.data
         this.testResultSubmissionId = submissionId
-        this.$agent.Submission.get(submissionId).then(res => {
+        this.$agent.Submission.get(submissionId).then((res) => {
           this.testResult[source] = res.data.data
         })
       } catch (error) {
@@ -193,13 +199,16 @@ export default {
       }
     },
     getSubmissions(cid) {
-      const comment = this.comments.find(comment => comment.id === cid)
-      Promise.all(comment.submissions.map(sid => this.$agent.Submission.get(sid))).then(resp => {
-        this.historySubmissions = resp.map((res, index) => ({
-          ...res.data.data,
-          id: comment.submissions[index],
-        }))
-      })
+      const comment = this.comments.find((comment) => comment.id === cid)
+      Promise.all(
+        comment.submissions.map((sid) => this.$agent.Submission.get(sid)))
+        .then((resp) => {
+          this.historySubmissions = resp.map((res, index) => ({
+            ...res.data.data,
+            id: comment.submissions[index],
+          }))
+        },
+        )
     },
     async gradeSubmission(sid, value, cid) {
       try {
@@ -219,7 +228,7 @@ export default {
         this.$alertSuccess('新增創作成功。')
         await this.getProblem(this.pid)
         this.$nextTick(() => {
-          const { floor } = this.comments.find(comment => comment.id === data.data.id)
+          const { floor } = this.comments.find((comment) => comment.id === data.data.id)
           this.$router.push({ query: { floor }, params: { noconfirm: true } })
         })
       } catch (error) {
@@ -332,12 +341,6 @@ export default {
         next()
       }
     },
-  },
-  beforeRouteUpdate(to, from, next) {
-    this.confirmLeave(to, from, next)
-  },
-  beforeRouteLeave(to, from, next) {
-    this.confirmLeave(to, from, next)
   },
 
   sockets: {

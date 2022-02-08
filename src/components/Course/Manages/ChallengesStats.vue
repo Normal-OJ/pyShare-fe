@@ -1,11 +1,14 @@
 <template>
-  <v-dialog v-if="data.commentId" v-model="dialog">
-    <template v-slot:activator="{ on, attrs }">
+  <v-dialog
+    v-if="data.commentId"
+    v-model="dialog"
+  >
+    <template #activator="{ on, attrs }">
       <div
-        v-on="on"
         v-bind="attrs"
         class="d-flex justify-center align-center"
         :style="{ height: '100%', backgroundColor: cellColor }"
+        v-on="on"
       >
         <pre>{{ data.tryCount }}</pre>
       </div>
@@ -14,20 +17,23 @@
       <v-card-title>
         <div>{{ user.username }}{{ `(${user.displayName})` }} - {{ pid }}</div>
         <v-spacer />
-        <v-btn icon @click="dialog = false">
+        <v-btn
+          icon
+          @click="dialog = false"
+        >
           <v-icon>mdi-close</v-icon>
         </v-btn>
       </v-card-title>
-      <ChallengeHistory v-if="comment" :comment="comment" />
+      <ChallengeHistory
+        v-if="comment"
+        :comment="comment"
+      />
       <Spinner v-else />
     </v-card>
   </v-dialog>
 </template>
 
 <script>
-import ChallengeHistory from '../Challenge/ChallengeHistory.vue'
-import Spinner from '@/components/UI/Spinner.vue'
-
 export default {
   /**
    * data: {
@@ -37,7 +43,6 @@ export default {
    * }
    */
   props: ['user', 'pid', 'data'],
-  components: { ChallengeHistory, Spinner },
   data: () => ({
     isLoading: true,
     dialog: false,
@@ -59,7 +64,7 @@ export default {
     async getComment() {
       if (!this.data.commentId) return
       this.$agent.Comment.get(this.data.commentId)
-        .then(resp => (this.comment = resp.data.data))
+        .then((resp) => (this.comment = resp.data.data))
         .finally(() => (this.isLoading = false))
     },
   },

@@ -5,6 +5,7 @@ import envCompatible from 'vite-plugin-env-compatible'
 import Components from 'unplugin-vue-components/vite'
 import { VuetifyResolver } from 'unplugin-vue-components/resolvers'
 import path from 'path'
+import monacoEditorPlugin from 'vite-plugin-monaco-editor'
 
 const proxyToProd = {
   '/api': 'https://pyshare.noj.tw',
@@ -54,6 +55,7 @@ export default ({ mode }) => {
       eslintPlugin(),
       // fix .env file
       envCompatible(),
+      monacoEditorPlugin(),
     ],
     css: {
       // https://vitejs.dev/config/#css-preprocessoroptions

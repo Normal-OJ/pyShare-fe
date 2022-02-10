@@ -59,6 +59,7 @@
 </template>
 
 <script>
+import * as monaco from 'monaco-editor'
 import MonacoEditor from 'vue-monaco'
 
 export default {

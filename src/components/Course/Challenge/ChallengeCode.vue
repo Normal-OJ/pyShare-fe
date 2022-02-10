@@ -1,10 +1,7 @@
 <template>
   <div>
     <div class="mt-4 d-flex flex-column">
-      <CodeEditor
-        v-model="code"
-        :height="200"
-      >
+      <CodeEditor v-model="code">
         <div class="d-flex pb-1">
           <v-tooltip bottom>
             <template #activator="{ on, attr }">

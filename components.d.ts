@@ -86,6 +86,7 @@ declare module 'vue' {
     VDialog: typeof import('vuetify/lib')['VDialog']
     VDivider: typeof import('vuetify/lib')['VDivider']
     VFadeTransition: typeof import('vuetify/lib')['VFadeTransition']
+    VFileInput: typeof import('vuetify/lib')['VFileInput']
     VForm: typeof import('vuetify/lib')['VForm']
     VHover: typeof import('vuetify/lib')['VHover']
     VIcon: typeof import('vuetify/lib')['VIcon']

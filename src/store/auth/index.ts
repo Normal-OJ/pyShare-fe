@@ -22,9 +22,6 @@ const getters = <GetterTree<State, RootState>>{
       md5: state.md5,
     }
   },
-  [GetterTypes.IS_AUTHENTICATED](state) {
-    return state.isAuthenticated
-  },
 }
 
 const actions = <ActionTree<State, RootState>>{
@@ -49,7 +46,7 @@ const actions = <ActionTree<State, RootState>>{
    */
   async [ActionTypes.GET_JWT]({ commit }) {
     if (!getJwt()) {
-      commit(MutationTypes.LOGOUT)
+      commit(MutationTypes.SET_IS_VISITOR)
       return
     }
     try {
@@ -57,7 +54,7 @@ const actions = <ActionTree<State, RootState>>{
       commit(MutationTypes.SET_JWT)
     } catch (error) {
       console.log('[vuex/auth/getJwt] error', error)
-      commit(MutationTypes.LOGOUT)
+      commit(MutationTypes.SET_IS_SHOW_LOGOUT_MODAL, true)
     }
   },
 }
@@ -81,8 +78,8 @@ const mutations = <MutationTree<State>>{
   [MutationTypes.SET_IS_SHOW_LOGOUT_MODAL](state, payload: boolean) {
     state.isShowLogoutModal = payload
   },
-  [MutationTypes.LOGOUT](state) {
-    Object.assign(state, initialState)
+  [MutationTypes.SET_IS_VISITOR](state) {
+    state.role = 3
   },
 }
 

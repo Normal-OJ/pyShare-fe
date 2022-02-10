@@ -37,7 +37,7 @@
             </tr>
             <tr>
               <td class="font-weight-medium">
-                課程狀態
+                課程權限
               </td>
               <td>
                 {{ COURSE_STATUS_LABEL[`${info.status}`] }}

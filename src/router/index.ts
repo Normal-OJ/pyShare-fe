@@ -3,7 +3,6 @@ import VueRouter, { Route, RouteConfig } from 'vue-router'
 import Home from '../views/Home/Home.vue'
 import store from '../store'
 import { ActionTypes } from '../store/action-types'
-import { getJwt } from '../lib/jwt'
 import { GetterTypes } from '../store/getter-types'
 
 Vue.use(VueRouter)
@@ -28,9 +27,10 @@ const routes: RouteConfig[] = [
       isAllowGuest: true,
     },
     beforeEnter: (to, from, next) => {
-      const jwt = getJwt()
-      if (jwt && jwt.isAuthenticated && jwt.id) {
-        next({ name: 'profile', params: { id: jwt.id } })
+      const isAuthenticated = store.getters[GetterTypes.IS_AUTHENTICATED]
+      const { id } = store.getters[GetterTypes.USER_INFO]
+      if (isAuthenticated && id) {
+        next({ name: 'profile', params: { id } })
       } else {
         next()
       }
@@ -306,15 +306,15 @@ const routes: RouteConfig[] = [
       },
     ],
   },
-  {
-    path: '/about',
-    name: 'about',
-    component: () => import('../views/About/About.vue'),
-    meta: {
-      isAllowGuest: true,
-      title: () => '關於平台',
-    },
-  },
+  // {
+  //   path: '/about',
+  //   name: 'about',
+  //   component: () => import('../views/About/About.vue'),
+  //   meta: {
+  //     isAllowGuest: true,
+  //     title: () => '關於平台',
+  //   },
+  // },
 ]
 
 const router = new VueRouter({
@@ -329,8 +329,8 @@ router.beforeEach((to, from, next) => {
   } else {
     document.title = 'pyShare'
   }
-  const jwt = getJwt()
-  if (!(to.meta && to.meta.isAllowGuest) && (!jwt || !jwt.isAuthenticated)) {
+  const isAuthenticated = store.getters[GetterTypes.IS_AUTHENTICATED]
+  if (!(to.meta && to.meta.isAllowGuest) && !isAuthenticated) {
     next({ name: 'login', query: { redirectToPath: to.path } })
   } else {
     next()

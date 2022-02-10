@@ -48,6 +48,15 @@
       :nav="!isMinify"
     >
       <v-list-item-group color="primary">
+        <v-list-item :to="{ name: 'courseInfo' }">
+          <v-list-item-icon>
+            <v-icon>mdi-view-compact</v-icon>
+          </v-list-item-icon>
+          <v-list-item-content>
+            <v-list-item-title>總覽</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+
         <v-list-item :to="{ name: 'courseProblems' }">
           <v-list-item-icon>
             <v-icon>mdi-view-list</v-icon>
@@ -102,19 +111,14 @@
           </v-list-item>
         </div>
 
-        <template v-for="{ title, icon, routeName } in regularItems">
-          <v-list-item
-            :key="routeName"
-            :to="{ name: routeName }"
-          >
-            <v-list-item-icon>
-              <v-icon>{{ icon }}</v-icon>
-            </v-list-item-icon>
-            <v-list-item-content>
-              <v-list-item-title>{{ title }}</v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-        </template>
+        <v-list-item :to="{ name: 'courseTasks' }">
+          <v-list-item-icon>
+            <v-icon>mdi-clipboard-list</v-icon>
+          </v-list-item-icon>
+          <v-list-item-content>
+            <v-list-item-title>任務</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
 
         <v-list-item
           v-if="canWriteCourse"
@@ -193,20 +197,6 @@ export default {
       problems: GetterTypes.PROBLEMS,
       challenges: GetterTypes.CHALLENGES,
     }),
-    regularItems() {
-      return [
-        // {
-        //   title: '任務',
-        //   icon: 'mdi-clipboard-list',
-        //   routeName: 'courseTasks',
-        // },
-        {
-          title: '總覽',
-          icon: 'mdi-view-compact',
-          routeName: 'courseInfo',
-        },
-      ]
-    },
     manageItems() {
       return [
         {

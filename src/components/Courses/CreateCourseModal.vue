@@ -81,7 +81,7 @@
         </v-form>
 
         <div class="text-h6">
-          課程狀態
+          課程權限
         </div>
         <v-row
           justify="space-between"

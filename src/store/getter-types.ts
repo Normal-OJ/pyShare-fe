@@ -2,6 +2,7 @@ export enum GetterTypes {
   // auth module
   USERNAME = 'username',
   USER_INFO = 'userInfo',
+  IS_AUTHENTICATED = 'isAuthenticated',
 
   // course module
   COURSE_NAME = 'courseName',

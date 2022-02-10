@@ -1,10 +1,10 @@
 <template>
   <div>
-    <ReleaseNote
+    <!-- <ReleaseNote
       :releases="releases"
       :is-loading="isLoading"
     />
-    <v-divider class="mt-4" />
+    <v-divider class="mt-4" /> -->
     <MeetOurTeam />
   </div>
 </template>

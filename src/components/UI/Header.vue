@@ -33,6 +33,20 @@
           {{ label }}
         </v-btn>
       </template>
+      <v-btn
+        class="text-body-1 font-weight-medium"
+        dark
+        text
+        @click="openManual"
+      >
+        操作手冊
+        <v-icon
+          class="ml-1 pt-1"
+          small
+        >
+          mdi-open-in-new
+        </v-icon>
+      </v-btn>
     </v-toolbar-items>
 
     <v-spacer />
@@ -146,7 +160,7 @@ import { mapState } from 'vuex'
 
 const navs = [
   {
-    label: '課程',
+    label: '課程列表',
     routeName: 'courses',
   },
   {
@@ -158,10 +172,10 @@ const navs = [
     routeName: 'admin',
     authorizedRole: [ROLE.ADMIN],
   },
-  {
-    label: '關於平台',
-    routeName: 'about',
-  },
+  // {
+  //   label: '關於平台',
+  //   routeName: 'about',
+  // },
 ]
 const EMPTY_EMAIL = 'd41d8cd98f00b204e9800998ecf8427e'
 
@@ -199,6 +213,9 @@ export default {
       if (confirm('確認是否要登出？')) {
         this.$emit('logout')
       }
+    },
+    openManual() {
+      window.open('https://normal-oj.github.io/pyShare-docs/guide/', '_blank')
     },
   },
 }

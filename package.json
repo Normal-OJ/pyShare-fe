@@ -13,7 +13,7 @@
     "core-js": "^3.4.4",
     "fibers": "^4.0.2",
     "highlight.js": "^10.4.1",
-    "node-sass": "^4.13.1",
+    "node-sass": "^7.0.0",
     "tiptap": "^1.26.6",
     "tiptap-extensions": "^1.28.6",
     "vue": "^2.6.10",

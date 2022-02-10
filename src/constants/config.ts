@@ -1,5 +1,5 @@
 export default {
-  API_BASE_URL: 'http://localhost:8080/api',
+  API_BASE_URL: '/api',
   jwt: 'jwt',
   // gitlab api
   GITLAB_API_BASE_URL: 'https://gitlab.com/api/v4',

@@ -56,7 +56,7 @@
           v-model="newProb.status"
           label="顯示狀態"
           :items="status"
-          hint="設為「隱藏」則只有老師和主題作者可見"
+          hint="設為「隱藏」則只有老師可見"
           persistent-hint
           outlined
           dense

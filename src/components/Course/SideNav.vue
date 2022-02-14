@@ -200,22 +200,22 @@ export default {
     manageItems() {
       return [
         {
-          title: '管理分類',
+          title: '分類',
           icon: 'mdi-tag-multiple',
           routeName: 'courseManageTags',
         },
         {
-          title: '管理成員',
+          title: '成員',
           icon: 'mdi-account-multiple',
           routeName: 'courseManageMembers',
         },
         {
-          title: '管理主題',
+          title: '主題',
           icon: 'mdi-view-list',
           routeName: 'courseManageProblems',
         },
         {
-          title: '管理測驗',
+          title: '測驗',
           icon: 'mdi-code-tags',
           routeName: 'courseManageChallenges',
         },

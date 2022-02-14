@@ -101,12 +101,22 @@
         登入
       </v-btn>
       <div
-        style="margin-top: 100px"
+        style="margin-top: 72px"
         class="text-center"
       >
         <router-link :to="{ name: 'forgetPassword' }">
           忘記密碼
         </router-link>
+      </div>
+      <div
+        style="margin-top: 48px"
+        class="text-center"
+      >
+        <a
+          href="https://normal-oj.github.io/pyShare-docs/guide/teacher-quick-start.html"
+          target="_blank"
+          rel="noopener noreferrer"
+        >我是教師，我要申請帳號</a>
       </div>
     </v-form>
   </v-container>

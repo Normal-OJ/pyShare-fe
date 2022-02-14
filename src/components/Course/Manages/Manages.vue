@@ -45,25 +45,25 @@ export default {
   data: () => ({
     items: [
       {
-        title: '管理分類',
+        title: '分類',
         description: '在這裡管理課程中可使用的主題分類',
         icon: 'mdi-tag-multiple',
         routeName: 'courseManageTags',
       },
       {
-        title: '管理成員',
+        title: '成員',
         description: '在這裡管理課程中成員、檢視詳細資料',
         icon: 'mdi-account-multiple',
         routeName: 'courseManageMembers',
       },
       {
-        title: '管理主題',
+        title: '主題',
         description: '在這裡管理課程中的主題',
         icon: 'mdi-view-list',
         routeName: 'courseManageProblems',
       },
       {
-        title: '管理測驗',
+        title: '測驗',
         description: '在這裡管理課程中的測驗',
         icon: 'mdi-code-tags',
         routeName: 'courseManageChallenges',

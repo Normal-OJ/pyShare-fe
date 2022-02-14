@@ -74,7 +74,7 @@
               mdi-minus-circle
             </v-icon>
           </template>
-          <span>隱藏的主題</span>
+          <span>隱藏的測驗</span>
         </v-tooltip>
         <v-tooltip bottom>
           <template #activator="{ on, attrs }">
@@ -196,7 +196,7 @@
           class="d-flex flex-column align-center"
         >
           <div class="text-subtitle-1 my-8">
-            這裡還沒有任何主題，或找不到符合條件的主題
+            這裡還沒有任何測驗，或找不到符合條件的測驗
           </div>
           <v-img
             :src="require('@/assets/images/noData.svg')"

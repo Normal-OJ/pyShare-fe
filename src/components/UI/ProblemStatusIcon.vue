@@ -25,8 +25,10 @@ export default {
     },
   },
 
-  setup(props) {
-    return { v: ACCEPTANCE[props.acceptance] }
+  computed: {
+    v() {
+      return ACCEPTANCE[this.acceptance]
+    },
   },
 }
 </script>

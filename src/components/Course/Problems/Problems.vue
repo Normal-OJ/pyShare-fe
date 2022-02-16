@@ -74,6 +74,7 @@
       :items="problems"
       :search="searchText"
       :items-per-page="Number(-1)"
+      item-key="pid"
       hide-default-footer
       :loading="loading"
       :custom-sort="customSort"

@@ -131,7 +131,6 @@ export default {
       return !this.newComment.title
     },
     isTestSubmissionPending() {
-      console.log(this.testResult)
       if (!this.testResult) return false
       return !Object.keys(this.testResult).some((key) => key === 'stdout')
     },

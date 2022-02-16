@@ -180,7 +180,7 @@ export default {
       if (this.isTest) {
         return this.images.map((file) => `data:image/png;base64,${file.content}`)
       }
-      return this.images.map((filename) => `/api/submission/${this.sid}/file/${filename}`)
+      return this.images.map((filename) => this.$agent.Submission.getImageUrl(this.sid, filename))
     },
     imagesWithUrl() {
       if (this.isTest) {
@@ -190,7 +190,7 @@ export default {
         }))
       }
       return this.images.map((filename) => ({
-        url: `/api/submission/${this.sid}/file/${filename}`,
+        url: this.$agent.Submission.getImageUrl(this.sid, filename),
         filename,
       }))
     },

@@ -104,7 +104,7 @@ const Problem = {
     fetcher.get(`/problem/${id}/io`),
 
   downloadAttachment: (id: Problem.ID, filename: string): void => {
-    const url = `${config.API_BASE_URL}/problem/${id}/attachment/${filename}`
+    const url = `${config.API_BASE_URL}/problem/${id}/attachment/${encodeURIComponent(filename)}`
     openInNewTab(url)
   },
 
@@ -162,8 +162,12 @@ const Submission = {
   createTest: (body: Submission.ITestBody) => fetcher.post('/submission', body),
 
   downloadFile: (id: Submission.ID, filename: string): void => {
-    const url = `${config.API_BASE_URL}/submission/${id}/file/${filename}`
+    const url = `${config.API_BASE_URL}/submission/${id}/file/${encodeURIComponent(filename)}`
     openInNewTab(url)
+  },
+
+  getImageUrl: (id: Submission.ID, filename: string): string => {
+    return `${config.API_BASE_URL}/submission/${id}/file/${encodeURIComponent(filename)}`
   },
 }
 

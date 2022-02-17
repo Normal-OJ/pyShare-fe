@@ -148,15 +148,15 @@ const routes: RouteConfig[] = [
         },
         component: () => import('../views/Course/Tasks/SetTasks.vue'),
       },
-      {
-        path: 'manages',
-        name: 'courseManages',
-        component: () => import('../views/Course/Manages/Manages.vue'),
-        meta: {
-          detailedSideNav: true,
-          title: () => `管理 - ${store.getters[GetterTypes.COURSE_NAME]}`,
-        },
-      },
+      // {
+      //   path: 'manages',
+      //   name: 'courseManages',
+      //   component: () => import('../views/Course/Manages/Manages.vue'),
+      //   meta: {
+      //     detailedSideNav: true,
+      //     title: () => `管理 - ${store.getters[GetterTypes.COURSE_NAME]}`,
+      //   },
+      // },
       {
         path: 'manages/tags',
         name: 'courseManageTags',
@@ -175,33 +175,33 @@ const routes: RouteConfig[] = [
           title: () => `管理成員 - ${store.getters[GetterTypes.COURSE_NAME]}`,
         },
       },
-      {
-        path: 'manages/problems',
-        name: 'courseManageProblems',
-        component: () => import('../views/Course/Manages/ManageProblems.vue'),
-        meta: {
-          detailedSideNav: true,
-          title: () => `管理主體 - ${store.getters[GetterTypes.COURSE_NAME]}`,
-        },
-      },
-      {
-        path: 'manages/challenges',
-        name: 'courseManageChallenges',
-        component: () => import('../views/Course/Manages/ManageChallenges.vue'),
-        meta: {
-          detailedSideNav: true,
-          title: () => `管理測驗 - ${store.getters[GetterTypes.COURSE_NAME]}`,
-        },
-      },
-      {
-        path: 'manages/tasks',
-        name: 'courseManageTasks',
-        component: () => import('../views/Course/Manages/ManageTasks.vue'),
-        meta: {
-          detailedSideNav: true,
-          title: () => `管理任務 - ${store.getters[GetterTypes.COURSE_NAME]}`,
-        },
-      },
+      // {
+      //   path: 'manages/problems',
+      //   name: 'courseManageProblems',
+      //   component: () => import('../views/Course/Manages/ManageProblems.vue'),
+      //   meta: {
+      //     detailedSideNav: true,
+      //     title: () => `管理主體 - ${store.getters[GetterTypes.COURSE_NAME]}`,
+      //   },
+      // },
+      // {
+      //   path: 'manages/challenges',
+      //   name: 'courseManageChallenges',
+      //   component: () => import('../views/Course/Manages/ManageChallenges.vue'),
+      //   meta: {
+      //     detailedSideNav: true,
+      //     title: () => `管理測驗 - ${store.getters[GetterTypes.COURSE_NAME]}`,
+      //   },
+      // },
+      // {
+      //   path: 'manages/tasks',
+      //   name: 'courseManageTasks',
+      //   component: () => import('../views/Course/Manages/ManageTasks.vue'),
+      //   meta: {
+      //     detailedSideNav: true,
+      //     title: () => `管理任務 - ${store.getters[GetterTypes.COURSE_NAME]}`,
+      //   },
+      // },
       {
         path: 'manages/problems-stats',
         name: 'courseProblemsStats',

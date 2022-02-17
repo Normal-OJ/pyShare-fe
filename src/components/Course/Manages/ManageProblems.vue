@@ -245,11 +245,10 @@ export default {
 
   data() {
     return {
+      headers,
       searchText: '',
       selectedTags: [],
       clonePid: null,
-      isTemplate: false,
-      headers: headers,
     }
   },
 

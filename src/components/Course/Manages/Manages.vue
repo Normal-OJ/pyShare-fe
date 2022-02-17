@@ -56,18 +56,18 @@ export default {
         icon: 'mdi-account-multiple',
         routeName: 'courseManageMembers',
       },
-      {
-        title: '主題',
-        description: '在這裡管理課程中的主題',
-        icon: 'mdi-view-list',
-        routeName: 'courseManageProblems',
-      },
-      {
-        title: '測驗',
-        description: '在這裡管理課程中的測驗',
-        icon: 'mdi-code-tags',
-        routeName: 'courseManageChallenges',
-      },
+      // {
+      //   title: '主題',
+      //   description: '在這裡管理課程中的主題',
+      //   icon: 'mdi-view-list',
+      //   routeName: 'courseManageProblems',
+      // },
+      // {
+      //   title: '測驗',
+      //   description: '在這裡管理課程中的測驗',
+      //   icon: 'mdi-code-tags',
+      //   routeName: 'courseManageChallenges',
+      // },
       {
         title: '主題統計',
         description: '在這裡檢視學生的主題創作情況',

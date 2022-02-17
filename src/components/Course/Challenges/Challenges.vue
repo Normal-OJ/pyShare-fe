@@ -39,22 +39,12 @@
       </v-col>
       <v-spacer />
       <template v-if="canWriteCourse">
-        <v-btn
+        <v-switch
+          v-model="isManageEnabled"
           color="primary"
-          :to="{ name: 'courseChallengesStats' }"
           class="mr-3"
-          outlined
-        >
-          檢視測驗統計
-        </v-btn>
-        <v-btn
-          color="primary"
-          :to="{ name: 'courseManageChallenges' }"
-          class="mr-3"
-          outlined
-        >
-          管理我的測驗
-        </v-btn>
+          label="開啟管理介面"
+        />
         <v-btn
           color="success"
           :to="{ name: 'courseSetChallenges', params: { operation: 'new' } }"
@@ -85,20 +75,37 @@
         <router-link :to="{ name: 'courseChallenge', params: { pid: item.pid } }">
           {{ item.title }}
         </router-link>
-        <v-tooltip bottom>
-          <template #activator="{ on, attrs }">
-            <v-icon
-              v-if="item.status === 0"
-              class="ml-1"
-              small
-              v-bind="attrs"
-              v-on="on"
-            >
-              mdi-minus-circle
-            </v-icon>
-          </template>
-          <span>隱藏的測驗</span>
-        </v-tooltip>
+        <template v-if="item.status === 0">
+          <v-tooltip bottom>
+            <template #activator="{ on, attrs }">
+              <v-icon
+                class="ml-1"
+                small
+                v-bind="attrs"
+                v-on="on"
+              >
+                mdi-minus-circle
+              </v-icon>
+            </template>
+            <span>隱藏的測驗</span>
+          </v-tooltip>
+        </template>
+        <template v-if="canWriteCourse && item.isTemplate">
+          <v-tooltip bottom>
+            <template #activator="{ on, attrs }">
+              <v-icon
+                class="ml-2"
+                small
+                v-bind="attrs"
+                color="primary"
+                v-on="on"
+              >
+                mdi-earth
+              </v-icon>
+            </template>
+            <span>已發布於共享資源</span>
+          </v-tooltip>
+        </template>
       </template>
       <template #[`item.tags`]="{ item }">
         <ColorLabel
@@ -111,13 +118,87 @@
           @click.native="selectTag(tag)"
         />
       </template>
-      <template #[`item.creations`]="{ item }">
-        {{ item.comments.length }}
-      </template>
-      <template #[`item.author.displayName`]="{ item }">
-        <router-link :to="{ name: 'profile', params: { id: item.author.id } }">
-          {{ item.author.displayName }}
-        </router-link>
+      <template #[`item.manage`]="{ item }">
+        <v-menu
+          bottom
+          right
+        >
+          <template #activator="{ on, attrs }">
+            <v-btn
+              icon
+              v-bind="attrs"
+              class="hidden-lg-and-up"
+              v-on="on"
+            >
+              <v-icon>mdi-dots-horizontal</v-icon>
+            </v-btn>
+          </template>
+          <v-list>
+            <v-list-item
+              :to="{
+                name: 'courseSetChallenges',
+                params: { operation: 'edit' },
+                query: { pid: item.pid },
+              }"
+            >
+              <v-list-item-title>編輯</v-list-item-title>
+            </v-list-item>
+            <v-list-item @click="openCloneDialog(item.pid)">
+              <v-list-item-title>複製</v-list-item-title>
+            </v-list-item>
+            <v-list-item @click="deleteProblem(item.pid)">
+              <v-list-item-title>刪除</v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-menu>
+        <div class="hidden-md-and-down">
+          <v-btn
+            :to="{
+              name: 'courseSetChallenges',
+              params: { operation: 'edit' },
+              query: { pid: item.pid },
+            }"
+            class="mx-1"
+            color="primary"
+            small
+          >
+            <v-icon
+              class="mr-1"
+              small
+            >
+              mdi-pencil
+            </v-icon>
+            <span>編輯</span>
+          </v-btn>
+          <v-btn
+            class="mx-1"
+            color="primary"
+            small
+            @click="openCloneDialog(item.pid)"
+          >
+            <v-icon
+              class="mr-1"
+              small
+            >
+              mdi-content-copy
+            </v-icon>
+            <span>複製</span>
+          </v-btn>
+          <v-btn
+            class="mx-1"
+            color="error"
+            small
+            @click="deleteProblem(item.pid)"
+          >
+            <v-icon
+              class="mr-1"
+              small
+            >
+              mdi-trash-can
+            </v-icon>
+            <span>刪除</span>
+          </v-btn>
+        </div>
       </template>
       <template
         v-for="slotName in ['no-data', 'no-results']"
@@ -127,28 +208,45 @@
           :key="slotName"
           class="d-flex flex-column align-center"
         >
-          <div class="text-subtitle-1 my-8">
-            這裡還沒有任何測驗，或找不到符合條件的測驗
-          </div>
-          <v-img
-            :src="require('@/assets/images/noData.svg')"
-            max-width="600"
-            contain
-          />
+          <template v-if="error">
+            <div class="text-subtitle-1 my-8">
+              載入測驗失敗
+            </div>
+            <v-btn
+              color="error"
+              text
+              @click="$emit('refetch-problems')"
+            >
+              重試
+            </v-btn>
+          </template>
+          <template v-else>
+            <div class="text-subtitle-1 my-8">
+              這裡還沒有任何測驗，或找不到符合條件的測驗
+            </div>
+            <v-img
+              :src="require('@/assets/images/noData.svg')"
+              max-width="600"
+              contain
+            />
+          </template>
         </div>
       </template>
     </v-data-table>
+
+    <CloneProblemModal
+      :is-open="!!clonePid"
+      :clone-pid="clonePid"
+      label="測驗"
+      :default-course-id="$route.params.id"
+      @success="handleCloneSuccess"
+      @close="clonePid = null"
+    />
   </v-container>
 </template>
 
 <script>
 import { canWriteCourseMixin } from '@/lib/permissionMixin'
-
-const headers = [
-  { text: '題號', value: 'pid' },
-  { text: '標題', value: 'title', sortable: false },
-  { text: '分類', value: 'tags', sortable: false },
-]
 
 export default {
   name: 'Challenges',
@@ -168,13 +266,29 @@ export default {
       type: Boolean,
       required: true,
     },
+    error: {
+      type: Boolean,
+      required: true,
+    },
   },
 
   data: () => ({
-    headers,
     searchText: '',
+    clonePid: null,
     selectedTags: [],
+    isManageEnabled: false,
   }),
+
+  computed: {
+    headers() {
+      return [
+        { text: '題號', value: 'pid' },
+        { text: '標題', value: 'title', sortable: false },
+        { text: '分類', value: 'tags', sortable: false },
+        ...(this.isManageEnabled ? [{ text: '管理', value: 'manage', sortable: false }] : []),
+      ]
+    },
+  },
 
   watch: {
     selectedTags() {
@@ -191,6 +305,19 @@ export default {
     },
     unselectTag(tag) {
       this.selectedTags = this.selectedTags.filter((t) => t !== tag)
+    },
+    openCloneDialog(pid) {
+      this.clonePid = pid
+    },
+    handleCloneSuccess() {
+      this.$emit('refetch-problems')
+      this.clonePid = null
+    },
+    deleteProblem(pid) {
+      const result = window.confirm('確認要刪除嗎？')
+      if (result) {
+        this.$emit('delete-problem', pid)
+      }
     },
   },
 }

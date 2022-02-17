@@ -1,9 +1,14 @@
 <template>
   <Problems
-    :problems="problems"
+    :problems="isManageEnabled ? problemsOfMine : problems"
     :tags="tags"
     :loading="isLoading"
+    :error="isError"
+    :is-manage-enabled="isManageEnabled"
+    @update:isManageEnabled="(newVal) => isManageEnabled = newVal"
     @get-problems-by-tags="getProblemsByTags"
+    @refetch-problems="fetchData"
+    @delete-problem="deleteProblem"
   />
 </template>
 
@@ -19,6 +24,8 @@ export default {
 
   data: () => ({
     isLoading: true,
+    isError: false,
+    isManageEnabled: false,
   }),
 
   computed: {
@@ -27,6 +34,7 @@ export default {
     }),
     ...mapGetters({
       problems: GetterTypes.PROBLEMS,
+      problemsOfMine: GetterTypes.PROBLEMS_OF_MINE,
     }),
     courseId() {
       return this.$route.params.id
@@ -37,18 +45,36 @@ export default {
   },
 
   created() {
-    Promise.all([this.getProblems(this.paramsWithCourse), this.getTags(this.courseId)]).then(
-      () => (this.isLoading = false),
-    )
+    this.fetchData()
   },
 
   methods: {
+    async fetchData() {
+      this.isLoading = true
+      Promise.all([this.getProblems(this.paramsWithCourse), this.getTags(this.courseId)])
+        .catch(() => {
+          this.isError = true
+        })
+        .finally(() => {
+          this.isLoading = false
+        })
+    },
     ...mapActions({
       getProblems: ActionTypes.GET_PROBLEMS,
       getTags: ActionTypes.GET_COURSE_TAGS,
     }),
     getProblemsByTags(paramsWithTags) {
       this.getProblems({ ...paramsWithTags, course: this.courseId })
+    },
+    async deleteProblem(pid) {
+      try {
+        await this.$agent.Problem.delete(pid)
+        this.fetchData()
+        this.$alertSuccess('刪除題目成功。')
+      } catch (error) {
+        this.$alertFail('刪除題目失敗。')
+        this.$rollbar.error('[views/ManageProblems/deleteProblem]', error)
+      }
     },
   },
 }

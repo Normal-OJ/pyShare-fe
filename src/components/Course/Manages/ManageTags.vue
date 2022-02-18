@@ -190,11 +190,11 @@ export default {
 
   computed: {
     candidateProblemTags() {
-      if (!this.problemTags) return []
+      if (!this.problemTags || !this.courseProblemTags) return []
       return this.problemTags.filter((tag) => !this.courseProblemTags.includes(tag))
     },
     candidateChallengeTags() {
-      if (!this.challengeTags) return []
+      if (!this.challengeTags || !this.courseChallengeTags) return []
       return this.challengeTags.filter((tag) => !this.courseChallengeTags.includes(tag))
     },
   },

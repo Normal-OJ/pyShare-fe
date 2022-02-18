@@ -120,20 +120,22 @@
           </v-list-item-content>
         </v-list-item>
 
-        <v-divider class="mt-2 mb-2" />
+        <template v-if="canWriteCourse">
+          <v-divider class="mt-2 mb-2" />
 
-        <v-list-item
-          v-for="{ title, icon, routeName } in manageItems"
-          :key="routeName"
-          :to="{ name: routeName }"
-        >
-          <v-list-item-icon>
-            <v-icon>{{ icon }}</v-icon>
-          </v-list-item-icon>
-          <v-list-item-content>
-            <v-list-item-title>{{ title }}</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
+          <v-list-item
+            v-for="{ title, icon, routeName } in manageItems"
+            :key="routeName"
+            :to="{ name: routeName }"
+          >
+            <v-list-item-icon>
+              <v-icon>{{ icon }}</v-icon>
+            </v-list-item-icon>
+            <v-list-item-content>
+              <v-list-item-title>{{ title }}</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </template>
       </v-list-item-group>
     </v-list>
 

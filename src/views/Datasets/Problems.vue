@@ -215,6 +215,7 @@
 
 <script>
 import { mapState } from 'vuex'
+import { TAG_CATES } from '@/constants/tag'
 
 export default {
   data: () => ({
@@ -288,7 +289,7 @@ export default {
     },
     async getTags() {
       try {
-        const { data } = await this.$agent.Tag.getList()
+        const { data } = await this.$agent.Tag.getList({ category: TAG_CATES.NORMAL_PROBLEM })
         this.tags = data.data
       } catch (error) {
         this.$rollbar.error('[views/Datasets/Problems/getTags]', error)

@@ -323,6 +323,7 @@ import CreateDatasetModel from '@/components/Datasets/CreateDatasetModal.vue'
 import { formatBytes } from '@/lib/utils'
 import { mapState } from 'vuex'
 import { ROLE } from '@/constants/auth'
+import { TAG_CATES } from '@/constants/tag'
 
 export default {
   components: { CreateDatasetModel },
@@ -397,7 +398,7 @@ export default {
     },
     async getTags() {
       try {
-        const { data } = await this.$agent.Tag.getList()
+        const { data } = await this.$agent.Tag.getList({ category: TAG_CATES.NORMAL_PROBLEM })
         this.tags = data.data
       } catch (error) {
         this.$rollbar('[views/Attachments/getTags]', error)

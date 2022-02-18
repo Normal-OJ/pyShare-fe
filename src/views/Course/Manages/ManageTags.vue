@@ -1,97 +1,81 @@
 <template>
   <ManageTags
-    :all-tags="allTags || []"
-    :removables="removables"
+    :course-problem-tags="courseProblemTags"
+    :course-challenge-tags="courseChallengeTags"
+    :problem-tags="problemTags"
+    :challenge-tags="challengeTags"
     :error-msg="errorMsg"
-    :course-tags="courseTags || []"
     @submit-patch-tags="submitPatchTags"
     @submit-new-tags="submitNewTags"
-    @delete-tags="deleteTags"
   />
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex'
-import { ActionTypes } from '@/store/action-types'
+import useSWRV from 'swrv'
+import { fetcherWithUnpackedResponse } from '@/api/agent'
+import { TAG_CATES } from '@/constants/tag'
+import { computed } from '@vue/composition-api'
 
 export default {
-  data: () => ({
-    allTags: [],
-    removables: null,
-    errorMsg: '',
-  }),
+  setup(props, context) {
+    const route = context.root.$route
+    const agent = context.root.$agent
+    const courseId = route.params.id
 
-  computed: {
-    ...mapState({
-      courseTags: (state) => state.course.courseTags,
-    }),
-    courseId() {
-      return this.$route.params.id
-    },
-  },
+    const { data: courseProblemTags, error: e1, mutate: refetchCourseProblemTags } = useSWRV(
+      `/tag?course=${courseId}&category=${TAG_CATES.NORMAL_PROBLEM}`,
+      fetcherWithUnpackedResponse,
+    )
 
-  created() {
-    this.getAllTags()
-    this.getCourseTags(this.courseId)
-  },
+    const { data: courseChallengeTags, error: e2, mutate: refetchCourseChallengeTags } = useSWRV(
+      `/tag?course=${courseId}&category=${TAG_CATES.OJ_PROBLEM}`,
+      fetcherWithUnpackedResponse,
+    )
 
-  methods: {
-    ...mapActions({
-      getCourseTags: ActionTypes.GET_COURSE_TAGS,
-    }),
-    getAllTags() {
-      this.$agent.Tag.getList()
-        .then((resp) => {
-          this.allTags = resp.data.data
-          return this.$agent.Tag.check({ tags: this.allTags })
-        })
-        .then((resp) => {
-          this.removables = resp.data.data
-        })
-        .catch((error) => {
-          console.log('[views/ManageTags/getAllTags] error', error)
-          this.errorMsg = '管理分類出現未知錯誤，請稍後再試或聯絡開發人員。'
+    const { data: problemTags, error: e3 } = useSWRV(
+      `/tag?category=${TAG_CATES.NORMAL_PROBLEM}`,
+      fetcherWithUnpackedResponse,
+    )
+
+    const { data: challengeTags, error: e4 } = useSWRV(
+      `/tag?category=${TAG_CATES.OJ_PROBLEM}`,
+      fetcherWithUnpackedResponse,
+    )
+
+    const errorMsg = computed(() => {
+      if (e1 || e2 || e3 || e4) return '管理分類出現未知錯誤，請稍後再試或聯絡開發人員。'
+      return ''
+    })
+
+    return {
+      courseProblemTags,
+      courseChallengeTags,
+      problemTags,
+      challengeTags,
+      errorMsg,
+      submitPatchTags: async (body) => {
+        try {
+          await agent.Course.patchTags(courseId, body)
+          if (body.category === TAG_CATES.NORMAL_PROBLEM) refetchCourseProblemTags()
+          else refetchCourseChallengeTags()
+          context.root.$alertSuccess('新增分類成功。')
+        } catch (error) {
+          console.log('[components/ManageTags/submitPatchTags] error', error)
+          context.root.$alertFail('新增分類失敗。')
           throw error
-        })
-    },
-    async submitPatchTags(body) {
-      try {
-        await this.$agent.Course.patchTags(this.courseId, body)
-        this.getCourseTags(this.courseId)
-        this.getAllTags(this.courseId)
-        this.$alertSuccess('編輯分類成功。')
-      } catch (error) {
-        console.log('[components/ManageTags/submitPatchTags] error', error)
-        this.$alertFail('編輯分類失敗。')
-        throw error
-      }
-    },
-    async submitNewTags(tags, resolve, reject) {
-      try {
-        await this.$agent.Tag.create({ tags })
-        resolve()
-        this.getAllTags(this.courseId)
-        this.$alertSuccess('新增分類成功。')
-      } catch (error) {
-        console.log('[views/ManageTags/submitNewTags] error', error)
-        reject()
-        this.$alertFail('新增分類失敗。')
-        throw error
-      }
-    },
-    async deleteTags(tags, resolve, reject) {
-      try {
-        await this.$agent.Tag.delete({ tags })
-        this.getAllTags(this.courseId)
-        this.$alertSuccess('刪除分類成功。')
-        resolve()
-      } catch (error) {
-        console.log('[views/ManageTags/deleteTags] error', error)
-        this.$alertFail('刪除分類失敗。')
-        reject()
-        throw error
-      }
-    },
+        }
+      },
+      submitNewTags: async (body, resolve) => {
+        try {
+          await agent.Tag.create(body)
+          resolve()
+        } catch (error) {
+          console.log('[views/ManageTags/submitNewTags] error', error)
+          context.root.$alertFail('創建新分類失敗。')
+          throw error
+        }
+      },
+    }
   },
 }
 </script>

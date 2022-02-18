@@ -14,7 +14,7 @@
         <v-icon class="mr-1">
           mdi-tag-plus
         </v-icon>
-        新增分類
+        {{ title }}
       </v-btn>
     </template>
 
@@ -27,7 +27,7 @@
         <v-icon class="mr-1">
           mdi-tag-plus
         </v-icon>
-        <v-toolbar-title>新增分類</v-toolbar-title>
+        <v-toolbar-title>{{ title }}</v-toolbar-title>
         <v-spacer />
         <v-toolbar-items>
           <v-btn
@@ -41,15 +41,18 @@
       </v-toolbar>
 
       <v-card-text class="mt-8">
+        <div>選單已有一些建議的分類，您也可以自行新增分類，輸入名稱後按下 Enter 鍵即可。</div>
+
+        <div class="mb-4">
+          一次可以加入多個分類，最後按下右下角的確認後才會儲存您新增的分類。
+        </div>
+
         <v-combobox
           v-model="newTags"
           label="輸入分類名稱"
-          multiple="multiple"
-          chips="chips"
-          dense
-          hint="（可輸入多個，按下 Enter 來輸入下一個分類）"
-          persistent-hint
-          append-icon=""
+          multiple
+          chips
+          :items="items"
         >
           <template #selection="{ item }">
             <ColorLabel
@@ -81,6 +84,17 @@
 export default {
   name: 'CreateTagModal',
 
+  props: {
+    title: {
+      type: String,
+      default: '新增分類',
+    },
+    items: {
+      type: Array,
+      default: () => [],
+    },
+  },
+
   data: () => ({
     newTags: [],
     dialog: false,
@@ -97,12 +111,16 @@ export default {
       this.newTags = this.newTags.filter((tag) => tag !== removedTag)
     },
     submit() {
-      new Promise((resolve, reject) =>
-        this.$emit('submit-new-tags', this.newTags, resolve, reject),
-      ).then(() => {
-        this.dialog = false
-        this.newTags = []
-      })
+      this.$emit(
+        'submit', {
+          existTags: this.newTags.filter((tag) => this.items.includes(tag)),
+          newTags: this.newTags.filter((tag) => !this.items.includes(tag)),
+        },
+        () => {
+          this.dialog = false
+          this.newTags = []
+        },
+      )
     },
     close() {
       if (this.newTags.length > 0) {

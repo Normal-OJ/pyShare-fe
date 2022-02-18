@@ -65,9 +65,9 @@ const actions = <ActionTree<State, RootState>>{
       throw error
     }
   },
-  async [ActionTypes.GET_COURSE_TAGS]({ commit }, id) {
+  async [ActionTypes.GET_COURSE_TAGS]({ commit }, payload: Tag.IQueryOption) {
     try {
-      const { data } = await agent.Tag.getList({ course: id })
+      const { data } = await agent.Tag.getList(payload)
       commit(MutationTypes.SET_COURSE_TAGS, data.data)
     } catch (error) {
       console.log('[vuex/course/getCourseTags] error', error)

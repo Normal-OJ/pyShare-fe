@@ -2,7 +2,7 @@ FROM node:14-alpine AS builder
 
 # make the 'app' folder the current working directory
 WORKDIR /app
-COPY package*.json .
+COPY package*.json ./
 RUN npm install 
 # copy project files and folders to the current working directory (i.e. 'app' folder)
 COPY . .

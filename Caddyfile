@@ -1,0 +1,14 @@
+{
+  auto_https off
+  admin off
+}
+
+:80
+
+file_server
+log
+
+header {
+  -Server
+  X-Frame-Options DENY
+}

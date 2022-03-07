@@ -3,8 +3,8 @@
     v-if="prob"
     :prob="prob"
     :tags="courseTags"
-    :isEdit="isEdit"
-    :isLoading="isLoading"
+    :is-edit="isEdit"
+    :is-loading="isLoading"
     @submit="handleSubmit"
     @delete-problem="deleteProblem"
   />
@@ -12,8 +12,6 @@
 </template>
 
 <script>
-import Spinner from '@/components/UI/Spinner'
-import SetChallenges from '@/components/Course/Challenges/SetChallenges'
 import { mapState } from 'vuex'
 
 const OPERATION = {
@@ -37,7 +35,17 @@ const initialProb = {
 }
 
 export default {
-  components: { Spinner, SetChallenges },
+  beforeRouteLeave(to, from, next) {
+    if (this.submitSuccess) next()
+    else {
+      const answer = window.confirm('確定要離開嗎？未完成的編輯將不會儲存。')
+      if (answer) {
+        next()
+      } else {
+        next(false)
+      }
+    }
+  },
 
   data: () => ({
     submitSuccess: false,
@@ -47,7 +55,7 @@ export default {
 
   computed: {
     ...mapState({
-      courseTags: state => state.course.courseTags,
+      courseTags: (state) => state.course.courseTags,
     }),
     isEdit() {
       return this.$route.params.operation === OPERATION.EDIT
@@ -96,15 +104,15 @@ export default {
         const pid = this.isEdit ? this.pid : result.data.data.pid
         this.getProblem(pid)
         this.$router.push(
-          !this.isEdit
-            ? {
-                name: 'courseChallenges',
-                params: { id: this.courseId },
-              }
-            : {
-                name: 'courseChallenge',
-                params: { pid: pid },
-              },
+          !this.isEdit ?
+            {
+              name: 'courseChallenges',
+              params: { id: this.courseId },
+            } :
+            {
+              name: 'courseChallenge',
+              params: { pid: pid },
+            },
         )
       } catch (error) {
         this.$alertFail(`${this.isEdit ? '更新' : '新增'}測驗內容失敗。`)
@@ -124,18 +132,6 @@ export default {
         this.$rollbar.error('[views/SetChallenges/deleteProblem]', error)
       }
     },
-  },
-
-  beforeRouteLeave(to, from, next) {
-    if (this.submitSuccess) next()
-    else {
-      const answer = window.confirm('確定要離開嗎？未完成的編輯將不會儲存。')
-      if (answer) {
-        next()
-      } else {
-        next(false)
-      }
-    }
   },
 }
 </script>

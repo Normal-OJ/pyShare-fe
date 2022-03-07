@@ -1,8 +1,20 @@
 <template>
-  <v-container fluid style="padding-bottom: 100px">
-    <div class="text-h5 mb-2">公開資料集</div>
-    <v-row no-gutters align="center">
-      <v-col cols="12" md="6" class="d-flex">
+  <v-container
+    fluid
+    style="padding-bottom: 100px"
+  >
+    <div class="text-h5 mb-2">
+      公開資料集
+    </div>
+    <v-row
+      no-gutters
+      align="center"
+    >
+      <v-col
+        cols="12"
+        md="6"
+        class="d-flex"
+      >
         <v-select
           v-model="selectedTags"
           class="mr-3"
@@ -14,8 +26,12 @@
           multiple
           dense
         >
-          <template v-slot:selection="{ item }">
-            <ColorLabel :tag="item" small class="mt-2 mr-1" />
+          <template #selection="{ item }">
+            <ColorLabel
+              :tag="item"
+              small
+              class="mt-2 mr-1"
+            />
           </template>
         </v-select>
         <v-text-field
@@ -30,8 +46,15 @@
       </v-col>
       <v-spacer />
       <template v-if="canCreateAttachment">
-        <v-switch v-model="onlyShowMine" label="顯示我上傳的資料集" class="mr-3" />
-        <CreateDatasetModel :tags="tags" @submit="createAttachment" />
+        <v-switch
+          v-model="onlyShowMine"
+          label="顯示我上傳的資料集"
+          class="mr-3"
+        />
+        <CreateDatasetModel
+          :tags="tags"
+          @submit="createAttachment"
+        />
       </template>
     </v-row>
 
@@ -47,11 +70,19 @@
       show-select
       show-expand
     >
-      <template v-slot:item.size="{ item }">
-        <div class="d-flex align-center py-3" style="max-width: 400px; word-break: break-all">
-          <Gravatar :size="40" :md5="item.author.md5" />
+      <template #item.size="{ item }">
+        <div
+          class="d-flex align-center py-3"
+          style="max-width: 400px; word-break: break-all"
+        >
+          <Gravatar
+            :size="40"
+            :md5="item.author.md5"
+          />
           <div class="ml-4 d-flex flex-column">
-            <div class="d-flex text-h6">{{ item.filename }}</div>
+            <div class="d-flex text-h6">
+              {{ item.filename }}
+            </div>
             <div class="d-flex text-body-2">
               <router-link :to="{ name: 'profile', params: { id: item.author.id } }">
                 {{ item.author.displayName }}
@@ -63,7 +94,7 @@
           </div>
         </div>
       </template>
-      <template v-slot:[`item.tags`]="{ item }">
+      <template #[`item.tags`]="{ item }">
         <ColorLabel
           v-for="tag in item.tags"
           :key="tag"
@@ -74,15 +105,15 @@
           @click.native="selectTag(tag)"
         />
       </template>
-      <template v-slot:item.operation="{ item }">
+      <template #item.operation="{ item }">
         <v-tooltip top>
-          <template v-slot:activator="{ on, attrs }">
+          <template #activator="{ on, attrs }">
             <v-btn
               color="primary"
               icon
-              v-on="on"
               v-bind="attrs"
               class="mr-2"
+              v-on="on"
               @click="preview = { dialog: true, id: item.id, filename: item.filename }"
             >
               <v-icon>mdi-eye</v-icon>
@@ -91,13 +122,13 @@
           <span>預覽資料</span>
         </v-tooltip>
         <v-tooltip top>
-          <template v-slot:activator="{ on, attrs }">
+          <template #activator="{ on, attrs }">
             <v-btn
               color="primary"
               icon
-              v-on="on"
               v-bind="attrs"
               class="mr-2"
+              v-on="on"
               @click="cloneDataset([item])"
             >
               <v-icon>mdi-table-arrow-right</v-icon>
@@ -106,13 +137,13 @@
           <span>複製這份資料</span>
         </v-tooltip>
         <v-tooltip top>
-          <template v-slot:activator="{ on, attrs }">
+          <template #activator="{ on, attrs }">
             <v-btn
               color="primary"
               icon
-              v-on="on"
               v-bind="attrs"
               class="mr-2"
+              v-on="on"
               @click="downloadDataset(item.id)"
             >
               <v-icon>mdi-download</v-icon>
@@ -120,9 +151,17 @@
           </template>
           <span>下載檔案</span>
         </v-tooltip>
-        <v-menu v-if="item.author.id === userId" bottom right>
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn icon v-on="on" v-bind="attrs">
+        <v-menu
+          v-if="item.author.id === userId"
+          bottom
+          right
+        >
+          <template #activator="{ on, attrs }">
+            <v-btn
+              icon
+              v-bind="attrs"
+              v-on="on"
+            >
               <v-icon>mdi-dots-horizontal</v-icon>
             </v-btn>
           </template>
@@ -136,19 +175,50 @@
           </v-list>
         </v-menu>
       </template>
-      <template v-slot:expanded-item="{ headers, item }">
-        <td :colspan="headers.length" class="py-6 px-8">
+      <template #expanded-item="{ headers, item }">
+        <td
+          :colspan="headers.length"
+          class="py-6 px-8"
+        >
           <v-row>
-            <v-col cols="12" md="8">
-              <v-chip class="mb-2 text-body-2" color="primary" label small>資料內容</v-chip>
-              <div style="white-space: pre">{{ item.description }}</div>
+            <v-col
+              cols="12"
+              md="8"
+            >
+              <v-chip
+                class="mb-2 text-body-2"
+                color="primary"
+                label
+                small
+              >
+                資料內容
+              </v-chip>
+              <div style="white-space: pre">
+                {{ item.description }}
+              </div>
             </v-col>
-            <v-col cols="12" md="4">
+            <v-col
+              cols="12"
+              md="4"
+            >
               <div class="mb-2">
-                <v-chip class="text-body-2" color="primary" label small>版本備註</v-chip>
+                <v-chip
+                  class="text-body-2"
+                  color="primary"
+                  label
+                  small
+                >
+                  版本備註
+                </v-chip>
                 <v-tooltip right>
-                  <template v-slot:activator="{ on, attrs }">
-                    <v-icon class="ml-3" color="primary" small v-bind="attrs" v-on="on">
+                  <template #activator="{ on, attrs }">
+                    <v-icon
+                      class="ml-3"
+                      color="primary"
+                      small
+                      v-bind="attrs"
+                      v-on="on"
+                    >
                       mdi-help-circle
                     </v-icon>
                   </template>
@@ -157,13 +227,22 @@
               </div>
               <div>
                 <ul>
-                  <li v-for="(note, index) in item.patchNotes.slice(1).reverse()" :key="index">
+                  <li
+                    v-for="(note, index) in item.patchNotes.slice(1).reverse()"
+                    :key="index"
+                  >
                     版本
                     {{
                       `${item.patchNotes.length - index - 1} → ${item.patchNotes.length - index}`
                     }}
-                    <span v-if="note" style="white-space: pre">{{ note }}</span>
-                    <span v-else class="gray-text">沒有留下備註</span>
+                    <span
+                      v-if="note"
+                      style="white-space: pre"
+                    >{{ note }}</span>
+                    <span
+                      v-else
+                      class="gray-text"
+                    >沒有留下備註</span>
                   </li>
                 </ul>
                 <span v-if="item.patchNotes.length === 1">此資料沒有其他版本</span>
@@ -174,10 +253,22 @@
           </v-row>
         </td>
       </template>
-      <template v-slot:[slotName] v-for="slotName in ['no-data', 'no-results']">
-        <div class="d-flex flex-column align-center" :key="slotName">
-          <div class="text-subtitle-1 my-8">這裡還沒有任何資料集，或找不到符合條件的資料集</div>
-          <v-img :src="require('@/assets/images/noData.svg')" max-width="600" contain />
+      <template
+        v-for="slotName in ['no-data', 'no-results']"
+        #[slotName]
+      >
+        <div
+          :key="slotName"
+          class="d-flex flex-column align-center"
+        >
+          <div class="text-subtitle-1 my-8">
+            這裡還沒有任何資料集，或找不到符合條件的資料集
+          </div>
+          <v-img
+            :src="require('@/assets/images/noData.svg')"
+            max-width="600"
+            contain
+          />
         </div>
       </template>
     </v-data-table>
@@ -197,7 +288,7 @@
     />
 
     <v-tooltip top>
-      <template v-slot:activator="{ on, attrs }">
+      <template #activator="{ on, attrs }">
         <v-fab-transition>
           <v-btn
             v-show="selectedDatasets.length > 0"
@@ -206,10 +297,10 @@
             bottom
             fab
             dark
-            v-on="on"
             v-bind="attrs"
             color="primary"
             style="left: 50%"
+            v-on="on"
             @click="cloneDataset(selectedDatasets)"
           >
             <v-icon>mdi-table-arrow-right</v-icon>
@@ -219,8 +310,8 @@
       <span>複製已選擇的資料</span>
     </v-tooltip>
     <PreviewDatasetModal
-      v-model="preview.dialog"
       :id="preview.id"
+      v-model="preview.dialog"
       :filename="preview.filename"
       @close="preview = { dialog: false, id: null, filename: null }"
     />
@@ -228,25 +319,14 @@
 </template>
 
 <script>
-import ColorLabel from '@/components/UI/ColorLabel.vue'
-import Gravatar from '@/components/UI/Gravatar.vue'
 import CreateDatasetModel from '@/components/Datasets/CreateDatasetModal.vue'
-import EditDatasetModal from '@/components/Datasets/EditDatasetModal.vue'
-import CloneDatasetModal from '@/components/Datasets/CloneDatasetModal.vue'
-import PreviewDatasetModal from '@/components/UI/PreviewDatasetModal.vue'
 import { formatBytes } from '@/lib/utils'
 import { mapState } from 'vuex'
 import { ROLE } from '@/constants/auth'
+import { TAG_CATES } from '@/constants/tag'
 
 export default {
-  components: {
-    ColorLabel,
-    Gravatar,
-    CreateDatasetModel,
-    EditDatasetModal,
-    CloneDatasetModal,
-    PreviewDatasetModal,
-  },
+  components: { CreateDatasetModel },
 
   data: () => ({
     selectedDatasets: [],
@@ -267,16 +347,16 @@ export default {
 
   computed: {
     ...mapState({
-      userId: state => state.auth.id,
-      role: state => state.auth.role,
+      userId: (state) => state.auth.id,
+      role: (state) => state.auth.role,
     }),
     filteredAttachments() {
       if (!this.attachments) return []
-      const attFilteredByTags = this.attachments.filter(att =>
-        this.selectedTags.every(tag => att.tags.includes(tag)),
+      const attFilteredByTags = this.attachments.filter((att) =>
+        this.selectedTags.every((tag) => att.tags.includes(tag)),
       )
       if (this.onlyShowMine) {
-        return attFilteredByTags.filter(att => att.author.id === this.userId)
+        return attFilteredByTags.filter((att) => att.author.id === this.userId)
       }
       return attFilteredByTags
     },
@@ -308,7 +388,7 @@ export default {
     async getAttachments() {
       try {
         const { data } = await this.$agent.Dataset.getList()
-        this.attachments = data.data.map(item => ({
+        this.attachments = data.data.map((item) => ({
           ...item,
           formattedSize: formatBytes(item.size),
         }))
@@ -318,7 +398,7 @@ export default {
     },
     async getTags() {
       try {
-        const { data } = await this.$agent.Tag.getList()
+        const { data } = await this.$agent.Tag.getList({ category: TAG_CATES.NORMAL_PROBLEM })
         this.tags = data.data
       } catch (error) {
         this.$rollbar('[views/Attachments/getTags]', error)
@@ -330,9 +410,9 @@ export default {
     },
     async downloadDataset(id) {
       try {
-        const { href } = this.$router.resolve(`/api/attachment/${id}`)
-        window.open(href, '_blank')
+        this.$agent.Dataset.downloadFile(id)
       } catch (error) {
+        this.$alertSuccess('下載過程發生錯誤')
         this.$rollbar('[views/Attachments/downloadDataset]', error)
       }
     },

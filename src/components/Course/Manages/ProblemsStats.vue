@@ -1,8 +1,14 @@
 <template>
   <v-container fluid>
-    <div class="text-h5">主題統計</div>
+    <div class="text-h5">
+      主題統計
+    </div>
     <div class="d-flex align-center mt-4">
-      <v-col cols="10" md="6" class="d-flex">
+      <v-col
+        cols="10"
+        md="6"
+        class="d-flex"
+      >
         <v-text-field
           v-model="searchText"
           label="快速搜尋"
@@ -16,8 +22,14 @@
 
       <v-spacer />
 
-      <v-btn color="primary" class="mr-3" @click="downloadStats">
-        <v-icon class="mr-1">mdi-download</v-icon>
+      <v-btn
+        color="primary"
+        class="mr-3"
+        @click="downloadStats"
+      >
+        <v-icon class="mr-1">
+          mdi-download
+        </v-icon>
         匯出統計資料
       </v-btn>
     </div>
@@ -33,15 +45,31 @@
       class="table"
       @click:row="handleRowClick"
     >
-      <template v-slot:[`item.detail`]="{ item }">
-        <v-btn icon small @click.stop="handleClickDetail(item.id)">
+      <template #[`item.detail`]="{ item }">
+        <v-btn
+          icon
+          small
+          @click.stop="handleClickDetail(item.id)"
+        >
           <v-icon>mdi-format-list-bulleted</v-icon>
         </v-btn>
       </template>
-      <template v-slot:[slotName] v-for="slotName in ['no-data', 'no-results']">
-        <div class="d-flex flex-column align-center" :key="slotName">
-          <div class="text-subtitle-1 my-8">這裡還沒有任何成員，或找不到符合條件的成員</div>
-          <v-img :src="require('@/assets/images/noData.svg')" max-width="600" contain />
+      <template
+        v-for="slotName in ['no-data', 'no-results']"
+        #[slotName]
+      >
+        <div
+          :key="slotName"
+          class="d-flex flex-column align-center"
+        >
+          <div class="text-subtitle-1 my-8">
+            這裡還沒有任何成員，或找不到符合條件的成員
+          </div>
+          <v-img
+            :src="require('@/assets/images/noData.svg')"
+            max-width="600"
+            contain
+          />
         </div>
       </template>
     </v-data-table>
@@ -50,6 +78,7 @@
 
 <script>
 import { mapState } from 'vuex'
+import { downloadFile } from '@/lib/utils'
 
 const statsHeaders = [
   { text: '使用者名稱', value: 'username' },
@@ -77,19 +106,19 @@ export default {
     },
   },
 
+  data: () => ({
+    headers,
+    searchText: '',
+  }),
+
   computed: {
     ...mapState({
-      courseName: state => state.course.courseInfo.name,
+      courseName: (state) => state.course.courseInfo.name,
     }),
     courseId() {
       return this.$route.params.id
     },
   },
-
-  data: () => ({
-    headers,
-    searchText: '',
-  }),
 
   methods: {
     handleRowClick(value) {
@@ -101,17 +130,14 @@ export default {
       window.open(route.href, '_blank')
     },
     downloadData() {
-      const header = statsHeaders.map(h => h.text).join(',')
-      const headerKey = statsHeaders.map(h => h.value)
-      const body = this.stats.map(d => headerKey.map(hk => d[hk]).join(',')).join('\n')
+      const header = statsHeaders.map((h) => h.text).join(',')
+      const headerKey = statsHeaders.map((h) => h.value)
+      const body = this.stats.map((d) => headerKey.map((hk) => d[hk]).join(',')).join('\n')
       return `${header}\n${body}`
     },
     downloadStats() {
       const csvContent = 'data:text/csv;charset=utf-8,' + this.downloadData()
-      const link = document.createElement('a')
-      link.download = `${this.courseName}_主題統計.csv`
-      link.href = csvContent
-      link.click()
+      downloadFile(`${this.courseName}_主題統計.csv`, csvContent)
     },
   },
 }

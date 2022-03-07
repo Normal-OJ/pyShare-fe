@@ -18,7 +18,6 @@ Vue.use(Notifications)
 
 Vue.use(
   new VueSocketIO({
-    debug: true,
     connection: '/notifier',
     vuex: {
       store,
@@ -43,12 +42,12 @@ if (window.Cypress) {
 
 // Rollbar for tracking vue app's error
 Vue.prototype.$rollbar = new Rollbar({
-  accessToken: process.env.VUE_APP_ROLLBAR_TOKEN,
+  accessToken: import.meta.env.VITE_APP_ROLLBAR_TOKEN,
   captureUncaught: true,
   captureUnhandledRejections: true,
-  enabled: process.env.VUE_APP_ROLLBAR_ENABLED === 'false' ? false : true,
+  enabled: import.meta.env.VITE_APP_ROLLBAR_ENABLED === 'false' ? false : true,
   nodeSourceMaps: true,
-  environment: process.env.NODE_ENV,
+  environment: import.meta.env.MODE,
   payload: {
     client: {
       javascript: {
@@ -68,5 +67,5 @@ new Vue({
   router,
   store,
   vuetify,
-  render: h => h(App),
+  render: (h) => h(App),
 }).$mount('#app')

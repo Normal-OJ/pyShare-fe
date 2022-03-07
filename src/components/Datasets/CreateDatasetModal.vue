@@ -1,19 +1,40 @@
 <template>
-  <v-dialog v-model="dialog" width="750" persistent>
-    <template v-slot:activator="{ on, attrs }">
-      <v-btn color="success" dark v-bind="attrs" v-on="on">
-        <v-icon class="mr-1">mdi-plus</v-icon>
+  <v-dialog
+    v-model="dialog"
+    width="750"
+    persistent
+  >
+    <template #activator="{ on, attrs }">
+      <v-btn
+        color="success"
+        dark
+        v-bind="attrs"
+        v-on="on"
+      >
+        <v-icon class="mr-1">
+          mdi-plus
+        </v-icon>
         新增資料集
       </v-btn>
     </template>
 
     <v-card>
-      <v-toolbar dark color="primary" dense>
-        <v-icon class="mr-1">mdi-plus</v-icon>
+      <v-toolbar
+        dark
+        color="primary"
+        dense
+      >
+        <v-icon class="mr-1">
+          mdi-plus
+        </v-icon>
         <v-toolbar-title>新增資料集</v-toolbar-title>
         <v-spacer />
         <v-toolbar-items>
-          <v-btn icon dark @click="dialog = false">
+          <v-btn
+            icon
+            dark
+            @click="dialog = false"
+          >
             <v-icon>mdi-close</v-icon>
           </v-btn>
         </v-toolbar-items>
@@ -34,35 +55,60 @@
             @dragleave="dragleave"
           >
             <v-card-text class="text-center">
-              <v-row class="mb-2" justify="center" align="center">
+              <v-row
+                class="mb-2"
+                justify="center"
+                align="center"
+              >
                 <template v-if="dataset.fileObj">
-                  <v-chip color="primary" dark label>{{ dataset.fileObj.name }}</v-chip>
-                  <v-btn color="primary" text small @click="openFileExplorer">
+                  <v-chip
+                    color="primary"
+                    dark
+                    label
+                  >
+                    {{ dataset.fileObj.name }}
+                  </v-chip>
+                  <v-btn
+                    color="primary"
+                    text
+                    small
+                    @click="openFileExplorer"
+                  >
                     重新選取
                   </v-btn>
                 </template>
                 <input
-                  class="d-none"
                   ref="invisibleFileInput"
+                  class="d-none"
                   type="file"
                   @change="event => handleFileInput(event.target.files)"
-                />
+                >
               </v-row>
               <div class="mt-6 mb-3">
-                <v-icon :size="36">mdi-file-upload-outline</v-icon>
+                <v-icon :size="36">
+                  mdi-file-upload-outline
+                </v-icon>
               </div>
               <div class="text-body-1">
                 從電腦中<a @click="openFileExplorer">選擇檔案</a>或拖曳檔案至此
               </div>
             </v-card-text>
           </v-card>
-          <div v-if="noUploadFile" class="mt-1 error--text">請上傳檔案</div>
+          <div
+            v-if="noUploadFile"
+            class="mt-1 error--text"
+          >
+            請上傳檔案
+          </div>
 
           <v-row class="mt-6">
-            <v-col cols="12" sm="6">
+            <v-col
+              cols="12"
+              sm="6"
+            >
               <v-text-field
-                label="檔案名稱"
                 v-model="dataset.filename"
+                label="檔案名稱"
                 :rules="[
                   v => !!v || '請填寫檔案名稱',
                   v => (!!v && v.length <= 64) || '名稱上限為 64 個字',
@@ -76,7 +122,10 @@
                 dense
               />
             </v-col>
-            <v-col cols="12" sm="6">
+            <v-col
+              cols="12"
+              sm="6"
+            >
               <v-select
                 v-model="selectedTags"
                 label="選擇分類"
@@ -86,17 +135,21 @@
                 multiple
                 dense
               >
-                <template v-slot:selection="{ item }">
-                  <ColorLabel :tag="item" small class="mt-2 mr-1" />
+                <template #selection="{ item }">
+                  <ColorLabel
+                    :tag="item"
+                    small
+                    class="mt-2 mr-1"
+                  />
                 </template>
               </v-select>
             </v-col>
           </v-row>
 
           <v-textarea
+            v-model="dataset.description"
             class="mt-2"
             label="說明（選填）"
-            v-model="dataset.description"
             hint="您可以在此說明這份資料的內容、備註資料來源"
             persistent-hint
             :rules="[v => !v || v.length <= 1000 || '說明上限為 1000 個字']"
@@ -112,7 +165,11 @@
 
       <v-card-actions>
         <v-spacer />
-        <v-btn color="success" :loading="isLoading" @click="submit">
+        <v-btn
+          color="success"
+          :loading="isLoading"
+          @click="submit"
+        >
           送出
         </v-btn>
       </v-card-actions>
@@ -121,8 +178,6 @@
 </template>
 
 <script>
-import ColorLabel from '@/components/UI/ColorLabel'
-
 const initialDataset = {
   filename: '',
   description: '',
@@ -132,8 +187,6 @@ const initialDataset = {
 }
 
 export default {
-  components: { ColorLabel },
-
   props: {
     tags: {
       type: Array,
@@ -165,8 +218,8 @@ export default {
       if (this.$refs.form.validate()) {
         this.isLoading = true
         const body = new FormData()
-        for (const key in this.dataset) {
-          body.append(key, this.dataset[key])
+        for (const [key, value] of Object.entries(this.dataset)) {
+          body.append(key, value)
         }
         new Promise((resolve, reject) => this.$emit('submit', body, resolve, reject))
           .then(() => {

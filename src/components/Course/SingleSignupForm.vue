@@ -1,7 +1,10 @@
 <template>
   <v-card flat>
     <v-card-text class="text--primary">
-      <v-form ref="form" v-model="validForm">
+      <v-form
+        ref="form"
+        v-model="validForm"
+      >
         <v-select
           v-model="newStudent.school"
           :rules="[val => val !== null || '此欄位為必填']"
@@ -13,7 +16,9 @@
           outlined
           dense
         >
-          <template v-slot:selection="{ item }">{{ item.abbr || item.name }}</template>
+          <template #selection="{ item }">
+            {{ item.abbr || item.name }}
+          </template>
         </v-select>
         <v-text-field
           v-model="newStudent.username"
@@ -25,7 +30,9 @@
           outlined
           dense
         />
-        <div class="text-body-1 mb-4">若帳號尚未創立，請設定以下資料。</div>
+        <div class="text-body-1 mb-4">
+          若帳號尚未創立，請設定以下資料。
+        </div>
         <v-text-field
           v-model="newStudent.displayName"
           label="displayName（顯示名稱）"

@@ -1,37 +1,65 @@
 <template>
-  <v-dialog v-model="dialog" width="750" persistent>
-    <template v-slot:activator="{ on, attrs }">
-      <v-btn color="success" dark v-bind="attrs" v-on="on">
-        <v-icon class="mr-1">mdi-tag-plus</v-icon>
-        新增分類
+  <v-dialog
+    v-model="dialog"
+    width="750"
+    persistent
+  >
+    <template #activator="{ on, attrs }">
+      <v-btn
+        color="success"
+        dark
+        v-bind="attrs"
+        v-on="on"
+      >
+        <v-icon class="mr-1">
+          mdi-tag-plus
+        </v-icon>
+        {{ title }}
       </v-btn>
     </template>
 
     <v-card>
-      <v-toolbar dark color="primary" dense>
-        <v-icon class="mr-1">mdi-tag-plus</v-icon>
-        <v-toolbar-title>新增分類</v-toolbar-title>
+      <v-toolbar
+        dark
+        color="primary"
+        dense
+      >
+        <v-icon class="mr-1">
+          mdi-tag-plus
+        </v-icon>
+        <v-toolbar-title>{{ title }}</v-toolbar-title>
         <v-spacer />
         <v-toolbar-items>
-          <v-btn icon dark @click="close">
+          <v-btn
+            icon
+            dark
+            @click="close"
+          >
             <v-icon>mdi-close</v-icon>
           </v-btn>
         </v-toolbar-items>
       </v-toolbar>
 
       <v-card-text class="mt-8">
+        <div>選單已有一些建議的分類，您也可以自行新增分類，輸入名稱後按下 Enter 鍵即可。</div>
+
+        <div class="mb-4">
+          一次可以加入多個分類，最後按下右下角的確認後才會儲存您新增的分類。
+        </div>
+
         <v-combobox
           v-model="newTags"
           label="輸入分類名稱"
-          multiple="multiple"
-          chips="chips"
-          dense
-          hint="（可輸入多個，按下 Enter 來輸入下一個分類）"
-          persistent-hint
-          append-icon=""
+          multiple
+          chips
+          :items="items"
         >
-          <template v-slot:selection="{ parent, item }">
-            <ColorLabel :tag="item" close @close-chip="remove(item)" />
+          <template #selection="{ item }">
+            <ColorLabel
+              :tag="item"
+              close
+              @close-chip="remove(item)"
+            />
           </template>
         </v-combobox>
       </v-card-text>
@@ -40,19 +68,32 @@
 
       <v-card-actions>
         <v-spacer />
-        <v-btn color="success" :disabled="isSubmitDisabled" @click="submit">確認</v-btn>
+        <v-btn
+          color="success"
+          :disabled="isSubmitDisabled"
+          @click="submit"
+        >
+          確認
+        </v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
 </template>
 
 <script>
-import ColorLabel from '@/components/UI/ColorLabel'
-
 export default {
   name: 'CreateTagModal',
 
-  components: { ColorLabel },
+  props: {
+    title: {
+      type: String,
+      default: '新增分類',
+    },
+    items: {
+      type: Array,
+      default: () => [],
+    },
+  },
 
   data: () => ({
     newTags: [],
@@ -67,15 +108,19 @@ export default {
 
   methods: {
     remove(removedTag) {
-      this.newTags = this.newTags.filter(tag => tag !== removedTag)
+      this.newTags = this.newTags.filter((tag) => tag !== removedTag)
     },
     submit() {
-      new Promise((resolve, reject) =>
-        this.$emit('submit-new-tags', this.newTags, resolve, reject),
-      ).then(() => {
-        this.dialog = false
-        this.newTags = []
-      })
+      this.$emit(
+        'submit', {
+          existTags: this.newTags.filter((tag) => this.items.includes(tag)),
+          newTags: this.newTags.filter((tag) => !this.items.includes(tag)),
+        },
+        () => {
+          this.dialog = false
+          this.newTags = []
+        },
+      )
     },
     close() {
       if (this.newTags.length > 0) {

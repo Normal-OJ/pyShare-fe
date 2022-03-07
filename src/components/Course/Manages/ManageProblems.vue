@@ -1,8 +1,14 @@
 <template>
   <v-container fluid>
-    <div class="text-h5">管理主題</div>
+    <div class="text-h5">
+      管理主題
+    </div>
     <div class="d-flex align-center">
-      <v-col cols="10" md="6" class="d-flex">
+      <v-col
+        cols="10"
+        md="6"
+        class="d-flex"
+      >
         <v-select
           v-model="selectedTags"
           class="mr-3"
@@ -24,11 +30,21 @@
         />
       </v-col>
       <v-spacer />
-      <v-btn color="primary" :to="{ name: 'courseProblems' }" class="mr-3" outlined>
+      <v-btn
+        color="primary"
+        :to="{ name: 'courseProblems' }"
+        class="mr-3"
+        outlined
+      >
         回到主題列表
       </v-btn>
-      <v-btn color="success" :to="{ name: 'courseSetProblems', params: { operation: 'new' } }">
-        <v-icon class="mr-1">mdi-playlist-plus</v-icon>
+      <v-btn
+        color="success"
+        :to="{ name: 'courseSetProblems', params: { operation: 'new' } }"
+      >
+        <v-icon class="mr-1">
+          mdi-playlist-plus
+        </v-icon>
         新增主題
       </v-btn>
     </div>
@@ -42,27 +58,33 @@
       :loading="loading"
       :custom-sort="customSort"
     >
-      <template v-slot:[`item.title`]="{ item }">
+      <template #[`item.title`]="{ item }">
         <router-link :to="{ name: 'courseProblem', params: { pid: item.pid } }">
           {{ item.title }}
         </router-link>
         <v-tooltip bottom>
-          <template v-slot:activator="{ on, attrs }">
-            <v-icon v-if="item.status === 0" class="ml-2" small v-bind="attrs" v-on="on">
+          <template #activator="{ on, attrs }">
+            <v-icon
+              v-if="item.status === 0"
+              class="ml-2"
+              small
+              v-bind="attrs"
+              v-on="on"
+            >
               mdi-minus-circle
             </v-icon>
           </template>
           <span>隱藏的主題</span>
         </v-tooltip>
         <v-tooltip bottom>
-          <template v-slot:activator="{ on, attrs }">
+          <template #activator="{ on, attrs }">
             <v-icon
               v-if="item.isTemplate"
               class="ml-2"
               small
               v-bind="attrs"
-              v-on="on"
               color="primary"
+              v-on="on"
             >
               mdi-earth
             </v-icon>
@@ -70,7 +92,7 @@
           <span>已發布於共享資源</span>
         </v-tooltip>
       </template>
-      <template v-slot:[`item.tags`]="{ item }">
+      <template #[`item.tags`]="{ item }">
         <ColorLabel
           v-for="tag in item.tags"
           :key="tag"
@@ -80,13 +102,21 @@
           @click.native="selectTag(tag)"
         />
       </template>
-      <template v-slot:[`item.creations`]="{ item }">
+      <template #[`item.creations`]="{ item }">
         {{ item.comments.length }}
       </template>
-      <template v-slot:[`item.manage`]="{ item }">
-        <v-menu bottom right>
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn icon v-on="on" v-bind="attrs" class="hidden-lg-and-up">
+      <template #[`item.manage`]="{ item }">
+        <v-menu
+          bottom
+          right
+        >
+          <template #activator="{ on, attrs }">
+            <v-btn
+              icon
+              v-bind="attrs"
+              class="hidden-lg-and-up"
+              v-on="on"
+            >
               <v-icon>mdi-dots-horizontal</v-icon>
             </v-btn>
           </template>
@@ -120,30 +150,67 @@
             color="primary"
             small
           >
-            <v-icon class="mr-1" small>mdi-pencil</v-icon>
+            <v-icon
+              class="mr-1"
+              small
+            >
+              mdi-pencil
+            </v-icon>
             <span>編輯</span>
           </v-btn>
-          <v-btn class="mx-1" color="primary" small @click="openCloneDialog(item.pid)">
-            <v-icon class="mr-1" small>mdi-content-copy</v-icon>
+          <v-btn
+            class="mx-1"
+            color="primary"
+            small
+            @click="openCloneDialog(item.pid)"
+          >
+            <v-icon
+              class="mr-1"
+              small
+            >
+              mdi-content-copy
+            </v-icon>
             <span>複製</span>
           </v-btn>
-          <v-btn class="mx-1" color="error" small @click="deleteProblem(item.pid)">
-            <v-icon class="mr-1" small>mdi-trash-can</v-icon>
+          <v-btn
+            class="mx-1"
+            color="error"
+            small
+            @click="deleteProblem(item.pid)"
+          >
+            <v-icon
+              class="mr-1"
+              small
+            >
+              mdi-trash-can
+            </v-icon>
             <span>刪除</span>
           </v-btn>
         </div>
       </template>
-      <template v-slot:[slotName] v-for="slotName in ['no-data', 'no-results']">
-        <div class="d-flex flex-column align-center" :key="slotName">
-          <div class="text-subtitle-1 my-8">這裡還沒有任何主題，或找不到符合條件的主題</div>
-          <v-img :src="require('@/assets/images/noData.svg')" max-width="600" contain />
+      <template
+        v-for="slotName in ['no-data', 'no-results']"
+        #[slotName]
+      >
+        <div
+          :key="slotName"
+          class="d-flex flex-column align-center"
+        >
+          <div class="text-subtitle-1 my-8">
+            這裡還沒有任何主題，或找不到符合條件的主題
+          </div>
+          <v-img
+            :src="require('@/assets/images/noData.svg')"
+            max-width="600"
+            contain
+          />
         </div>
       </template>
     </v-data-table>
     <CloneProblemModal
-      :isOpen="!!clonePid"
-      :clonePid="clonePid"
-      :defaultCourseId="$route.params.id"
+      :is-open="!!clonePid"
+      :clone-pid="clonePid"
+      :default-course-id="$route.params.id"
       label="主題"
       @success="handleCloneSuccess"
       @close="clonePid = null"
@@ -152,9 +219,6 @@
 </template>
 
 <script>
-import ColorLabel from '@/components/UI/ColorLabel'
-import CloneProblemModal from '../Problem/CloneProblemModal.vue'
-
 const headers = [
   { text: '題號', value: 'pid' },
   { text: '標題', value: 'title', sortable: false },
@@ -164,8 +228,6 @@ const headers = [
 ]
 
 export default {
-  components: { ColorLabel, CloneProblemModal },
-
   props: {
     problems: {
       type: Array,
@@ -183,11 +245,10 @@ export default {
 
   data() {
     return {
+      headers,
       searchText: '',
       selectedTags: [],
       clonePid: null,
-      isTemplate: false,
-      headers: headers,
     }
   },
 

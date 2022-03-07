@@ -1,8 +1,17 @@
 <template>
   <v-container fluid>
-    <div class="text-h5 mb-2">公開主題</div>
-    <v-row no-gutters align="center">
-      <v-col cols="12" md="6" class="d-flex">
+    <div class="text-h5 mb-2">
+      公開主題
+    </div>
+    <v-row
+      no-gutters
+      align="center"
+    >
+      <v-col
+        cols="12"
+        md="6"
+        class="d-flex"
+      >
         <v-select
           v-model="selectedTags"
           class="mr-3"
@@ -14,8 +23,12 @@
           multiple
           dense
         >
-          <template v-slot:selection="{ item }">
-            <ColorLabel :tag="item" small class="mt-2 mr-1" />
+          <template #selection="{ item }">
+            <ColorLabel
+              :tag="item"
+              small
+              class="mt-2 mr-1"
+            />
           </template>
         </v-select>
         <v-text-field
@@ -29,7 +42,11 @@
         />
       </v-col>
       <v-spacer />
-      <v-switch v-model="onlyShowMine" label="只顯示我的主題" class="mr-3" />
+      <v-switch
+        v-model="onlyShowMine"
+        label="只顯示我的主題"
+        class="mr-3"
+      />
       <!-- <v-btn color="success">
         <v-icon class="mr-1">mdi-playlist-plus</v-icon>
         新增主題
@@ -47,11 +64,16 @@
       style="width: 100%"
       show-expand
     >
-      <template v-slot:item.title="{ item }">
+      <template #item.title="{ item }">
         <div class="d-flex align-center py-3">
-          <Gravatar :size="40" :md5="item.author.md5" />
+          <Gravatar
+            :size="40"
+            :md5="item.author.md5"
+          />
           <div class="ml-4 d-flex flex-column">
-            <div class="d-flex text-h6">{{ item.title }}</div>
+            <div class="d-flex text-h6">
+              {{ item.title }}
+            </div>
             <div class="d-flex text-body-2">
               <router-link :to="{ name: 'profile', params: { id: item.author.id } }">
                 {{ item.author.displayName }}
@@ -61,7 +83,7 @@
           </div>
         </div>
       </template>
-      <template v-slot:[`item.tags`]="{ item }">
+      <template #[`item.tags`]="{ item }">
         <ColorLabel
           v-for="tag in item.tags"
           :key="tag"
@@ -72,17 +94,23 @@
           @click.native="selectTag(tag)"
         />
       </template>
-      <template v-slot:item.operation="{ item }">
+      <template #item.operation="{ item }">
         <v-tooltip top>
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn color="primary" icon v-on="on" v-bind="attrs" @click="clonePid = item.pid">
+          <template #activator="{ on, attrs }">
+            <v-btn
+              color="primary"
+              icon
+              v-bind="attrs"
+              v-on="on"
+              @click="clonePid = item.pid"
+            >
               <v-icon>mdi-content-copy</v-icon>
             </v-btn>
           </template>
           <span>複製主題</span>
         </v-tooltip>
         <v-tooltip top>
-          <template v-slot:activator="{ on, attrs }">
+          <template #activator="{ on, attrs }">
             <v-btn
               v-if="item.author.id === userId"
               color="primary"
@@ -93,8 +121,8 @@
                 params: { id: item.course, operation: 'edit' },
                 query: { pid: item.pid },
               }"
-              v-on="on"
               v-bind="attrs"
+              v-on="on"
             >
               <v-icon>mdi-pencil</v-icon>
             </v-btn>
@@ -102,15 +130,38 @@
           <span>編輯</span>
         </v-tooltip>
       </template>
-      <template v-slot:expanded-item="{ headers, item }">
-        <td :colspan="headers.length" class="py-6 px-8">
+      <template #expanded-item="{ headers, item }">
+        <td
+          :colspan="headers.length"
+          class="py-6 px-8"
+        >
           <v-row>
-            <v-col cols="12" md="8">
-              <v-chip class="mb-2 text-body-2" color="primary" label small>主題說明</v-chip>
+            <v-col
+              cols="12"
+              md="8"
+            >
+              <v-chip
+                class="mb-2 text-body-2"
+                color="primary"
+                label
+                small
+              >
+                主題說明
+              </v-chip>
               <div v-html="item.description" />
             </v-col>
-            <v-col cols="12" md="4">
-              <v-chip class="mb-2 text-body-2" color="primary" label small>附件</v-chip>
+            <v-col
+              cols="12"
+              md="4"
+            >
+              <v-chip
+                class="mb-2 text-body-2"
+                color="primary"
+                label
+                small
+              >
+                附件
+              </v-chip>
               <div>
                 <AttachmentCard
                   v-for="{ filename } in item.attachments"
@@ -125,10 +176,22 @@
           </v-row>
         </td>
       </template>
-      <template v-slot:[slotName] v-for="slotName in ['no-data', 'no-results']">
-        <div class="d-flex flex-column align-center" :key="slotName">
-          <div class="text-subtitle-1 my-8">這裡還沒有任何主題，或找不到符合條件的主題</div>
-          <v-img :src="require('@/assets/images/noData.svg')" max-width="600" contain />
+      <template
+        v-for="slotName in ['no-data', 'no-results']"
+        #[slotName]
+      >
+        <div
+          :key="slotName"
+          class="d-flex flex-column align-center"
+        >
+          <div class="text-subtitle-1 my-8">
+            這裡還沒有任何主題，或找不到符合條件的主題
+          </div>
+          <v-img
+            :src="require('@/assets/images/noData.svg')"
+            max-width="600"
+            contain
+          />
         </div>
       </template>
     </v-data-table>
@@ -141,8 +204,8 @@
     />
 
     <CloneProblemModal
-      :isOpen="!!clonePid"
-      :clonePid="clonePid"
+      :is-open="!!clonePid"
+      :clone-pid="clonePid"
       label="測驗"
       @success="clonePid = null"
       @close="clonePid = null"
@@ -151,16 +214,10 @@
 </template>
 
 <script>
-import ColorLabel from '@/components/UI/ColorLabel.vue'
-import Gravatar from '@/components/UI/Gravatar.vue'
-import PreviewAttachmentModal from '@/components/UI/PreviewAttachmentModal.vue'
-import AttachmentCard from '@/components/UI/AttachmentCard.vue'
-import CloneProblemModal from '@/components/Course/Problem/CloneProblemModal.vue'
 import { mapState } from 'vuex'
+import { TAG_CATES } from '@/constants/tag'
 
 export default {
-  components: { ColorLabel, Gravatar, PreviewAttachmentModal, AttachmentCard, CloneProblemModal },
-
   data: () => ({
     problems: null,
     searchText: '',
@@ -181,15 +238,15 @@ export default {
       return { count: -1, offset: 0, isTemplate: true }
     },
     ...mapState({
-      userId: state => state.auth.id,
+      userId: (state) => state.auth.id,
     }),
     filteredProblems() {
       if (!this.problems) return []
-      const attFilteredByTags = this.problems.filter(att =>
-        this.selectedTags.every(tag => att.tags.includes(tag)),
+      const attFilteredByTags = this.problems.filter((att) =>
+        this.selectedTags.every((tag) => att.tags.includes(tag)),
       )
       if (this.onlyShowMine) {
-        return attFilteredByTags.filter(att => att.author.id === this.userId)
+        return attFilteredByTags.filter((att) => att.author.id === this.userId)
       }
       return attFilteredByTags
     },
@@ -225,14 +282,14 @@ export default {
     async getTemplateProblems(params) {
       try {
         const { data } = await this.$agent.Problem.getList(params)
-        this.problems = data.data.filter(p => p.extra._cls !== 'OJProblem')
+        this.problems = data.data.filter((p) => p.extra._cls !== 'OJProblem')
       } catch (error) {
         this.$rollbar.error('[views/Datasets/Problems/getTemplateProblems]', error)
       }
     },
     async getTags() {
       try {
-        const { data } = await this.$agent.Tag.getList()
+        const { data } = await this.$agent.Tag.getList({ category: TAG_CATES.NORMAL_PROBLEM })
         this.tags = data.data
       } catch (error) {
         this.$rollbar.error('[views/Datasets/Problems/getTags]', error)

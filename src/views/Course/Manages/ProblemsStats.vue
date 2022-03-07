@@ -7,23 +7,20 @@
 </template>
 
 <script>
-import ProblemsStats from '@/components/Course/Manages/ProblemsStats'
 import { mapActions, mapState } from 'vuex'
 import { ActionTypes } from '@/store/action-types'
 
 export default {
-  components: { ProblemsStats },
-
   computed: {
     ...mapState({
-      stats: state => state.course.courseStats,
+      stats: (state) => state.course.courseStats,
     }),
     courseId() {
       return this.$route.params.id
     },
     parsedStats() {
       if (!this.stats) return null
-      return this.stats.map(stat => {
+      return this.stats.map((stat) => {
         const { username, displayName, id } = stat.info
         const numOfProblems = stat.problems.length
         const numOfComments = stat.comments.length
@@ -32,7 +29,7 @@ export default {
           return a + b.starers.length
         }, 0)
         const numOfLikes = stat.likes.length
-        const numOfAcceptedComments = stat.comments.filter(c => c.accepted).length
+        const numOfAcceptedComments = stat.comments.filter((c) => c.accepted).length
         const [execSuccess, execFail] = stat.execInfo.reduce(
           (a, b) => {
             return [a[0] + b.success, a[1] + b.fail]

@@ -1,7 +1,12 @@
 <template>
   <v-tooltip right>
-    <template v-slot:activator="{ on, attr }">
-      <v-icon :color="v.color" v-on="on" v-bind="attr">
+    <template #activator="{ on, attr }">
+      <v-icon
+        :color="v.color"
+        size="14"
+        v-bind="attr"
+        v-on="on"
+      >
         {{ v.icon }}
       </v-icon>
     </template>
@@ -20,8 +25,10 @@ export default {
     },
   },
 
-  setup(props) {
-    return { v: ACCEPTANCE[props.acceptance] }
+  computed: {
+    v() {
+      return ACCEPTANCE[this.acceptance]
+    },
   },
 }
 </script>

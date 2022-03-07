@@ -16,13 +16,13 @@ const getters = <GetterTree<State, RootState>>{
     const myCourses = RootState.auth.courses
     const isMyCourses = (course: Course.IInfo) => myCourses.indexOf(course.id) !== -1
     const isTeachedByMe = (course: Course.IInfo) => course.teacher.id === RootState.auth.id
-    return state.courses.filter(course => isMyCourses(course) && isTeachedByMe(course))
+    return state.courses.filter((course) => isMyCourses(course) && isTeachedByMe(course))
   },
   [GetterTypes.ENROLLED_COURSES](state, getters, RootState) {
     const myCourses = RootState.auth.courses
     const isMyCourses = (course: Course.IInfo) => myCourses.indexOf(course.id) !== -1
     const notTeachedByMe = (course: Course.IInfo) => course.teacher.id !== RootState.auth.id
-    return state.courses.filter(course => isMyCourses(course) && notTeachedByMe(course))
+    return state.courses.filter((course) => isMyCourses(course) && notTeachedByMe(course))
   },
   [GetterTypes.OTHER_COURSES](state, getters, RootState) {
     const myCourses = RootState.auth.courses
@@ -65,9 +65,9 @@ const actions = <ActionTree<State, RootState>>{
       throw error
     }
   },
-  async [ActionTypes.GET_COURSE_TAGS]({ commit }, id) {
+  async [ActionTypes.GET_COURSE_TAGS]({ commit }, payload: Tag.IQueryOption) {
     try {
-      const { data } = await agent.Tag.getList({ course: id })
+      const { data } = await agent.Tag.getList(payload)
       commit(MutationTypes.SET_COURSE_TAGS, data.data)
     } catch (error) {
       console.log('[vuex/course/getCourseTags] error', error)

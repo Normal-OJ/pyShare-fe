@@ -3,8 +3,8 @@
     v-if="prob"
     :prob="prob"
     :tags="courseTags"
-    :isEdit="isEdit"
-    :isLoading="isLoading"
+    :is-edit="isEdit"
+    :is-loading="isLoading"
     :datasets="$route.query.datasets ? problemDatasets : []"
     @submit="handleSubmit"
     @delete-problem="deleteProblem"
@@ -13,8 +13,6 @@
 </template>
 
 <script>
-import Spinner from '@/components/UI/Spinner'
-import SetProblems from '@/components/Course/Problems/SetProblems'
 import { mapState } from 'vuex'
 
 const OPERATION = {
@@ -33,12 +31,28 @@ const initialProb = {
 }
 
 export default {
-  components: { Spinner, SetProblems },
+  beforeRouteLeave(to, from, next) {
+    if (this.submitSuccess) next()
+    else {
+      const answer = window.confirm('確定要離開嗎？未完成的編輯將不會儲存。')
+      if (answer) {
+        next()
+      } else {
+        next(false)
+      }
+    }
+  },
+
+  data: () => ({
+    submitSuccess: false,
+    isLoading: false,
+    prob: null,
+  }),
 
   computed: {
     ...mapState({
-      courseTags: state => state.course.courseTags,
-      problemDatasets: state => state.problem.problemDatasets,
+      courseTags: (state) => state.course.courseTags,
+      problemDatasets: (state) => state.problem.problemDatasets,
     }),
     isEdit() {
       return this.$route.params.operation === OPERATION.EDIT
@@ -55,12 +69,6 @@ export default {
     if (this.isEdit) this.getProblem(this.pid)
     else this.prob = { ...initialProb, course: this.courseId }
   },
-
-  data: () => ({
-    submitSuccess: false,
-    isLoading: false,
-    prob: null,
-  }),
 
   methods: {
     async getProblem(pid) {
@@ -86,13 +94,13 @@ export default {
         if (willAddAttachments.length > 0 || willImportAttachments.length > 0) {
           try {
             await Promise.all([
-              ...willAddAttachments.map(file => {
+              ...willAddAttachments.map((file) => {
                 const formData = new FormData()
                 formData.append('attachment', file)
                 formData.append('attachmentName', file.name)
                 return this.$agent.Problem.addAttachment(pid, formData)
               }),
-              ...willImportAttachments.map(file => {
+              ...willImportAttachments.map((file) => {
                 const formData = new FormData()
                 formData.append('attachmentId', file.id)
                 formData.append('attachmentName', file.filename)
@@ -109,7 +117,7 @@ export default {
         if (willRemoveAttachments.length > 0) {
           try {
             await Promise.all(
-              willRemoveAttachments.map(file => {
+              willRemoveAttachments.map((file) => {
                 const formData = new FormData()
                 formData.append('attachmentName', file.filename)
                 return this.$agent.Problem.removeAttachment(pid, formData)
@@ -154,18 +162,6 @@ export default {
         this.$rollbar.error('[views/SetProblems/deleteProblem]', error)
       }
     },
-  },
-
-  beforeRouteLeave(to, from, next) {
-    if (this.submitSuccess) next()
-    else {
-      const answer = window.confirm('確定要離開嗎？未完成的編輯將不會儲存。')
-      if (answer) {
-        next()
-      } else {
-        next(false)
-      }
-    }
   },
 }
 </script>

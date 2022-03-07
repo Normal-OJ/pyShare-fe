@@ -8,14 +8,19 @@
   >
     <v-list-item>
       <v-list-item-content>
-        <v-list-item-title class="text-h6">管理員介面</v-list-item-title>
+        <v-list-item-title class="text-h6">
+          管理員介面
+        </v-list-item-title>
         <v-list-item-subtitle style="font-family: monospace">
           ({{ currentCommit }})
         </v-list-item-subtitle>
       </v-list-item-content>
     </v-list-item>
     <v-divider />
-    <v-list dense :nav="!isMinify">
+    <v-list
+      dense
+      :nav="!isMinify"
+    >
       <v-list-item-group color="primary">
         <v-list-item
           v-for="{ label, icon, routeName } in navs"
@@ -34,9 +39,12 @@
       </v-list-item-group>
     </v-list>
 
-    <template v-slot:append>
+    <template #append>
       <v-divider />
-      <v-list dense :nav="!isMinify">
+      <v-list
+        dense
+        :nav="!isMinify"
+      >
         <v-list-item @click="isMinify = !isMinify">
           <v-list-item-icon>
             <v-icon>
@@ -78,7 +86,7 @@ export default {
   name: 'AdminSideNav',
   setup() {
     const isMinify = ref(false)
-    return { navs, isMinify, currentCommit: process.env.VUE_APP_GIT_SHA }
+    return { navs, isMinify, currentCommit: import.meta.env.VITE_APP_GIT_SHA }
   },
 }
 </script>

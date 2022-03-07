@@ -1,21 +1,29 @@
 <template>
-  <Profile v-if="!notFound" :id="$route.params.id" :user="user" :stats="stats" />
-  <div v-else class="d-flex flex-column align-center">
+  <Profile
+    v-if="!notFound"
+    :id="$route.params.id"
+    :user="user"
+    :stats="stats"
+  />
+  <div
+    v-else
+    class="d-flex flex-column align-center"
+  >
     <div class="text-h2 mt-16">
       查無此人 😢
     </div>
-    <v-btn class="mt-10" color="primary" @click="$router.go(-1)">
+    <v-btn
+      class="mt-10"
+      color="primary"
+      @click="$router.go(-1)"
+    >
       回上一頁
     </v-btn>
   </div>
 </template>
 
 <script>
-import Profile from '@/components/Profile/Profile'
-
 export default {
-  components: { Profile },
-
   data: () => ({
     notFound: false,
     stats: null,
@@ -30,7 +38,6 @@ export default {
   watch: {
     '$route.params.id': {
       handler() {
-        console.log('watch~')
         this.getUser(this.$route.params.id)
         this.getStats(this.$route.params.id)
       },

@@ -1,18 +1,42 @@
 <template>
-  <v-dialog v-model="dialog" width="750" persistent>
-    <template v-slot:activator="{ on, attrs }">
-      <v-btn class="ml-4" color="primary" dark v-bind="attrs" v-on="on" small>
-        <v-icon class="mr-1" small>mdi-pencil</v-icon>
+  <v-dialog
+    v-model="dialog"
+    width="750"
+    persistent
+  >
+    <template #activator="{ on, attrs }">
+      <v-btn
+        class="ml-4"
+        color="primary"
+        dark
+        v-bind="attrs"
+        small
+        v-on="on"
+      >
+        <v-icon
+          class="mr-1"
+          small
+        >
+          mdi-pencil
+        </v-icon>
         編輯
       </v-btn>
     </template>
 
     <v-card>
-      <v-toolbar dark color="primary" dense>
+      <v-toolbar
+        dark
+        color="primary"
+        dense
+      >
         <v-toolbar-title>編輯課程資訊</v-toolbar-title>
         <v-spacer />
         <v-toolbar-items>
-          <v-btn icon dark @click="dialog = false">
+          <v-btn
+            icon
+            dark
+            @click="dialog = false"
+          >
             <v-icon>mdi-close</v-icon>
           </v-btn>
         </v-toolbar-items>
@@ -21,8 +45,8 @@
       <v-card-text class="mt-8 text--primary">
         <v-form ref="form">
           <v-text-field
-            label="課程名稱"
             v-model.trim="name"
+            label="課程名稱"
             :rules="nameRules"
             outlined
             dense
@@ -31,16 +55,33 @@
           />
           <v-row>
             <v-col>
-              <v-select label="學年度" v-model="year" :items="years" outlined dense />
+              <v-select
+                v-model="year"
+                label="學年度"
+                :items="years"
+                outlined
+                dense
+              />
             </v-col>
             <v-col>
-              <v-select label="學期" v-model="semester" :items="semesters" outlined dense />
+              <v-select
+                v-model="semester"
+                label="學期"
+                :items="semesters"
+                outlined
+                dense
+              />
             </v-col>
           </v-row>
         </v-form>
 
-        <div class="text-h6">課程狀態</div>
-        <v-row justify="space-between" no-gutters>
+        <div class="text-h6">
+          課程權限
+        </div>
+        <v-row
+          justify="space-between"
+          no-gutters
+        >
           <v-card
             v-for="{ status, icon, title, subtitle } in statusOptions"
             :key="status"
@@ -48,24 +89,39 @@
             class="pa-3"
             hover
             :ripple="false"
-            @click="checkedOption = status"
             :style="{
               border: checkedOption === status ? 'solid 3px var(--v-primary-base)' : null,
             }"
+            @click="checkedOption = status"
           >
             <div class="d-flex flex-column align-center">
-              <v-icon size="54" :color="checkedOption === status ? 'primary' : null">
+              <v-icon
+                size="54"
+                :color="checkedOption === status ? 'primary' : null"
+              >
                 {{ icon }}
               </v-icon>
-              <div class="text-h6">{{ title }}</div>
-              <div class="text-subtitle-1">{{ subtitle }}</div>
+              <div class="text-h6">
+                {{ title }}
+              </div>
+              <div class="text-subtitle-1">
+                {{ subtitle }}
+              </div>
             </div>
           </v-card>
         </v-row>
 
-        <div class="text-h6 mt-8">課程簡介</div>
-        <v-row justify="space-between" no-gutters>
-          <v-textarea v-model="description" outlined />
+        <div class="text-h6 mt-8">
+          課程簡介
+        </div>
+        <v-row
+          justify="space-between"
+          no-gutters
+        >
+          <v-textarea
+            v-model="description"
+            outlined
+          />
         </v-row>
       </v-card-text>
 
@@ -94,21 +150,6 @@ export default {
   props: {
     info: Object,
   },
-  watch: {
-    info: {
-      handler() {
-        if (!this.info) return
-        this.name = this.info.name
-        this.year = this.info.year
-        this.semester = this.info.semester
-        this.checkedOption = this.info.status
-        this.description = this.info.description
-        this.teacher = this.info.teacher.id
-      },
-      immediate: true,
-      deep: true,
-    },
-  },
 
   data: () => ({
     dialog: false,
@@ -116,9 +157,9 @@ export default {
     name: null,
     teacher: null,
     nameRules: [
-      val => !!val || '請輸入課程名稱',
-      val => RegExp(/^[\u4E00-\u9FCCA-Za-z0-9_.-\s]+$/).test(val) || '課程名稱包含非法字元',
-      val => val.length >= 3 || '長度至少三個字元',
+      (val) => !!val || '請輸入課程名稱',
+      (val) => RegExp(/^[\u4E00-\u9FCCA-Za-z0-9_.-\s]+$/).test(val) || '課程名稱包含非法字元',
+      (val) => val.length >= 3 || '長度至少三個字元',
     ],
     year: 109,
     semester: 2,
@@ -132,6 +173,21 @@ export default {
   computed: {
     courseId() {
       return this.$route.params.id
+    },
+  },
+  watch: {
+    info: {
+      handler() {
+        if (!this.info) return
+        this.name = this.info.name
+        this.year = this.info.year
+        this.semester = this.info.semester
+        this.checkedOption = this.info.status
+        this.description = this.info.description
+        this.teacher = this.info.teacher.id
+      },
+      immediate: true,
+      deep: true,
     },
   },
 

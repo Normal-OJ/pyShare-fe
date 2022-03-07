@@ -11,7 +11,7 @@ test:
   image: node:14-alpine
   script:
     - npm i --no-optional
-    - npm run lint -- --no-fix --max-warnings 0
+    - npm run lint -- --no-fix
     - npm run test:unit
 
 build:

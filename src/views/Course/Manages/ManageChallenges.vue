@@ -10,17 +10,18 @@
 </template>
 
 <script>
-import ManageChallenges from '@/components/Course/Manages/ManageChallenges'
 import { mapActions, mapGetters, mapState } from 'vuex'
 import { GetterTypes } from '@/store/getter-types'
 import { ActionTypes } from '@/store/action-types'
 
 export default {
-  components: { ManageChallenges },
+  data: () => ({
+    isWaiting: true,
+  }),
 
   computed: {
     ...mapState({
-      tags: state => state.course.courseTags,
+      tags: (state) => state.course.courseTags,
     }),
     ...mapGetters({
       challenges: GetterTypes.CHALLENGES,
@@ -29,10 +30,6 @@ export default {
       return { course: this.$route.params.id }
     },
   },
-
-  data: () => ({
-    isWaiting: true,
-  }),
 
   created() {
     this.fetchData()

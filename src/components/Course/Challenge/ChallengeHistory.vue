@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-simple-table>
-      <template v-slot:default>
+      <template #default>
         <thead>
           <tr>
             <th>上傳時間</th>
@@ -14,17 +14,35 @@
             v-for="({ timestamp, judge_result, code, stderr, stdout }, index) in submissions"
             :key="timestamp"
           >
-            <td>{{ $formattedTime(timestamp) }}</td>
+            <td>
+              <v-tooltip right>
+                <template #activator="{ on, attr }">
+                  <span
+                    v-bind="attr"
+                    v-on="on"
+                  >{{ $timeFromNow(timestamp) }}</span>
+                </template>
+                <span>{{ $formattedTime(timestamp) }}</span>
+              </v-tooltip>
+            </td>
             <td class="text-body-2">
-              <pre v-if="judge_result !== undefined" :style="{ color: COLOR[judge_result + 1] }">{{
+              <pre
+                v-if="judge_result !== undefined"
+                :style="{ color: COLOR[judge_result + 1] }"
+              >{{
                 STATUS[judge_result + 1]
               }}</pre>
               <Spinner v-else />
             </td>
             <td>
               <v-dialog v-model="dialog[index]">
-                <template v-slot:activator="{ on, attrs }">
-                  <v-btn color="primary" text v-bind="attrs" v-on="on">
+                <template #activator="{ on, attrs }">
+                  <v-btn
+                    color="primary"
+                    text
+                    v-bind="attrs"
+                    v-on="on"
+                  >
                     檢視
                   </v-btn>
                 </template>
@@ -32,13 +50,19 @@
                   <v-card-title>
                     <div>{{ $formattedTime(timestamp) }}</div>
                     <v-spacer />
-                    <v-btn icon @click="$set(dialog, index, false)"
-                      ><v-icon>mdi-close</v-icon></v-btn
+                    <v-btn
+                      icon
+                      @click="$set(dialog, index, false)"
                     >
+                      <v-icon>mdi-close</v-icon>
+                    </v-btn>
                   </v-card-title>
-                  <CodeEditor :value="code" readOnly />
+                  <CodeEditor
+                    :value="code"
+                    read-only
+                  />
                   <ChallengeResult
-                    :judgeResult="judge_result"
+                    :judge-result="judge_result"
                     :code="code"
                     :stderr="stderr"
                     :stdout="stdout"
@@ -48,7 +72,9 @@
             </td>
           </tr>
           <tr v-if="submissions.length === 0">
-            <td colspan="3">尚無繳交紀錄</td>
+            <td colspan="3">
+              尚無繳交紀錄
+            </td>
           </tr>
         </tbody>
         <Spinner v-else />
@@ -58,16 +84,11 @@
 </template>
 
 <script>
-import CodeEditor from '@/components/UI/CodeEditor'
-import ChallengeResult from './ChallengeResult'
-import Spinner from '@/components/UI/Spinner.vue'
-
 export default {
-  components: { CodeEditor, ChallengeResult, Spinner },
-
   props: {
     comment: {
       type: Object,
+      required: true,
     },
   },
 
@@ -105,13 +126,14 @@ export default {
     comment: {
       handler() {
         if (this.comment && this.comment.submissions && this.comment.submissions.length > 0) {
-          Promise.all(this.comment.submissions.map(sid => this.$agent.Submission.get(sid))).then(
-            resp => {
+          Promise.all(this.comment.submissions.map((sid) => this.$agent.Submission.get(sid))).then(
+            (resp) => {
               this.submissions = resp.map((r, idx) => ({
                 ...r.data.data,
                 id: this.comment.submissions[idx],
               }))
-              this.isSubmissionPending = this.submissions.some(s => s.judge_result === undefined)
+              this.submissions.reverse()
+              this.isSubmissionPending = this.submissions.some((s) => s.judge_result === undefined)
             },
           )
           this.dialog = new Array(this.comment.submissions.length).fill(false)
@@ -125,7 +147,7 @@ export default {
 
   created() {
     this.pollingSubmission = setInterval(
-      that => {
+      (that) => {
         if (that.isSubmissionPending) {
           that.fetchSubmission()
         }
@@ -137,14 +159,14 @@ export default {
 
   methods: {
     fetchSubmission() {
-      const fetchIds = this.submissions.filter(s => s.judge_result === undefined).map(s => s.id)
+      const fetchIds = this.submissions.filter((s) => s.judge_result === undefined).map((s) => s.id)
       if (!fetchIds || fetchIds.length === 0) {
         this.isSubmissionPending = false
         return
       }
-      Promise.all(fetchIds.map(sid => this.$agent.Submission.get(sid))).then(resp => {
+      Promise.all(fetchIds.map((sid) => this.$agent.Submission.get(sid))).then((resp) => {
         resp.forEach((r, idx) => {
-          const pos = this.submissions.findIndex(s => s.id === fetchIds[idx])
+          const pos = this.submissions.findIndex((s) => s.id === fetchIds[idx])
           this.$set(this.submissions, pos, { ...r.data.data, id: fetchIds[idx] })
         })
       })

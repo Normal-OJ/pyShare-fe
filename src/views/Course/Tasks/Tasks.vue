@@ -6,14 +6,6 @@
       </div>
       <v-spacer />
       <template v-if="canWriteCourse">
-        <!-- <v-btn
-          color="primary"
-          :to="{ name: 'courseManageTasks' }"
-          class="mr-3"
-          outlined
-        >
-          管理任務
-        </v-btn> -->
         <v-btn
           color="success"
           :to="{ name: 'courseSetTasks', params: { operation: 'new' } }"
@@ -48,6 +40,37 @@
                 {{ ' - ' }}
                 {{ $formattedTime(task.endsAt) }}
               </span>
+
+              <v-menu
+                bottom
+                right
+              >
+                <template #activator="{ on, attrs }">
+                  <v-btn
+                    v-if="canWriteCourse"
+                    class="ml-3"
+                    icon
+                    v-bind="attrs"
+                    v-on="on"
+                  >
+                    <v-icon>mdi-dots-horizontal</v-icon>
+                  </v-btn>
+                </template>
+                <v-list>
+                  <v-list-item
+                    :to="{
+                      name: 'courseSetTasks',
+                      params: { operation: 'edit' },
+                      query: { tid: task.id },
+                    }"
+                  >
+                    <v-list-item-title>編輯</v-list-item-title>
+                  </v-list-item>
+                  <v-list-item @click="deleteTask(task.id)">
+                    <v-list-item-title>刪除</v-list-item-title>
+                  </v-list-item>
+                </v-list>
+              </v-menu>
             </div>
             <v-list-item-title class="text-h6 mb-1">
               {{ task.title }}
@@ -64,6 +87,20 @@
           :task="task"
         />
       </v-card>
+
+      <div
+        v-if="tasks.length === 0"
+        class="d-flex flex-column align-center justify-center"
+      >
+        <div class="text-subtitle-1 my-8">
+          目前還沒有任何任務
+        </div>
+        <v-img
+          :src="require('@/assets/images/noData.svg')"
+          max-width="600"
+          contain
+        />
+      </div>
     </template>
     <spinner v-else />
   </v-container>
@@ -157,6 +194,17 @@ export default {
         return REQ_LABEL[req._cls](
           req.required_number, req.progress[0], req.progress[1], this.canWriteCourse,
         )
+      }
+    },
+    async deleteTask(tid) {
+      if (!confirm('確定要刪除此任務？')) return
+      try {
+        await this.$agent.Task.delete(tid)
+        this.$alertSuccess('刪除任務成功。')
+        this.getTasks()
+      } catch (error) {
+        this.$alertFail('刪除任務失敗。')
+        this.$rollbar.error('[views/SetTasks/deleteTask]', error)
       }
     },
   },

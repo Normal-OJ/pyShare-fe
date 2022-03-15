@@ -125,40 +125,66 @@ export default {
           startsAt: dayjs(newTask.startsAtDate + newTask.startsAtTime).toISOString(),
           endsAt: dayjs(newTask.endsAtDate + newTask.endsAtTime).toISOString(),
         }
-        const result = await this.$agent.Task.create(body)
-        const newId = result.data.data.id
-        const requirementRequests = newTask.requirements.map((r) => ({
-          type: r.type,
-          body: {
-            problems: typeof r.problems === 'number' ? [r.problems] : r.problems,
-            problem: r.problem,
-            requiredNumber: r.requiredNumber,
-          },
-        }))
-        this.submitSuccess = true
-        try {
-          await Promise.all(
-            requirementRequests.map(
-              (r) => this.$agent.Task.createRequirement(newId, r.type, r.body),
-            ),
-          )
-          this.$alertSuccess(`${this.isEdit ? '更新' : '新增'}任務內容成功。`)
+        let result
+        if (this.isEdit) {
+          result = await this.$agent.Task.modify(this.task.id, body)
+          this.submitSuccess = true
+          try {
+            const requirementRequests = newTask.requirements.filter((r) => !r._id).map((r) => ({
+              type: r.type,
+              body: {
+                problems: typeof r.problems === 'number' ? [r.problems] : r.problems,
+                problem: r.problem,
+                requiredNumber: r.requiredNumber,
+                sync: r.sync,
+              },
+            }))
+            await Promise.all(
+              requirementRequests.map(
+                (r) => this.$agent.Task.createRequirement(newTask.id, r.type, r.body),
+              ),
+            )
+            const willDeleteRequirements = newTask.requirements.filter((r) => r.willDelete)
+            await Promise.all(
+              willDeleteRequirements.map((r) => this.$agent.Task.deleteRequirement(r._id)),
+            )
+            this.$alertSuccess('更新任務內容成功。')
+          } catch (error) {
+            this.$alertFail('更新子任務失敗。')
+            this.$rollbar.error('[views/SetTasks/handleSubmit/requirement]', error)
+          }
           this.$router.push({
             name: 'courseTasks',
             params: { id: this.courseId },
           })
-        } catch (error) {
-          this.$alertFail(`${this.isEdit ? '更新' : '新增'}任務要求失敗。`)
-          this.$rollbar.error('[views/SetTasks/handleSubmit/requirement]', error)
+        } else {
+          result = await this.$agent.Task.create(body)
+          const newId = result.data.data.id
+          const requirementRequests = newTask.requirements.map((r) => ({
+            type: r.type,
+            body: {
+              problems: typeof r.problems === 'number' ? [r.problems] : r.problems,
+              problem: r.problem,
+              requiredNumber: r.requiredNumber,
+              sync: r.sync,
+            },
+          }))
+          this.submitSuccess = true
+          try {
+            await Promise.all(
+              requirementRequests.map(
+                (r) => this.$agent.Task.createRequirement(newId, r.type, r.body),
+              ),
+            )
+            this.$alertSuccess('新增任務內容成功。')
+          } catch (error) {
+            this.$alertFail('新增子任務失敗。')
+            this.$rollbar.error('[views/SetTasks/handleSubmit/requirement]', error)
+          }
           this.$router.push({
             name: 'courseTasks',
             params: { id: this.courseId },
           })
-          // this.$router.push({
-          //   name: 'courseSetTasks',
-          //   params: { id: this.courseId, operation: 'edit' },
-          //   query: { tid: this.tid || newId },
-          // })
         }
       } catch (error) {
         this.$alertFail(`${this.isEdit ? '更新' : '新增'}任務內容失敗。`)

@@ -17,6 +17,7 @@ export const INIT_REQUIREMENT = {
   problems: [],
   problem: null,
   requiredNumber: 1,
+  willDelete: false,
   acceptance: 0, // 0: AC, 2: PENDING
   sync: false,
 }

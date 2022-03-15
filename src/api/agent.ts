@@ -234,7 +234,11 @@ const Task = {
   createRequirement: (id: Task.ID, type: Task.ReqType, body: Task.RequirementCreateBody) =>
     fetcher.post(`/task/${id}/${REQ_TYPE_ROUTE[type]}`, body),
 
-  delete: () => new Promise((resolve, reject) => reject('not implement yet')),
+  deleteRequirement: (id: Task.ReqID) => fetcher.delete(`/requirement/${id}`),
+
+  modify: (id: Task.ID, body: Task.ICreateBody) => fetcher.put(`/task/${id}`, body),
+
+  delete: (id: Task.ID) => fetcher.delete(`/task/${id}`),
 
   getReq: (id: Task.ReqID): PysharePromise<any> => fetcher.get(`/requirement/${id}`),
 }

@@ -195,7 +195,7 @@
       class="my-2"
     >
       <div class="text-h6 mr-4">
-        任務要求
+        子任務
       </div>
       <v-btn
         color="primary"
@@ -215,8 +215,26 @@
       align="baseline"
     >
       <v-col
-        cols="6"
-        md="3"
+        v-if="req.willDelete"
+        cols="auto"
+      >
+        <v-tooltip bottom>
+          <template #activator="{ on, attrs }">
+            <v-icon
+              color="primary"
+              small
+              v-bind="attrs"
+              v-on="on"
+            >
+              mdi-information
+            </v-icon>
+          </template>
+          <span>刪除的子任務會在使用者按下「更新任務」時執行刪除動作。</span>
+        </v-tooltip>
+        待刪除
+      </v-col>
+      <v-col
+        cols="3"
         class="px-1"
       >
         <v-select
@@ -230,8 +248,7 @@
       </v-col>
       <v-col
         v-if="newTask.requirements[index].type === REQ_TYPE.SOLVE_OJ_PROBLEM"
-        cols="6"
-        md="3"
+        cols="3"
         class="px-1"
       >
         <v-select
@@ -247,8 +264,7 @@
       </v-col>
       <v-col
         v-if="newTask.requirements[index].type === REQ_TYPE.LEAVE_COMMENT"
-        cols="6"
-        md="3"
+        cols="3"
         class="px-1"
       >
         <v-select
@@ -264,8 +280,7 @@
       </v-col>
       <v-col
         v-if="newTask.requirements[index].type !== REQ_TYPE.SOLVE_OJ_PROBLEM"
-        cols="6"
-        md="3"
+        cols="1"
         class="px-1"
       >
         <v-text-field
@@ -278,18 +293,45 @@
         />
       </v-col>
       <v-col
-        cols="6"
-        md="3"
+        v-if="newTask.requirements[index].sync != null"
+        cols="auto"
+        class="px-1"
+      >
+        <v-checkbox
+          v-model="newTask.requirements[index].sync"
+          class="pt-0 mt-0"
+          hide-details
+          v-on="on"
+        >
+          <template #label>
+            <v-tooltip bottom>
+              <template #activator="{ on, attrs }">
+                <div
+                  v-bind="attrs"
+                  v-on="on"
+                >
+                  <v-icon small>
+                    mdi-help-circle
+                  </v-icon>
+                  溯及既往
+                </div>
+              </template>
+              <span>若勾選，將會連開始時間前的繳交紀錄一併計算</span>
+            </v-tooltip>
+          </template>
+        </v-checkbox>
+      </v-col>
+      <v-col
+        cols="auto"
         class="px-1"
       >
         <v-btn
           small
           text
           color="error"
-          :disabled="newTask.requirements[index].readonly"
           @click="deleteReq(index)"
         >
-          移除
+          {{ req.willDelete ? '復原' : '移除' }}
         </v-btn>
         <v-tooltip
           right
@@ -305,7 +347,7 @@
               mdi-alert-circle
             </v-icon>
           </template>
-          <span>已建立的需求無法編輯或刪除</span>
+          <span>已建立的子任務無法編輯，但可以刪除後另新增新子任務</span>
         </v-tooltip>
       </v-col>
     </v-row>
@@ -408,7 +450,14 @@ export default {
       this.cnt += 1
     },
     deleteReq(index) {
-      this.newTask.requirements.splice(index, 1)
+      if (this.isEdit) {
+        this.$set(this.newTask.requirements, index, {
+          ...this.newTask.requirements[index],
+          willDelete: !this.newTask.requirements[index].willDelete,
+        })
+      } else {
+        this.newTask.requirements.splice(index, 1)
+      }
     },
     deleteTask() {
       const result = window.confirm('確認要刪除嗎？')

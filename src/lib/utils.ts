@@ -10,7 +10,13 @@ const isSelf = (name: string) => {
   return name === username
 }
 
-export const hasPermission = async (
+const PERMISSION_CODE = {
+  'course': 'rwp',
+  'problem': 'rwdcsj',
+  'comment': 'rwdjs',
+}
+
+const hasPermission = async (
   resource: 'course' | 'problem' | 'comment',
   id: Course.ID | Problem.ID | _Comment.ID,
   requirement: string[],
@@ -20,15 +26,22 @@ export const hasPermission = async (
     if (!permissions[resource][id]) {
       await store.dispatch(ActionTypes.GET_PERMISSIONS, { resource, id })
     }
+    const hasP = []
+    for (let i=0; i<PERMISSION_CODE[resource].length; i++) {
+      if (permissions[resource][id] & 1) {
+        hasP.push(PERMISSION_CODE[resource][i])
+      }
+      permissions[resource][id] >>= 1
+    }
     // 物件 copy by sharing，這裡會吃到新的
-    return requirement.every((req) => permissions[resource][id].includes(req))
+    return requirement.every((req) => hasP.includes(req))
   } catch (error) {
     console.log('[lib/utils/hasPermission] error', error)
     return false
   }
 }
 
-export const alertSuccess = (text: string) => {
+const alertSuccess = (text: string) => {
   Vue.notify({
     group: 'alert',
     type: 'my-success',
@@ -36,7 +49,7 @@ export const alertSuccess = (text: string) => {
   })
 }
 
-export const alertFail = (text: string) => {
+const alertFail = (text: string) => {
   Vue.notify({
     group: 'alert',
     type: 'my-error',

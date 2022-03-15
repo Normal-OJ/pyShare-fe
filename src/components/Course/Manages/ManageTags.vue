@@ -5,35 +5,41 @@
         管理分類
       </div>
       <v-spacer />
-      <CreateTagModal
-        @submit-new-tags="
-          (tags, resolve, reject) => $emit('submit-new-tags', tags, resolve, reject)
-        "
-      />
     </v-row>
 
     <v-row>
       <v-col
         cols="12"
-        md="5"
+        md="6"
       >
-        <div class="text-h6">
-          課程分類
-        </div>
-        <div class="text-subtitle-1">
-          以下為在此課程內的主題可使用的分類
-        </div>
+        <v-row no-gutters>
+          <div class="flex flex-col">
+            <div class="text-h6">
+              主題分類
+            </div>
+            <div class="text-subtitle-1">
+              以下為在此課程內的主題可使用的分類
+            </div>
+          </div>
+          <v-spacer />
+          <CreateTagModal
+            title="新增主題分類"
+            :items="candidateProblemTags"
+            @submit="(tags, cb) => addCourseTags(tags, cb, TAG_CATES.NORMAL_PROBLEM)"
+          />
+        </v-row>
+
         <v-card
           class="my-6"
           tile
         >
-          <v-list>
+          <v-list v-if="courseProblemTags">
             <div
-              v-show="courseTags.length === 0"
+              v-show="courseProblemTags.length === 0"
               class="text-center py-4"
             >
               <div class="text-body-2 mb-2">
-                課程沒有可用的分類，快加入一些吧！
+                課程沒有可用的主題分類，快加入一些吧！
               </div>
               <v-img
                 :src="require('@/assets/images/emptyBox.svg')"
@@ -42,7 +48,7 @@
               />
             </div>
             <v-list-item
-              v-for="item in courseTags"
+              v-for="item in courseProblemTags"
               :key="item"
             >
               <v-list-item-content>
@@ -60,175 +66,116 @@
                     small="small"
                     icon
                     v-on="on"
-                    @click="handleSubmitPatchTags(PATCH_OPTION.POP, [item])"
+                    @click="removeCourseTag(item, TAG_CATES.NORMAL_PROBLEM)"
                   >
                     <v-icon>mdi-close</v-icon>
                   </v-btn>
                 </template>
-                <span>取消授權</span>
+                <span>移除</span>
               </v-tooltip>
             </v-list-item>
           </v-list>
+          <spinner v-else />
         </v-card>
       </v-col>
 
       <v-col
         cols="12"
-        md="2"
+        md="6"
       >
-        <v-row
-          class="hidden-sm-and-down"
-          :style="{ height: '40vh' }"
-        />
-        <v-row justify="center">
-          <v-tooltip bottom>
-            <template #activator="{ on }">
-              <v-btn
-                color="primary"
-                large="large"
-                :disabled="selectedTags && selectedTags.length === 0"
-                v-on="on"
-                @click="handleSubmitPatchTags(PATCH_OPTION.PUSH, selectedTags)"
-              >
-                <v-icon>mdi-transfer-left</v-icon>
-              </v-btn>
-            </template>
-            <span>將選取的分類授權給此課程使用</span>
-          </v-tooltip>
+        <v-row no-gutters>
+          <div class="flex flex-col">
+            <div class="text-h6">
+              測驗分類
+            </div>
+            <div class="text-subtitle-1">
+              以下為在此課程內的測驗可使用的分類
+            </div>
+          </div>
+          <v-spacer />
+          <CreateTagModal
+            title="新增測驗分類"
+            :items="candidateChallengeTags"
+            @submit="(tags, cb) => addCourseTags(tags, cb, TAG_CATES.OJ_PROBLEM)"
+          />
         </v-row>
-      </v-col>
-
-      <v-col
-        cols="12"
-        md="5"
-      >
-        <div class="text-h6">
-          其他分類
-        </div>
-        <div class="text-subtitle-1">
-          平台所有的分類，可以自由新增分類
-        </div>
         <v-card
           class="my-6"
           tile
         >
-          <v-list>
-            <v-list-item @click="toggleAll">
-              <v-list-item-action>
-                <v-icon :color="iconColor">
-                  {{ icon }}
-                </v-icon>
-              </v-list-item-action>
-              <v-list-item-title class="py-1">
-                全選
-              </v-list-item-title>
-            </v-list-item>
-            <v-divider />
-            <v-list-item-group
-              v-model="selectedTags"
-              multiple="multiple"
+          <v-list v-if="courseChallengeTags">
+            <div
+              v-show="courseChallengeTags.length === 0"
+              class="text-center py-4"
             >
-              <div
-                v-show="candidateTags.length === 0"
-                class="text-center py-4"
-              >
-                <div class="text-body-2 mb-2">
-                  沒有其他分類了
-                </div>
-                <v-img
-                  :src="require('@/assets/images/noData.svg')"
-                  max-height="100"
-                  contain
-                />
+              <div class="text-body-2 mb-2">
+                課程沒有可用的測驗分類，快加入一些吧！
               </div>
-              <v-list-item
-                v-for="item in candidateTags"
-                :key="item"
-                :value="item"
-                inactive
-                :ripple="false"
-              >
-                <template #default="{ active, toggle }">
-                  <v-list-item-action>
-                    <v-checkbox
-                      :input-value="active"
-                      :true-value="item"
-                      color="primary"
-                      @click.capture.stop="toggle"
-                    />
-                  </v-list-item-action>
-                  <v-list-item-content>
-                    <div class="d-flex align-center">
-                      <v-list-item-title>
-                        <ColorLabel
-                          :tag="item"
-                          small
-                        />
-                      </v-list-item-title>
-                      <v-spacer />
-                      <v-tooltip
-                        bottom
-                        :disabled="!removables || !removables[item]"
-                      >
-                        <template #activator="{ on, attrs }">
-                          <div v-on="on">
-                            <v-btn
-                              color="error"
-                              icon
-                              v-bind="attrs"
-                              :disabled="removables && removables[item]"
-                              small
-                              @click="deleteTag(item)"
-                            >
-                              <v-icon>mdi-trash-can</v-icon>
-                            </v-btn>
-                          </div>
-                        </template>
-                        <span>
-                          有其他課程使用此分類，故無法刪除
-                        </span>
-                      </v-tooltip>
-                    </div>
-                  </v-list-item-content>
+              <v-img
+                :src="require('@/assets/images/emptyBox.svg')"
+                max-height="100"
+                contain
+              />
+            </div>
+            <v-list-item
+              v-for="item in courseChallengeTags"
+              :key="item"
+            >
+              <v-list-item-content>
+                <v-list-item-title>
+                  <ColorLabel
+                    :tag="item"
+                    small
+                  />
+                </v-list-item-title>
+              </v-list-item-content>
+              <v-tooltip left>
+                <template #activator="{ on }">
+                  <v-btn
+                    color="secondary"
+                    small="small"
+                    icon
+                    v-on="on"
+                    @click="removeCourseTag(item, TAG_CATES.OJ_PROBLEM)"
+                  >
+                    <v-icon>mdi-close</v-icon>
+                  </v-btn>
                 </template>
-              </v-list-item>
-            </v-list-item-group>
+                <span>移除</span>
+              </v-tooltip>
+            </v-list-item>
           </v-list>
+          <spinner v-else />
         </v-card>
       </v-col>
     </v-row>
-    <Popup
-      :is-show="isPopupActive && !!errorMsg"
-      :title="errorMsg"
-      @click="isPopupActive = false"
-    />
   </v-container>
 </template>
 
 <script>
-const PATCH_OPTION = {
-  PUSH: 'push',
-  POP: 'pop',
-}
-const initialPatchTagsBody = {
-  [PATCH_OPTION.PUSH]: [],
-  [PATCH_OPTION.POP]: [],
-}
+import { TAG_CATES } from '@/constants/tag'
+import Spinner from '@/components/UI/Spinner.vue'
 
 export default {
   name: 'ManageTags',
+  components: { Spinner },
 
   props: {
-    courseTags: {
+    courseProblemTags: {
       type: Array,
-      required: true,
+      default: () => undefined,
     },
-    allTags: {
+    courseChallengeTags: {
       type: Array,
-      required: true,
+      default: () => undefined,
     },
-    removables: {
-      type: Object,
+    problemTags: {
+      type: Array,
+      default: () => undefined,
+    },
+    challengeTags: {
+      type: Array,
+      default: () => undefined,
     },
     errorMsg: {
       type: String,
@@ -238,47 +185,33 @@ export default {
 
   data: () => ({
     selectedTags: [],
-    newTagDialog: false,
-    isPopupActive: true,
-    newTagNames: '',
-    PATCH_OPTION,
+    TAG_CATES,
   }),
 
   computed: {
-    candidateTags() {
-      return this.allTags.filter((tag) => !this.courseTags.includes(tag))
+    candidateProblemTags() {
+      if (!this.problemTags || !this.courseProblemTags) return []
+      return this.problemTags.filter((tag) => !this.courseProblemTags.includes(tag))
     },
-    selectAll() {
-      return this.selectedTags.length === this.candidateTags.length
-    },
-    selectSome() {
-      return this.selectedTags.length > 0 && !this.selectAll
-    },
-    icon() {
-      if (this.selectAll) return 'mdi-close-box'
-      if (this.selectSome) return 'mdi-minus-box'
-      return 'mdi-checkbox-blank-outline'
-    },
-    iconColor() {
-      return this.selectedTags.length > 0 ? 'indigo darken-4' : ''
+    candidateChallengeTags() {
+      if (!this.challengeTags || !this.courseChallengeTags) return []
+      return this.challengeTags.filter((tag) => !this.courseChallengeTags.includes(tag))
     },
   },
 
   methods: {
-    async toggleAll() {
-      await this.$nextTick()
-      this.selectedTags = this.selectAll ? [] : this.candidateTags.slice()
+    addCourseTags({ existTags, newTags }, cb, category) {
+      new Promise((resolve) => {
+        const body = { tags: newTags, category }
+        this.$emit('submit-new-tags', body, resolve)
+      }).then(() => {
+        const body = { pop: [], push: [...existTags, ...newTags], category }
+        this.$emit('submit-patch-tags', body)
+      }).then(cb)
     },
-    handleSubmitPatchTags(option, tags) {
-      const body = { ...initialPatchTagsBody, [option]: tags }
+    removeCourseTag(tag, category) {
+      const body = { push: [], pop: [tag], category }
       this.$emit('submit-patch-tags', body)
-    },
-    deleteTag(tag) {
-      new Promise((resolve, reject) => this.$emit('delete-tags', [tag], resolve, reject)).then(
-        () => {
-          this.selectedTags = this.selectedTags.filter((t) => t !== tag)
-        },
-      )
     },
   },
 }

@@ -25,6 +25,27 @@ fetcher.interceptors.response.use(
   },
 )
 
+export const fetcherWithUnpackedResponse = axios.create({
+  baseURL: config.API_BASE_URL,
+})
+
+fetcherWithUnpackedResponse.interceptors.response.use(
+  (res) => res.data.data,
+  (error) => {
+    if (error?.response) {
+      // catch Authorization Expired
+      if (
+        error.response?.data.message === 'Authorization Expired' ||
+        error.response?.data.message === 'Invalid Token'
+      ) {
+        store.commit(MutationTypes.SET_IS_SHOW_LOGOUT_MODAL, true)
+      }
+      throw error.response.data
+    }
+    throw error
+  },
+)
+
 // 因為後端在每個 response 裡面的 data 又塞了一個 data，
 // 所以這裡複寫 AxiosResponse 裡面的 data，改成 data: { data: <ACTUAL_DATA> }
 interface PyshareResponse<T = any> extends Omit<AxiosResponse<T>, 'data'> {

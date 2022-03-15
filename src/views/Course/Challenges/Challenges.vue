@@ -14,6 +14,7 @@
 import { mapActions, mapGetters, mapState } from 'vuex'
 import { GetterTypes } from '@/store/getter-types'
 import { ActionTypes } from '@/store/action-types'
+import { TAG_CATES } from '@/constants/tag'
 
 export default {
   data: () => ({
@@ -47,7 +48,10 @@ export default {
     }),
     fetchData() {
       this.isLoading = true
-      Promise.all([this.getProblems(this.paramsWithCourse), this.getTags(this.courseId)])
+      Promise.all([
+        this.getProblems(this.paramsWithCourse),
+        this.getTags({ course: this.courseId, category: TAG_CATES.OJ_PROBLEM }),
+      ])
         .catch(() => {
           this.isError = true
         })

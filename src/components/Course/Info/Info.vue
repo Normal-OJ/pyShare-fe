@@ -71,11 +71,11 @@
         </template>
       </v-simple-table>
     </div>
-    <div class="text-h5 mt-4">
+    <!-- <div class="text-h5 mt-4">
       統計
-    </div>
+    </div> -->
     <Spinner v-if="!info" />
-    <div
+    <!-- <div
       v-else
       class="mt-4 d-flex justify-space-around flex-wrap"
     >
@@ -103,7 +103,7 @@
           {{ info.numOfComments }}
         </div>
       </div>
-    </div>
+    </div> -->
     <template v-if="canParticipateCourse">
       <div class="text-h5 mt-4">
         成員

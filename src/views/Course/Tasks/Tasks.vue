@@ -173,7 +173,18 @@ export default {
       const requirements = resps.map((resp) => ({
         ...resp.data.data,
         description: this.getRequirementDescription(resp.data.data),
-      }))
+      })).sort((a, b) => {
+        if (a._cls === b._cls) {
+          if (a._cls === REQ_TYPE.SOLVE_OJ_PROBLEM) {
+            return a.problems[0] - b.problems[0]
+          } else if (a._cls === REQ_TYPE.LEAVE_COMMENT) {
+            return a.problem - b.problem
+          } else {
+            return a.requiredNumber - b.requiredNumber
+          }
+        }
+        return a._cls - b._cls
+      })
       this.$set(this.tasks, index, { ...task, requirements })
     },
     getStatusLabelAndColor(startTime, endTime) {

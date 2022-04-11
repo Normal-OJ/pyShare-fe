@@ -288,7 +288,8 @@ export default {
       required: true,
     },
     isAllowMultipleComments: {
-      required: null,
+      type: Boolean,
+      required: true,
     },
   },
   data() {
@@ -297,15 +298,13 @@ export default {
       searchText: '',
       statusOptions: Object.keys(SUBMISSION_STATUS).map((s) => Number(s)),
       statusFilter: Object.keys(SUBMISSION_STATUS).map((s) => Number(s)),
+      sortby: 'SHOW_MINE',
     }
   },
   computed: {
     ...mapState({
       username: (state) => state.auth.username,
     }),
-    sortby() {
-      return this.SORT_BY.SHOW_MINE.value
-    },
     isDisabledNewComment() {
       if (this.isAllowMultipleComments) return false
       return this.comments.some((comment) => comment.author.username === this.username)

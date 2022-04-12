@@ -1,13 +1,12 @@
 <template>
   <v-container fluid>
-    <div class="d-flex">
+    <div class="d-flex mb-4">
       <div class="text-h5">
         測驗統計
       </div>
       <v-spacer />
       <v-btn
         color="primary"
-        class="mr-3"
         @click="downloadStats"
       >
         <v-icon class="mr-1">
@@ -92,10 +91,10 @@ export default {
     },
     headers() {
       return [
-        { text: '成員 \\ 題號', value: 'username' },
-        ...this.pids.map((pid) => ({ text: pid, value: pid })),
-        { text: '完成題數', value: 'acCount' },
-        { text: '繳交次數', value: 'tryCount' },
+        { text: '成員 \\ 題號', value: 'username', width: '120px' },
+        ...this.pids.map((pid) => ({ text: pid, value: pid, width: '75px' })),
+        { text: '完成題數', value: 'acCount', width: '120px' },
+        { text: '繳交次數', value: 'tryCount', width: '120px' },
       ]
     },
     items() {
@@ -162,3 +161,17 @@ export default {
   },
 }
 </script>
+
+<style scoped>
+table > tbody > tr > td:nth-child(1),
+table > thead > tr > th:nth-child(1) {
+  position: sticky !important;
+  position: -webkit-sticky !important;
+  left: 0;
+  z-index: 9998;
+  background: white;
+}
+table > thead > tr > th:nth-child(1) {
+  z-index: 9999;
+}
+</style>

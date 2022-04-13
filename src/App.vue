@@ -18,7 +18,7 @@ import { ActionTypes } from './store/action-types'
 export default Vue.extend({
   name: 'App',
 
-  created() {
+  beforeMount() {
     this.getJwt()
   },
 

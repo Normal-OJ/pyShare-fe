@@ -58,6 +58,10 @@
       </template>
     </v-row>
 
+    <div class="text-body-2">
+      使用勾選可以一次複製多個資料集
+    </div>
+
     <v-data-table
       v-model="selectedDatasets"
       :headers="headers"
@@ -131,7 +135,7 @@
               v-on="on"
               @click="cloneDataset([item])"
             >
-              <v-icon>mdi-table-arrow-right</v-icon>
+              <v-icon>mdi-content-copy</v-icon>
             </v-btn>
           </template>
           <span>複製這份資料</span>
@@ -303,7 +307,7 @@
             v-on="on"
             @click="cloneDataset(selectedDatasets)"
           >
-            <v-icon>mdi-table-arrow-right</v-icon>
+            <v-icon>mdi-content-copy</v-icon>
           </v-btn>
         </v-fab-transition>
       </template>

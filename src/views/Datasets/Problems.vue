@@ -47,13 +47,14 @@
         label="只顯示我的主題"
         class="mr-3"
       />
-      <!-- <v-btn color="success">
-        <v-icon class="mr-1">mdi-playlist-plus</v-icon>
-        新增主題
-      </v-btn> -->
     </v-row>
 
+    <div class="text-body-2">
+      使用勾選可以一次複製多個主題
+    </div>
+
     <v-data-table
+      v-model="selectedProblems"
       :headers="headers"
       :items="filteredProblems"
       :search="searchText"
@@ -62,6 +63,7 @@
       :loading="!problems"
       item-key="pid"
       style="width: 100%"
+      show-select
       show-expand
     >
       <template #item.title="{ item }">
@@ -206,10 +208,33 @@
     <CloneProblemModal
       :is-open="!!clonePid"
       :clone-pid="clonePid"
-      label="測驗"
+      label="主題"
       @success="clonePid = null"
       @close="clonePid = null"
     />
+
+    <v-tooltip top>
+      <template #activator="{ on, attrs }">
+        <v-fab-transition>
+          <v-btn
+            v-show="selectedProblems.length > 0"
+            class="mb-12"
+            absolute
+            bottom
+            fab
+            dark
+            v-bind="attrs"
+            color="primary"
+            style="left: 50%"
+            v-on="on"
+            @click="clonePid = selectedProblems.map((p) => p.pid)"
+          >
+            <v-icon>mdi-content-copy</v-icon>
+          </v-btn>
+        </v-fab-transition>
+      </template>
+      <span>複製已選擇的主題</span>
+    </v-tooltip>
   </v-container>
 </template>
 
@@ -220,6 +245,7 @@ import { TAG_CATES } from '@/constants/tag'
 export default {
   data: () => ({
     problems: null,
+    selectedProblems: [],
     searchText: '',
     selectedTags: [],
     tags: null,

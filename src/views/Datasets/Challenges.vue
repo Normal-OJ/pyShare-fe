@@ -47,13 +47,14 @@
         label="只顯示我的測驗"
         class="mr-3"
       />
-      <!-- <v-btn color="success">
-        <v-icon class="mr-1">mdi-plus</v-icon>
-        新增測驗
-      </v-btn> -->
     </v-row>
 
+    <div class="text-body-2">
+      使用勾選可以一次複製多個測驗
+    </div>
+
     <v-data-table
+      v-model="selectedChallenges"
       :headers="headers"
       :items="filteredChallenges"
       :search="searchText"
@@ -62,6 +63,7 @@
       :loading="!challenges"
       item-key="pid"
       show-expand
+      show-select
     >
       <template #item.title="{ item }">
         <div class="d-flex align-center py-3">
@@ -213,6 +215,29 @@
       @success="clonePid = null"
       @close="clonePid = null"
     />
+
+    <v-tooltip top>
+      <template #activator="{ on, attrs }">
+        <v-fab-transition>
+          <v-btn
+            v-show="selectedChallenges.length > 0"
+            class="mb-12"
+            absolute
+            bottom
+            fab
+            dark
+            v-bind="attrs"
+            color="primary"
+            style="left: 50%"
+            v-on="on"
+            @click="clonePid = selectedChallenges.map((p) => p.pid)"
+          >
+            <v-icon>mdi-content-copy</v-icon>
+          </v-btn>
+        </v-fab-transition>
+      </template>
+      <span>複製已選擇的測驗</span>
+    </v-tooltip>
   </v-container>
 </template>
 
@@ -224,6 +249,7 @@ import { TAG_CATES } from '@/constants/tag'
 export default {
   data: () => ({
     challenges: null,
+    selectedChallenges: [],
     searchText: '',
     selectedTags: [],
     tags: null,

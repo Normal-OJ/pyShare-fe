@@ -213,27 +213,19 @@ describe('Login.vue', () => {
    * 測試登入表單送出後是否正確 dispatch login
    */
   describe('Vuex', () => {
-    const { localVue, vuetify } = baseMountConfig()
     const mocks = { $agent: createMockAgent('School', 'getList', []) }
-    localVue.use(Vuex)
 
     it('should get vuex state (auth.id) via mapState.', async () => {
-      const state = {
-        auth: { id: 'mock_auth_id_in_vuex' },
-      }
-      const store = new Vuex.Store({ state })
-      const wrapper = mount(Login, { localVue, vuetify, store, mocks })
+      const store = { state: { auth: { id: 'mock_auth_id_in_vuex' } } }
+      const wrapper = mount(Login, { ...baseMountConfig(store), mocks })
       expect(wrapper.vm.id).toEqual('mock_auth_id_in_vuex')
     })
 
     it('should get updated vuex state (auth.id) via mapState after mutating state.', async () => {
-      const state = {
-        auth: { id: 1 },
-      }
-      const store = new Vuex.Store({
-        state,
+      const { localVue, vuetify, store } = { ...baseMountConfig({
+        state: { auth: { id: 1 } },
         mutations: { change: (state) => (state.auth.id = 2) },
-      })
+      }) }
       const wrapper = mount(Login, { localVue, vuetify, store, mocks })
       expect(wrapper.vm.id).toEqual(1)
       store.commit('change')
@@ -257,13 +249,11 @@ describe('Login.vue', () => {
         const actions = {
           login: jest.fn(() => new Promise((resolve) => resolve())),
         }
-        const store = new Vuex.Store({ actions })
+        const store = { actions }
         const data = () => ({ loginForm: payload, loginMethod })
         const $router = { push: jest.fn() }
         const wrapper = mount(Login, {
-          localVue,
-          vuetify,
-          store,
+          ...baseMountConfig(store),
           mocks: { ...mocks, $router, $route: { query: { redirectToPath: '' } } },
           data,
         })
@@ -283,13 +273,11 @@ describe('Login.vue', () => {
         const actions = {
           login: jest.fn(() => new Promise((resolve) => resolve())),
         }
-        const store = new Vuex.Store({ actions })
+        const store = { actions }
         const data = () => ({ loginForm: validLoginForm })
         const $router = { push: jest.fn() }
         const wrapper = mount(Login, {
-          localVue,
-          vuetify,
-          store,
+          ...baseMountConfig(store),
           mocks: { ...mocks, $router, $route: { query: { redirectToPath } } },
           data,
         })
@@ -311,9 +299,9 @@ describe('Login.vue', () => {
         const actions = {
           login: jest.fn(() => new Promise((_, reject) => reject({ message: 'Login Failed' }))),
         }
-        const store = new Vuex.Store({ actions })
+        const store = { actions }
         const data = () => ({ loginForm, loginMethod })
-        const wrapper = mount(Login, { localVue, vuetify, store, mocks, data })
+        const wrapper = mount(Login, { ...baseMountConfig(store), mocks, data })
         expect(wrapper.vm.$data.errorMsg).toEqual('')
         await wrapper.find(loginBtnId).trigger('click')
         expect(actions.login).toHaveBeenCalled()
@@ -330,9 +318,9 @@ describe('Login.vue', () => {
         const actions = {
           login: jest.fn(() => new Promise((_, reject) => reject({}))),
         }
-        const store = new Vuex.Store({ actions })
+        const store = { actions }
         const data = () => ({ loginForm: validLoginForm })
-        const wrapper = mount(Login, { localVue, vuetify, store, mocks, data })
+        const wrapper = mount(Login, { ...baseMountConfig(store), mocks, data })
         expect(wrapper.vm.$data.errorMsg).toEqual('')
         await wrapper.find(loginBtnId).trigger('click')
         expect(actions.login).toHaveBeenCalled()
@@ -344,13 +332,12 @@ describe('Login.vue', () => {
     )
 
     it('should not dispatch login with invalid form.', async () => {
-      const actions = { login: jest.fn() }
-      const store = new Vuex.Store({ actions })
+      const store = { actions: { login: jest.fn() } }
       // set password empty to make it invalid
       const data = () => ({ loginForm: { ...validLoginForm, password: '' } })
-      const wrapper = mount(Login, { localVue, vuetify, store, mocks, data })
+      const wrapper = mount(Login, { ...baseMountConfig(store), mocks, data })
       await wrapper.find(loginBtnId).trigger('click')
-      expect(actions.login).not.toHaveBeenCalled()
+      expect(store.actions.login).not.toHaveBeenCalled()
       expect(wrapper.vm.$data.isLoading).toEqual(false)
     })
   })

@@ -65,4 +65,10 @@ export default {
   border: 1px solid grey;
   text-align: left;
 }
+.CodeMirror-gutters {
+  left: 0 !important;
+}
+.CodeMirror-gutter-wrapper {
+  left: -30px !important;
+}
 </style>

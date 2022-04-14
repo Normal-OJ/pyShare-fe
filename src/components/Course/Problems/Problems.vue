@@ -78,21 +78,19 @@
         <router-link :to="{ name: 'courseProblem', params: { pid: item.pid } }">
           {{ item.title }}
         </router-link>
-        <template v-if="item.status === 0">
-          <v-tooltip bottom>
-            <template #activator="{ on, attrs }">
-              <v-icon
-                class="ml-1"
-                small
-                v-bind="attrs"
-                v-on="on"
-              >
-                mdi-minus-circle
-              </v-icon>
-            </template>
-            <span>隱藏的主題</span>
-          </v-tooltip>
-        </template>
+        <v-tooltip bottom>
+          <template #activator="{ on, attrs }">
+            <v-icon
+              class="ml-1"
+              small
+              v-bind="attrs"
+              v-on="on"
+            >
+              {{ item.status === 0 ? 'mdi-eye-off' : 'mdi-eye' }}
+            </v-icon>
+          </template>
+          <span>{{ item.status === 0 ? '對學生隱藏中' : '對學生顯示中' }}</span>
+        </v-tooltip>
         <template v-if="item.isTemplate && canWriteCourse">
           <v-tooltip bottom>
             <template #activator="{ on, attrs }">
@@ -146,6 +144,9 @@
             </v-btn>
           </template>
           <v-list>
+            <v-list-item @click="toggleStatus(item.pid, item.status === 0 ? 1 : 0)">
+              <v-list-item-title>{{ item.status === 0 ? '顯示' : '隱藏' }}</v-list-item-title>
+            </v-list-item>
             <v-list-item
               link
               :to="{
@@ -166,6 +167,15 @@
         </v-menu>
         <div class="hidden-md-and-down">
           <v-btn
+            class="mx-1"
+            color="primary"
+            small
+            :loading="isToggling === item.pid"
+            @click="toggleStatus(item.pid, item.status === 0 ? 1 : 0)"
+          >
+            <span>{{ item.status === 0 ? '顯示' : '隱藏' }}</span>
+          </v-btn>
+          <v-btn
             :to="{
               name: 'courseSetProblems',
               params: { operation: 'edit' },
@@ -175,12 +185,6 @@
             color="primary"
             small
           >
-            <v-icon
-              class="mr-1"
-              small
-            >
-              mdi-pencil
-            </v-icon>
             <span>編輯</span>
           </v-btn>
           <v-btn
@@ -189,12 +193,6 @@
             small
             @click="openCloneDialog(item.pid)"
           >
-            <v-icon
-              class="mr-1"
-              small
-            >
-              mdi-content-copy
-            </v-icon>
             <span>複製</span>
           </v-btn>
           <v-btn
@@ -203,12 +201,6 @@
             small
             @click="deleteProblem(item.pid)"
           >
-            <v-icon
-              class="mr-1"
-              small
-            >
-              mdi-trash-can
-            </v-icon>
             <span>刪除</span>
           </v-btn>
         </div>
@@ -291,6 +283,10 @@ export default {
       type: Boolean,
       required: true,
     },
+    isToggling: {
+      type: Number,
+      default: null,
+    },
   },
 
   data: () => ({
@@ -362,6 +358,9 @@ export default {
       if (result) {
         this.$emit('delete-problem', pid)
       }
+    },
+    toggleStatus(pid, status) {
+      this.$emit('toggle-status', pid, status)
     },
   },
 }

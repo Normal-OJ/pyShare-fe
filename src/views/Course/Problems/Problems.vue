@@ -5,10 +5,12 @@
     :loading="isLoading"
     :error="isError"
     :is-manage-enabled="isManageEnabled"
+    :is-toggling="isToggling"
     @update:isManageEnabled="(newVal) => isManageEnabled = newVal"
     @get-problems-by-tags="getProblemsByTags"
     @refetch-problems="fetchData"
     @delete-problem="deleteProblem"
+    @toggle-status="toggleStatus"
   />
 </template>
 
@@ -27,6 +29,7 @@ export default {
     isLoading: true,
     isError: false,
     isManageEnabled: false,
+    isToggling: null,
   }),
 
   computed: {
@@ -78,6 +81,19 @@ export default {
       } catch (error) {
         this.$alertFail('刪除題目失敗。')
         this.$rollbar.error('[views/ManageProblems/deleteProblem]', error)
+      }
+    },
+    async toggleStatus(pid, status) {
+      this.isToggling = pid
+      try {
+        const body = { status }
+        await this.$agent.Problem.changeVisibility(pid, body)
+        this.fetchData()
+        this.$alertSuccess('更新題目狀態成功。')
+      } catch (error) {
+        this.$alertFail('更新題目狀態失敗。')
+      } finally {
+        this.isToggling = null
       }
     },
   },

@@ -75,21 +75,19 @@
         <router-link :to="{ name: 'courseChallenge', params: { pid: item.pid } }">
           {{ item.title }}
         </router-link>
-        <template v-if="item.status === 0">
-          <v-tooltip bottom>
-            <template #activator="{ on, attrs }">
-              <v-icon
-                class="ml-1"
-                small
-                v-bind="attrs"
-                v-on="on"
-              >
-                mdi-minus-circle
-              </v-icon>
-            </template>
-            <span>隱藏的測驗</span>
-          </v-tooltip>
-        </template>
+        <v-tooltip bottom>
+          <template #activator="{ on, attrs }">
+            <v-icon
+              class="ml-1"
+              small
+              v-bind="attrs"
+              v-on="on"
+            >
+              {{ item.status === 0 ? 'mdi-eye-off' : 'mdi-eye' }}
+            </v-icon>
+          </template>
+          <span>{{ item.status === 0 ? '對學生隱藏中' : '對學生顯示中' }}</span>
+        </v-tooltip>
         <template v-if="canWriteCourse && item.isTemplate">
           <v-tooltip bottom>
             <template #activator="{ on, attrs }">
@@ -134,6 +132,9 @@
             </v-btn>
           </template>
           <v-list>
+            <v-list-item @click="toggleStatus(item.pid, item.status === 0 ? 1 : 0)">
+              <v-list-item-title>{{ item.status === 0 ? '顯示' : '隱藏' }}</v-list-item-title>
+            </v-list-item>
             <v-list-item
               :to="{
                 name: 'courseSetChallenges',
@@ -152,6 +153,15 @@
           </v-list>
         </v-menu>
         <div class="hidden-md-and-down">
+          <v-btn
+            class="mx-1"
+            color="primary"
+            small
+            :loading="isToggling === item.pid"
+            @click="toggleStatus(item.pid, item.status === 0 ? 1 : 0)"
+          >
+            <span>{{ item.status === 0 ? '顯示' : '隱藏' }}</span>
+          </v-btn>
           <v-btn
             :to="{
               name: 'courseSetChallenges',
@@ -270,6 +280,10 @@ export default {
       type: Boolean,
       required: true,
     },
+    isToggling: {
+      type: Number,
+      default: null,
+    },
   },
 
   data: () => ({
@@ -318,6 +332,9 @@ export default {
       if (result) {
         this.$emit('delete-problem', pid)
       }
+    },
+    toggleStatus(pid, status) {
+      this.$emit('toggle-status', pid, status)
     },
   },
 }

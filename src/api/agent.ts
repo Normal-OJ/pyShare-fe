@@ -116,6 +116,9 @@ const Problem = {
 
   update: (id: Problem.ID, body: Problem.ICreateBody) => fetcher.put(`/problem/${id}`, body),
 
+  changeVisibility: (id: Problem.ID, body: { status: Problem.Status }) =>
+    fetcher.put(`/problem/${id}/visibility`, body),
+
   delete: (id: Problem.ID) => fetcher.delete(`/problem/${id}`),
 
   getAttachment: (id: Problem.ID, filename: string): PysharePromise<File> =>

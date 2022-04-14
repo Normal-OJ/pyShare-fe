@@ -46,7 +46,7 @@
                     檢視
                   </v-btn>
                 </template>
-                <v-card class="px-8 pb-4">
+                <v-card class="pb-4">
                   <v-card-title>
                     <div>{{ $formattedTime(timestamp) }}</div>
                     <v-spacer />
@@ -57,16 +57,18 @@
                       <v-icon>mdi-close</v-icon>
                     </v-btn>
                   </v-card-title>
-                  <CodeEditor
-                    :value="code"
-                    read-only
-                  />
-                  <ChallengeResult
-                    :judge-result="judge_result"
-                    :code="code"
-                    :stderr="stderr"
-                    :stdout="stdout"
-                  />
+                  <v-card-text>
+                    <CodeEditor
+                      :value="code"
+                      read-only
+                    />
+                    <ChallengeResult
+                      :judge-result="judge_result"
+                      :code="code"
+                      :stderr="stderr"
+                      :stdout="stdout"
+                    />
+                  </v-card-text>
                 </v-card>
               </v-dialog>
             </td>
@@ -135,10 +137,13 @@ export default {
               this.submissions.reverse()
               this.isSubmissionPending = this.submissions.some((s) => s.judge_result === undefined)
             },
-          )
+          ).finally(() => {
+            this.isLoading = false
+          })
           this.dialog = new Array(this.comment.submissions.length).fill(false)
+        } else {
+          this.isLoading = false
         }
-        this.isLoading = false
       },
       immediate: true,
       deep: true,

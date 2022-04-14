@@ -24,11 +24,13 @@
           <v-icon>mdi-close</v-icon>
         </v-btn>
       </v-card-title>
-      <ChallengeHistory
-        v-if="comment"
-        :comment="comment"
-      />
-      <Spinner v-else />
+      <v-card-text>
+        <ChallengeHistory
+          v-if="comment"
+          :comment="comment"
+        />
+        <Spinner v-else />
+      </v-card-text>
     </v-card>
   </v-dialog>
 </template>

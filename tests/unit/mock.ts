@@ -16,13 +16,14 @@ interface MockAgent {
 
 export function createMockAgent(
   service: string,
-  func: string,
+  funcname: string,
   data: any,
   error: any,
+  fn: (...args: any[]) => Promise<any>,
 ): MockAgent {
   return {
     [service]: {
-      [func]: () =>
+      [funcname]: fn || (() =>
         new Promise((resolve, reject) => {
           if (error) {
             if (typeof error === 'string') reject({ message: error })
@@ -32,7 +33,7 @@ export function createMockAgent(
               data: { data },
             })
           }
-        }),
+        })),
     },
   }
 }

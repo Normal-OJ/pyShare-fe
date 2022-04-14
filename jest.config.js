@@ -11,4 +11,5 @@ module.exports = {
   },
   moduleFileExtensions: ['vue', 'js', 'ts'],
   testEnvironment: 'jsdom',
+  testMatch: ['**/?(*.)+(spec|test).[jt]s?(x)'],
 }

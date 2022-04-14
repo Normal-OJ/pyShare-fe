@@ -22,7 +22,7 @@
         </v-toolbar-items>
       </v-toolbar>
       <v-card-text class="mt-8 text--primary">
-        請選擇欲將{{ label }}（pid: {{ clonePid }}）複製到哪個課程
+        請選擇欲將{{ label }}（pid: {{ pids }}）複製到哪個課程，若同時複製多個題目將會依題號順序複製。
         <v-form
           ref="form"
           class="mt-2"
@@ -33,6 +33,7 @@
             item-text="name"
             item-value="id"
             outlined
+            data-test="target"
           />
         </v-form>
       </v-card-text>
@@ -41,7 +42,8 @@
         <v-btn
           color="success"
           :loading="isLoading"
-          :disabled="!target"
+          :disabled="isSubmitDisabled"
+          data-test="submit"
           @click="cloneProblem"
         >
           送出
@@ -63,7 +65,8 @@ export default {
       required: true,
     },
     clonePid: {
-      type: Number,
+      type: [Number, Array],
+      default: null,
     },
     defaultCourseId: {
       type: String,
@@ -82,6 +85,14 @@ export default {
     ...mapGetters({
       teachingCourses: GetterTypes.TEACHING_COURSES,
     }),
+    isSubmitDisabled() {
+      return !this.target
+    },
+    pids() {
+      return Array.isArray(this.clonePid) ?
+        this.clonePid.map(String).join(', ') :
+        String(this.clonePid)
+    },
   },
   created() {
     this.getCourses()
@@ -93,15 +104,29 @@ export default {
     ...mapActions({
       getCourses: ActionTypes.GET_COURSES,
     }),
-    cloneProblem() {
+    async cloneProblem() {
       this.isLoading = true
-      this.$agent.Problem.clone(this.clonePid, this.target)
-        .then(() => {
+      if ( Array.isArray(this.clonePid) ) {
+        try {
+          for (const pid of this.clonePid) {
+            await this.$agent.Problem.clone(pid, this.target)
+          }
           this.$alertSuccess(`複製${this.label}成功`)
           this.onSuccess()
-        })
-        .catch(() => this.$alertFail(`複製${this.label}失敗`))
-        .finally(() => (this.isLoading = false))
+        } catch (e) {
+          this.$alertFail(`複製${this.label}失敗`)
+        } finally {
+          this.isLoading = false
+        }
+      } else {
+        this.$agent.Problem.clone(this.clonePid, this.target)
+          .then(() => {
+            this.$alertSuccess(`複製${this.label}成功`)
+            this.onSuccess()
+          })
+          .catch(() => this.$alertFail(`複製${this.label}失敗`))
+          .finally(() => (this.isLoading = false))
+      }
     },
     onSuccess() {
       this.$emit('success')

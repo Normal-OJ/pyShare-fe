@@ -53,7 +53,7 @@
         md="6"
       >
         <v-select
-          v-model="newProb.status"
+          v-model="newProb.hidden"
           label="顯示狀態"
           :items="status"
           hint="設為「隱藏」則只有老師可見"
@@ -254,8 +254,8 @@ export default {
 
   data: () => ({
     status: [
-      { text: '顯示', value: 1 },
-      { text: '隱藏', value: 0 },
+      { text: '顯示', value: true },
+      { text: '隱藏', value: false },
     ],
     newProb: {},
     inputFile: null,

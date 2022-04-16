@@ -22,7 +22,7 @@ const initialProb = {
   title: '',
   description: '',
   tags: [],
-  status: 1,
+  hidden: false,
   attachments: [],
   defaultCode: '',
   isTemplate: false,

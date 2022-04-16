@@ -5,10 +5,6 @@ declare namespace Problem {
     Normal = 'NormalProblem',
     OJ = 'OJProblem',
   }
-  enum Status {
-    Offline = 0,
-    Online = 1,
-  }
 
   interface IQueryOption {
     offset?: number
@@ -24,7 +20,7 @@ declare namespace Problem {
     title: string
     description: string
     tags: Tag.name[]
-    status: Problem.Status
+    hidden: boolean
     attachments: string[]
     defaultCode: string
     isTemplate: boolean
@@ -46,7 +42,7 @@ declare namespace Problem {
     }
     isTemplate: boolean
     pid: Problem.ID
-    status: Problem.Status
+    hidden: boolean
     tags: Tag.name[]
     timestamp: Date
     title: string

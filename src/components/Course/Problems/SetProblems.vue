@@ -320,8 +320,8 @@ export default {
 
   data: () => ({
     status: [
-      { text: '顯示', value: true },
-      { text: '隱藏', value: false },
+      { text: '顯示', value: false },
+      { text: '隱藏', value: true },
     ],
     newProb: {},
     willAddAttachments: [],

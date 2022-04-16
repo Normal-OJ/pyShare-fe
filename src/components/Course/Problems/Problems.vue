@@ -78,7 +78,10 @@
         <router-link :to="{ name: 'courseProblem', params: { pid: item.pid } }">
           {{ item.title }}
         </router-link>
-        <v-tooltip bottom>
+        <v-tooltip
+          v-if="isOffline(item)"
+          bottom
+        >
           <template #activator="{ on, attrs }">
             <v-icon
               class="ml-1"
@@ -86,10 +89,26 @@
               v-bind="attrs"
               v-on="on"
             >
-              {{ isOffline(item) ? 'mdi-eye-off' : 'mdi-eye' }}
+              mdi-eye-off
             </v-icon>
           </template>
-          <span>{{ isOffline(item) ? '對學生隱藏中' : '對學生顯示中' }}</span>
+          <span>對學生隱藏中</span>
+        </v-tooltip>
+        <v-tooltip
+          v-else-if="canWriteCourse"
+          bottom
+        >
+          <template #activator="{ on, attrs }">
+            <v-icon
+              class="ml-1"
+              small
+              v-bind="attrs"
+              v-on="on"
+            >
+              mdi-eye
+            </v-icon>
+          </template>
+          <span>對學生顯示中</span>
         </v-tooltip>
         <template v-if="item.isTemplate && canWriteCourse">
           <v-tooltip bottom>

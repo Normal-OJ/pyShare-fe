@@ -83,10 +83,10 @@
               v-bind="attrs"
               v-on="on"
             >
-              {{ item.status === 0 ? 'mdi-eye-off' : 'mdi-eye' }}
+              {{ isOffline(item) ? 'mdi-eye-off' : 'mdi-eye' }}
             </v-icon>
           </template>
-          <span>{{ item.status === 0 ? '對學生隱藏中' : '對學生顯示中' }}</span>
+          <span>{{ isOffline(item) ? '對學生隱藏中' : '對學生顯示中' }}</span>
         </v-tooltip>
         <template v-if="canWriteCourse && item.isTemplate">
           <v-tooltip bottom>
@@ -132,8 +132,8 @@
             </v-btn>
           </template>
           <v-list>
-            <v-list-item @click="toggleStatus(item.pid, item.status === 0 ? 1 : 0)">
-              <v-list-item-title>{{ item.status === 0 ? '顯示' : '隱藏' }}</v-list-item-title>
+            <v-list-item @click="toggleStatus(item.pid, isOffline(item) ? 1 : 0)">
+              <v-list-item-title>{{ isOffline(item) ? '顯示' : '隱藏' }}</v-list-item-title>
             </v-list-item>
             <v-list-item
               :to="{
@@ -158,9 +158,9 @@
             color="primary"
             small
             :loading="isToggling === item.pid"
-            @click="toggleStatus(item.pid, item.status === 0 ? 1 : 0)"
+            @click="toggleStatus(item.pid, isOffline(item) ? 1 : 0)"
           >
-            <span>{{ item.status === 0 ? '顯示' : '隱藏' }}</span>
+            <span>{{ isOffline(item) ? '顯示' : '隱藏' }}</span>
           </v-btn>
           <v-btn
             :to="{
@@ -332,6 +332,9 @@ export default {
       if (result) {
         this.$emit('delete-problem', pid)
       }
+    },
+    isOffline(problem) {
+      return problem.hidden
     },
     toggleStatus(pid, status) {
       this.$emit('toggle-status', pid, status)

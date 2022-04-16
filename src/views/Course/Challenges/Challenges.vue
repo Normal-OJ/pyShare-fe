@@ -78,7 +78,7 @@ export default {
     async toggleStatus(pid, status) {
       this.isToggling = pid
       try {
-        const body = { status }
+        const body = { hidden: (status === 0) }
         await this.$agent.Problem.changeVisibility(pid, body)
         this.fetchData()
         this.$alertSuccess('更新題目狀態成功。')

@@ -8,7 +8,7 @@ import Rollbar from 'rollbar'
 import { dayjsPlugin } from './lib/dayjsPlugin'
 import { utilsPlugin } from './lib/utils'
 import agent from './api/agent'
-import VueSocketIO from 'vue-socket.io'
+// import VueSocketIO from 'vue-socket.io'
 import Notifications from 'vue-notification'
 import './sass/styles.scss'
 
@@ -16,16 +16,18 @@ Vue.use(VueCompositionAPI)
 
 Vue.use(Notifications)
 
-Vue.use(
-  new VueSocketIO({
-    connection: '/notifier',
-    vuex: {
-      store,
-      actionPrefix: 'SOCKET_',
-      mutationPrefix: 'SOCKET_',
-    },
-  }),
-)
+// *** disable socket connection temporarily, since client version is not compatible with server
+// *** js client v2, flask v5, should use js client v3 or v4
+// Vue.use(
+//   new VueSocketIO({
+//     connection: '/notifier',
+//     vuex: {
+//       store,
+//       actionPrefix: 'SOCKET_',
+//       mutationPrefix: 'SOCKET_',
+//     },
+//   }),
+// )
 
 Vue.config.productionTip = false
 

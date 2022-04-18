@@ -78,8 +78,8 @@ export default {
     },
     testResultSubmissionId: null,
     historySubmissions: [],
-    unsubscribeProblem: null,
-    unsubscribeComment: null,
+    // unsubscribeProblem: null,
+    // unsubscribeComment: null,
   }),
 
   computed: {
@@ -114,13 +114,13 @@ export default {
   watch: {
     pid: {
       async handler(newVal) {
-        if (this.unsubscribeProblem) {
-          this.unsubscribeProblem()
-          this.unsubscribeProblem = null
-        }
-        if (newVal) {
-          this.unsubscribeProblem = this.subscribeRefetchComment(newVal)
-        }
+        // if (this.unsubscribeProblem) {
+        //   this.unsubscribeProblem()
+        //   this.unsubscribeProblem = null
+        // }
+        // if (newVal) {
+        //   this.unsubscribeProblem = this.subscribeRefetchComment(newVal)
+        // }
         this.isLoading = true
         await this.getProblem(this.pid)
         this.isLoading = false
@@ -131,19 +131,19 @@ export default {
       immediate: true,
     },
     selectedComment(newVal) {
-      if (this.unsubscribeComment) {
-        this.unsubscribeComment()
-        this.unsubscribeComment = null
-      }
-      if (newVal.data) {
-        this.unsubscribeComment = this.subscribeRefetchReply(newVal.data.id)
-      }
+      // if (this.unsubscribeComment) {
+      //   this.unsubscribeComment()
+      //   this.unsubscribeComment = null
+      // }
+      // if (newVal.data) {
+      //   this.unsubscribeComment = this.subscribeRefetchReply(newVal.data.id)
+      // }
     },
   },
 
   beforeDestroy() {
-    if (this.unsubscribeProblem) this.unsubscribeProblem()
-    if (this.unsubscribeComment) this.unsubscribeComment()
+    // if (this.unsubscribeProblem) this.unsubscribeProblem()
+    // if (this.unsubscribeComment) this.unsubscribeComment()
   },
 
   methods: {
@@ -310,28 +310,28 @@ export default {
      * return a Function that is to unsubscribe same event
      */
     subscribeRefetchComment(pid) {
-      this.$socket.emit('subscribe', {
-        topic: 'COMMENT',
-        id: `problem-${pid}`,
-      })
-      return () => {
-        this.$socket.emit('unsubscribe', {
-          topic: 'COMMENT',
-          id: `problem-${pid}`,
-        })
-      }
+      // this.$socket.emit('subscribe', {
+      //   topic: 'COMMENT',
+      //   id: `problem-${pid}`,
+      // })
+      // return () => {
+      //   this.$socket.emit('unsubscribe', {
+      //     topic: 'COMMENT',
+      //     id: `problem-${pid}`,
+      //   })
+      // }
     },
     subscribeRefetchReply(cid) {
-      this.$socket.emit('subscribe', {
-        topic: 'COMMENT',
-        id: `comment-${cid}`,
-      })
-      return () => {
-        this.$socket.emit('unsubscribe', {
-          topic: 'COMMENT',
-          id: `comment-${cid}`,
-        })
-      }
+      // this.$socket.emit('subscribe', {
+      //   topic: 'COMMENT',
+      //   id: `comment-${cid}`,
+      // })
+      // return () => {
+      //   this.$socket.emit('unsubscribe', {
+      //     topic: 'COMMENT',
+      //     id: `comment-${cid}`,
+      //   })
+      // }
     },
     confirmLeave(to, from, next) {
       // 1. 新增創作/留言時，離開要詢問
@@ -345,21 +345,21 @@ export default {
     },
   },
 
-  sockets: {
-    refetch: function(data) {
-      try {
-        const target = data.id.split('-')[0]
-        if (target === 'problem') {
-          this.getProblem(this.pid)
-        } else {
-          this.getComments(this.prob.comments)
-        }
-      } catch (error) {
-        console.log('[views/Problem/sockets] error', error)
-        throw error
-      }
-    },
-  },
+  // sockets: {
+  //   refetch: function(data) {
+  //     try {
+  //       const target = data.id.split('-')[0]
+  //       if (target === 'problem') {
+  //         this.getProblem(this.pid)
+  //       } else {
+  //         this.getComments(this.prob.comments)
+  //       }
+  //     } catch (error) {
+  //       console.log('[views/Problem/sockets] error', error)
+  //       throw error
+  //     }
+  //   },
+  // },
 }
 </script>
 

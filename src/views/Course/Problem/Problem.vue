@@ -204,15 +204,19 @@ export default {
     },
     getSubmissions(cid) {
       const comment = this.comments.find((comment) => comment.id === cid)
+      if (!comment) {
+        this.historySubmissions = []
+        alert('無法載入歷史版本，您可以重新整理來嘗試再次載入。')
+        return
+      }
       Promise.all(
-        comment.submissions.map((sid) => this.$agent.Submission.get(sid)))
-        .then((resp) => {
-          this.historySubmissions = resp.map((res, index) => ({
-            ...res.data.data,
-            id: comment.submissions[index],
-          }))
-        },
-        )
+        comment.submissions.map((sid) => this.$agent.Submission.get(sid)),
+      ).then((resp) => {
+        this.historySubmissions = resp.map((res, index) => ({
+          ...res.data.data,
+          id: comment.submissions[index],
+        }))
+      })
     },
     async gradeSubmission(sid, value, cid) {
       try {

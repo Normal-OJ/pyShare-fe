@@ -212,7 +212,7 @@
       :is-open="!!clonePid"
       :clone-pid="clonePid"
       label="測驗"
-      @success="clonePid = null"
+      @success="clonePid = null; selectedChallenges = []"
       @close="clonePid = null"
     />
 

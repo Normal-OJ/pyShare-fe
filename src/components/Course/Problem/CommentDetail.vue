@@ -269,32 +269,35 @@
             rounded="0"
           >
             <template #activator="{ on: menu, attrs }">
-              <v-tooltip right>
-                <template #activator="{ on: tooltip }">
-                  <v-btn
-                    v-show="!isEdit[COMMENT_KEY.CODE]"
-                    class="ml-2 rounded"
-                    color="primary darken-2"
-                    outlined
-                    small
-                    v-bind="attrs"
-                    v-on="{ ...menu, ...tooltip }"
-                  >
-                    <v-icon size="20">
-                      mdi-history
-                    </v-icon>
-                    <div class="text-button ml-1">
-                      {{ `版本 ${browsingSubmissionIndex + 1}` }}
-                      {{
-                        browsingSubmissionIndex === historySubmissions.length - 1
-                          ? '（最新版）'
-                          : ''
-                      }}
-                    </div>
-                  </v-btn>
-                </template>
-                <span>檢視歷史版本</span>
-              </v-tooltip>
+              <div v-show="!isEdit[COMMENT_KEY.CODE]">
+                <v-tooltip right>
+                  <template #activator="{ on: tooltip }">
+                    <v-btn
+                      class="ml-2 rounded"
+                      color="primary darken-2"
+                      outlined
+                      small
+                      :loading="historySubmissions.length === 0"
+                      v-bind="attrs"
+                      v-on="{ ...menu, ...tooltip }"
+                    >
+                      <v-icon size="20">
+                        mdi-history
+                      </v-icon>
+                      <div class="text-button ml-1">
+                        {{ `版本 ${browsingSubmissionIndex + 1}` }}
+                        {{
+                          browsingSubmissionIndex === historySubmissions.length - 1
+                            ? '（最新版）'
+                            : ''
+                        }}
+                      </div>
+                    </v-btn>
+                  </template>
+                  <span>檢視歷史版本</span>
+                </v-tooltip>
+                <span v-show="historySubmissions.length === 0">正在載入歷史版本</span>
+              </div>
             </template>
             <v-list>
               <v-list-item
@@ -311,6 +314,7 @@
               </v-list-item>
             </v-list>
           </v-menu>
+
           <div
             v-if="browsingSubmission && isEdit[COMMENT_KEY.CODE]"
             class="d-flex ml-2 align-center"

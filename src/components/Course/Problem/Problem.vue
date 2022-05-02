@@ -70,7 +70,7 @@
           主題說明
         </div>
         <div
-          class="text-body-1 ma-1"
+          class="text-body-1 ma-1 problem-description"
           v-html="prob.description"
         />
       </v-col>

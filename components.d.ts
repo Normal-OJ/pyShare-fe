@@ -106,6 +106,7 @@ declare module 'vue' {
     VRadioGroup: typeof import('vuetify/lib')['VRadioGroup']
     VRow: typeof import('vuetify/lib')['VRow']
     VSelect: typeof import('vuetify/lib')['VSelect']
+    VSimpleTable: typeof import('vuetify/lib')['VSimpleTable']
     VSpacer: typeof import('vuetify/lib')['VSpacer']
     VSwitch: typeof import('vuetify/lib')['VSwitch']
     VTab: typeof import('vuetify/lib')['VTab']

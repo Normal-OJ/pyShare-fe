@@ -209,7 +209,7 @@
       :is-open="!!clonePid"
       :clone-pid="clonePid"
       label="主題"
-      @success="clonePid = null"
+      @success="clonePid = null; selectedProblems = []"
       @close="clonePid = null"
     />
 

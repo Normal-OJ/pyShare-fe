@@ -177,7 +177,6 @@ export default {
   methods: {
     async handleSubmit() {
       if (!this.$refs.form.validate()) return
-      this.$rollbar.info('LoginBy', this.loginMethod)
       this.isLoading = true
       const { email, school, username, password } = this.loginForm
       const body =
@@ -188,10 +187,12 @@ export default {
         .dispatch(ActionTypes.LOGIN, body)
         .then(() => {
           this.$alertSuccess('登入成功')
+          this.$rollbar.info('Login', { success: true, loginMethod: this.loginMethod, body })
           const { redirectToPath } = this.$route.query
           this.$router.push(redirectToPath ? { path: redirectToPath } : { name: 'courses' })
         })
         .catch((error) => {
+          this.$rollbar.info('Login', { success: false, loginMethod: this.loginMethod, body })
           switch (error.message) {
           case 'Login Failed':
             this.errorMsg =

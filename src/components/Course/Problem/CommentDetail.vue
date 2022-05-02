@@ -222,6 +222,7 @@
         </div>
         <div
           v-if="!isEdit[COMMENT_KEY.CONTENT]"
+          class="problem-description"
           v-html="comment.content"
         />
         <div v-else>

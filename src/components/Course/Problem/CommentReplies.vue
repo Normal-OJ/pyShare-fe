@@ -99,7 +99,7 @@
             </div>
             <div
               v-else
-              class="px-4 pb-2 text--primary"
+              class="px-4 pb-2 text--primary problem-description"
               v-html="content"
             />
           </div>

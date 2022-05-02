@@ -25,15 +25,26 @@
         />
       </v-col>
     </v-row>
-    <v-btn
-      color="primary"
-      class="ml-4"
-      text
-      small
-      @click="expand = !expand"
-    >
-      {{ expand ? '收合詳細' : '展開詳細' }}
-    </v-btn>
+    <div class="d-flex">
+      <v-btn
+        color="primary"
+        class="ml-4"
+        text
+        @click="expand = !expand"
+      >
+        {{ expand ? '收合詳細' : '展開詳細' }}
+      </v-btn>
+      <v-spacer />
+      <v-btn
+        color="primary"
+        @click="downloadStats"
+      >
+        <v-icon class="mr-1">
+          mdi-download
+        </v-icon>
+        匯出統計資料
+      </v-btn>
+    </div>
     <v-data-table
       v-if="expand"
       :loading="isValidating"
@@ -48,7 +59,7 @@
             {{ item.userInfo.displayName }}
           </td>
           <td
-            v-for="header in hdrs.slice(1)"
+            v-for="header in hdrs.slice(1, -1)"
             :key="header.value"
             class="text-start"
           >
@@ -58,6 +69,9 @@
             <span v-else>
               {{ `${item[header.value].progress[0]}/${item[header.value].progress[1]}` }}
             </span>
+          </td>
+          <td class="text-start">
+            {{ item.sum }}
           </td>
         </tr>
       </template>
@@ -74,6 +88,7 @@ import VChart from 'vue-echarts'
 import { ref, computed } from '@vue/composition-api'
 import useSWRV from 'swrv'
 import { fetcher } from '@/api/agent'
+import { downloadFile } from '@/lib/utils'
 
 use([
   CanvasRenderer,
@@ -98,6 +113,7 @@ export default {
     const { task } = props
     const expand = ref(false)
     const route = context.root.$route
+    const store = context.root.$store
     const chartOption = ref(null)
 
     const numOfSubtask = task.completes.length > 0 ? task.completes[0].progress[1] : 0
@@ -134,10 +150,12 @@ export default {
     const headers = computed(
       () => {
         if (!taskDetailRecord.value) return []
+        const stuColumn = { text: '學生', value: 'userInfo' }
         const reqColumns = taskDetailRecord.value.requirements.map((r, index) => ({
           text: `${index+1}`, value: r.id, sortable: false,
         }))
-        return [{ text: '學生', value: 'userInfo' }, ...reqColumns]
+        const sumColumn = { text: '完成數', value: 'sum' }
+        return [stuColumn, ...reqColumns, sumColumn]
       },
     )
     const items = computed(
@@ -159,9 +177,37 @@ export default {
             }
           })
         }
-        return arr
+        const arrWithSum = arr.map((row) => ({
+          ...row,
+          sum: Object.values(row)
+            .filter((cell) => cell.progress && cell.progress[0] === cell.progress[1]).length,
+        }))
+        return arrWithSum
       },
     )
+    function downloadData() {
+      const csvHeader = headers.value.map((h) => h.text).join(',')
+      const csvBody = items.value
+        .map((item) => {
+          const row = []
+          headers.value.slice(1, -1).forEach(({ value }) => {
+            const state = `${item[value].progress[0] === item[value].progress[1] ? '完成' : '未完成'}`
+            const metric = `(${item[value].progress[0]}/${item[value].progress[1]})`
+            row.push(`${state}${metric}`)
+          })
+          return [
+            `${item.userInfo.displayName}(${item.userInfo.username})`,
+            ...row,
+            `${item.sum}`,
+          ].join(',')
+        })
+        .join('\n')
+      return `${csvHeader}\n${csvBody}`
+    }
+    function downloadStats() {
+      const csvContent = 'data:text/csv;charset=utf-8,' + downloadData()
+      downloadFile(`${store.state.course.courseInfo?.name || '課程'}_任務統計.csv`, csvContent)
+    }
     return {
       chartOption,
       expand,
@@ -170,11 +216,8 @@ export default {
       isValidating,
       headers,
       items,
+      downloadStats,
     }
   },
 }
 </script>
-
-<style>
-
-</style>

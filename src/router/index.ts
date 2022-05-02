@@ -88,6 +88,10 @@ const routes: RouteConfig[] = [
               store.getters[GetterTypes.COURSE_NAME]
             }`,
         },
+        beforeEnter: (to, from, next) => {
+          if (['new', 'edit'].includes(to.params.operation)) next()
+          else next({ name: 'courseProblems', params: { id: to.params.id } })
+        },
         component: () => import('../views/Course/Problems/SetProblems.vue'),
       },
       {
@@ -123,6 +127,10 @@ const routes: RouteConfig[] = [
               store.getters[GetterTypes.COURSE_NAME]
             }`,
         },
+        beforeEnter: (to, from, next) => {
+          if (['new', 'edit'].includes(to.params.operation)) next()
+          else next({ name: 'courseChallenges', params: { id: to.params.id } })
+        },
         component: () => import('../views/Course/Challenges/SetChallenges.vue'),
       },
       {
@@ -145,6 +153,10 @@ const routes: RouteConfig[] = [
             `${route.params.operation === 'new' ? '新增' : '編輯'}任務 - ${
               store.getters[GetterTypes.COURSE_NAME]
             }`,
+        },
+        beforeEnter: (to, from, next) => {
+          if (['new', 'edit'].includes(to.params.operation)) next()
+          else next({ name: 'courseTasks', params: { id: to.params.id } })
         },
         component: () => import('../views/Course/Tasks/SetTasks.vue'),
       },

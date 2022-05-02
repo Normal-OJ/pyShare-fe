@@ -155,14 +155,18 @@ export default {
         const { data } = await this.$agent.Problem.get(pid)
         this.prob = data.data
         if (this.prob.extra._cls === 'OJProblem') {
-          throw new Error()
+          this.$router.replace({ name: 'courseChallenge', params: { pid } })
+        } else {
+          await this.getComments(data.data.comments)
         }
-        await this.getComments(data.data.comments)
       } catch (error) {
-        console.log('[views/Problem/getProblem] error', error)
         alert('主題不存在')
+        if (error.message === `problem [${pid}] not found!`) {
+          this.$rollbar.info('[views/Problem/getProblem]', error)
+        } else {
+          this.$rollbar.error('[views/Problem/getProblem]', error)
+        }
         this.$router.push({ name: 'courseProblems' })
-        throw error
       }
     },
     fetchSubmission() {

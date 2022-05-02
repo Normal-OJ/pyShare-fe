@@ -84,6 +84,7 @@ export default {
   },
   async created() {
     await this.getProblem(this.pid)
+    if (!this.prob) return
     this.$store.dispatch(ActionTypes.GET_PROBLEMS, { course: this.prob.course })
     this.isLoading = false
 
@@ -106,14 +107,18 @@ export default {
         const { data } = await this.$agent.Problem.get(pid)
         this.prob = data.data
         if (this.prob.extra._cls !== 'OJProblem') {
-          throw new Error()
+          this.$router.replace({ name: 'courseProblem', params: { pid } })
+        } else {
+          await this.getComments(data.data.comments)
         }
-        await this.getComments(data.data.comments)
       } catch (error) {
-        console.log('[views/Challenge/getProblem] error', error)
-        alert('題目不存在')
+        alert('測驗不存在')
+        if (error.message === `problem [${pid}] not found!`) {
+          this.$rollbar.info('[views/Challenge/getProblem]', error)
+        } else {
+          this.$rollbar.error('[views/Challenge/getProblem]', error)
+        }
         this.$router.push({ name: 'courseChallenges' })
-        throw error
       }
     },
     ...mapActions({

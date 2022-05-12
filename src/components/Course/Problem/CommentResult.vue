@@ -122,20 +122,23 @@
       </v-tab-item>
     </v-tabs>
     <v-dialog :value="displayImage">
-      <div class="d-flex justify-center">
-        <v-img
-          contain
-          :src="displayImage"
-          height="70vh"
-        />
-        <v-btn
-          color="white"
-          icon
-          @click="displayImage = null"
-        >
-          <v-icon>mdi-close-circle</v-icon>
-        </v-btn>
-      </div>
+      <v-card>
+        <v-card-text>
+          <div class="d-flex justify-center">
+            <v-img
+              contain
+              :src="displayImage"
+              height="70vh"
+            />
+            <v-btn
+              icon
+              @click="displayImage = null"
+            >
+              <v-icon>mdi-close-circle</v-icon>
+            </v-btn>
+          </div>
+        </v-card-text>
+      </v-card>
     </v-dialog>
   </div>
 </template>
@@ -247,8 +250,9 @@ export default {
       }
     },
     openLightbox(index) {
-      this.lightboxIndex = index
-      this.lightboxToggler = !this.lightboxToggler
+      this.displayImage = this.imagesWithUrl[index].url
+      // this.lightboxIndex = index
+      // this.lightboxToggler = !this.lightboxToggler
     },
   },
 }

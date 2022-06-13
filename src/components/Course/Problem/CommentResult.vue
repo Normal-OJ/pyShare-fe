@@ -106,10 +106,11 @@
               />
             </v-col>
           </v-row>
-          <FsLightbox
-            :toggler="lightboxToggler"
-            :source-index="lightboxIndex"
-            :sources="imageUrls"
+          <vue-easy-lightbox
+            :visible="lightboxToggler"
+            :imgs="imagesForLightbox"
+            :index="lightboxIndex"
+            @hide="closeLightbox"
           />
         </v-card>
       </v-tab-item>
@@ -121,37 +122,19 @@
         </v-card>
       </v-tab-item>
     </v-tabs>
-    <v-dialog :value="displayImage">
-      <v-card>
-        <v-card-text>
-          <div class="d-flex justify-center">
-            <v-img
-              contain
-              :src="displayImage"
-              height="70vh"
-            />
-            <v-btn
-              icon
-              @click="displayImage = null"
-            >
-              <v-icon>mdi-close-circle</v-icon>
-            </v-btn>
-          </div>
-        </v-card-text>
-      </v-card>
-    </v-dialog>
   </div>
 </template>
 
 <script>
-import FsLightbox from 'fslightbox-vue'
+import VueEasyLightbox from 'vue-easy-lightbox'
 import { downloadFile } from '@/lib/utils'
 
 const imageFilePossibleExtension = ['png', 'jpg', 'gif', 'jpeg', 'webp', 'svg', 'bmp']
 
 export default {
-
-  components: { FsLightbox },
+  components: {
+    VueEasyLightbox,
+  },
   props: {
     sid: {
       type: String,
@@ -179,11 +162,17 @@ export default {
   },
 
   computed: {
-    imageUrls() {
+    imagesForLightbox() {
       if (this.isTest) {
-        return this.images.map((file) => `data:image/png;base64,${file.content}`)
+        return this.images.map((file) => ({
+          src: `data:image/png;base64,${file.content}`,
+          title: file.filename,
+        }))
       }
-      return this.images.map((filename) => this.$agent.Submission.getImageUrl(this.sid, filename))
+      return this.images.map((filename) => ({
+        src: this.$agent.Submission.getImageUrl(this.sid, filename),
+        title: filename,
+      }))
     },
     imagesWithUrl() {
       if (this.isTest) {
@@ -250,10 +239,21 @@ export default {
       }
     },
     openLightbox(index) {
-      this.displayImage = this.imagesWithUrl[index].url
-      // this.lightboxIndex = index
-      // this.lightboxToggler = !this.lightboxToggler
+      this.lightboxIndex = index
+      this.lightboxToggler = true
+    },
+    closeLightbox() {
+      this.lightboxToggler = false
     },
   },
 }
 </script>
+
+<style scoped>
+/deep/ .vel-img-title {
+  font-size: 24px !important;
+  color: #ddd !important;
+  overflow: visible !important;
+  bottom: 80px !important;
+}
+</style>

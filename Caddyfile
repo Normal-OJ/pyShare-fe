@@ -12,3 +12,5 @@ header {
   -Server
   X-Frame-Options DENY
 }
+
+try_files {path} /

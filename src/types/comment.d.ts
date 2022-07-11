@@ -6,6 +6,12 @@ declare namespace _Comment {
     Show = 1,
   }
 
+  enum Acceptance {
+    Accepted = 0,
+    Rejected = 1,
+    Pending = 2,
+  }
+
   interface ICreateBody {
     target: string
     id: string

@@ -29,7 +29,9 @@ export default {
           return a + b.starers.length
         }, 0)
         const numOfLikes = stat.likes.length
-        const numOfAcceptedComments = stat.comments.filter((c) => c.accepted).length
+        const numOfAcceptedComments = stat.comments.filter(
+          (c) => c.acceptance === 0,
+        ).length
         const [execSuccess, execFail] = stat.execInfo.reduce(
           (a, b) => {
             return [a[0] + b.success, a[1] + b.fail]

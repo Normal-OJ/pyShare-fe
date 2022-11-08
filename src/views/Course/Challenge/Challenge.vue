@@ -94,7 +94,7 @@ export default {
           that.fetchTestSubmission()
         }
       },
-      2000,
+      4000,
       this,
     )
   },

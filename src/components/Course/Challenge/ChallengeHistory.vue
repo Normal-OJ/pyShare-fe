@@ -157,7 +157,7 @@ export default {
           that.fetchSubmission()
         }
       },
-      2000,
+      4000,
       this,
     )
   },

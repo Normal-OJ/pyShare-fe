@@ -152,7 +152,7 @@ export default {
           this.$emit('fetch-test-submission', 'new')
         }
       },
-      1000,
+      4000,
       this,
     )
   },
